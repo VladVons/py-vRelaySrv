@@ -1,0 +1,29 @@
+'''
+Author:      Vladimir Vons, Oster Inc.
+Created:     2021.02.26
+License:     GNU, see LICENSE for more details
+Description:.
+'''
+
+
+import os
+import asyncio
+#
+from Inc.Conf import Conf
+from Inc.Log  import Log
+from Inc.Plugin import Plugin
+
+
+async def Run():
+    Log.Print(1, 'i', 'Run', os.uname())
+
+    Plugin.LoadList(Conf.get('Plugins'))
+    try:
+        Plugin.Run()
+    except KeyboardInterrupt:
+        print('Ctrl-C')
+    finally:
+        await Plugin.Stop()
+
+
+asyncio.run(Run())
