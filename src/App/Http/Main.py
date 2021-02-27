@@ -5,6 +5,7 @@ License:     GNU, see LICENSE for more details
 Description:.
 
 https://github.com/aio-libs/aiohttp
+https://docs.aiohttp.org/en/stable/web_advanced.html#aiohttp-web-app-runners
 '''
 
 import asyncio
