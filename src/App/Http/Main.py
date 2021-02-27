@@ -7,36 +7,23 @@ Description:.
 https://github.com/aio-libs/aiohttp
 '''
 
+import asyncio
 from aiohttp import web
+#
+from Inc.Conf import Conf
+from Inc.Log  import Log
 
 
-async def handle(request):
-    name = request.match_info.get('name', "Anonymous")
-    text = "Hello, " + name
-    return web.Response(text=text)
-
-async def wshandle(request):
-    ws = web.WebSocketResponse()
-    await ws.prepare(request)
-
-    async for msg in ws:
-        if msg.type == web.WSMsgType.text:
-            await ws.send_str("Hello, {}".format(msg.data))
-        elif msg.type == web.WSMsgType.binary:
-            await ws.send_bytes(msg.data)
-        elif msg.type == web.WSMsgType.close:
-            break
-
-    return ws
-
+async def handler(request: web.Request) -> web.Response:
+    return web.Response(text="Hello world")
 
 
 class THttp():
-    async def Run(self): 
+    async def Run(self):
         App = web.Application()
-        App.add_routes(
-            [web.get('/', handle),
-            web.get('/echo', wshandle),
-            web.get('/{name}', handle)
-            ])
-        web.run_app(App, port=8080)
+        App.add_routes([web.get("/", handler)])
+
+        Runner = web.AppRunner(App)
+        await Runner.setup()
+        Site = web.TCPSite(Runner, 'localhost', 8080)
+        await Site.start()

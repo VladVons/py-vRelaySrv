@@ -19,7 +19,7 @@ async def Run():
 
     Plugin.LoadList(Conf.get('Plugins'))
     try:
-        Plugin.Run()
+        await Plugin.Run()
     except KeyboardInterrupt:
         print('Ctrl-C')
     finally:
