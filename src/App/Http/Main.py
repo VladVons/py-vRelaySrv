@@ -13,18 +13,25 @@ from aiohttp import web
 #
 from Inc.Conf import Conf
 from Inc.Log  import Log
+from Inc.Plugin import Plugin
 
 
-async def handler(request: web.Request) -> web.Response:
-    return web.Response(text="Hello world")
 
 
 class THttp():
+    Cnt = 0
+
+    async def Handler(self, request: web.Request) -> web.Response:
+        self.Cnt += 1
+        Text = "Handler: Hello world %03d" % self.Cnt
+        print(Text)
+        return web.Response(text=Text)
+
     async def Run(self):
         App = web.Application()
-        App.add_routes([web.get("/", handler)])
+        App.add_routes([web.get("/", self.Handler)])
 
         Runner = web.AppRunner(App)
         await Runner.setup()
-        Site = web.TCPSite(Runner, 'localhost', 8080)
+        Site = web.TCPSite(Runner, '0.0.0.0', 8080)
         await Site.start()
