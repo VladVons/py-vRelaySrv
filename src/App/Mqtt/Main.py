@@ -19,6 +19,12 @@ from Inc.Conf import Conf
 Topic = 'vRelay/#'
 
 class TMqtt():
+    Cnt = 0
+
+    async def Hanler(self, aPacket):
+        self.Cnt += 1
+        Log.Print(1, 'i', 'Hanler', '%d %s %s' % (self.Cnt, aPacket.variable_header.topic_name, aPacket.payload.data))
+
     async def Run(self):
         while True:
             Client = MQTTClient('vRelay-srv')
@@ -26,12 +32,9 @@ class TMqtt():
             await Client.subscribe([(Topic, QOS_1)])
 
             try:
-                i = 0
                 while True:
                     Message = await Client.deliver_message()
-                    Packet = Message.publish_packet
-                    print(f"{i}:  {Packet.variable_header.topic_name} => {Packet.payload.data}")
-                    i += 1
+                    await self.Hanler(Message.publish_packet)
             except ClientException as E:
                 await Client.unsubscribe([Topic])
                 await Client.disconnect()
