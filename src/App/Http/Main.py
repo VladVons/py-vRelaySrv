@@ -12,7 +12,7 @@ import asyncio
 from aiohttp import web
 #
 from Inc.Conf import Conf
-from Inc.Log  import Log
+from IncP.Log  import Log
 from Inc.Plugin import Plugin
 
 

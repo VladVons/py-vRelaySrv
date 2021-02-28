@@ -9,8 +9,7 @@ Description:.
 import asyncio
 #
 from Inc.Conf import Conf
-from Inc.Log  import Log
-
+from IncP.Log  import Log
 from IncP.Odbc  import TOdbc
 
 
@@ -22,10 +21,10 @@ class TIdle():
         while True:
             Log.Print(1, 'i', 'TIdle.Run', CntLoop)
             Rows = await Odbc.Query(
-                    'SELECT * \
-                    FROM Dict1 \
-                    ORDER BY ID DESC \
-                    LIMIT 1')
+                'SELECT * \
+                 FROM Dict1 \
+                 ORDER BY ID DESC \
+                 LIMIT 1')
             print(Rows)
 
             CntLoop += 1
