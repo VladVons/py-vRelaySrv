@@ -21,7 +21,7 @@ async def Run():
     try:
         await Plugin.Run()
     except KeyboardInterrupt:
-        print('Ctrl-C')
+        Log.Print(1, 'i', 'Run()', 'Ctrl-C')
     finally:
         await Plugin.Stop()
 

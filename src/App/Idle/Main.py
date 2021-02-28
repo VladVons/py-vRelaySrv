@@ -22,10 +22,10 @@ class TIdle():
         while True:
             Log.Print(1, 'i', 'TIdle.Run', CntLoop)
             Rows = await Odbc.Query(
-                'SELECT * \
-                FROM Dict1 \
-                ORDER BY ID DESC \
-                LIMIT 1')
+                    'SELECT * \
+                    FROM Dict1 \
+                    ORDER BY ID DESC \
+                    LIMIT 1')
             print(Rows)
 
             CntLoop += 1

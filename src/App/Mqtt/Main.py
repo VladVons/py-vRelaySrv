@@ -5,6 +5,11 @@ License:     GNU, see LICENSE for more details
 Description:.
 
 https://github.com/beerfactory/hbmqtt
+
+error: Connection failed:
+patch: hbmqtt/client.py connect()
+        #except BaseException as be:
+        except Exception as be:
 '''
 
 
@@ -35,7 +40,9 @@ class TMqtt():
                 while True:
                     Message = await Client.deliver_message()
                     await self.Hanler(Message.publish_packet)
-            except ClientException as E:
+            except Exception as E:
                 await Client.unsubscribe([Topic])
                 await Client.disconnect()
                 Log.Print(1, 'x', 'Run', E)
+
+            #await asyncio.sleep(1)
