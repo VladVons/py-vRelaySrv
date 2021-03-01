@@ -14,6 +14,14 @@ Name="py-vRelaySrv"
 DirLog="/var/log/$Name"
 
 
+Install()
+{
+  apt install --yes --no-install-recommends python3-pip gcc libpython3-dev 
+  pip3 install setuptools wheel
+  pip3 install aioodbc aiohttp gmqtt
+}
+
+
 Configure()
 {
     # Setup logfile permissions:
@@ -39,11 +47,28 @@ Debug()
   #printenv > /$Name.log2
 }
 
+
+Help()
+{
+fold -s << EOF
+/etc/odbcinst.ini
+  [MariaDbSQL]
+  Description=MariaDb driver
+  Driver=libmaodbc.so
+  Setup=libmaodbc.so
+  Debug=0
+  CommLog=1
+  UsageCount=1
+EOF
+}
+
 #Debug $1
 
 case "$1" in
   configure)
+    Install
     Configure
+    Help
     ;;
   abort-upgrade|abort-remove|abort-deconfigure)
     ;;

@@ -71,15 +71,15 @@ Release()
   find $DirSrc -name "*.pyc" -type f -delete
 
   sudo mkdir -p $DirSrcRelease
-  sudo chown $USER:$USER $DirSrcRelease
+  sudo chown $USER $DirSrcRelease
 
   cp -R -L $DirSrc/* $DirSrcRelease
   cd $DirSrcRelease
 
   echo "Building in $(pwd) ..."
   #python3 -m nuitka  --remove-output $Name.py
-  ExecM "python3 -m nuitka --follow-imports --include-plugin-directory=App --remove-output $Name.py"
   #python3 -m nuitka --follow-imports --remove-output --standalone $Name.py
+  ExecM "python3 -m nuitka --follow-imports --include-plugin-directory=App --remove-output $Name.py"
 
   cd $CurDir
   cp $DirSrcRelease/$Name.bin $DirSrc

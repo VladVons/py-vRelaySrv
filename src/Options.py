@@ -4,6 +4,7 @@ Mqtt_Host = 'vpn2.oster.com.ua'
 #Mqtt_User = 'test1'
 #Mqtt_Passw = 'test1'
 
+Http_Port = '8080'
 
 AuthDb = {
     'DRIVER': '{MariaDbSQL}',

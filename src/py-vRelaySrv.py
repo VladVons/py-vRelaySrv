@@ -10,11 +10,16 @@ import os
 import asyncio
 #
 from Inc.Conf import Conf
-from IncP.Log  import Log
+from IncP.Log  import Log, TEchoFile
 from Inc.Plugin import Plugin
 
 
 async def Run():
+    Root, Name = os.path.split(__file__)
+    FileLog = '/var/log/py-vRelaySrv/%s.log' % (Name)
+    Log.AddEcho(TEchoFile(FileLog))
+    print('Log file ' + FileLog)
+
     Log.Print(1, 'i', 'Run', os.uname())
 
     Plugin.LoadList(Conf.get('Plugins'))

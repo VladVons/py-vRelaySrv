@@ -7,7 +7,7 @@ Description:
 
 import traceback
 #
-from Inc.Log import TLog
+from Inc.Log import TLog, TEchoFile
 
 
 class TLogEx(TLog):
