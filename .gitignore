@@ -1,0 +1,9 @@
+*.pyc
+*.log
+*.deb
+*.bin
+*.zip
+deb/py-relay_*
+__pycache__
+.idea
+local
