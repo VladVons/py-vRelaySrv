@@ -1,0 +1,78 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:          py-vRelaySrv
+# Required-Start:    $network $syslog
+# Required-Stop:     $network $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# X-Interactive:     true
+# Author:            VladVons@gmail.com
+# Short-Description: py-vRelaySrv
+# Description:       py-vRelaySrv daemon
+### END INIT INFO
+
+# http://www.projectclearwater.org/using-start-stop-daemon-with-the-python-interpreter/
+
+NAME="py-vRelaySrv"
+DESCR="Some description $NAME"
+PIDFILE1="/var/run/$NAME.pid"
+USER="root"
+
+# Read default configuration variable
+ENABLED=1
+SCRYPT="py-vRelaySrv.sh"
+WORKDIR="/usr/lib/$NAME"
+ARGS=""
+DEFAULT="/etc/default/$NAME"
+LOG="/var/log/py-vRelaySrv/$NAME.sh.log"
+
+if [ -r $DEFAULT ] ; then
+  . $DEFAULT
+fi
+DAEMON="$WORKDIR/$SCRYPT"
+
+##--- after modify this file
+## systemctl daemon-reload
+## service py-vRelaySrv restart
+## journalctl -u py-vRelaySrv
+
+#echo "Debug: $DEFAULT $DAEMON" >> /py-vRelaySrv_1.log
+#test -x $SCRYPT || exit 0
+. /lib/lsb/init-functions
+
+
+echo "$0->$1" >> $LOG
+case "$1" in
+  start)
+    if [ $ENABLED = 1 ]; then
+      log_daemon_msg "Starting $NAME $DAEMON $ARGS"
+      start-stop-daemon --start --background --pidfile $PIDFILE1 --make-pidfile --chuid $USER --chdir $WORKDIR --exec $DAEMON -- $ARGS
+      log_end_msg $?
+    else
+      log_progress_msg "(disabled)"
+      log_daemon_msg "Disabled in $DEFAULT"
+    fi
+    ;;
+  stop)
+    log_daemon_msg "Stopping $NAME "
+    start-stop-daemon --stop --pidfile $PIDFILE1 --verbose --oknodo --retry=TERM/30/KILL/5
+    log_end_msg $?
+    ;;
+  restart)
+    $0 stop
+    sleep 5
+    $0 start
+    ;;
+  status)
+    log_action_msg "Status $DAEMON"
+    status_of_proc -p $PIDFILE1 "$DAEMON"
+    ;;
+  *)
+    echo $DESCR
+    log_action_msg  "Usage: /etc/init.d/$NAME {start|stop|restart|status}"
+    exit 1
+    ;;
+esac
+
+exit 0

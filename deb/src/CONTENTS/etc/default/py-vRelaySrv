@@ -1,0 +1,7 @@
+# defaults for /etc/init.d/py-vRelaySrv
+
+ENABLED=0
+WORKDIR="/usr/lib/py-vRelaySrv"
+SCRYPT="py-vRelaySrv.sh"
+USER="root"
+LOG=/var/log/py-vRelaySrv/py-vRelaySrv.sh.log

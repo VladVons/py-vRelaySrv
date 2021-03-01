@@ -1,0 +1,11 @@
+Package: py-vRelaySrv
+Version: 1.0-1
+Architecture: amd64
+Section: IoT
+Priority: optional
+Depends: python3-prctl, python3-pyodbc, unixodbc, odbc-mariadb
+Recommends: monit
+Maintainer: Vladimir Vons <VladVons@gmail.com>
+Homepage: http://oster.com.ua/software
+Description: vRelay automation
+

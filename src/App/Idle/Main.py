@@ -20,12 +20,13 @@ class TIdle():
         CntLoop = 0
         while True:
             Log.Print(1, 'i', 'TIdle.Run', CntLoop)
-            Rows = await Odbc.Query(
-                'SELECT * \
-                 FROM Dict1 \
-                 ORDER BY ID DESC \
-                 LIMIT 1')
-            print(Rows)
+
+            #Rows = await Odbc.Query(
+            #    'SELECT * \
+            #     FROM Dict1 \
+            #     ORDER BY ID DESC \
+            #     LIMIT 1')
+            #print(Rows)
 
             CntLoop += 1
             await asyncio.sleep(aSleep)
