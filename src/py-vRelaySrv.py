@@ -12,10 +12,12 @@ import asyncio
 from Inc.Conf import Conf
 from IncP.Log  import Log, TEchoFile
 from Inc.Plugin import Plugin
+#
+#import App
 
 
 async def Run():
-    Root, Name = os.path.split(__file__)
+    _, Name = os.path.split(__file__)
     FileLog = '/var/log/py-vRelaySrv/%s.log' % (Name)
     Log.AddEcho(TEchoFile(FileLog))
     print('Log file ' + FileLog)
@@ -31,4 +33,10 @@ async def Run():
         await Plugin.Stop()
 
 
-asyncio.run(Run())
+if (Conf.Debug):
+    event_loop = asyncio.get_event_loop()
+    event_loop.set_debug(True)
+    event_loop.slow_callback_duration = 0.001
+    event_loop.run_until_complete(Run())
+else:
+    asyncio.run(Run())

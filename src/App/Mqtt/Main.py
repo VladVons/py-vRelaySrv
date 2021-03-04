@@ -15,14 +15,14 @@ from gmqtt import Client as MQTTClient
 from Inc.Conf import Conf
 from IncP.Log import Log
 from Inc.Util.UNet import CheckHost
-from IncP.Odbc import TOdbc
+from IncP.DB.DbOdbc import TDbOdbc
 
 
 Name  = 'vRelay'
 
 class TMqtt():
     def __init__(self):
-        self.Odbc = TOdbc(Conf.AuthDb)
+        self.Db = TDbOdbc(Conf.AuthDb)
 
     def on_connect(self, client, flags, rc, properties):
         client.publish(Name + '/srv', 'connect')
@@ -34,11 +34,13 @@ class TMqtt():
 
     async def on_message(self, client, topic, payload, qos, properties):
         Log.Print(1, 'i', 'on_message', 'topic %s, payload %s, qos %s' % (topic, payload, qos))
-        Rows = await self.Odbc.Query(
-                'SELECT * \
-                 FROM Dict1 \
-                 ORDER BY ID DESC \
-                 LIMIT 1')
+        SQL = '''
+            SELECT * 
+            FROM Dict1 
+            ORDER BY ID DESC 
+            LIMIT 1
+            '''
+        Rows = await self.Db.Exec(SQL)
         print(Rows)
 
     async def Run(self):
@@ -57,4 +59,4 @@ class TMqtt():
                 except Exception as E:
                     Log.Print(1, 'x', 'Mqtt.Run()', E)
 
-            await asyncio.sleep(60)
+            await asyncio.sleep(30)

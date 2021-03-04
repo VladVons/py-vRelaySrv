@@ -1,3 +1,4 @@
+#Debug = True
 Descr = 'frozen'
 Plugins = 'App.Mqtt App.Http App.Idle'
 Mqtt_Host = 'vpn2.oster.com.ua'

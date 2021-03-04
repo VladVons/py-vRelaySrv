@@ -17,23 +17,25 @@ import aioodbc
 from IncP.Log  import Log
 
 
-class TOdbc():
+class TDbOdbc():
     def __init__(self, aAuth: dict):
         self.Auth = ''
         for Key, Value in aAuth.items():
             self.Auth += '%s=%s;' % (Key, Value)
 
-    async def _Query(self, aSql: str):
+    async def _Exec(self, aSql: str, aRead: bool = True):
         #async with aioodbc.connect(dsn=self.Auth, timeout=3) as Connect:
         async with aioodbc.connect(dsn=self.Auth) as Connect:
             async with Connect.cursor() as Cursor:
                 await Cursor.execute(aSql)
-                return await Cursor.fetchall()
+                try:
+                    return await Cursor.fetchall()
+                except: pass
 
-    async def Query(self, aSql: str, aTimeout = 5):
+    async def Exec(self, aSql: str, aTimeout = 5):
           try:
-            return await asyncio.wait_for(self._Query(aSql), timeout=aTimeout)
+            return await asyncio.wait_for(self._Exec(aSql), timeout=aTimeout)
           except asyncio.TimeoutError:
             pass
           except Exception as E:
-            Log.Print(1, 'x', 'Query()', E)
+            Log.Print(1, 'x', 'Exec()', E)
