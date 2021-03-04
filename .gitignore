@@ -6,7 +6,6 @@
 deb/py-relay_*
 __pycache__
 .idea
-.vscode
 local
 venv
 
