@@ -23,18 +23,30 @@ class TDbOdbc():
         for Key, Value in aAuth.items():
             self.Auth += '%s=%s;' % (Key, Value)
 
-    async def _Exec(self, aSql: str, aRead: bool = True):
+    async def Exec(self, aSql: str):
+        async with aioodbc.connect(dsn=self.Auth) as Con:
+            async with Con.cursor() as Cur:
+                for Sql in filter(None, aSql.split(';')):
+                    Sql = Sql.strip()
+                    if (Sql):
+                        await Cur.execute(Sql)
+            await Con.commit()
+
+    async def Fetch(self, aSql: str, aOne: bool = False):
         #async with aioodbc.connect(dsn=self.Auth, timeout=3) as Connect:
-        async with aioodbc.connect(dsn=self.Auth) as Connect:
-            async with Connect.cursor() as Cursor:
-                await Cursor.execute(aSql)
+        async with aioodbc.connect(dsn=self.Auth) as Con:
+            async with Con.cursor() as Cur:
+                await Cur.execute(aSql)
                 try:
-                    return await Cursor.fetchall()
+                    if (aOne):
+                        return await Cur.fetchone()
+                    else:
+                        return await Cur.fetchall()
                 except: pass
 
-    async def Exec(self, aSql: str, aTimeout = 5):
+    async def FetchWait(self, aSql: str, aTimeout = 5):
           try:
-            return await asyncio.wait_for(self._Exec(aSql), timeout=aTimeout)
+            return await asyncio.wait_for(self.Fetch(aSql), timeout=aTimeout)
           except asyncio.TimeoutError:
             pass
           except Exception as E:

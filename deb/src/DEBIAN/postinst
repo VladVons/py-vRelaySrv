@@ -16,9 +16,9 @@ DirLog="/var/log/$Name"
 
 Install()
 {
-  apt install --yes --no-install-recommends python3-pip gcc libpython3-dev 
+  apt install --yes --no-install-recommends python3-pip gcc libpython3-dev
   pip3 install setuptools wheel
-  pip3 install aioodbc aiohttp gmqtt
+  pip3 install aiohttp aioodbc aiomysql gmqtt
 }
 
 

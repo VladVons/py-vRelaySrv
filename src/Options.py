@@ -10,7 +10,7 @@ Http_Port = '8080'
 AuthDb = {
     'DRIVER': '{MariaDbSQL}',
     'SERVER': '10.10.1.1',
-    'DATABASE': 'app_grafana7',
-    'UID': 'grafana7',
-    'PWD': 'graf20197'
+    'DATABASE': 'app_vRelay_1',
+    'UID': 'vRelay',
+    'PWD': 'vR2021'
 }

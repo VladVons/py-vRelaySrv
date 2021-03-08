@@ -19,8 +19,8 @@ Version: $Ver
 Architecture: $Platform
 Section: IoT
 Priority: optional
-Depends: python3-prctl, python3-pyodbc, unixodbc, odbc-mariadb
-Recommends: monit
+Depends: python3-prctl, python3-pyodbc, odbc-mariadb
+Recommends: monit, unixodbc, python3-mysqldb
 Maintainer: Vladimir Vons <VladVons@gmail.com>
 Homepage: http://oster.com.ua/software
 Description: vRelay automation
