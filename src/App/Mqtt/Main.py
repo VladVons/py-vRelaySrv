@@ -10,6 +10,8 @@ pip install paho-mqtt
 
 import json
 import asyncio
+from socket import gethostname
+
 from gmqtt import Client as MQTTClient
 #
 from Inc.Conf import Conf
@@ -43,14 +45,15 @@ class TMqtt():
         if (Id) and (Data):
             #print(Id, Data)
             Ok = await self.Db.InsertDeviceByUniq(Id, Data.get('Owner'), Data.get('Val'))
-            Log.Print(1, 'i', 'on_message', (Ok, Id, Data))
+            #Log.Print(1, 'i', 'on_message', (Ok, Id, Data))
+            print('--- on_message', Ok, Id, Data)
 
     async def Run(self):
         await self.Db.Connect()
 
         Port = Conf.get('Mqtt_Port', 1883)
 
-        Client = MQTTClient(Name + '-srv')
+        Client = MQTTClient('%s-srv-%s' % (Name, gethostname()))
         Client.on_message = self.on_message
         Client.on_connect = self.on_connect
         Client.on_disconnect = self.on_disconnect

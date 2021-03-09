@@ -30,4 +30,8 @@ class TClass1():
         await asyncio.gather(Task1, Task2)
 
 
-asyncio.run(TClass1().Run())
+#asyncio.run(TClass1().Run())
+
+
+import socket
+print(socket.gethostname())
