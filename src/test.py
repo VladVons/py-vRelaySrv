@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import asyncio
+import datetime
 #
 from IncP.DB.DbMySql import TDbMySql
 from Inc.Conf import Conf
@@ -9,6 +10,9 @@ class TClass1():
     async def Test1(self):
         Db = TDbMySql(Conf.AuthDbMySql)
         await Db.Connect()
+        #Rows = await Db.GetHourlyVal(5, datetime.date.today(), datetime.datetime.now())
+        #Rows = await Db.GetHourlyVal(5, datetime.date.today() - datetime.timedelta(days=7), datetime.datetime.now())
+        #print(Rows)
 
         #await Db.CreateDb()
         #await Db.GetDeviceByUniq('f871e400', 'TSen_dht22_t')
@@ -30,8 +34,4 @@ class TClass1():
         await asyncio.gather(Task1, Task2)
 
 
-#asyncio.run(TClass1().Run())
-
-
-import socket
-print(socket.gethostname())
+asyncio.run(TClass1().Run())
