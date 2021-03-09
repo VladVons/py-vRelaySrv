@@ -10,14 +10,10 @@ import asyncio
 #
 from Inc.Conf import Conf
 from IncP.Log import Log
-#from IncP.DB.DbOdbc import TOdbc
-from IncP.DB.DbMySql import TDbMySql
 
 
 class TIdle():
     async def Run(self, aSleep: float = 10):
-        Db = TDbMySql(Conf.AuthDb)
-
         CntLoop = 0
         while True:
             print('TIdle.Run', CntLoop)

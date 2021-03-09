@@ -18,7 +18,9 @@ Install()
 {
   apt install --yes --no-install-recommends python3-pip gcc libpython3-dev
   pip3 install setuptools wheel
-  pip3 install aiohttp aioodbc aiomysql gmqtt
+  pip3 install aiohttp gmqtt
+  #pip3 install aioodbc
+  pip3 install aiomysql
 }
 
 

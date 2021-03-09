@@ -7,7 +7,9 @@ from Inc.Conf import Conf
 
 class TClass1():
     async def Test1(self):
-        Db = TDbMySql(Conf.AuthDb)
+        Db = TDbMySql(Conf.AuthDbMySql)
+        await Db.Connect()
+
         #await Db.CreateDb()
         #await Db.GetDeviceByUniq('f871e400', 'TSen_dht22_t')
         #await Db.GetIdByUniq('6d9dbc00', 'TSen_ds18b20')

@@ -7,10 +7,17 @@ Mqtt_Host = 'vpn2.oster.com.ua'
 
 Http_Port = '8080'
 
-AuthDb = {
-    'DRIVER': '{MariaDbSQL}',
+#AuthDbOdbc = {
+#    'DRIVER': '{MariaDbSQL}',
+#    'SERVER': '10.10.1.1',
+#    'DATABASE': 'app_vRelay_1',
+#    'UID': 'vRelay',
+#    'PWD': 'vR2021'
+#}
+
+AuthDbMySql = {
     'SERVER': '10.10.1.1',
     'DATABASE': 'app_vRelay_1',
-    'UID': 'vRelay',
-    'PWD': 'vR2021'
+    'USER': 'vRelay',
+    'PASSWORD': 'vR2021'
 }

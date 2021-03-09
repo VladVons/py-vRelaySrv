@@ -1,10 +1,35 @@
+'''
+Author:      Vladimir Vons, Oster Inc.
+Created:     2021.03.08
+License:     GNU, see LICENSE for more details
+Description:.
 
-import aioodbc
+apt install python3-mysqldb
+pip3 install aiomysql
+'''
+
+
+import aiomysql
 # 
-from .DbOdbc import TDbOdbc
+from .Db import TDb
 
 
-class TDbMySql(TDbOdbc):
+class TDbMySql(TDb):
+    def __init__(self, aAuth: dict):
+        self.Auth = aAuth
+
+    async def Connect(self):
+        if (self.Pool):
+            await self.Pool.wait_closed()
+
+        self.Pool = await aiomysql.create_pool(
+                host=self.Auth.get('SERVER', 'localhost'),
+                port=self.Auth.get('PORT', 3306),
+                db=self.Auth.get('DATABASE'),
+                user=self.Auth.get('USER'),
+                password=self.Auth.get('PASSWORD')
+                )
+
     async def CreateDb(self):
         # drop table devices_val, devices, departs, orgs
 

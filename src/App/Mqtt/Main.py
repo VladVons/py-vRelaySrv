@@ -22,9 +22,10 @@ Name  = 'vRelay'
 
 class TMqtt():
     def __init__(self):
-        self.Db = TDbMySql(Conf.AuthDb)
+        self.Db = TDbMySql(Conf.AuthDbMySql)
 
     def on_connect(self, client, flags, rc, properties):
+
         Msg = {'Data':{'Val':'Connect'}}
         client.publish(Name + '/srv', json.dumps(Msg))
 
@@ -45,6 +46,8 @@ class TMqtt():
             Log.Print(1, 'i', 'on_message', (Ok, Id, Data))
 
     async def Run(self):
+        await self.Db.Connect()
+
         Port = Conf.get('Mqtt_Port', 1883)
 
         Client = MQTTClient(Name + '-srv')
