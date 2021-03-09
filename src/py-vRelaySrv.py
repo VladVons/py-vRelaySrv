@@ -12,8 +12,7 @@ import asyncio
 from Inc.Conf import Conf
 from IncP.Log  import Log, TEchoFile
 from Inc.Plugin import Plugin
-#
-#import App
+
 
 class TApp():
     def InitLog(self):
@@ -29,7 +28,7 @@ class TApp():
 
     async def Run(self):
         self.InitLog()
-        Log.Print(1, 'i', 'Run', os.uname())
+        Log.Print(1, 'i', 'Start', os.uname())
 
         Plugin.LoadList(Conf.get('Plugins'))
         try:
@@ -38,6 +37,7 @@ class TApp():
             Log.Print(1, 'x', 'Run()', 'Ctrl-C')
         finally:
             await Plugin.Stop()
+        Log.Print(1, 'i', 'End')
 
 
 Task = TApp().Run()
