@@ -10,9 +10,11 @@ class TClass1():
     async def Test1(self):
         Db = TDbMySql(Conf.AuthDbMySql)
         await Db.Connect()
-        #Rows = await Db.GetHourlyVal(5, datetime.date.today(), datetime.datetime.now())
-        Rows = await Db.GetValHourly(5, datetime.date.today() - datetime.timedelta(days=7), datetime.datetime.now())
-        print(Rows)
+        #Rows = await Db.GetDeviceHourlyVal(5, datetime.date.today(), datetime.datetime.now())
+        Rows = await Db.GetDeviceValHourly(2, datetime.date.today() - datetime.timedelta(days=7), datetime.datetime.now())
+        #Rows = await Db.GetDeviceCount(datetime.date.today() - datetime.timedelta(days=7), datetime.datetime.now())
+        for Row in Rows:
+            print(Row)
 
         #await Db.CreateDb()
         #await Db.GetDeviceByUniq('f871e400', 'TSen_dht22_t')

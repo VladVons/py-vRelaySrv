@@ -100,8 +100,8 @@ class TDbMySql(TDb):
             await self.Exec(Query)
             return True
 
-    async def GetValHourly(self, aId, aBegin, aEnd):
-        #GetValHourly(5, datetime.date.today() - datetime.timedelta(days=7), datetime.datetime.now())
+    async def GetDeviceValHourly(self, aId, aBegin, aEnd):
+        #GetDeviceValHourly(5, datetime.date.today() - datetime.timedelta(days=7), datetime.datetime.now())
         Query = '''
             SELECT
                 COUNT(*) Count,
@@ -117,4 +117,20 @@ class TDbMySql(TDb):
             ORDER BY
                 Date
         ''' % (aId, aBegin, aEnd)
+        return await self.Fetch(Query)
+
+    async def GetDeviceCount(self, aBegin, aEnd):
+        Query = '''
+            SELECT
+                COUNT(*) Count,
+                devices_id AS Device
+            FROM
+                devices_val
+            WHERE
+                (create_date BETWEEN '%s' AND '%s')
+            GROUP BY
+                Device
+            ORDER BY
+                Device
+        ''' % (aBegin, aEnd)
         return await self.Fetch(Query)
