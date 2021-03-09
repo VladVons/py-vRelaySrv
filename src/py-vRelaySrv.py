@@ -39,4 +39,8 @@ if (Conf.Debug):
     event_loop.slow_callback_duration = 0.001
     event_loop.run_until_complete(Run())
 else:
-    asyncio.run(Run())
+    # >= 3.7
+    #asyncio.run(Run())
+
+    event_loop = asyncio.get_event_loop()
+    event_loop.run_until_complete(Run())
