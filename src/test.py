@@ -11,8 +11,8 @@ class TClass1():
         Db = TDbMySql(Conf.AuthDbMySql)
         await Db.Connect()
         #Rows = await Db.GetHourlyVal(5, datetime.date.today(), datetime.datetime.now())
-        #Rows = await Db.GetHourlyVal(5, datetime.date.today() - datetime.timedelta(days=7), datetime.datetime.now())
-        #print(Rows)
+        Rows = await Db.GetValHourly(5, datetime.date.today() - datetime.timedelta(days=7), datetime.datetime.now())
+        print(Rows)
 
         #await Db.CreateDb()
         #await Db.GetDeviceByUniq('f871e400', 'TSen_dht22_t')

@@ -100,12 +100,12 @@ class TDbMySql(TDb):
             await self.Exec(Query)
             return True
 
-    async def GetHourlyVal(self, aId, aBegin, aEnd):
-        #Rows = await Db.GetHourlyVal(5, datetime.date.today() - datetime.timedelta(days=7), datetime.datetime.now())
+    async def GetValHourly(self, aId, aBegin, aEnd):
+        #GetValHourly(5, datetime.date.today() - datetime.timedelta(days=7), datetime.datetime.now())
         Query = '''
             SELECT
                 COUNT(*) Count,
-                Concat(Year(create_date), ':', LPad(Month(create_date), 2, 0), ':', LPad(Day(create_date), 2, 0), ' ', LPad(Hour(create_date), 2, 0)) As Hourly,
+                CONCAT(Year(create_date), ':', LPad(MONTH(create_date), 2, 0), ':', LPad(DAY(create_date), 2, 0), ' ', LPad(HOUR(create_date), 2, 0)) As Date,
                 ROUND(AVG(val), 2) AS Val
             FROM
                 devices_val
@@ -113,8 +113,8 @@ class TDbMySql(TDb):
                 (devices_id = %d) AND
                 (create_date BETWEEN '%s' AND '%s')
             GROUP BY
-                Hourly
-            Order By
-                Hourly
+                Date
+            ORDER BY
+                Date
         ''' % (aId, aBegin, aEnd)
         return await self.Fetch(Query)
