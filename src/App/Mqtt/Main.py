@@ -41,7 +41,8 @@ class TMqtt():
         Data = Msg.get('Data')
         if (Id) and (Data):
             #print(Id, Data)
-            await self.Db.InsertDeviceByUniq(Id, Data.get('Owner'), Data.get('Val'))
+            Ok = await self.Db.InsertDeviceByUniq(Id, Data.get('Owner'), Data.get('Val'))
+            Log.Print(1, 'i', 'on_message', (Ok, Id, Data))
 
     async def Run(self):
         Port = Conf.get('Mqtt_Port', 1883)

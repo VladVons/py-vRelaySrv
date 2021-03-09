@@ -73,3 +73,4 @@ class TDbMySql(TDbOdbc):
                 VALUES(%s, %s)
             ''' % (Row[0], aValue)
             await self.Exec(Query)
+            return True

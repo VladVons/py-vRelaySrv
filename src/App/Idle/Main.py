@@ -15,7 +15,7 @@ from IncP.DB.DbMySql import TDbMySql
 
 
 class TIdle():
-    async def Run(self, aSleep: float = 5):
+    async def Run(self, aSleep: float = 10):
         Db = TDbMySql(Conf.AuthDb)
 
         CntLoop = 0
