@@ -27,7 +27,6 @@ class TMqtt():
         self.Db = TDbMySql(Conf.AuthDbMySql)
 
     def on_connect(self, client, flags, rc, properties):
-
         Msg = {'Data':{'Val':'Connect'}}
         client.publish(Name + '/srv', json.dumps(Msg))
 
@@ -43,8 +42,8 @@ class TMqtt():
         Id = Msg.get('Id')
         Data = Msg.get('Data')
         if (Id) and (Data):
-            #print(Id, Data)
-            Ok = await self.Db.InsertDeviceByUniq(Id, Data.get('Owner'), Data.get('Val'))
+            Ok = False
+            #Ok = await self.Db.InsertDeviceByUniq(Id, Data.get('Owner'), Data.get('Val'))
             #Log.Print(1, 'i', 'on_message', (Ok, Id, Data))
             print('--- on_message', Ok, Id, Data)
 

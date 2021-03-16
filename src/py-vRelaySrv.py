@@ -36,7 +36,7 @@ class TApp():
         except KeyboardInterrupt:
             Log.Print(1, 'x', 'Run()', 'Ctrl-C')
         finally:
-            await Plugin.Stop()
+            await Plugin.StopAll()
         Log.Print(1, 'i', 'End')
 
 
