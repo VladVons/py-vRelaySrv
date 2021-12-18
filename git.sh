@@ -5,13 +5,15 @@
 source ./common.sh
 
 
-User="VladVons"
-Mail="vladvons@gmail.com"
-Url="https://github.com/$User/py-vRelaySrv.git"
+cUser="VladVons"
+cMail="vladvons@gmail.com"
+cUrl="https://github.com/$cUser/py-vRelaySrv.git"
 
 
 Clean()
 {
+  Log "$0->$FUNCNAME($*)"
+
   echo "delete objects"
   find . -name '*.pyc' -exec rm -v -f -R {} \;
   find . -name '*.log' -exec rm -v -f -R {} \;
@@ -29,14 +31,26 @@ GitAuth()
 {
   Log "$0->$FUNCNAME($*)"
 
+  echo "It is not GIT password but SUDO "
   sudo chown -R $USER .
 
-  # sign with eMail
-  git config --global user.email $Mail
-  git config --global user.name $User
+  # clear password
+  #git config --global --unset user.email
+  #git config --global --unset user.name
+  #git config --global --unset credential.helper
 
-  # no password 
-  git config --global credential.helper 'cache --timeout=36000'
+  # sign with eMail
+  git config --global user.email "$cMail"
+  git config --global user.name "$cUser"
+
+  # save password
+  #git config --global credential.helper cache
+
+  # token
+  #git config --global credential.helper libsecret
+  #git config --global credential.helper store
+
+  #git config -l
 }
 
 
@@ -49,7 +63,7 @@ GitCreate()
   GitAuth
 
   # remote git server location
-  git remote add origin $Url
+  git remote add origin $cUrl
 
 }
 
@@ -59,7 +73,7 @@ GitClone()
   Log "$0->$FUNCNAME($*)"
 
   # restore clone copy fromserver to disk 
-  git clone $Url
+  git clone $cUrl
   GitAuth
 
   #web admin access here
@@ -95,7 +109,9 @@ GitSyncToServ()
 
   git add -u -v
   git commit -a -m "$aComment"
-  git push -u origin master
+
+  git push -u origin master 
+  #ExecM "git push $cUrl -u origin master"
 }
 
 
@@ -106,6 +122,17 @@ GitFromServ()
 
   git pull
 }
+
+
+GitFromServF()
+# sync changes from server to disk force
+{
+  Log "$0->$FUNCNAME($*)"
+
+  git reset --hard origin/master
+  git fetch --all
+}
+
 
 
 GitToServ()
@@ -121,12 +148,6 @@ GitToServ()
 }
 
 
-Diff(){
-  diff -r dir1 dir2 | sed '/Binary\ files\ /d' > diff.txt
-}
-
-#GitUpdate
-
 clear
 case $1 in
     Clean)              "$1"        "$2" "$3" ;;
@@ -134,5 +155,6 @@ case $1 in
     GitCreate)          "$1"        "$2" "$3" ;;
     GitToServ|t)        GitToServ   "$2" "$3" ;;
     GitFromServ|f)      GitFromServ "$2" "$3" ;;
+    GitFromServF|ff)    GitFromServF "$2" "$3" ;;
     GitClone)           "$1"        "$2" "$3" ;;
 esac

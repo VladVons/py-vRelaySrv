@@ -37,6 +37,7 @@ class TDbMySql(TDb):
             CREATE TABLE IF NOT EXISTS `orgs` (
                 `id`            INTEGER UNSIGNED AUTO_INCREMENT,
                 `name`          VARCHAR(64),
+                `address`       VARCHAR(64),
                 `phone`         VARCHAR(13),
                  PRIMARY KEY    (`id`)
             );
@@ -92,12 +93,14 @@ class TDbMySql(TDb):
 
     async def InsertDeviceByUniq(self, aUniq, aAlias, aValue):
         Row = await self.GetDeviceByUniq(aUniq, aAlias)
+        print('---x1', aUniq, aAlias)
         if (Row):
             Query = '''
                 INSERT INTO devices_val(devices_id, val)
                 VALUES(%s, %s)
             ''' % (Row[0], aValue)
             await self.Exec(Query)
+            print('---x2')
             return True
 
     async def GetDeviceValHourly(self, aId, aBegin, aEnd):

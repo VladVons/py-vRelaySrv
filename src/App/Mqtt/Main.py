@@ -43,9 +43,9 @@ class TMqtt():
         Data = Msg.get('Data')
         if (Id) and (Data):
             Ok = False
-            #Ok = await self.Db.InsertDeviceByUniq(Id, Data.get('Owner'), Data.get('Val'))
-            #Log.Print(1, 'i', 'on_message', (Ok, Id, Data))
-            print('--- on_message', Ok, Id, Data)
+            Ok = await self.Db.InsertDeviceByUniq(Id, Data.get('Owner'), Data.get('Val'))
+            Log.Print(1, 'i', 'on_message', (Ok, Id, Data))
+            #print('--- on_message', Ok, Id, Data)
 
     async def Run(self):
         await self.Db.Connect()
