@@ -52,14 +52,13 @@ class TDbMySql(TDb):
 
     async def InsertDeviceByUniq(self, aUniq: str, aAlias: str, aValue: float):
         Row = await self.GetDeviceByUniq(aUniq, aAlias)
-        print('---x1', aUniq, aAlias)
+        #print('---x1', aUniq, aAlias)
         if (Row):
             Query = '''
-                INSERT INTO devices_val(devices_id, val)
+                INSERT INTO devices_val(device_id, val)
                 VALUES(%s, %s)
             ''' % (Row[0], aValue)
             await self.Exec(Query)
-            print('---x2')
             return True
 
     async def GetDeviceValHourly(self, aId, aBegin, aEnd):
@@ -72,7 +71,7 @@ class TDbMySql(TDb):
             FROM
                 devices_val
             WHERE
-                (devices_id = %d) AND
+                (device_id = %d) AND
                 (create_date BETWEEN '%s' AND '%s')
             GROUP BY
                 Date
@@ -85,7 +84,7 @@ class TDbMySql(TDb):
         Query = '''
             SELECT
                 COUNT(*) Count,
-                devices_id AS Device
+                device_id AS Device
             FROM
                 devices_val
             WHERE
