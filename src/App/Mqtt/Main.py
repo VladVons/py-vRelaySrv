@@ -41,14 +41,14 @@ class TMqtt():
         Msg = json.loads(payload.decode('utf-8'))
         Id = Msg.get('Id')
         Data = Msg.get('Data')
+        Ok = False
         if (Id) and (Data):
-            Ok = False
             Ok = await self.Db.InsertDeviceByUniq(Id, Data.get('Owner'), Data.get('Val'))
             Log.Print(1, 'i', 'on_message', (Ok, Id, Data))
-            #print('--- on_message', Ok, Id, Data)
-        else:
-            #print("--- Id", Id, "Data", Data)
+
+        if (not Ok):
             await self.Db.InsertLog(1, "%s, %s" % (Id, Data))
+            Log.Print(1, 'i', 'on_message bad', (Id, Data))
 
     async def Run(self):
         await self.Db.Connect()
