@@ -1,4 +1,4 @@
-def Main():
+def Main(aConf) -> tuple:
     from .Main import TIdle
 
     Obj = TIdle()

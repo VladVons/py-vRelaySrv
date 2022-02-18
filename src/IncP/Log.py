@@ -11,7 +11,7 @@ from Inc.Log import TLog, TEchoFile
 
 
 class TLogEx(TLog):
-    def DoExcept(self, aE):
+    def _DoExcept(self, aE):
         traceback.print_exc()
 
 Log = TLogEx()

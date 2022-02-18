@@ -14,7 +14,7 @@ from socket import gethostname
 
 from gmqtt import Client as MQTTClient
 #
-from Inc.Conf import Conf
+from App import ConfApp
 from IncP.Log import Log
 from Inc.Util.UNet import CheckHost
 from IncP.DB.DbMySql import TDbMySql
@@ -24,7 +24,7 @@ Name  = 'vRelay'
 
 class TMqtt():
     def __init__(self):
-        self.Db = TDbMySql(Conf.AuthDbMySql)
+        self.Db = TDbMySql(ConfApp.AuthDbMySql)
 
     def on_connect(self, client, flags, rc, properties):
         Msg = {'Data':{'Val':'-1'}}
@@ -53,7 +53,7 @@ class TMqtt():
     async def Run(self):
         await self.Db.Connect()
 
-        Port = Conf.get('Mqtt_Port', 1883)
+        Port = ConfApp.get('Mqtt_Port', 1883)
 
         Client = MQTTClient('%s-srv-%s' % (Name, gethostname()))
         Client.on_message = self.on_message
@@ -61,10 +61,10 @@ class TMqtt():
         Client.on_disconnect = self.on_disconnect
 
         while True:
-            if (not Client.is_connected) or (not await CheckHost(Conf.Mqtt_Host, Port, 3)):
+            if (not Client.is_connected) or (not await CheckHost(ConfApp.Mqtt_Host, Port, 3)):
                 try:
                     await Client.disconnect()
-                    await Client.connect(Conf.Mqtt_Host, Port, keepalive=60)
+                    await Client.connect(ConfApp.Mqtt_Host, Port, keepalive=60)
                 except Exception as E:
                     Log.Print(1, 'x', 'Mqtt.Run()', E)
 

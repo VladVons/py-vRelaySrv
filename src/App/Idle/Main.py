@@ -8,7 +8,7 @@ Description:.
 
 import asyncio
 #
-from Inc.Conf import Conf
+from App import ConfApp
 from IncP.Log import Log
 
 
