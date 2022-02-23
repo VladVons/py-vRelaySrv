@@ -44,4 +44,3 @@ CREATE TABLE IF NOT EXISTS `log` (
     `descr`         TEXT,
     PRIMARY KEY     (`id`)
 );
-

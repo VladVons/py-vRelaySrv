@@ -27,9 +27,9 @@ Http_Port = '8080'
 #    'PASSWORD': 'vR2021'
 #}
 
-AuthDbMySql = {
-    'SERVER': '192.168.2.115',
-    'DATABASE': 'app_vRelay_2',
-    'USER': 'vRelay',
-    'PASSWORD': 'vR2021'
+AuthDb = {
+    'Server': '192.168.2.115',
+    'Database': 'app_vRelay_2',
+    'User': 'vRelay',
+    'Password': 'vR2021'
 }

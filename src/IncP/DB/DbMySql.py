@@ -19,21 +19,15 @@ class TDbMySql(TDb):
         self.Auth = aAuth
 
     async def Connect(self):
-        if (self.Pool):
-            await self.Pool.wait_closed()
+        await self.Close()
 
         self.Pool = await aiomysql.create_pool(
-                host=self.Auth.get('SERVER', 'localhost'),
-                port=self.Auth.get('PORT', 3306),
-                db=self.Auth.get('DATABASE'),
-                user=self.Auth.get('USER'),
-                password=self.Auth.get('PASSWORD')
+                host=self.Auth.get('Server', 'localhost'),
+                port=self.Auth.get('Port', 3306),
+                db=self.Auth.get('Database'),
+                user=self.Auth.get('User'),
+                password=self.Auth.get('Password')
                 )
-
-    async def Create(self):
-        with open('IncP/DB/Struct.sql', 'r') as File:
-            Query = File.read().strip()
-            await self.Exec(Query)
 
     async def GetDeviceByUniq(self, aUniq: str, aAlias: str):
         Query = '''

@@ -24,7 +24,7 @@ Name  = 'vRelay'
 
 class TMqtt():
     def __init__(self):
-        self.Db = TDbMySql(ConfApp.AuthDbMySql)
+        self.Db = TDbMySql(ConfApp.AuthDb)
 
     def on_connect(self, client, flags, rc, properties):
         Msg = {'Data':{'Val':'-1'}}
@@ -52,6 +52,7 @@ class TMqtt():
 
     async def Run(self):
         await self.Db.Connect()
+        await self.Db.ExecFile('IncP/DB/vRelaySrv.my.sql')
 
         Port = ConfApp.get('Mqtt_Port', 1883)
 
