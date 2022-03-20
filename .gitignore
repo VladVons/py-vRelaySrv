@@ -6,6 +6,7 @@
 deb/py-relay_*
 __pycache__
 .idea
-local
 venv
+test/
+local/
 .secret.txt
