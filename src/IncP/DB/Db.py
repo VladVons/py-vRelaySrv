@@ -4,7 +4,7 @@ Created:     2021.02.28
 License:     GNU, see LICENSE for more details
 Description:.
 
-Based on aioodbc, aiomysql
+Based on aioodbc, aiomysql, aiopg
 '''
 
 
@@ -22,8 +22,8 @@ class TDb():
 
     async def Close(self):
         if (self.Pool):
-            self.Pool.terminate()
-            await self.Pool.wait_closed()
+            self.Pool.close()
+            await self.Pool.wait_closed() 
             self.Pool = None
 
     async def Exec(self, aSql: str):

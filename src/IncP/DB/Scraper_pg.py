@@ -14,7 +14,7 @@ from datetime import datetime
 from .Db import TDb
 
 
-class TDbPG(TDb):
+class TDbApp(TDb):
     def __init__(self, aAuth: dict):
         self.Auth = aAuth
 
@@ -55,18 +55,30 @@ class TDbPG(TDb):
         ''' % (aId)
         await self.Exec(Query)
 
-    async def GetFreeTask(self):
+    async def GetUrlForUpdate(self, aExclude: list = [], aLimit: int = 10):
+        if (aExclude): 
+            Values = ','.join('%s' % i for i in aExclude)
+            Exclude = 'and (not url.id in(%s))' % (Values)
+        else:
+            Exclude = ''
+
         Query = '''
-            SELECT
-                id, url, scheme, tasks, sleep
-            FROM
-                sites
-            WHERE
-                (enable = TRUE) AND (updated = FALSE) AND (DATE_PART('day', NOW() - update_date) > update_days)
-            ORDER BY
-                update_date
-            LIMIT 
-                1
-            FOR UPDATE;
-        '''
+        select
+            url.id,
+            url.url,
+            url.is_product,
+            site.scheme
+        from
+            url
+        left join site on
+            (url.site_id = site.id)
+        where
+            (site.enabled) and 
+            (DATE_PART('day', NOW() - url.update_date) > site.update_days)
+            {Exclude}
+        ORDER BY
+            random()
+        limit
+            {Limit}
+        '''.format(Exclude=Exclude, Limit=aLimit)
         return await self.Fetch(Query)

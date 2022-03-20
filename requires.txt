@@ -1,0 +1,7 @@
+asyncio
+aiohttp
+aiohttp-socks
+aiohttp_jinja2
+aiomysql
+aiopg
+gmqtt

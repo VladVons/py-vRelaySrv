@@ -1,15 +1,6 @@
 #Debug = True
 Descr = 'frozen'
-Plugins = 'App.Mqtt App.Http App.Idle'
-#
-
-#Mqtt_Host = 'localhost'
-Mqtt_Host = '192.168.2.115'
-#Mqtt_User = 'test1'
-#Mqtt_Passw = 'test1'
-#
-Http_Port = '8080'
-
+Plugins = '-App.Mqtt App.Web -App.Idle'
 #
 #AuthDbOdbc = {
 #    'DRIVER': '{MariaDbSQL}',
