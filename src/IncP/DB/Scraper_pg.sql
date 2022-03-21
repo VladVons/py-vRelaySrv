@@ -36,6 +36,12 @@ CREATE TABLE IF NOT EXISTS product (
     FOREIGN KEY   (url_id) REFERENCES url(id)
 );
 
+CREATE TABLE IF NOT EXISTS proxy (
+    id            SERIAL PRIMARY KEY,
+    name          VARCHAR(64),
+    enabled       BOOLEAN DEFAULT TRUE
+);
+
 CREATE TABLE IF NOT EXISTS log (
     id            SERIAL PRIMARY KEY,
     create_date   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

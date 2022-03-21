@@ -3,7 +3,6 @@
 #print(','.join('"%s"' %A for A in Arr))
 #print(str(Arr)[1:-1])
 
-
 name = 'pink'
 errno = 123
 
@@ -12,3 +11,7 @@ print(Str)
 
 Str = 'Hey {name}, there is a {errno} error!'.format(name=name, errno=errno)
 print(Str)
+
+from Inc.Util.UMod import GetImportsGlob
+print(GetImportsGlob())
+

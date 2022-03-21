@@ -22,11 +22,11 @@ class TDbApp(TDb):
         await self.Close()
 
         self.Pool = await aiomysql.create_pool(
-            host=self.Auth.get('Server', 'localhost'),
-            port=self.Auth.get('Port', 3306),
-            db=self.Auth.get('Database'),
-            user=self.Auth.get('User'),
-            password=self.Auth.get('Password')
+            host = self.Auth.get('Server', 'localhost'),
+            port = self.Auth.get('Port', 3306),
+            db = self.Auth.get('Database'),
+            user = self.Auth.get('User'),
+            password = self.Auth.get('Password')
         )
 
     async def GetDeviceByUniq(self, aUniq: str, aAlias: str):

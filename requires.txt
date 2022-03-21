@@ -1,7 +1,8 @@
 asyncio
 aiohttp
 aiohttp-socks
-aiohttp_jinja2
 aiomysql
 aiopg
+aiohttp_jinja2
+jinja2
 gmqtt

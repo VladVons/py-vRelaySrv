@@ -1,7 +1,7 @@
 def Main(aConf) -> tuple:
-    from .Main import TWeb
+    from .Main import TWebSrv
     from App import ConfApp
 
     aConf.Def = ConfApp
-    Obj = TWeb(aConf)
+    Obj = TWebSrv(aConf)
     return (Obj, Obj.Run())

@@ -22,11 +22,11 @@ class TDbApp(TDb):
         await self.Close()
 
         self.Pool = await aiopg.create_pool(
-                host=self.Auth.get('Server', 'localhost'),
-                port=self.Auth.get('Port', 5432),
-                dbname=self.Auth.get('Database'),
-                user=self.Auth.get('User'),
-                password=self.Auth.get('Password')
+                host = self.Auth.get('Server', 'localhost'),
+                port = self.Auth.get('Port', 5432),
+                dbname = self.Auth.get('Database'),
+                user = self.Auth.get('User'),
+                password = self.Auth.get('Password')
         )
 
     async def InsertUrl(self, aUrl: str, aName: str, aPrice: float, aPriceOld: float, aOnStock: bool, aImage: str):

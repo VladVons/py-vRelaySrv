@@ -25,7 +25,7 @@ Name  = 'vRelay'
 class TMqtt():
     def __init__(self, aConf: dict):
         self.Conf = aConf
-        self.Db = TDbApp(ConfApp.AuthDb)
+        self.Db = TDbApp(aConf.DbAuth)
 
     def on_connect(self, client, flags, rc, properties):
         Msg = {'Data':{'Val':'-1'}}

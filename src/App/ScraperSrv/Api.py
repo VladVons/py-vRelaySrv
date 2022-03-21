@@ -5,11 +5,15 @@ License:     GNU, see LICENSE for more details
 Description:
 '''
 
+
 import json
+#
+from IncP.DB.Scraper_pg import TDbApp
 
 
 class TApiTask():
-    def __init__(self):
+    def __init__(self, aParent):
+        self.Parent = aParent
         self.Data = {}
 
     async def Get(self, aData: dict) -> dict:
@@ -22,10 +26,11 @@ class TApi():
         'get_task':   {'param': []}
     }
 
-    def __init__(self, aParent):
-        self.Parent = aParent
-        self.ApiTask = TApiTask()
+    def __init__(self):
+        self.Db = None
         self.Cnt = 0
+
+        self.ApiTask = TApiTask(self)
 
     @staticmethod
     def GetMethodName(aPath: str) -> str:
@@ -53,3 +58,8 @@ class TApi():
 
     async def path_get_task(self, aData: dict) -> dict:
         return await self.ApiTask.Get(aData)
+
+    async def DbInit(self, aAuth):
+        self.Db = TDbApp(aAuth)
+        await self.Db.Connect()
+        await self.Db.ExecFile('IncP/DB/Scraper_pg.sql')
