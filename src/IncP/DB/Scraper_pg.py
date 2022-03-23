@@ -11,7 +11,7 @@ pip3 install aiopg
 import aiopg
 from datetime import datetime
 #
-from .Db import TDb
+from .Db import TDb, TDbFetch
 
 
 class TDbApp(TDb):
@@ -56,29 +56,49 @@ class TDbApp(TDb):
         await self.Exec(Query)
 
     async def GetUrlForUpdate(self, aExclude: list = [], aLimit: int = 10):
-        if (aExclude): 
-            Values = ','.join('%s' % i for i in aExclude)
-            Exclude = 'and (not url.id in(%s))' % (Values)
-        else:
-            Exclude = ''
+        Exclude = self.ListToComma(aExclude)
+        if (Exclude): 
+            Exclude = 'and (not url.id in(%s))' % Exclude
 
         Query = '''
-        select
-            url.id,
-            url.url,
-            url.is_product,
-            site.scheme
-        from
-            url
-        left join site on
-            (url.site_id = site.id)
-        where
-            (site.enabled) and 
-            (DATE_PART('day', NOW() - url.update_date) > site.update_days)
-            {Exclude}
-        ORDER BY
-            random()
-        limit
-            {Limit}
+            select
+                url.id,
+                url.url,
+                site.scheme
+            from
+                url
+            left join site on
+                (url.site_id = site.id)
+            where
+                (site.enabled) and 
+                (DATE_PART('day', NOW() - url.update_date) > site.update_days)
+                {Exclude}
+            order by
+                url.update_date
+            limit
+                {Limit}
         '''.format(Exclude=Exclude, Limit=aLimit)
-        return await self.Fetch(Query)
+        return await TDbFetch(self).Load(Query)
+
+    async def GetSiteUrlCountForUpdate(self, aLimit: int = 10):
+        Query = '''
+           Select
+                site.id,
+                site.url,
+                count(*) as url_count,
+                sum(data_size) as data_size
+            from
+                url
+            left join site on
+                (url.site_id = site.id)
+            where
+                --(site.enabled) and
+                (DATE_PART('day', NOW() - url.update_date) > site.update_days)
+            group by
+                site.id
+            order by
+                url_count
+            limit
+                {Limit}
+        '''.format(Limit=aLimit)
+        return await TDbFetch(self).Load(Query)

@@ -2,7 +2,7 @@
 Author:      Vladimir Vons, Oster Inc.
 Created:     2021.02.26
 License:     GNU, see LICENSE for more details
-Description:.
+Description:
 '''
 
 

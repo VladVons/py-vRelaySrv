@@ -2,7 +2,7 @@
 Author:      Vladimir Vons, Oster Inc.
 Created:     2021.02.28
 License:     GNU, see LICENSE for more details
-Description:.
+Description:
 
 apt install python3-pyodbc unixodbc
 apt install libsqliteodbc odbc-mariadb odbc-postgresql

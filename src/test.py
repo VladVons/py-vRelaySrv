@@ -1,17 +1,24 @@
-#Arr = [1,2,3]
+import asyncio
+from IncP.DB.Scraper_pg import TDbApp
 
-#print(','.join('"%s"' %A for A in Arr))
-#print(str(Arr)[1:-1])
+DbAuth = {
+    'Server': 'localhost',
+    'Database': 'test1',
+    'User': 'postgres',
+    'Password': '19710819'
+}
 
-name = 'pink'
-errno = 123
+async def Test_A1():
+    DbApp = TDbApp(DbAuth)
+    await DbApp.Connect()
+    DbFetch = await DbApp.GetSiteUrlCountForUpdate()
+    await DbApp.Close()
 
-Str = 'Hey %(name)s, there is a 0x%(errno)d error!' % {"name": name, "errno": errno}
-print(Str)
+    print()
+    print('--x1', DbFetch.GetSize())
+    print('--x2', DbFetch.GetData())
+    print('--x3', DbFetch.Rec)
+    for Item in DbFetch:
+        print(Item.AsName('site.url'), Item.AsNo(1))
 
-Str = 'Hey {name}, there is a {errno} error!'.format(name=name, errno=errno)
-print(Str)
-
-from Inc.Util.UMod import GetImportsGlob
-print(GetImportsGlob())
-
+asyncio.run(Test_A1())

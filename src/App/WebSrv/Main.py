@@ -2,7 +2,7 @@
 Author:      Vladimir Vons, Oster Inc.
 Created:     2021.02.26
 License:     GNU, see LICENSE for more details
-Description:.
+Description:
 
 https://github.com/aio-libs/aiohttp
 https://docs.aiohttp.org/en/stable/web_advanced.html#aiohttp-web-app-runners

@@ -3,7 +3,6 @@
 
 CREATE TABLE IF NOT EXISTS site (
     id            SERIAL PRIMARY KEY,
-    create_date   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_days   INTEGER DEFAULT 7,
     url           VARCHAR(64),
     scheme        TEXT,
@@ -14,13 +13,14 @@ CREATE TABLE IF NOT EXISTS site (
 
 CREATE TABLE IF NOT EXISTS url (
     id            SERIAL PRIMARY KEY,
+    create_date   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_date   TIMESTAMP DEFAULT '2000-12-31',
     site_id       INTEGER,
     url           VARCHAR(256),
     data_size     INTEGER,
     url_count     INTEGER,
     status        SMALLINT,
-    is_product    BOOLEAN,
+    product_id    INTEGER,
     FOREIGN KEY   (site_id) REFERENCES site(id)
 );
 
@@ -48,3 +48,18 @@ CREATE TABLE IF NOT EXISTS log (
     type_id       INTEGER,
     descr         TEXT
 );
+
+CREATE OR REPLACE FUNCTION insert_product()
+RETURNS TRIGGER AS $$
+BEGIN
+    update url
+    set product_id = NEW.id, update_date = now()
+    where (id = NEW.url_id);
+
+    RETURN NULL;
+END; $$ LANGUAGE 'plpgsql';
+
+create or replace trigger insert_product
+    after insert on product
+    for each row 
+    execute procedure insert_product();

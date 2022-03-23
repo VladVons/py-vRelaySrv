@@ -2,7 +2,7 @@
 Author:      Vladimir Vons, Oster Inc.
 Created:     2021.03.08
 License:     GNU, see LICENSE for more details
-Description:.
+Description:
 
 apt install python3-mysqldb
 pip3 install aiomysql
@@ -11,7 +11,7 @@ pip3 install aiomysql
 
 import aiomysql
 #
-from .Db import TDb
+from .Db import TDb, TDbFetch
 
 
 class TDbApp(TDb):
@@ -37,12 +37,10 @@ class TDbApp(TDb):
                 devices
             WHERE
                 (enable = 1) AND
-                (uniq = '%s') AND
-                (alias = '%s')
-        ''' % (aUniq, aAlias)
-        R = await self.Fetch(Query, True)
-        #print('R', R, Query)
-        return R
+                (uniq = '{Uniq}') AND
+                (alias = '{Alias}')
+        '''.format(Uniq=aUniq, Alias=aAlias)
+        return await self.Fetch(Query, True)
 
     async def InsertDeviceByUniq(self, aUniq: str, aAlias: str, aValue: float):
         Row = await self.GetDeviceByUniq(aUniq, aAlias)
@@ -66,14 +64,14 @@ class TDbApp(TDb):
             FROM
                 devices_val
             WHERE
-                (device_id = %d) AND
-                (create_date BETWEEN '%s' AND '%s')
+                (device_id = {Id}) AND
+                (create_date BETWEEN '{Begin}' AND '{End}')
             GROUP BY
                 Date
             ORDER BY
                 Date
-        ''' % (aId, aBegin, aEnd)
-        return await self.Fetch(Query)
+        '''.format(Id=aId, Begin=aBegin, End=aEnd)
+        return await TDbFetch(self).Load(Query)
 
     async def GetDeviceCount(self, aBegin, aEnd):
         Query = '''
@@ -83,16 +81,16 @@ class TDbApp(TDb):
             FROM
                 devices_val
             WHERE
-                (create_date BETWEEN '%s' AND '%s')
+                (create_date BETWEEN '{Begin}' AND '{End}')
             GROUP BY
                 Device
             ORDER BY
                 Device
-        ''' % (aBegin, aEnd)
-        return await self.Fetch(Query)
+        '''.format(Begin=aBegin, End=aEnd)
+        return await TDbFetch(self).Load(Query)
 
     async def InsertLog(self, aType: int, aDescr: str):
         Query = '''
-            INSERT INTO log(type_id, descr) VALUES(%s, "%s")
-        ''' % (aType, aDescr)
+            INSERT INTO log(type_id, descr) VALUES({Type}, "{Descr}")
+        '''.format(Type=aType, Descr=aDescr)
         await self.Exec(Query)
