@@ -78,9 +78,13 @@ class TDbApp(TDb):
             limit
                 {Limit}
         '''.format(Exclude=Exclude, Limit=aLimit)
-        return await TDbFetch(self).Load(Query)
+        return await TDbFetch(self).Query(Query)
 
-    async def GetSiteUrlCountForUpdate(self, aLimit: int = 10):
+    async def GetSiteUrlCountForUpdate(self, aExclude: list = [], aLimit: int = 10):
+        Exclude = self.ListToComma(aExclude)
+        if (Exclude): 
+            Exclude = 'and (not site.id in(%s))' % Exclude
+
         Query = '''
            Select
                 site.id,
@@ -92,13 +96,14 @@ class TDbApp(TDb):
             left join site on
                 (url.site_id = site.id)
             where
-                --(site.enabled) and
+                (site.enabled) and
                 (DATE_PART('day', NOW() - url.update_date) > site.update_days)
+                {Exclude}
             group by
                 site.id
             order by
                 url_count
             limit
                 {Limit}
-        '''.format(Limit=aLimit)
-        return await TDbFetch(self).Load(Query)
+        '''.format(Exclude=Exclude, Limit=aLimit)
+        return await TDbFetch(self).Query(Query)

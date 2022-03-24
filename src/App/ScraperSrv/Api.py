@@ -12,12 +12,15 @@ from IncP.DB.Scraper_pg import TDbApp
 
 
 class TApiTask():
+    def __init__(self):
+        self.Tasks = []
+
     def __init__(self, aParent):
         self.Parent = aParent
         self.Data = {}
 
     async def Get(self, aData: dict) -> dict:
-        Res = await self.Parent.Db.GetUrlForUpdate()
+        Res = await self.Parent.GetSiteUrlCountForUpdate()
         return Res
 
 

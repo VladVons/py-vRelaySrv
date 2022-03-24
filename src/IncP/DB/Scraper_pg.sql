@@ -49,6 +49,8 @@ CREATE TABLE IF NOT EXISTS log (
     descr         TEXT
 );
 
+-- procedures
+
 CREATE OR REPLACE FUNCTION insert_product()
 RETURNS TRIGGER AS $$
 BEGIN

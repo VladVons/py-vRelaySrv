@@ -9,61 +9,31 @@ Based on aioodbc, aiomysql, aiopg
 
 import re
 import asyncio
+import json
 import psycopg2.extras
 #
+from Inc.DB.DbList import TDbList
 from IncP.Log  import Log
 
 
-class TDbFetch():
+class TDbFetch(TDbList):
     def __init__(self, aDb):
+        super().__init__()
         self._Db = aDb
 
-        self.Rec = []
-        self._Data = ([],[])
-        self._RecNo = 0
-
-    def __iter__(self):
-        return self
-
-    def __next__(self):
-        if (self._RecNo >= self.GetSize()):
-            raise StopIteration
-        else:
-            self._RecInit()
-            self._RecNo += 1
-            return self
-    
     @staticmethod
     def _GetSelectFields(aQuery: str) -> list:
         Match = re.search('select(.*)from', aQuery, re.DOTALL | re.IGNORECASE)
         if (Match):
             return [Item.strip().split()[-1] for Item in Match.group(1).split(',')]
 
-    def _RecInit(self):
-        self.Rec = self.GetData()[self._RecNo]
+    async def Query(self, aQuery: str):
+        self.Rec.Head = {}
+        for Idx, Name in enumerate(self._GetSelectFields(aQuery)):
+            self.Rec.Head[Name] = Idx
 
-    async def Load(self, aQuery: str):
-        self._Data = (await self._Db.Fetch(aQuery), self._GetSelectFields(aQuery))
-        self._RecNo = 0
-        self._RecInit()
+        self.SetData(await self._Db.Fetch(aQuery))
         return self
-
-    def GetSize(self):
-        return len(self._Data[0])
-
-    def RecGo(self, aNo: int):
-        self._RecNo = min(aNo, self.GetSize() - 1)
-        self._RecInit()
-
-    def GetData(self):
-        return self._Data[0]
-
-    def AsName(self, aField: str):
-        Idx = self._Data[1].index(aField)
-        return self.AsNo(Idx)
-
-    def AsNo(self, aIdx: int):
-        return self.Rec[aIdx]
 
 
 class TDb():
