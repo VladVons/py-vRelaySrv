@@ -19,7 +19,7 @@ class TApiTask():
 
     async def Get(self, aData: dict) -> dict:
         self.Tasks
-        Res = await self.Parent.GetSiteUrlCountForUpdate()
+        Db1 = await self.Parent.GetSitesForUpdate()
         return Res
 
 

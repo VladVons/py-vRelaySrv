@@ -53,7 +53,7 @@ class TDbApp(TDb):
         ''' % (aId)
         await self.Exec(Query)
 
-    async def GetUrlForUpdate(self, aExclude: list = [], aLimit: int = 10):
+    async def GetUrlsForUpdate(self, aExclude: list = [], aLimit: int = 10) -> TDbFetch:
         Exclude = self.ListToComma(aExclude)
         if (Exclude): 
             Exclude = 'and (not url.id in(%s))' % Exclude
@@ -78,7 +78,7 @@ class TDbApp(TDb):
         '''
         return await TDbFetch(self).Query(Query)
 
-    async def GetSitesForUpdate(self, aExclude: list = [], aLimit: int = 10):
+    async def GetSitesForUpdate(self, aExclude: list = [], aLimit: int = 10) -> TDbFetch:
         Exclude = self.ListToComma(aExclude)
         if (Exclude): 
             Exclude = 'and (not site.id in(%s))' % Exclude
@@ -102,8 +102,30 @@ class TDbApp(TDb):
                 {Exclude}
             group by
                 site.id
+            having 
+                (count(*) > 0)
             order by
-                url_count
+                url_count desc
+            limit
+                {aLimit}
+        '''
+        return await TDbFetch(self).Query(Query)
+
+    async def GetSiteUrlsForUpdate(self, aSiteId: int, aLimit: int = 10) -> TDbFetch:
+        Query = f'''
+            select
+                url.id,
+                url.url
+            from
+                url
+            left join site on
+                (url.site_id = site.id)
+            where
+                (site.enabled) and 
+                (url.site_id = {aSiteId}) and
+                (DATE_PART('day', NOW() - url.update_date) > site.update_days)
+            order by
+                url.update_date
             limit
                 {aLimit}
         '''

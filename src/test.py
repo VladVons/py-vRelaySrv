@@ -14,15 +14,19 @@ DbAuth = {
 async def TestA_1():
     DbApp = TDbApp(DbAuth)
     await DbApp.Connect()
-    DbFetch = await DbApp.GetSitesForUpdate()
+    Db1A = await DbApp.GetSitesForUpdate()
+    Db1A.Shuffle()
+    SiteId = Db1A.Rec.GetByName('site.id')
+    Db1 = await DbApp.GetSiteUrlsForUpdate(SiteId)
     await DbApp.Close()
 
-    print()
-    #print(DbFetch.Rec.Head)
-    for Item in DbFetch:
-        #print(Item.Rec.GetByName('site.url'), Item.Rec[1])
-        #print(Item.Rec)
-        print(Item.Rec.GetPairs())
+    if (Db1.GetSize() > 0):
+        print()
+        #print(Db1.Rec.Head)
+        for Idx, Val in enumerate(Db1):
+            #print(Idx, Val.Rec.GetByName('site.url'))
+            #print(Val.Rec)
+            print(Val.Rec.GetAsDict())
 
 def Test_2():
     from Inc.DB.DbList import TDbList
@@ -50,8 +54,9 @@ def Test_2():
     Db1.Data.append([22,33,44])
 
     Db2 = Db1.Clone(['green', 'blue'])
+    Db2.Shuffle()
     print('Json:', str(Db2))
 
 
-#asyncio.run(TestA_1())
-Test_2()
+asyncio.run(TestA_1())
+#Test_2()

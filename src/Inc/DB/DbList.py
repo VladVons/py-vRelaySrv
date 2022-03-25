@@ -26,11 +26,13 @@ Description:
     Db1.Data.append([22,33,44])
 
     Db2 = Db1.Clone(['green', 'blue'])
+    Db2.Shuffle()
     print('Json:', str(Db2))
 '''
 
 
 import json
+import random
 
 
 class TDbRec(list):
@@ -79,7 +81,8 @@ class TDbList():
             return self
 
     def _RecInit(self):
-        self.Rec.Set(self.Data[self._RecNo])
+        if (self.GetSize() > 0):
+            self.Rec.Set(self.Data[self._RecNo])
 
     def GetSize(self):
         return len(self.Data)
@@ -96,6 +99,10 @@ class TDbList():
     def Sort(self, aField: str, aReverse: bool = True):
         FieldNo = self.Rec.Head[aField]
         self.Data.sort(key=lambda x:x[FieldNo], reverse=aReverse)
+        self.RecGo(0)
+
+    def Shuffle(self):
+        random.shuffle(self.Data)
         self.RecGo(0)
 
     def SetData(self, aList: list):
