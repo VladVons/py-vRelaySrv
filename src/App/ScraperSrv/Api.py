@@ -18,9 +18,11 @@ class TApiTask():
         self.Tasks = TDbList(['SiteId', 'Data'])
 
     async def Get(self, aData: dict) -> dict:
-        self.Tasks
-        Db1 = await self.Parent.GetSitesForUpdate()
-        return Res
+        Db1 = await self.Parent.Db.GetSitesForUpdate()
+        Db1.Shuffle()
+        SiteId = Db1.Rec.GetByName('site.id')
+        Db1 = await self.Parent.Db.GetSiteUrlsForUpdate(SiteId)
+        return Db1.Data
 
 
 class TApi():
