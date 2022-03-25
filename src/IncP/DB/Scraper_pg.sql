@@ -17,8 +17,8 @@ CREATE TABLE IF NOT EXISTS url (
     update_date   TIMESTAMP DEFAULT '2000-12-31',
     site_id       INTEGER,
     url           VARCHAR(256),
-    data_size     INTEGER,
-    url_count     INTEGER,
+    data_size     INTEGER DEFAULT 0,
+    url_count     SMALLINT DEFAULT 0,
     status        SMALLINT,
     product_id    INTEGER,
     FOREIGN KEY   (site_id) REFERENCES site(id)

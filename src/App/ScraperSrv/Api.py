@@ -13,14 +13,12 @@ from Inc.DB.DbList import TDbList
 
 
 class TApiTask():
-    def __init__(self):
-        self.Tasks = TDbList(['SiteId'])
-
     def __init__(self, aParent):
         self.Parent = aParent
-        self.Data = {}
+        self.Tasks = TDbList(['SiteId', 'Data'])
 
     async def Get(self, aData: dict) -> dict:
+        self.Tasks
         Res = await self.Parent.GetSiteUrlCountForUpdate()
         return Res
 

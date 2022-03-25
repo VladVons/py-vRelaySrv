@@ -78,7 +78,7 @@ class TDbApp(TDb):
         '''
         return await TDbFetch(self).Query(Query)
 
-    async def GetSiteUrlCountForUpdate(self, aExclude: list = [], aLimit: int = 10):
+    async def GetSitesForUpdate(self, aExclude: list = [], aLimit: int = 10):
         Exclude = self.ListToComma(aExclude)
         if (Exclude): 
             Exclude = 'and (not site.id in(%s))' % Exclude
@@ -87,6 +87,9 @@ class TDbApp(TDb):
            Select
                 site.id,
                 site.url,
+                site.sleep,
+                site.tasks,
+                site.scheme,
                 count(*) as url_count,
                 sum(data_size) as data_size
             from
