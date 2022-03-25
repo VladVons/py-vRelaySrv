@@ -9,11 +9,12 @@ Description:
 import json
 #
 from IncP.DB.Scraper_pg import TDbApp
+from Inc.DB.DbList import TDbList
 
 
 class TApiTask():
     def __init__(self):
-        self.Tasks = []
+        self.Tasks = TDbList(['SiteId'])
 
     def __init__(self, aParent):
         self.Parent = aParent

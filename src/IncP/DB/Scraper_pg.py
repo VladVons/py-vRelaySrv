@@ -9,8 +9,6 @@ pip3 install aiopg
 
 
 import aiopg
-from datetime import datetime
-#
 from .Db import TDb, TDbFetch
 
 
@@ -30,17 +28,17 @@ class TDbApp(TDb):
         )
 
     async def InsertUrl(self, aUrl: str, aName: str, aPrice: float, aPriceOld: float, aOnStock: bool, aImage: str):
-            Query = '''
-                INSERT INTO urls (url, name, price, price_old, on_stock, image)
-                VALUES('%s', '%s', %f, %f, %d, '%s')
-            ''' % (aUrl, aName, aPrice, aPriceOld, aOnStock, aImage)
+            Query = f'''
+                INSERT INTO url (url, name, price, price_old, on_stock, image)
+                VALUES('{aUrl}', '{aName}', {aPrice}, {aPriceOld}, {aOnStock}, '{aImage}')
+            '''
             await self.Exec(Query)
 
     async def InsertLog(self, aType: int, aDescr: str):
-        Query = '''
+        Query = f'''
             INSERT INTO log(type_id, descr) 
-            VALUES (%s, "%s")
-        ''' % (aType, aDescr)
+            VALUES ({aType}, '{aDescr}')
+        '''
         await self.Exec(Query)
 
     async def UpdateFreeTask(self, aId: int):
@@ -60,7 +58,7 @@ class TDbApp(TDb):
         if (Exclude): 
             Exclude = 'and (not url.id in(%s))' % Exclude
 
-        Query = '''
+        Query = f'''
             select
                 url.id,
                 url.url,
@@ -76,8 +74,8 @@ class TDbApp(TDb):
             order by
                 url.update_date
             limit
-                {Limit}
-        '''.format(Exclude=Exclude, Limit=aLimit)
+                {aLimit}
+        '''
         return await TDbFetch(self).Query(Query)
 
     async def GetSiteUrlCountForUpdate(self, aExclude: list = [], aLimit: int = 10):
@@ -85,7 +83,7 @@ class TDbApp(TDb):
         if (Exclude): 
             Exclude = 'and (not site.id in(%s))' % Exclude
 
-        Query = '''
+        Query = f'''
            Select
                 site.id,
                 site.url,
@@ -104,6 +102,6 @@ class TDbApp(TDb):
             order by
                 url_count
             limit
-                {Limit}
-        '''.format(Exclude=Exclude, Limit=aLimit)
+                {aLimit}
+        '''
         return await TDbFetch(self).Query(Query)

@@ -18,7 +18,7 @@ from IncP.Log  import Log
 
 class TDbFetch(TDbList):
     def __init__(self, aDb):
-        super().__init__()
+        super().__init__([])
         self._Db = aDb
 
     @staticmethod
@@ -28,10 +28,8 @@ class TDbFetch(TDbList):
             return [Item.strip().split()[-1] for Item in Match.group(1).split(',')]
 
     async def Query(self, aQuery: str):
-        self.Rec.Head = {}
-        for Idx, Name in enumerate(self._GetSelectFields(aQuery)):
-            self.Rec.Head[Name] = Idx
-
+        Fields = self._GetSelectFields(aQuery)
+        self.Rec.SetHead(Fields)
         self.SetData(await self._Db.Fetch(aQuery))
         return self
 
