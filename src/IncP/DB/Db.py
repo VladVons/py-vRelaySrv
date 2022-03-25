@@ -18,19 +18,28 @@ from IncP.Log  import Log
 
 class TDbFetch(TDbList):
     def __init__(self, aDb):
-        super().__init__([])
+        super().__init__([], [])
         self._Db = aDb
 
-    @staticmethod
-    def _GetSelectFields(aQuery: str) -> list:
+    async def _GetSelectFields(self, aQuery: str) -> list:
         Match = re.search('select(.*)from', aQuery, re.DOTALL | re.IGNORECASE)
         if (Match):
-            return [Item.strip().split()[-1] for Item in Match.group(1).split(',')]
+            Res = []
+            for Item in  Match.group(1).split(','):
+                Name = Item.strip().split()[-1]
+                Arr = Name.split('.*')
+                if (len(Arr) == 2):
+                    Columns = await self._Db.GetTableColumns(Arr[0])
+                    for Column in Columns:
+                        Res.append(Column[0])
+                else:
+                    Res.append(Name)
+            return Res
 
     async def Query(self, aQuery: str):
-        Fields = self._GetSelectFields(aQuery)
-        self.Rec.SetHead(Fields)
-        self.SetData(await self._Db.Fetch(aQuery))
+        Fields = await self._GetSelectFields(aQuery)
+        Data = await self._Db.Fetch(aQuery)
+        self.SetData(Data, Fields)
         return self
 
 
@@ -92,4 +101,3 @@ class TDb():
         else:
             Res = ''
         return Res
-

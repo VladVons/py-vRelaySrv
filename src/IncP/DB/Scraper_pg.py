@@ -3,30 +3,15 @@ Author:      Vladimir Vons, Oster Inc.
 Created:     2022.02.18
 License:     GNU, see LICENSE for more details
 Description:
-
-pip3 install aiopg
 '''
 
 
 import aiopg
-from .Db import TDb, TDbFetch
+from .Db import TDbFetch
+from .DbPg import TDbPg
 
 
-class TDbApp(TDb):
-    def __init__(self, aAuth: dict):
-        self.Auth = aAuth
-
-    async def Connect(self):
-        await self.Close()
-
-        self.Pool = await aiopg.create_pool(
-                host = self.Auth.get('Server', 'localhost'),
-                port = self.Auth.get('Port', 5432),
-                dbname = self.Auth.get('Database'),
-                user = self.Auth.get('User'),
-                password = self.Auth.get('Password')
-        )
-
+class TDbApp(TDbPg):
     async def InsertUrl(self, aUrl: str, aName: str, aPrice: float, aPriceOld: float, aOnStock: bool, aImage: str):
             Query = f'''
                 INSERT INTO url (url, name, price, price_old, on_stock, image)
@@ -50,7 +35,7 @@ class TDbApp(TDb):
             WHERE 
                 id=%d;
             COMMIT; 
-        ''' % (aId)
+            ''' % (aId)
         await self.Exec(Query)
 
     async def GetUrlsForUpdate(self, aExclude: list = [], aLimit: int = 10) -> TDbFetch:
@@ -75,7 +60,7 @@ class TDbApp(TDb):
                 url.update_date
             limit
                 {aLimit}
-        '''
+            '''
         return await TDbFetch(self).Query(Query)
 
     async def GetSitesForUpdate(self, aExclude: list = [], aLimit: int = 10) -> TDbFetch:
@@ -108,7 +93,7 @@ class TDbApp(TDb):
                 url_count desc
             limit
                 {aLimit}
-        '''
+            '''
         return await TDbFetch(self).Query(Query)
 
     async def GetSiteUrlsForUpdate(self, aSiteId: int, aLimit: int = 10) -> TDbFetch:
@@ -128,5 +113,17 @@ class TDbApp(TDb):
                 url.update_date
             limit
                 {aLimit}
-        '''
+            '''
+        return await TDbFetch(self).Query(Query)
+
+    async def GetScraper(self, aId: int) -> TDbFetch:
+        Query = f'''
+            select
+                scraper.*
+            from
+                scraper
+            where
+                (scraper.enabled) and
+                (scraper.id = {aId})
+            '''
         return await TDbFetch(self).Query(Query)

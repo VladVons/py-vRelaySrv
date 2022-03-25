@@ -6,8 +6,8 @@ CREATE TABLE IF NOT EXISTS site (
     update_days   INTEGER DEFAULT 7,
     url           VARCHAR(64),
     scheme        TEXT,
-    tasks         INTEGER DEFAULT 4,
-    sleep         INTEGER DEFAULT 1,
+    tasks         SMALLINT DEFAULT 10,
+    sleep         SMALLINT DEFAULT 1,
     enabled       BOOLEAN DEFAULT TRUE
 );
 
@@ -34,6 +34,16 @@ CREATE TABLE IF NOT EXISTS product (
     image         VARCHAR(256),
     on_stock      BOOLEAN DEFAULT TRUE,
     FOREIGN KEY   (url_id) REFERENCES url(id)
+);
+
+CREATE TABLE IF NOT EXISTS scraper (
+    id            SERIAL PRIMARY KEY,
+    create_date   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    login         VARCHAR(64),
+    passw         VARCHAR(128),
+    workers       SMALLINT DEFAULT 5,
+    run           BOOLEAN DEFAULT TRUE,
+    enabled       BOOLEAN DEFAULT TRUE
 );
 
 CREATE TABLE IF NOT EXISTS proxy (

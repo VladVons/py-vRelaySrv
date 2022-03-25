@@ -7,6 +7,7 @@ Description:
 
 
 import json
+from datetime import datetime
 #
 from IncP.DB.Scraper_pg import TDbApp
 from Inc.DB.DbList import TDbList
@@ -15,13 +16,15 @@ from Inc.DB.DbList import TDbList
 class TApiTask():
     def __init__(self, aParent):
         self.Parent = aParent
-        self.Tasks = TDbList(['SiteId', 'Data'])
+        self.Tasks = []
 
     async def Get(self, aData: dict) -> dict:
         Db1 = await self.Parent.Db.GetSitesForUpdate()
         Db1.Shuffle()
         SiteId = Db1.Rec.GetByName('site.id')
         Db1 = await self.Parent.Db.GetSiteUrlsForUpdate(SiteId)
+        Task = TDbList(['SiteId', 'StartAt', 'Task'], [SiteId, datetime.now(), Db1])
+        self.Tasks.append(Task)
         return Db1.Data
 
 

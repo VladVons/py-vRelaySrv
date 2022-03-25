@@ -19,9 +19,9 @@ Description:
     for Idx, Val in enumerate(Db1):
         print(Idx, Val.Rec.GetByName('red'),  Val.Rec[0])
 
-    Db1.Add()
+    Db1.RecAdd()
     Db1.Rec.SetByName('red', 11)
-    Db1.Flash()
+    Db1.RecFlash()
 
     Db1.Data.append([22,33,44])
 
@@ -53,21 +53,22 @@ class TDbRec(list):
         #self.Head = dict(zip(aFields, range(len(aFields))))
         self.Head = {Val: Idx for Idx, Val in enumerate(aFields)}
 
-    def GetAsDict(self):
+    def GetAsDict(self) -> dict:
         return {Key: self[Val] for Key, Val in self.Head.items()}
 
-    def GetAsTuple(self):
+    def GetAsTuple(self) -> tuple:
         return [(Key, self[Val]) for Key, Val in self.Head.items()]
 
 
 class TDbList():
-    def __init__(self, aHead: list):
-        self.Rec = TDbRec(aHead)
-        self.Data = []
-        self._RecNo = 0
+    def __init__(self, aData: list, aHead: list):
+        self.Data: list
+        self.Rec: TDbRec
 
-    def __str__(self):
-        return json.dumps({'data': self.Data, 'head': self.Rec.Head})
+        self.SetData(aData, aHead)
+
+    def __str__(self) -> str:
+        return json.dumps(self.GetData())
 
     def __iter__(self):
         return self
@@ -84,17 +85,17 @@ class TDbList():
         if (self.GetSize() > 0):
             self.Rec.Set(self.Data[self._RecNo])
 
-    def GetSize(self):
+    def GetSize(self) -> int:
         return len(self.Data)
 
-    def Clone(self, aFields: list):
+    def GetData(self) -> dict:
+        return {'data': self.Data, 'head': self.Rec.Head}
+
+    def Clone(self, aFields: list) -> 'TDbList':
         FieldNo = [self.Rec.Head[F] for F in aFields]
         #return [list(map(i.__getitem__, FieldNo)) for i in self.Data]
         Data = [[D[i] for i in FieldNo] for D in self.Data]
-
-        Res = TDbList(aFields)
-        Res.SetData(Data)
-        return Res
+        return TDbList(Data, aFields)
 
     def Sort(self, aField: str, aReverse: bool = True):
         FieldNo = self.Rec.Head[aField]
@@ -105,18 +106,20 @@ class TDbList():
         random.shuffle(self.Data)
         self.RecGo(0)
 
-    def SetData(self, aList: list):
-        self.Data = aList
+    def SetData(self, aData: list, aHead: list = []):
+        self.Data = aData
+        if (aHead):
+            self.Rec = TDbRec(aHead)
         self.RecGo(0)
 
     def RecGo(self, aNo: int):
         self._RecNo = min(aNo, self.GetSize() - 1)
         self._RecInit()
 
-    def Add(self):
+    def RecAdd(self):
         EmptyRec = [None for i in range(len(self.Rec.Head))]
         self.Data.append(EmptyRec)
         self.RecGo(self.GetSize())
 
-    def Flash(self):
+    def RecFlash(self):
         self.Data[self._RecNo] = self.Rec

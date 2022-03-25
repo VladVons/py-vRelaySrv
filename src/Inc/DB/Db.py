@@ -87,7 +87,7 @@ class TDb():
             Len = aField.Ofst + len(aData) - len(self.Buf)
         self.Buf[aField.Ofst:Len] = aData
 
-    def SetRec(self, aBuf: bytearray):
+    def RecSet(self, aBuf: bytearray):
         assert (len(self.Buf) == len(aBuf)), 'buf len mismatch'
         self.RecSave = True
         self.Buf = aBuf
