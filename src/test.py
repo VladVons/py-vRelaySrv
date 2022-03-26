@@ -82,18 +82,9 @@ def Main1():
 
 #Main1()
 
-User = Passw = ''
-
-#print(binascii.hexlify(os.urandom(20)).decode())
-
-#def GetRandStr(aLen: int, aPattern = 'YourPattern') -> str:
-#    return ''.join((random.choice(aPattern)) for x in range(aLen))  
-
-
-#print(GetRandStr((32)))
-#print(BrainWordShuffle('ukraine'))
-
-#Dict = {'one': 1, 'two': 2, 'three': 3}
-#Keys = ['two', 'three']
-#extracted_dict = {Key: Val for Key, Val in Dict.items() if Key in Keys}
-#print(extracted_dict)
+Arr1 = ['para1']
+Arr2 = []
+Diff = set(Arr1) - set(Arr2)
+print()
+print(Diff)
+ 

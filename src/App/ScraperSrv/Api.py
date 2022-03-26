@@ -7,8 +7,10 @@ Description:
 
 
 import json
+import random
 from datetime import datetime
 #
+from IncP.Log import Log
 from IncP.DB.Scraper_pg import TDbApp
 from Inc.DB.DbList import TDbList
 
@@ -30,8 +32,8 @@ class TApiTask():
 
 class TApi():
     Url = {
-        'get_task':     {'param': ()},
-        'get_config':   {'param': ('user')}
+        'get_task':     {'param': []},
+        'get_config':   {'param': ['user']}
     }
 
     def __init__(self):
@@ -44,6 +46,18 @@ class TApi():
     def GetMethodName(aPath: str) -> str:
         return 'path_' + aPath.replace('/', '_')
 
+    @staticmethod
+    def CheckParam(aParam: dict, aPattern: list):
+        Diff = set(aPattern) - set(aParam.keys()) 
+        if (Diff):
+            Msg = 'unknown key `%s` %s in %s' % (Diff, aPattern, aParam.keys())
+            Log.Print(1, 'e', Msg)
+            return Msg
+  
+    #@staticmethod
+    #def GetRandStr(aLen: int, aPattern = 'YourPattern') -> str:
+    #    return ''.join((random.choice(aPattern)) for x in range(aLen))
+
     async def Call(self, aPath: str, aParam: str) -> dict:
         UrlInf = self.Url.get(aPath)
         if (UrlInf):
@@ -55,13 +69,18 @@ class TApi():
                     Param = json.loads(aParam)
                 else:
                     Param = {}
-                Data = await Method(Param)
-                Res = {'Data': Data}
-                self.Cnt += 1
+
+                ErrMsg = self.CheckParam(Param, ParamInf)
+                if (ErrMsg):
+                    Res = {'Err': ErrMsg}
+                else:
+                    Data = await Method(Param)
+                    Res = {'Data': Data}
+                    self.Cnt += 1
             else:
-                Res = {'Error': 'unknown method %s' % (MethodName)}
+                Res = {'Err': 'unknown method %s' % (MethodName)}
         else:
-            Res = {'Error': 'unknown url %s' % (aPath)}
+            Res = {'Err': 'unknown url %s' % (aPath)}
         return Res
 
     async def path_get_task(self, aData: dict) -> dict:
