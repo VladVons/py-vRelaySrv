@@ -82,9 +82,9 @@ def Main1():
 
 #Main1()
 
-Arr1 = ['para1']
+Arr1 = ['para1', 'para2']
 Arr2 = []
 Diff = set(Arr1) - set(Arr2)
+print(Arr2[:])
+#print(Diff)
 print()
-print(Diff)
- 

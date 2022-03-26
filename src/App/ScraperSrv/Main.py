@@ -33,7 +33,7 @@ class TScraperSrv():
             Res = await self.Api.Call(Name, Post)
             return web.json_response(Res)
         else:
-            Res = {'Error': 'Authorization'}
+            Res = {'Err': 'Authorization'}
             return web.json_response(Res, status=403)
  
     async def Run(self):

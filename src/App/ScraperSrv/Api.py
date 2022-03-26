@@ -48,12 +48,14 @@ class TApi():
 
     @staticmethod
     def CheckParam(aParam: dict, aPattern: list):
-        Diff = set(aPattern) - set(aParam.keys()) 
+        Diff = set(aPattern) - set(aParam)
         if (Diff):
-            Msg = 'unknown key `%s` %s in %s' % (Diff, aPattern, aParam.keys())
-            Log.Print(1, 'e', Msg)
-            return Msg
-  
+            return 'param %s not set' % Diff
+                
+        Diff = set(aParam) - set(aPattern)
+        if (Diff):
+            return 'unknown param %s' % Diff
+ 
     #@staticmethod
     #def GetRandStr(aLen: int, aPattern = 'YourPattern') -> str:
     #    return ''.join((random.choice(aPattern)) for x in range(aLen))
@@ -72,6 +74,7 @@ class TApi():
 
                 ErrMsg = self.CheckParam(Param, ParamInf)
                 if (ErrMsg):
+                    Log.Print(1, 'e', ErrMsg)
                     Res = {'Err': ErrMsg}
                 else:
                     Data = await Method(Param)

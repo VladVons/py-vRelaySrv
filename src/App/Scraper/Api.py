@@ -30,6 +30,5 @@ class TApi():
 
     async def GetConfig(self):
         Data = {'user': self.Auth.get('User')}
-        Data = {}
         Res = await self._Send('get_config', Data)
         print('---c2', Res)
