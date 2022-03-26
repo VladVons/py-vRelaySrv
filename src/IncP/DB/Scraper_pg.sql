@@ -4,7 +4,7 @@
 CREATE TABLE IF NOT EXISTS site (
     id            SERIAL PRIMARY KEY,
     update_days   INTEGER DEFAULT 7,
-    url           VARCHAR(64),
+    url           VARCHAR(64) UNIQUE,
     scheme        TEXT,
     tasks         SMALLINT DEFAULT 10,
     sleep         SMALLINT DEFAULT 1,
@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS url (
     create_date   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_date   TIMESTAMP DEFAULT '2000-12-31',
     site_id       INTEGER,
-    url           VARCHAR(256),
+    url           VARCHAR(256) UNIQUE,
     data_size     INTEGER DEFAULT 0,
     url_count     SMALLINT DEFAULT 0,
     status        SMALLINT,
