@@ -1,3 +1,4 @@
+import os
 import asyncio
 import binascii
 import random
@@ -71,8 +72,28 @@ def Test_2():
     print('Json:', str(Db2))
 
 
-Start = time.time()
-for i in range(1):
-    asyncio.run(TestA_1())
-    #Test_2()
-print('%0.2f' % (time.time() - Start))
+def Main1():
+    Start = time.time()
+    for i in range(1):
+        #asyncio.run(TestA_1())
+        Test_2()
+    print('%0.2f' % (time.time() - Start))
+
+
+#Main1()
+
+User = Passw = ''
+
+#print(binascii.hexlify(os.urandom(20)).decode())
+
+#def GetRandStr(aLen: int, aPattern = 'YourPattern') -> str:
+#    return ''.join((random.choice(aPattern)) for x in range(aLen))  
+
+
+#print(GetRandStr((32)))
+#print(BrainWordShuffle('ukraine'))
+
+#Dict = {'one': 1, 'two': 2, 'three': 3}
+#Keys = ['two', 'three']
+#extracted_dict = {Key: Val for Key, Val in Dict.items() if Key in Keys}
+#print(extracted_dict)

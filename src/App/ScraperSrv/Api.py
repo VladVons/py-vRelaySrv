@@ -30,7 +30,8 @@ class TApiTask():
 
 class TApi():
     Url = {
-        'get_task':   {'param': []}
+        'get_task':     {'param': ()},
+        'get_config':   {'param': ('user')}
     }
 
     def __init__(self):
@@ -65,6 +66,10 @@ class TApi():
 
     async def path_get_task(self, aData: dict) -> dict:
         return await self.ApiTask.Get(aData)
+
+    async def path_get_config(self, aData: dict) -> dict:
+        DBL = await self.Db.GetScraper(aData.get('user'))
+        return DBL.GetData()
 
     async def DbInit(self, aAuth):
         self.Db = TDbApp(aAuth)

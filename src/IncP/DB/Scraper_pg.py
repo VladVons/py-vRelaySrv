@@ -116,14 +116,28 @@ class TDbApp(TDbPg):
             '''
         return await TDbFetch(self).Query(Query)
 
-    async def GetScraper(self, aId: int) -> TDbFetch:
+    async def Login(self, aLogin: str, aPassw: str) -> TDbFetch:
         Query = f'''
             select
-                scraper.*
+                id
             from
                 scraper
             where
-                (scraper.enabled) and
-                (scraper.id = {aId})
+                (enabled) and
+                (login = '{aLogin}') and
+                (passw = '{aPassw}')
+            '''
+        return await TDbFetch(self).Query(Query)
+
+    async def GetScraper(self, aUser: str) -> TDbFetch:
+        Query = f'''
+            select
+                workers,
+                run,
+                enabled
+            from
+                scraper
+            where
+                (login = '{aUser}')
             '''
         return await TDbFetch(self).Query(Query)

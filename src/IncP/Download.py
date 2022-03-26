@@ -32,16 +32,25 @@ class THeaders():
 
 
 class TDownload():
-    def __init__(self, aProxies: list = []):
+    def __init__(self, aProxies: list = [], aHeaders: THeaders = None, aAuth: tuple = ()):
         self.Proxies = aProxies
-        self.Headers = THeaders()
+        self.Headers = aHeaders
+        self.Auth = aAuth
 
     async def Get(self, aUrl: str) -> tuple:
-        async with aiohttp.ClientSession(connector=self._GetConnector()) as Session:
-            async with Session.get(aUrl, headers=self.Headers.Get()) as Response:
+        async with aiohttp.ClientSession(connector=self._GetConnector(), auth=self._GetAuth()) as Session:
+            async with Session.get(aUrl, headers=self._GetHeaders()) as Response:
                 Data = await Response.read()
                 return (Data, Response.status)
 
     def _GetConnector(self) -> ProxyConnector:
         if (self.Proxies):
             return ProxyConnector.from_url(random.choice(self.Proxies))
+
+    def _GetHeaders(self) -> THeaders:
+        if (self.Headers):
+            return self.Headers.Get()
+
+    def _GetAuth(self) -> aiohttp.BasicAuth:
+        if (self.Auth):
+            return aiohttp.BasicAuth(login=self.Auth[0], password=self.Auth[1])

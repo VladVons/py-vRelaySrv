@@ -6,3 +6,5 @@ DbAuth = {
     'User': 'postgres',
     'Password': '19710819'
 }
+
+Auth = False

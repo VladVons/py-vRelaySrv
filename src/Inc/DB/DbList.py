@@ -56,7 +56,7 @@ class TDbRec(list):
     def GetAsDict(self) -> dict:
         return {Key: self[Val] for Key, Val in self.Head.items()}
 
-    def GetAsTuple(self) -> tuple:
+    def GetAsTuple(self) -> list:
         return [(Key, self[Val]) for Key, Val in self.Head.items()]
 
 

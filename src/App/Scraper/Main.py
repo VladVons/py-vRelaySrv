@@ -1,7 +1,10 @@
-'''
-VladVons@gmail.com
-2022.02.17
-'''
+"""
+Copyright:   Vladimir Vons, UA
+Author:      Vladimir Vons <VladVons@gmail.com>
+Created:     2022.02.17
+License:     GNU, see LICENSE for more details
+Description:
+"""
 
 
 import asyncio
@@ -9,10 +12,9 @@ import random
 import json
 from collections import deque
 #
-from App import ConfApp
 from IncP.Log import Log
-from IncP.DB.Scraper_pg import TDbApp
 from .WebScraper import TWebScraperDb
+from .Api import TApi
 
 
 class TMain():
@@ -58,8 +60,11 @@ class TMain():
         return [i.GetInfo() for i in self.Scrapers]
 
     async def Run(self):
-        self.Db = TDbApp(ConfApp.AuthDb)
-        await self.Db.Connect()
-        await self.Db.ExecFile('IncP/DB/vHttpScraper.pg.sql')
-        await self._CreateTasks()
-        await self.Db.Close()
+        WaitLocalHost = 1
+        await asyncio.sleep(WaitLocalHost)
+
+        while (True):
+            self.Api = TApi(self.Conf.SrvAuth)
+            await self.Api.GetConfig()
+            await asyncio.sleep(60)
+
