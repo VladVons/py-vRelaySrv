@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS product (
 CREATE TABLE IF NOT EXISTS scraper (
     id            SERIAL PRIMARY KEY,
     create_date   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    login         VARCHAR(16),
+    login         VARCHAR(16) UNIQUE,
     passw         VARCHAR(16),
     workers       SMALLINT DEFAULT 5,
     run           BOOLEAN DEFAULT TRUE,
