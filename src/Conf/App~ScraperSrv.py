@@ -7,4 +7,4 @@ DbAuth = {
     'Password': '19710819'
 }
 
-Auth = False
+Auth = True

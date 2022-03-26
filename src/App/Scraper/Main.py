@@ -66,5 +66,5 @@ class TMain():
         while (True):
             self.Api = TApi(self.Conf.SrvAuth)
             await self.Api.GetConfig()
-            await asyncio.sleep(60)
+            await asyncio.sleep(30)
 
