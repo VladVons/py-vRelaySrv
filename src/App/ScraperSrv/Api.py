@@ -8,26 +8,30 @@ Description:
 
 import json
 import random
+import asyncio
 from datetime import datetime
 #
-from IncP.Log import Log
+from IncP.Log import Log, TEchoDb
 from IncP.DB.Scraper_pg import TDbApp
 from Inc.DB.DbList import TDbList
 
 
 class TApiTask():
-    def __init__(self, aParent):
+    def __init__(self, aParent: 'TApi'):
         self.Parent = aParent
-        self.Tasks = []
+        self.Tasks = TDbList([], ['SiteId', 'StartAt', 'Urls'])
+        self.Lock = asyncio.Lock()
 
     async def Get(self, aData: dict) -> dict:
-        Db1 = await self.Parent.Db.GetSitesForUpdate()
-        Db1.Shuffle()
-        SiteId = Db1.Rec.GetByName('site.id')
-        Db1 = await self.Parent.Db.GetSiteUrlsForUpdate(SiteId)
-        Task = TDbList(['SiteId', 'StartAt', 'Task'], [SiteId, datetime.now(), Db1])
-        self.Tasks.append(Task)
-        return Db1.Data
+        async with self.Lock:
+            ExcludeId = self.Tasks.GetList('SiteId')
+            DbL = await self.Parent.Db.GetSitesForUpdate(ExcludeId)
+            if (DbL.GetSize() > 0):
+                DbL.Shuffle()
+                SiteId = DbL.Rec.GetField('site.id')
+                DbL = await self.Parent.Db.GetSiteUrlsForUpdate(SiteId)
+                self.Tasks.RecAdd([SiteId, datetime.now(), DbL])
+                return {'SiteId': SiteId, 'Url': DbL.GetData()}
 
 
 class TApi():
@@ -37,8 +41,8 @@ class TApi():
     }
 
     def __init__(self):
-        self.Db = None
-        self.Cnt = 0
+        self.Db: TDbApp = None
+        self.Cnt: int = 0
 
         self.ApiTask = TApiTask(self)
 
@@ -96,4 +100,6 @@ class TApi():
     async def DbInit(self, aAuth):
         self.Db = TDbApp(aAuth)
         await self.Db.Connect()
-        await self.Db.ExecFile('IncP/DB/Scraper_pg.sql')
+        #await self.Db.ExecFile('IncP/DB/Scraper_pg.sql')
+
+        Log.AddEcho(TEchoDb(self.Db))

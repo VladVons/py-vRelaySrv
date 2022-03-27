@@ -12,8 +12,13 @@ from .Util.UTime import GetDate, GetTime
 
 
 class TEcho():
+    # iex - Info, Error, eXception, Debug
+    def __init__(self, aLevel: int = 1, aType: str = 'iexd'):
+        self.Level = aLevel
+        self.Type = aType
+
     def Write(self, aMsg: str):
-        pass
+        raise NotImplementedError
 
 
 class TEchoConsole(TEcho):
@@ -23,6 +28,7 @@ class TEchoConsole(TEcho):
 
 class TEchoFile(TEcho):
     def __init__(self, aName: str):
+        super().__init__()
         self.Name = aName
 
     def Write(self, aMsg: str):
@@ -32,7 +38,6 @@ class TEchoFile(TEcho):
 
 class TLog():
     def __init__(self):
-        self.Level  = 1
         self.Cnt    = 0
         self.Echoes = []
 
@@ -42,16 +47,14 @@ class TLog():
         self.Echoes.append(aEcho) 
 
     def Print(self, aLevel: int, aType: str, *aParam) -> str:
-        R = '' 
-        if (aLevel <= self.Level):
-            self.Cnt += 1
-            R = '%s,%s,%03d,%d,%s,%s%s' % (GetDate(), GetTime(), self.Cnt, aLevel, aType, ' ' * aLevel, list(aParam))
-            if (aType == 'x') and (len(aParam) > 1):
-                self._DoExcept(aParam[1])
-
-            for Echo in self.Echoes:
-                Echo.Write(R)
-        return R
+        self.Cnt += 1
+        Res = '%s,%s,%03d,%d,%s,%s%s' % (GetDate(), GetTime(), self.Cnt, aLevel, aType, ' ' * aLevel, list(aParam))
+        for Echo in self.Echoes:
+            if (aLevel <= Echo.Level) and (aType in Echo.Type):
+                if (aType == 'x') and (len(aParam) > 1):
+                    self._DoExcept(aParam[1])
+                Echo.Write(Res)
+        return Res
 
     def _DoExcept(self, aE):
         sys.print_exception(aE)

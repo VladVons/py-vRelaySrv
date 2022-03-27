@@ -4,6 +4,7 @@ import binascii
 import random
 import time
 from IncP.DB.Scraper_pg import TDbApp
+from IncP.Log import Log
 
 
 DbAuth = {
@@ -45,7 +46,7 @@ def Test_2():
     from Inc.DB.DbList import TDbList
 
     Fields = ['red', 'green', 'blue']
-    Data = [[21,22,23], [11,12,13], [111,121,131]]
+    Data = [[21, 22, 23], [11, 12, 13], [111, 121, 131]]
     Db1 = TDbList(Data, Fields)
     #Db1.SetData(Data)
 
@@ -55,17 +56,20 @@ def Test_2():
     print('Rec:', Db1.Rec)
     print('GetAsDict:', Db1.Rec.GetAsDict())
     print('GetAsTuple:', Db1.Rec.GetAsTuple())
+    print('GetList', Db1.GetList('green'))
     print('Json:', str(Db1))
 
     Db1.Sort('green', not True)
     for Idx, Val in enumerate(Db1):
-        print(Idx, Val.Rec.GetByName('red'),  Val.Rec[0])
+        print(Idx, Val.Rec.GetField('red'),  Val.Rec[0])
 
     Db1.RecAdd()
-    Db1.Rec.SetByName('red', 11)
+    Db1.Rec.SetField('red', 11)
     Db1.RecFlash()
 
-    Db1.Data.append([22,33,44])
+    #Db1.Data.append([22, 33, 44])
+    Db1.RecAdd([22, 33, 44])
+    Db1.RecFlash()
 
     Db2 = Db1.Clone(['green', 'blue'])
     Db2.Shuffle()
@@ -79,12 +83,5 @@ def Main1():
         Test_2()
     print('%0.2f' % (time.time() - Start))
 
-
-#Main1()
-
-Arr1 = ['para1', 'para2']
-Arr2 = []
-Diff = set(Arr1) - set(Arr2)
-print(Arr2[:])
-#print(Diff)
 print()
+Main1()

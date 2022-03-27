@@ -23,7 +23,7 @@ class TDbApp(TDbPg):
         Query = f'''
             INSERT INTO log(type_id, descr) 
             VALUES ({aType}, '{aDescr}')
-        '''
+            '''
         await self.Exec(Query)
 
     async def UpdateFreeTask(self, aId: int):

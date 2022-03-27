@@ -45,6 +45,7 @@ class TDbFetch(TDbList):
 
 class TDb():
     Pool = None
+    Debug = False
 
     def Connect(self):
         raise NotImplementedError()
@@ -62,6 +63,8 @@ class TDb():
                 #    Sql = Sql.strip()
                 #    if (Sql):
                 #        await Cur.execute(Sql)
+                if (self.Debug):
+                    print(aSql)
                 await Cur.execute(aSql)
             #await Con.commit()
 
@@ -74,7 +77,9 @@ class TDb():
         async with self.Pool.acquire() as Con:
             async with Con.cursor() as Cur:
             #async with Con.cursor(cursor_factory = psycopg2.extras.RealDictCursor) as Cur:
-                #print(aSql)
+                if (self.Debug):
+                    print(aSql)
+
                 await Cur.execute(aSql)
                 if (aOne):
                     Res = await Cur.fetchone()

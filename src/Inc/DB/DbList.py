@@ -3,9 +3,10 @@ Author:      Vladimir Vons, Oster Inc.
 Created:     2022.03.24
 License:     GNU, see LICENSE for more details
 Description:
-    Db1 = TDbList(['red', 'green', 'blue'])
-    Data = [[21,22,23], [11,12,13], [111,121,131]]
-    Db1.SetData(Data)
+    Fields = ['red', 'green', 'blue']
+    Data = [[21, 22, 23], [11, 12, 13], [111, 121, 131]]
+    Db1 = TDbList(Data, Fields)
+    #Db1.SetData(Data)
 
     print()
     print('GetSize:', Db1.GetSize())
@@ -13,17 +14,20 @@ Description:
     print('Rec:', Db1.Rec)
     print('GetAsDict:', Db1.Rec.GetAsDict())
     print('GetAsTuple:', Db1.Rec.GetAsTuple())
+    print('GetList', Db1.GetList('green'))
     print('Json:', str(Db1))
 
     Db1.Sort('green', not True)
     for Idx, Val in enumerate(Db1):
-        print(Idx, Val.Rec.GetByName('red'),  Val.Rec[0])
+        print(Idx, Val.Rec.GetField('red'),  Val.Rec[0])
 
     Db1.RecAdd()
-    Db1.Rec.SetByName('red', 11)
+    Db1.Rec.SetField('red', 11)
     Db1.RecFlash()
 
-    Db1.Data.append([22,33,44])
+    #Db1.Data.append([22, 33, 44])
+    Db1.RecAdd([22, 33, 44])
+    Db1.RecFlash()
 
     Db2 = Db1.Clone(['green', 'blue'])
     Db2.Shuffle()
@@ -39,15 +43,16 @@ class TDbRec(list):
     def __init__(self, aHead: list):
         self.SetHead(aHead)
 
-    def GetByName(self, aName: str) -> any:
+    def GetField(self, aName: str) -> any:
         return self[self.Head[aName]]
 
-    def SetByName(self, aName: str, aValue):
+    def SetField(self, aName: str, aValue):
         self[self.Head[aName]] = aValue
 
-    def Set(self, aList: list):
+    def SetData(self, aData: list):
+        assert (len(aData) == len(self.Head)), 'length mismatch'
         self.clear()
-        self.extend(aList)
+        self.extend(aData)
 
     def SetHead(self, aFields: list):
         #self.Head = dict(zip(aFields, range(len(aFields))))
@@ -83,13 +88,17 @@ class TDbList():
 
     def _RecInit(self):
         if (self.GetSize() > 0):
-            self.Rec.Set(self.Data[self._RecNo])
+            self.Rec.SetData(self.Data[self._RecNo])
 
     def GetSize(self) -> int:
         return len(self.Data)
 
     def GetData(self) -> dict:
-        return {'data': self.Data, 'head': self.Rec.Head}
+        return {'Data': self.Data, 'Head': self.Rec.Head}
+
+    def GetList(self, aField: str) -> list:
+        FieldNo = self.Rec.Head[aField]
+        return [D[FieldNo] for D in self.Data]
 
     def Clone(self, aFields: list) -> 'TDbList':
         FieldNo = [self.Rec.Head[F] for F in aFields]
@@ -116,9 +125,10 @@ class TDbList():
         self._RecNo = min(aNo, self.GetSize() - 1)
         self._RecInit()
 
-    def RecAdd(self):
-        EmptyRec = [None for i in range(len(self.Rec.Head))]
-        self.Data.append(EmptyRec)
+    def RecAdd(self, aData: list = []):
+        if (not aData):
+            aData = [None for i in range(len(self.Rec.Head))]
+        self.Data.append(aData)
         self.RecGo(self.GetSize())
 
     def RecFlash(self):

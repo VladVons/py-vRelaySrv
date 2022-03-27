@@ -78,7 +78,7 @@ class TPlugin(dict):
         return await self._Post(self.items(), aOwner, aMsg, aFunc)
 
     def PostNonAsync(self, aOwner, aMsg, aFunc: str = '_DoPost'):
-        return asyncio.run(self.Post(aOwner, aMsg, aFunc))
+        return asyncio.create_task(self.Post(aOwner, aMsg, aFunc))
 
     async def Stop(self, aPath: str) -> bool:
         Obj = self.get(aPath)

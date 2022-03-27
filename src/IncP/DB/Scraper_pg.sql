@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS site (
 CREATE TABLE IF NOT EXISTS url (
     id            SERIAL PRIMARY KEY,
     create_date   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    update_date   TIMESTAMP DEFAULT '2000-12-31',
+    update_date   TIMESTAMP DEFAULT "2000-12-31",
     site_id       INTEGER,
     url           VARCHAR(256) UNIQUE,
     data_size     INTEGER DEFAULT 0,
@@ -69,7 +69,7 @@ BEGIN
     where (id = NEW.url_id);
 
     RETURN NULL;
-END; $$ LANGUAGE 'plpgsql';
+END; $$ LANGUAGE "plpgsql";
 
 create or replace trigger insert_product
     after insert on product
