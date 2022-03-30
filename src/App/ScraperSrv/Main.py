@@ -10,7 +10,6 @@ import base64
 from aiohttp import web
 #
 from IncP.Log import Log
-from IncP.DB.Scraper_pg import TDbApp
 from .Api import TApi
 
 

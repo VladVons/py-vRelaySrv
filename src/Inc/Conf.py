@@ -11,10 +11,9 @@ V - Value
 '''
 
 
-import os, sys
+import sys
 #
 from .Util.UFS import FileExists
-from .Log  import Log
 
 
 def ImportMod(aFile: str, aMod: list = ['*']):
