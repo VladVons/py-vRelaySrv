@@ -28,7 +28,7 @@ class TMain():
     async def _Worker(self, aTaskId: int):
         while (True):
             Wait = random.randint(1, 5)
-            Log.Print(1, 'i', '_Worker()' , 'Ready for task. Id %d, wait %d' % (aTaskId, Wait))
+            Log.Print(1, 'i', '_Worker(). Ready for task. Id %d, wait %d' % (aTaskId, Wait))
             await asyncio.sleep(Wait)
 
             Rows = await self.Db.GetFreeTask()
@@ -37,7 +37,7 @@ class TMain():
                 try:
                     json.loads(Row['scheme'].strip())
                 except json.decoder.JSONDecodeError as E:
-                    Log.Print(1, 'x', '_Worker()', E)
+                    Log.Print(1, 'x', '_Worker()', aE = E)
                     continue
 
                 Row['tasks'] = 4

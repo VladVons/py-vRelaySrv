@@ -25,8 +25,8 @@ class TApi():
                 async with Session.post(Url, json=aPost) as Response:
                     Data = await Response.json()
                     return (Data, Response.status)
-        except aiohttp.client_exceptions.ContentTypeError as E: 
-            Log.Print(1, 'x', '_Send()', 'ContentTypeError')
+        except (aiohttp.client_exceptions.ContentTypeError, aiohttp.client_exceptions.ClientConnectorError) as E:
+            Log.Print(1, 'x', '_Send()', aE = E)
 
     async def GetConfig(self):
         Data = {'user': self.Auth.get('User')}

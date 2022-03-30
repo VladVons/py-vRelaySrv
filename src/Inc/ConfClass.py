@@ -47,7 +47,7 @@ class TConfClass(TConfD):
 
                     self[Alias] = Obj
             except Exception as E:
-                Log.Print(1, 'x', '_Load()', E)
+                Log.Print(1, 'x', '_Load()', aE = E)
                 print('Data', Data)
 
     '''

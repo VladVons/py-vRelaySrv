@@ -12,6 +12,9 @@ import asyncio
 from App import ConfApp
 from App.Main import TApp
 
+import time
+from Inc import ApiParse, ConfClass
+
 
 def Run():
     Task = TApp().Run()
@@ -26,4 +29,6 @@ def Run():
 
         # >= 3.7
         asyncio.run(Task)
-Run()
+
+if (__name__ == '__main__'):
+    Run()

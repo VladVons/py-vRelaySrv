@@ -66,7 +66,9 @@ class TDbApp(TDbPg):
     async def GetSitesForUpdate(self, aExclude: list = [], aLimit: int = 10) -> TDbFetch:
         Exclude = self.ListToComma(aExclude)
         if (Exclude): 
-            Exclude = 'and (not site.id in(%s))' % Exclude
+            CondExclude = 'and (not site.id in(%s))' % Exclude
+        else:
+            CondExclude = ''
 
         Query = f'''
            Select
@@ -84,7 +86,7 @@ class TDbApp(TDbPg):
             where
                 (site.enabled) and
                 (DATE_PART('day', NOW() - url.update_date) > site.update_days)
-                {Exclude}
+                {CondExclude}
             group by
                 site.id
             having 
@@ -96,7 +98,12 @@ class TDbApp(TDbPg):
             '''
         return await TDbFetch(self).Query(Query)
 
-    async def GetSiteUrlsForUpdate(self, aSiteId: int, aLimit: int = 10) -> TDbFetch:
+    async def GetSiteUrlsForUpdate(self, aSiteId: int, aLimit: int = 10, aOnlyProduct: bool = False) -> TDbFetch:
+        if (aOnlyProduct):
+            CondOnlyProduct = 'and url.product_id'
+        else:
+            CondOnlyProduct = ''
+
         Query = f'''
             select
                 url.id,
@@ -109,6 +116,7 @@ class TDbApp(TDbPg):
                 (site.enabled) and 
                 (url.site_id = {aSiteId}) and
                 (DATE_PART('day', NOW() - url.update_date) > site.update_days)
+                {CondOnlyProduct}
             order by
                 url.update_date
             limit
@@ -116,7 +124,7 @@ class TDbApp(TDbPg):
             '''
         return await TDbFetch(self).Query(Query)
 
-    async def Login(self, aLogin: str, aPassw: str) -> TDbFetch:
+    async def AuthUser(self, aLogin: str, aPassw: str) -> TDbFetch:
         Query = f'''
             select
                 id

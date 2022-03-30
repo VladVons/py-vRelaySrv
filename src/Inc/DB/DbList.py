@@ -3,8 +3,8 @@ Author:      Vladimir Vons, Oster Inc.
 Created:     2022.03.24
 License:     GNU, see LICENSE for more details
 Description:
-    Fields = ['red', 'green', 'blue']
-    Data = [[21, 22, 23], [11, 12, 13], [111, 121, 131]]
+   Fields = ['red', 'green', 'blue']
+    Data = [[21, 22, 23], [11, 12, 13], [111, 121, 131], [21, 22, 23]]
     Db1 = TDbList(Data, Fields)
     #Db1.SetData(Data)
 
@@ -14,7 +14,7 @@ Description:
     print('Rec:', Db1.Rec)
     print('GetAsDict:', Db1.Rec.GetAsDict())
     print('GetAsTuple:', Db1.Rec.GetAsTuple())
-    print('GetList', Db1.GetList('green'))
+    print('GetList', Db1.GetList('green', True))
     print('Json:', str(Db1))
 
     Db1.Sort('green', not True)
@@ -23,15 +23,18 @@ Description:
 
     Db1.RecAdd()
     Db1.Rec.SetField('red', 11)
-    Db1.RecFlash()
+    Db1.RecFlush()
 
     #Db1.Data.append([22, 33, 44])
     Db1.RecAdd([22, 33, 44])
-    Db1.RecFlash()
+    Db1.RecFlush()
 
     Db2 = Db1.Clone(['green', 'blue'])
     Db2.Shuffle()
-    print('Json:', str(Db2))
+    print('Db2.Json:', str(Db2))
+
+    Db2.RecGo(-2)
+    print('Db2.Rec:', Db2.Rec)
 '''
 
 
@@ -96,9 +99,12 @@ class TDbList():
     def GetData(self) -> dict:
         return {'Data': self.Data, 'Head': self.Rec.Head}
 
-    def GetList(self, aField: str) -> list:
+    def GetList(self, aField: str, aUniq = False) -> list:
         FieldNo = self.Rec.Head[aField]
-        return [D[FieldNo] for D in self.Data]
+        Res = [D[FieldNo] for D in self.Data]
+        if (aUniq):
+            Res = list(set(Res))
+        return Res
 
     def Clone(self, aFields: list) -> 'TDbList':
         FieldNo = [self.Rec.Head[F] for F in aFields]
@@ -122,6 +128,8 @@ class TDbList():
         self.RecGo(0)
 
     def RecGo(self, aNo: int):
+        if (aNo < 0):
+            aNo = self.GetSize() + aNo
         self._RecNo = min(aNo, self.GetSize() - 1)
         self._RecInit()
 
@@ -131,5 +139,5 @@ class TDbList():
         self.Data.append(aData)
         self.RecGo(self.GetSize())
 
-    def RecFlash(self):
+    def RecFlush(self):
         self.Data[self._RecNo] = self.Rec

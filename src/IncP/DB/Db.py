@@ -93,7 +93,7 @@ class TDb():
           except asyncio.TimeoutError:
             pass
           except Exception as E:
-            Log.Print(1, 'x', 'Exec()', E)
+            Log.Print(1, 'x', 'Exec()', aE = E)
 
     @staticmethod
     def ListToComma(aList: list) -> str:

@@ -44,15 +44,21 @@ class TLog():
         self.AddEcho(TEchoConsole())
 
     def AddEcho(self, aEcho: TEcho):
-        self.Echoes.append(aEcho) 
+        Name = aEcho.__class__.__name__ 
+        #List = [i for i in self.Echoes if (i.__class__.__name__ == Name)]
+        List = list(filter(lambda i: (i.__class__.__name__ == Name), self.Echoes))
+        if (not List):
+            self.Echoes.append(aEcho) 
 
-    def Print(self, aLevel: int, aType: str, *aParam) -> str:
+    def Print(self, aLevel: int, aType: str, aMsg: str, aList: tuple = '', aE: object = '') -> str:
+        if (aE):
+            self._DoExcept(aE)
+            aEx = aE.__class__.__name__
+
         self.Cnt += 1
-        Res = '%s,%s,%03d,%d,%s,%s%s' % (GetDate(), GetTime(), self.Cnt, aLevel, aType, ' ' * aLevel, list(aParam))
+        Res = '%s,%s,%03d,%d,%s,%s,%s,%s' % (GetDate(), GetTime(), self.Cnt, aLevel, aType, aMsg, aList, aE)
         for Echo in self.Echoes:
             if (aLevel <= Echo.Level) and (aType in Echo.Type):
-                if (aType == 'x') and (len(aParam) > 1):
-                    self._DoExcept(aParam[1])
                 Echo.Write(Res)
         return Res
 

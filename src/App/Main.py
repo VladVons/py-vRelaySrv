@@ -28,13 +28,13 @@ class TApp():
 
     async def Run(self):
         self.InitLog()
-        Log.Print(1, 'i', 'Start', os.uname())
+        Log.Print(1, 'i', 'Run()', os.uname())
 
         Plugin.LoadList(ConfApp.get('Plugins'))
         try:
             await Plugin.Run()
-        except KeyboardInterrupt:
-            Log.Print(1, 'x', 'Run()', 'Ctrl-C')
+        except KeyboardInterrupt as E:
+            Log.Print(1, 'x', 'Run()', aE = E)
         finally:
             await Plugin.StopAll()
         Log.Print(1, 'i', 'End')

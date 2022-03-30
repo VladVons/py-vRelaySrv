@@ -93,7 +93,7 @@ class THttpApi():
             Path = aPath
             Code = 200
         else:
-            Log.Print(1, 'e', 'File not found %s' % self.DirRoot + aPath)
+            Log.Print(1, 'e', 'File not found %s' % (self.DirRoot + aPath))
             Path = self.F404
             Code = 404
 
@@ -113,7 +113,7 @@ class THttpApi():
 
     async def CallBack(self, aReader: asyncio.StreamReader, aWriter: asyncio.StreamWriter):
         Head = await ReadHead(aReader, True)
-        #Log.Print(2, 'i', 'CallBack()', 'path: %s, query: %s' % (Head.get('path'), Head.get('query')))
+        #Log.Print(2, 'i', 'CallBack(). path: %s, query: %s' % (Head.get('path'), Head.get('query')))
         Path = Head.get('path')
 
         Method = self.GetMethod(Path)
@@ -127,7 +127,7 @@ class THttpApi():
             else:
                 await self.DoUrl(aReader, aWriter, Head)
         except Exception as E:
-            Data = Log.Print(1, 'x', 'CallBack()', E)
+            Data = Log.Print(1, 'x', 'CallBack()', aE = E)
             await self.Answer(aWriter, 404, 'html', Data)
         finally:
             await aWriter.aclose()

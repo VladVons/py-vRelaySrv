@@ -5,9 +5,11 @@ License:     GNU, see LICENSE for more details
 Description:
 '''
 
+import asyncio
 import base64
 from aiohttp import web
 #
+from IncP.Log import Log
 from IncP.DB.Scraper_pg import TDbApp
 from .Api import TApi
 
@@ -16,18 +18,18 @@ class TScraperSrv():
     def __init__(self, aConf: dict):
         self.Conf = aConf
 
-    async def CheckAuth(self, aRequest: web.Request) -> bool:
+    async def AuthUser(self, aRequest: web.Request) -> bool:
         if (self.Conf.get('Auth')):
             Auth = aRequest.headers.get('Authorization')
             if (Auth):
                 User, Passw = base64.b64decode(Auth.split()[1]).decode().split(':')
-                DBL = await self.Api.Db.Login(User, Passw)
+                DBL = await self.Api.Db.AuthUser(User, Passw)
                 return DBL.GetSize() > 0
         else:
             return True
 
     async def _rIndex(self, aRequest: web.Request) -> web.Response:
-        if (await self.CheckAuth(aRequest)):
+        if (await self.AuthUser(aRequest)):
             Name = aRequest.match_info.get('Name')
             Post = await aRequest.text()
             Res = await self.Api.Call(Name, Post)
@@ -36,17 +38,21 @@ class TScraperSrv():
             Res = {'Err': 'Authorization'}
             return web.json_response(Res, status=403)
  
-    async def Run(self):
-        self.Api = TApi()
-        await self.Api.DbInit(self.Conf.DbAuth)
-
+    async def Run(self, aSleep: int = 10):
         App = web.Application()
         App.add_routes([
             web.get('/{Name:.*}', self._rIndex),
             web.post('/{Name:.*}', self._rIndex)
         ])
 
-        try:
-            await web._run_app(App, host = '0.0.0.0', port = self.Conf.get('Port', 8081), shutdown_timeout = 60.0,  keepalive_timeout = 75.0)
-        finally:
-            await self.Api.Db.Close()
+        self.Api = TApi()
+        while (True):
+            try:
+                await self.Api.DbInit(self.Conf.DbAuth)
+                await web._run_app(App, host = '0.0.0.0', port = self.Conf.get('Port', 8081), shutdown_timeout = 60.0,  keepalive_timeout = 75.0)
+            except Exception as E:
+                Log.Print(1, 'x', 'Run()', aE = E)
+            finally:
+                await self.Api.Db.Close()
+
+            await asyncio.sleep(aSleep)

@@ -81,7 +81,7 @@ class TWebScraper():
                    (not self.IsMimeApp(Href)):
                     self.Url.append(Href)
                     self.Queue.put_nowait(Href)
-                    #Log.Print(1, 'i', '_GrabHref()', 'Add url %s' % (Href))
+                    #Log.Print(1, 'i', '_GrabHref(). Add url %s' % (Href))
         await self._DoGrab(aUrl, Soup, aStatus, aTaskId)
 
     async def _Worker(self, aTaskId: int):
@@ -102,13 +102,10 @@ class TWebScraper():
                     Data, Status = Arr
                     if (Status == 200):
                         await self._GrabHref(Url, Data, Status, aTaskId)
-            except (aiohttp.ClientConnectorError, aiohttp.ClientError) as E:
-                Log.Print(1, 'x', '_Worker()', E, Url)
-            except asyncio.TimeoutError as E:
-                Log.Print(1, x, '_Worker()', E, Url)
-            finally:
                 self.Queue.task_done()
-        Log.Print(1, 'i', '_Worker()', '%d done' % (aTaskId))
+            except (aiohttp.ClientConnectorError, aiohttp.ClientError, asyncio.TimeoutError, Exception) as E:
+                Log.Print(1, 'x', '_Worker(). %s' % (Url), aE = E)
+        Log.Print(1, 'i', '_Worker(). %d done' % (aTaskId))
 
     def GetInfo(self) -> dict:
         return {'UrlRoot': self.UrlRoot, 'UrlCnt': self.UrlCnt, 'UrlFound': len(self.Url), 'TotalData': self.TotalData, 'Sleep': self.Sleep, 'MaxTasks': self.MaxTasks}
@@ -129,10 +126,10 @@ class TWebScraper():
 
     async def Run(self):
         self.Tasks = [asyncio.create_task(self._Worker(i)) for i in range(self.MaxTasks)]
-        Log.Print(1, 'i', 'Parse()', 'URL:%s, Tasks:%d(%d)' % (self.UrlRoot, self.MaxTasks, len(asyncio.all_tasks())))
+        Log.Print(1, 'i', 'Parse(). URL:%s, Tasks:%d(%d)' % (self.UrlRoot, self.MaxTasks, len(asyncio.all_tasks())))
         await asyncio.gather(*self.Tasks)
         self.IsRun = False
-        Log.Print(1, 'i', 'Parse()', 'Done')
+        Log.Print(1, 'i', 'Parse(). Done')
 
 
 class TWebScraperDb(TWebScraper):

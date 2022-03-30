@@ -54,11 +54,11 @@ class TApi():
     def CheckParam(aParam: dict, aPattern: list):
         Diff = set(aPattern) - set(aParam)
         if (Diff):
-            return 'param %s not set' % Diff
-                
+            return 'param not set. %s' % Diff
+
         Diff = set(aParam) - set(aPattern)
         if (Diff):
-            return 'unknown param %s' % Diff
+            return 'param unknown. %s' % Diff
  
     #@staticmethod
     #def GetRandStr(aLen: int, aPattern = 'YourPattern') -> str:
@@ -81,9 +81,13 @@ class TApi():
                     Log.Print(1, 'e', ErrMsg)
                     Res = {'Err': ErrMsg}
                 else:
-                    Data = await Method(Param)
+                    try:
+                        Data = await Method(Param)
+                        self.Cnt += 1
+                    except Exception as E:
+                        Data = None
+                        Log.Print(1, 'x', 'Call()', aE = E)
                     Res = {'Data': Data}
-                    self.Cnt += 1
             else:
                 Res = {'Err': 'unknown method %s' % (MethodName)}
         else:

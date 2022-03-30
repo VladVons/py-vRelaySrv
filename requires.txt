@@ -6,3 +6,4 @@ aiopg
 aiohttp_jinja2
 jinja2
 gmqtt
+bs4

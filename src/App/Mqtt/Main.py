@@ -38,7 +38,7 @@ class TMqtt():
         Log.Print(1, 'i', 'on_disconnect')
 
     async def on_message(self, client, topic, payload, qos, properties):
-        #Log.Print(1, 'i', 'on_message', 'topic %s, payload %s, qos %s' % (topic, payload, qos))
+        #Log.Print(1, 'i', 'on_message. topic %s, payload %s, qos %s' % (topic, payload, qos))
         Msg = json.loads(payload.decode('utf-8'))
         Id = Msg.get('Id')
         Data = Msg.get('Data')
@@ -67,6 +67,6 @@ class TMqtt():
                     await Client.disconnect()
                     await Client.connect(self.Conf.Host, Port, keepalive=60)
                 except Exception as E:
-                    Log.Print(1, 'x', 'Mqtt.Run()', E)
+                    Log.Print(1, 'x', 'Mqtt.Run()', aE = E)
 
             await asyncio.sleep(30)

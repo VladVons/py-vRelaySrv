@@ -26,5 +26,5 @@ class TSender():
                     break
                 await asyncio.sleep(0.1)
         else:
-            Log.Print(1, 'i', 'UnSent', aData)
+            Log.Print(1, 'i', 'UnSent', (aData))
             self.Buf.append(aData)

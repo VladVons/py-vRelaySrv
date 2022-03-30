@@ -3,8 +3,13 @@ import asyncio
 import binascii
 import random
 import time
-from IncP.DB.Scraper_pg import TDbApp
-from IncP.Log import Log
+#
+#import cfscrape
+#import cloudscraper
+#from aiocfscrape import CloudflareScraper
+#
+#from IncP.DB.Scraper_pg import TDbApp
+from Inc.Log import Log, TEchoConsole
 
 
 DbAuth = {
@@ -46,7 +51,7 @@ def Test_2():
     from Inc.DB.DbList import TDbList
 
     Fields = ['red', 'green', 'blue']
-    Data = [[21, 22, 23], [11, 12, 13], [111, 121, 131]]
+    Data = [[21, 22, 23], [11, 12, 13], [111, 121, 131], [21, 22, 23]]
     Db1 = TDbList(Data, Fields)
     #Db1.SetData(Data)
 
@@ -56,7 +61,7 @@ def Test_2():
     print('Rec:', Db1.Rec)
     print('GetAsDict:', Db1.Rec.GetAsDict())
     print('GetAsTuple:', Db1.Rec.GetAsTuple())
-    print('GetList', Db1.GetList('green'))
+    print('GetList', Db1.GetList('green', True))
     print('Json:', str(Db1))
 
     Db1.Sort('green', not True)
@@ -65,16 +70,18 @@ def Test_2():
 
     Db1.RecAdd()
     Db1.Rec.SetField('red', 11)
-    Db1.RecFlash()
+    Db1.RecFlush()
 
     #Db1.Data.append([22, 33, 44])
     Db1.RecAdd([22, 33, 44])
-    Db1.RecFlash()
+    Db1.RecFlush()
 
     Db2 = Db1.Clone(['green', 'blue'])
     Db2.Shuffle()
-    print('Json:', str(Db2))
+    print('Db2.Json:', str(Db2))
 
+    Db2.RecGo(-2)
+    print('Db2.Rec:', Db2.Rec)
 
 def Main1():
     Start = time.time()
@@ -83,5 +90,21 @@ def Main1():
         Test_2()
     print('%0.2f' % (time.time() - Start))
 
-print()
-Main1()
+
+#async def test_open_page(url):
+#    async with CloudflareScraper() as session:
+#        async with session.get(url) as resp:
+#            return await resp.text()
+
+from IncP.Download import TDownload
+from App.Scraper.Utils import LoadSiteMap
+
+#Log.AddEcho(TEchoConsole())
+#Log.Print(1, 'x', 'hello')
+
+#Main1()
+#Task = test_open_page(Url)
+
+#Task = LoadSiteMap('https://cthp.net.ua/sitemap.xml')
+Task = LoadSiteMap(TDownload().Get, 'http://oster.com.ua/sitemap.xml')
+[print(i) for i in sorted(asyncio.run(Task))]
