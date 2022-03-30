@@ -14,7 +14,7 @@ from IncP.Log  import Log, TEchoFile
 from Inc.Plugin import Plugin
 
 
-class TApp():
+class TApp(): 
     def InitLog(self):
         _, Name = os.path.split(__file__)
         FileLog = '/var/log/py-vRelaySrv/%s.log' % (Name)
