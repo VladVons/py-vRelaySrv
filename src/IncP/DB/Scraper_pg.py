@@ -38,37 +38,45 @@ class TDbApp(TDbPg):
             ''' % (aId)
         await self.Exec(Query)
 
-    async def GetUrlsForUpdate(self, aExclude: list = [], aLimit: int = 10) -> TDbFetch:
-        Exclude = self.ListToComma(aExclude)
-        if (Exclude): 
-            Exclude = 'and (not url.id in(%s))' % Exclude
+    async def GetSitesForUpdateFull(self, aExclId: list = [], aLimit: int = 10, aUpdDaysX: float = 1) -> TDbFetch:
+        ExclId = self.ListToComma(aExclId)
+        if (ExclId): 
+            CondExcl = 'and (not site.id in(%s))' % ExclId
+        else:
+            CondExcl = ''
 
         Query = f'''
-            select
-                url.id,
-                url.url,
+           Select
+                site.id,
+                site.url,
+                site.sleep,
+                site.tasks,
                 site.scheme
             from
-                url
-            left join site on
-                (url.site_id = site.id)
+                site
             where
-                (site.enabled) and 
-                (DATE_PART('day', NOW() - url.update_date) > site.update_days)
-                {Exclude}
+                (site.enabled) and
+                (DATE_PART('day', NOW() - site.update_date) > site.update_days * {aUpdDaysX})
+                {CondExcl}
             order by
-                url.update_date
+                site.update_date desc
             limit
                 {aLimit}
             '''
         return await TDbFetch(self).Query(Query)
 
-    async def GetSitesForUpdate(self, aExclude: list = [], aLimit: int = 10) -> TDbFetch:
-        Exclude = self.ListToComma(aExclude)
-        if (Exclude): 
-            CondExclude = 'and (not site.id in(%s))' % Exclude
+    async def GetSitesForUpdate(self, aExclId: list = [], aCount: tuple = (0, -1), aLimit: int = 10, aUpdDaysX: float = 1) -> TDbFetch:
+        ExclId = self.ListToComma(aExclId)
+        if (ExclId): 
+            CondExcl = 'and (not site.id in(%s))' % ExclId
         else:
-            CondExclude = ''
+            CondExcl = ''
+
+        CountMin, CountMax = aCount
+        if (CountMin < CountMax): 
+            CondCount =  '(count(*) between %d and %d)' % (CountMin, CountMax)
+        else:
+            CondCount = '(count(*) > %d)' % CountMin
 
         Query = f'''
            Select
@@ -85,12 +93,12 @@ class TDbApp(TDbPg):
                 (url.site_id = site.id)
             where
                 (site.enabled) and
-                (DATE_PART('day', NOW() - url.update_date) > site.update_days)
-                {CondExclude}
+                (DATE_PART('day', NOW() - url.update_date) > site.update_days * {aUpdDaysX})
+                {CondExcl}
             group by
                 site.id
             having 
-                (count(*) > 0)
+                {CondCount}
             order by
                 url_count desc
             limit

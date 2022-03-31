@@ -4,10 +4,11 @@
 CREATE TABLE IF NOT EXISTS site (
     id            SERIAL PRIMARY KEY,
     update_days   INTEGER DEFAULT 7,
+    update_date   TIMESTAMP DEFAULT "2000-12-31",
     url           VARCHAR(64) UNIQUE,
     scheme        TEXT,
-    tasks         SMALLINT DEFAULT 10,
-    sleep         SMALLINT DEFAULT 1,
+    tasks         SMALLINT DEFAULT 1,
+    sleep         SMALLINT DEFAULT 3,
     enabled       BOOLEAN DEFAULT TRUE
 );
 

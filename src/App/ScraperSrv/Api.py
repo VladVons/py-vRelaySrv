@@ -24,14 +24,27 @@ class TApiTask():
 
     async def Get(self, aData: dict) -> dict:
         async with self.Lock:
-            ExcludeId = self.Tasks.GetList('SiteId')
-            DbL = await self.Parent.Db.GetSitesForUpdate(ExcludeId)
-            if (DbL.GetSize() > 0):
-                DbL.Shuffle()
-                SiteId = DbL.Rec.GetField('site.id')
-                DbL = await self.Parent.Db.GetSiteUrlsForUpdate(SiteId)
-                self.Tasks.RecAdd([SiteId, datetime.now(), DbL])
-                return {'SiteId': SiteId, 'Url': DbL.GetData()}
+            ExclId = self.Tasks.GetList('SiteId')
+
+            DblUpdFull = await self.Parent.Db.GetSitesForUpdateFull(aExclId = ExclId, aUpdDaysX = 2)
+            if (DblUpdFull.GetSize() > 0):
+                DblUpdFull.Shuffle()
+                SiteId = DblUpdFull.Rec.GetField('site.id')
+                Res = DblUpdFull.Rec.GetAsDict()
+
+                self.Tasks.RecAdd([SiteId, datetime.now(), DblUpdFull])
+                return Res
+            else:
+                DblUpd = await self.Parent.Db.GetSitesForUpdate(aExclId = ExclId)
+                if (DblUpd.GetSize() > 0):
+                    DblUpd.Shuffle()
+                    SiteId = DblUpd.Rec.GetField('site.id')
+                    DblUpdUrls = await self.Parent.Db.GetSiteUrlsForUpdate(SiteId)
+                    Res = DblUpd.Rec.GetAsDict()
+                    Res.update(DblUpdUrls.GetData())
+
+                    self.Tasks.RecAdd([SiteId, datetime.now(), DblUpdUrls])
+                    return Res
 
 
 class TApi():

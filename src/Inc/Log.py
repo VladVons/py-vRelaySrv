@@ -50,10 +50,10 @@ class TLog():
         if (not List):
             self.Echoes.append(aEcho) 
 
-    def Print(self, aLevel: int, aType: str, aMsg: str, aList: tuple = '', aE: object = '') -> str:
+    def Print(self, aLevel: int, aType: str, aMsg: str, aList: tuple = '', aE: Exception = '') -> str:
         if (aE):
             self._DoExcept(aE)
-            aEx = aE.__class__.__name__
+            aE = aE.__class__.__name__
 
         self.Cnt += 1
         Res = '%s,%s,%03d,%d,%s,%s,%s,%s' % (GetDate(), GetTime(), self.Cnt, aLevel, aType, aMsg, aList, aE)
