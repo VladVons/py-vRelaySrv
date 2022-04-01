@@ -52,7 +52,7 @@ class TMain():
         await asyncio.gather(*Tasks)
 
     def GetInfo(self) -> list:
-        return [i.GetInfo() for i in self.Scrapers]
+        return [x.GetInfo() for x in self.Scrapers]
 
     async def Run(self):
         WaitLocalHost = 1
