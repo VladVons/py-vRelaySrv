@@ -61,7 +61,7 @@ class TWebScraper():
         self.IsRun = False
 
     async def _Worker(self):
-        await asyncio.sleep(random.randint(5))
+        await asyncio.sleep(random.randint(1, 5))
    
         TimeStart = time.time()
         self.IsRun = True

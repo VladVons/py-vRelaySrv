@@ -116,7 +116,7 @@ class TApi():
         return await self.ApiTask.Get(aData)
 
     async def path_get_config(self, aData: dict) -> dict:
-        DBL = await self.Db.GetScraper(aData.get('user'))
+        DBL = await self.Db.GetConfig(aData.get('user'))
         return DBL.Rec.GetAsDict()
 
     async def DbInit(self, aAuth):

@@ -50,7 +50,6 @@ class TDbApp(TDbPg):
                 site.id,
                 site.url,
                 site.sleep,
-                site.tasks,
                 site.scheme
             from
                 site
@@ -83,7 +82,6 @@ class TDbApp(TDbPg):
                 site.id,
                 site.url,
                 site.sleep,
-                site.tasks,
                 site.scheme,
                 count(*) as url_count,
                 sum(data_size) as data_size
@@ -145,14 +143,13 @@ class TDbApp(TDbPg):
             '''
         return await TDbFetch(self).Query(Query)
 
-    async def GetScraper(self, aUser: str) -> TDbFetch:
+    async def GetConfig(self, aUser: str) -> TDbFetch:
         Query = f'''
             select
                 workers,
-                run,
                 enabled
             from
-                scraper
+                auth
             where
                 (login = '{aUser}')
             '''
