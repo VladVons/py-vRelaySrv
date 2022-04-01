@@ -29,7 +29,7 @@ class TMain():
     async def _Worker(self, aTaskId: int):
         while (True):
             Wait = random.randint(2, 5)
-            Log.Print(1, 'i', '_Worker(). Ready for task. Id %d, wait %d sec' % (aTaskId, Wait))
+            #Log.Print(1, 'i', '_Worker(). Ready for task. Id %d, wait %d sec' % (aTaskId, Wait))
             await asyncio.sleep(Wait)
 
             ApiData, Code = await self.Api.GetTask()
@@ -37,9 +37,7 @@ class TMain():
             if (Data):
                 Type = Data.get('Type')
                 if (Type == 'Full'):
-                    Scheme = json.loads(Data['site.scheme'])
-                    Scraper = TWebScraperFull(self, Scheme, Data['site.url'], Data['site.sleep'])
-                    pass
+                    Scraper = TWebScraperFull(self, Data['site.scheme'], Data['site.url'], Data['site.sleep'])
                 elif (Type == 'Update'):
                     #Scraper = TWebScraperUpdate(self, Data['site.scheme'], Data['Urls'], Data['site.sleep'])
                     pass

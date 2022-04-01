@@ -33,7 +33,7 @@ class TApiTask():
                 DblUpdFull.Shuffle()
                 SiteId = DblUpdFull.Rec.GetField('site.id')
                 Res.update(DblUpdFull.Rec.GetAsDict())
-
+                Res['site.scheme'] = json.loads(Res['site.scheme'])
                 self.Tasks.RecAdd([SiteId, datetime.now(), DblUpdFull])
                 return Res
             else:
