@@ -30,5 +30,7 @@ class TApi():
 
     async def GetConfig(self):
         Data = {'user': self.Auth.get('User')}
-        Res = await self._Send('get_config', Data)
-        print('---c2', Res)
+        return await self._Send('get_config', Data)
+
+    async def GetTask(self):
+        return await self._Send('get_task')

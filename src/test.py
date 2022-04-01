@@ -51,9 +51,27 @@ def Test_2():
     from Inc.DB.DbList import TDbList
 
     Fields = ['red', 'green', 'blue']
-    Data = [[21, 22, 23], [11, 12, 13], [111, 121, 131], [21, 22, 23]]
+    Data = [[21, 22, 23], [11, 12, 13], [111, 121, 131], [211,221,231], [31, 32, 33]]
     Db1 = TDbList(Data, Fields)
     #Db1.SetData(Data)
+
+    Db1.RecAdd([1,2,3])
+    Db1.RecFlush()
+
+    Db1.RecAdd()
+    Db1.Rec.SetField('red', 10)
+    Db1.Rec.SetField('green', 20)
+    Db1.Rec.SetField('blue', 30)
+    Db1.RecFlush()
+
+    Db1.Data.append([101, 102, 103])
+    Db1.RecAdd([22, 33, 44])
+    Db1.RecFlush()
+
+    Db1.RecAdd()
+    Db1.Rec.SetAsDict({'red': 250, 'green': 251, 'blue': 252})
+    Db1.RecFlush()
+    Db1.RecGo(0)
 
     print()
     print('GetSize:', Db1.GetSize())
@@ -61,27 +79,21 @@ def Test_2():
     print('Rec:', Db1.Rec)
     print('GetAsDict:', Db1.Rec.GetAsDict())
     print('GetAsTuple:', Db1.Rec.GetAsTuple())
-    print('GetList', Db1.GetList('green', True))
-    print('Json:', str(Db1))
+    print('GetList:', Db1.GetList('green', True))
 
-    Db1.Sort('green', not True)
+    #Db1.Sort('green', not True)
     for Idx, Val in enumerate(Db1):
-        print(Idx, Val.Rec.GetField('red'),  Val.Rec[0])
+        print(Idx, Val.Rec.GetField('red'),  Val.Rec[1])
 
-    Db1.RecAdd()
-    Db1.Rec.SetField('red', 11)
-    Db1.RecFlush()
-
-    #Db1.Data.append([22, 33, 44])
-    Db1.RecAdd([22, 33, 44])
-    Db1.RecFlush()
-
-    Db2 = Db1.Clone(['green', 'blue'])
+    print()
+    Db2 = Db1.Clone(['red', 'green'], (0, 2))
     Db2.Shuffle()
-    print('Db2.Json:', str(Db2))
+    for Idx, Val in enumerate(Db2):
+        print(Idx, Val.Rec.GetField('red'),  Val.Rec[1])
 
     Db2.RecGo(-2)
-    print('Db2.Rec:', Db2.Rec)
+    print('Db2.Rec', Db2.Rec)
+
 
 def Main1():
     Start = time.time()
@@ -102,9 +114,10 @@ from App.Scraper.Utils import LoadSiteMap
 #Log.AddEcho(TEchoConsole())
 #Log.Print(1, 'x', 'hello')
 
-#Main1()
+Main1()
 #Task = test_open_page(Url)
 
 #Task = LoadSiteMap('https://cthp.net.ua/sitemap.xml')
-Task = LoadSiteMap(TDownload().Get, 'http://oster.com.ua/sitemap.xml')
-[print(i) for i in sorted(asyncio.run(Task))]
+#Task = LoadSiteMap(TDownload().Get, 'http://oster.com.ua/sitemap.xml')
+#[print(i) for i in sorted(asyncio.run(Task))]
+

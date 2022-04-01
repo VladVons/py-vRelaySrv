@@ -3,10 +3,28 @@ Author:      Vladimir Vons, Oster Inc.
 Created:     2022.03.24
 License:     GNU, see LICENSE for more details
 Description:
-   Fields = ['red', 'green', 'blue']
-    Data = [[21, 22, 23], [11, 12, 13], [111, 121, 131], [21, 22, 23]]
+    Fields = ['red', 'green', 'blue']
+    Data = [[21, 22, 23], [11, 12, 13], [111, 121, 131], [211,221,231], [31, 32, 33]]
     Db1 = TDbList(Data, Fields)
     #Db1.SetData(Data)
+
+    Db1.RecAdd([1,2,3])
+    Db1.RecFlush()
+
+    Db1.RecAdd()
+    Db1.Rec.SetField('red', 10)
+    Db1.Rec.SetField('green', 20)
+    Db1.Rec.SetField('blue', 30)
+    Db1.RecFlush()
+
+    Db1.Data.append([101, 102, 103])
+    Db1.RecAdd([22, 33, 44])
+    Db1.RecFlush()
+
+    Db1.RecAdd()
+    Db1.Rec.SetAsDict({'red': 250, 'green': 251, 'blue': 252})
+    Db1.RecFlush()
+    Db1.RecGo(0)
 
     print()
     print('GetSize:', Db1.GetSize())
@@ -14,27 +32,20 @@ Description:
     print('Rec:', Db1.Rec)
     print('GetAsDict:', Db1.Rec.GetAsDict())
     print('GetAsTuple:', Db1.Rec.GetAsTuple())
-    print('GetList', Db1.GetList('green', True))
-    print('Json:', str(Db1))
+    print('GetList:', Db1.GetList('green', True))
 
-    Db1.Sort('green', not True)
+    #Db1.Sort('green', not True)
     for Idx, Val in enumerate(Db1):
-        print(Idx, Val.Rec.GetField('red'),  Val.Rec[0])
+        print(Idx, Val.Rec.GetField('red'),  Val.Rec[1])
 
-    Db1.RecAdd()
-    Db1.Rec.SetField('red', 11)
-    Db1.RecFlush()
-
-    #Db1.Data.append([22, 33, 44])
-    Db1.RecAdd([22, 33, 44])
-    Db1.RecFlush()
-
-    Db2 = Db1.Clone(['green', 'blue'])
+    print()
+    Db2 = Db1.Clone(['red', 'green'], (0, 2))
     Db2.Shuffle()
-    print('Db2.Json:', str(Db2))
+    for Idx, Val in enumerate(Db2):
+        print(Idx, Val.Rec.GetField('red'),  Val.Rec[1])
 
     Db2.RecGo(-2)
-    print('Db2.Rec:', Db2.Rec)
+    print('Db2.Rec', Db2.Rec)
 '''
 
 
@@ -46,10 +57,14 @@ class TDbRec(list):
     def __init__(self, aHead: list):
         self.SetHead(aHead)
 
+    def SetHead(self, aFields: list):
+        #self.Head = dict(zip(aFields, range(len(aFields))))
+        self.Head = {Val: Idx for Idx, Val in enumerate(aFields)}
+
     def GetField(self, aName: str) -> any:
         return self[self.Head[aName]]
 
-    def SetField(self, aName: str, aValue):
+    def SetField(self, aName: str, aValue: any):
         self[self.Head[aName]] = aValue
 
     def SetData(self, aData: list):
@@ -57,9 +72,8 @@ class TDbRec(list):
         self.clear()
         self.extend(aData)
 
-    def SetHead(self, aFields: list):
-        #self.Head = dict(zip(aFields, range(len(aFields))))
-        self.Head = {Val: Idx for Idx, Val in enumerate(aFields)}
+    def SetAsDict(self, aData: dict):
+        [self.SetField(Key, Val) for Key, Val in aData.items()]
 
     def GetAsDict(self) -> dict:
         return {Key: self[Val] for Key, Val in self.Head.items()}
@@ -70,13 +84,11 @@ class TDbRec(list):
 
 class TDbList():
     def __init__(self, aData: list, aHead: list):
+        self.Tag = 0
         self.Data: list
         self.Rec: TDbRec
 
         self.SetData(aData, aHead)
-
-    def __str__(self) -> str:
-        return json.dumps(self.GetData())
 
     def __iter__(self):
         return self
@@ -97,7 +109,7 @@ class TDbList():
         return len(self.Data)
 
     def GetData(self) -> dict:
-        return {'Data': self.Data, 'Head': self.Rec.Head}
+        return {'Data': self.Data, 'Head': self.Rec.Head, 'Tag': self.Tag}
 
     def GetList(self, aField: str, aUniq = False) -> list:
         FieldNo = self.Rec.Head[aField]
@@ -106,10 +118,12 @@ class TDbList():
             Res = list(set(Res))
         return Res
 
-    def Clone(self, aFields: list) -> 'TDbList':
+    def Clone(self, aFields: list, aRecNo: tuple = (0, -1)) -> 'TDbList':
+        if (aRecNo[1] == -1):
+            aRecNo[1] = self.GetSize()
         FieldNo = [self.Rec.Head[F] for F in aFields]
         #return [list(map(i.__getitem__, FieldNo)) for i in self.Data]
-        Data = [[D[i] for i in FieldNo] for D in self.Data]
+        Data = [[Val[i] for i in FieldNo] for Idx, Val in enumerate(self.Data) if (aRecNo[0] <= Idx <= aRecNo[1])]
         return TDbList(Data, aFields)
 
     def Sort(self, aField: str, aReverse: bool = True):
@@ -140,4 +154,4 @@ class TDbList():
         self.RecGo(self.GetSize())
 
     def RecFlush(self):
-        self.Data[self._RecNo] = self.Rec
+        self.Data[self._RecNo] = self.Rec.copy()

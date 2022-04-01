@@ -27,10 +27,12 @@ class TApiTask():
             ExclId = self.Tasks.GetList('SiteId')
 
             DblUpdFull = await self.Parent.Db.GetSitesForUpdateFull(aExclId = ExclId, aUpdDaysX = 2)
-            if (DblUpdFull.GetSize() > 0):
+            if (DblUpdFull.GetSize() > 10):
+                DblUpdFull.Tag = 'Full'
+                Res = {'Type': DblUpdFull.Tag}
                 DblUpdFull.Shuffle()
                 SiteId = DblUpdFull.Rec.GetField('site.id')
-                Res = DblUpdFull.Rec.GetAsDict()
+                Res.update(DblUpdFull.Rec.GetAsDict())
 
                 self.Tasks.RecAdd([SiteId, datetime.now(), DblUpdFull])
                 return Res
@@ -39,9 +41,12 @@ class TApiTask():
                 if (DblUpd.GetSize() > 0):
                     DblUpd.Shuffle()
                     SiteId = DblUpd.Rec.GetField('site.id')
+
                     DblUpdUrls = await self.Parent.Db.GetSiteUrlsForUpdate(SiteId)
-                    Res = DblUpd.Rec.GetAsDict()
-                    Res.update(DblUpdUrls.GetData())
+                    DblUpdUrls.Tag = 'Update'
+                    Res = {'Type': DblUpdUrls.Tag}
+                    Res.update(DblUpd.Rec.GetAsDict())
+                    Res['Urls'] = DblUpdUrls.GetData()
 
                     self.Tasks.RecAdd([SiteId, datetime.now(), DblUpdUrls])
                     return Res
@@ -112,7 +117,7 @@ class TApi():
 
     async def path_get_config(self, aData: dict) -> dict:
         DBL = await self.Db.GetScraper(aData.get('user'))
-        return DBL.GetData()
+        return DBL.Rec.GetAsDict()
 
     async def DbInit(self, aAuth):
         self.Db = TDbApp(aAuth)

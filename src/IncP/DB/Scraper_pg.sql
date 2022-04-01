@@ -1,23 +1,22 @@
 -- postgres
 -- https://linuxhint.com/postgresql-full-text-search-tutorial
 
-CREATE TABLE IF NOT EXISTS site (
+CREATE TABLE IF NOT EXISTS site(
     id            SERIAL PRIMARY KEY,
     update_days   INTEGER DEFAULT 7,
     update_date   TIMESTAMP DEFAULT "2000-12-31",
-    url           VARCHAR(64) UNIQUE,
-    scheme        TEXT,
-    tasks         SMALLINT DEFAULT 1,
-    sleep         SMALLINT DEFAULT 3,
+    url           VARCHAR(64) UNIQUE NOT NULL,
+    scheme        TEXT NOT NULL,
+    sleep         FLOAT DEFAULT 3,
     enabled       BOOLEAN DEFAULT TRUE
 );
 
-CREATE TABLE IF NOT EXISTS url (
+CREATE TABLE IF NOT EXISTS url(
     id            SERIAL PRIMARY KEY,
     create_date   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_date   TIMESTAMP DEFAULT "2000-12-31",
     site_id       INTEGER,
-    url           VARCHAR(256) UNIQUE,
+    url           VARCHAR(256) UNIQUE NOT NULL,
     data_size     INTEGER DEFAULT 0,
     url_count     SMALLINT DEFAULT 0,
     status        SMALLINT,
@@ -25,7 +24,7 @@ CREATE TABLE IF NOT EXISTS url (
     FOREIGN KEY   (site_id) REFERENCES site(id)
 );
 
-CREATE TABLE IF NOT EXISTS product (
+CREATE TABLE IF NOT EXISTS product(
     id            SERIAL PRIMARY KEY,
     create_date   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     url_id        INTEGER,
@@ -37,23 +36,21 @@ CREATE TABLE IF NOT EXISTS product (
     FOREIGN KEY   (url_id) REFERENCES url(id)
 );
 
-CREATE TABLE IF NOT EXISTS scraper (
+CREATE TABLE IF NOT EXISTS auth(
     id            SERIAL PRIMARY KEY,
     create_date   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    login         VARCHAR(16) UNIQUE,
+    login         VARCHAR(16) UNIQUE NOT NULL,
     passw         VARCHAR(16),
-    workers       SMALLINT DEFAULT 5,
-    run           BOOLEAN DEFAULT TRUE,
     enabled       BOOLEAN DEFAULT TRUE
 );
 
-CREATE TABLE IF NOT EXISTS proxy (
+CREATE TABLE IF NOT EXISTS proxy(
     id            SERIAL PRIMARY KEY,
-    name          VARCHAR(64),
+    name          VARCHAR(64) NOT NULL,
     enabled       BOOLEAN DEFAULT TRUE
 );
 
-CREATE TABLE IF NOT EXISTS log (
+CREATE TABLE IF NOT EXISTS log(
     id            SERIAL PRIMARY KEY,
     create_date   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     type_id       INTEGER,

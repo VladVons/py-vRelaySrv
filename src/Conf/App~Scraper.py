@@ -1,4 +1,4 @@
-MaxTasks = 1
+MaxWorkers = 4
 
 Proxy = ['socks5://localhost:9050']
 

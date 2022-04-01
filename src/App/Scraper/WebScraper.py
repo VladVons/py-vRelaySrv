@@ -12,6 +12,8 @@ https://ipinfo.io/json'
 https://gist.github.com/DusanMadar/8d11026b7ce0bce6a67f7dd87b999f6b
 torify curl https://brain.com.ua
 torify wget --user-agent=mozilla --output-document=brain-proxy.html https://brain.com.ua 
+
+UrlChekIP = 'http://icanhazip.com'
 '''
 
 
@@ -29,63 +31,38 @@ from IncP.Download import TDownload
 from IncP.DB.Scraper_pg import TDbApp
 from .Scheme import TScheme
 
-UrlChekIP = 'http://icanhazip.com'
-
 class TWebScraper():
-    def __init__(self, aParent, aUrlRoot: str, aMaxTasks: int = 8, aSleep: int = 1):
-        self.UrlRoot = aUrlRoot
-        self.MaxTasks = aMaxTasks
+    def __init__(self, aParent, aScheme: dict, aSleep: int = 1):
         self.Sleep = aSleep
+        self.Scheme = aScheme
         self.Parent = aParent
 
-        self.Url = []
-        self.UrlCnt = 0
         self.TotalData = 0
+        self.TotalUrl = 0
         self.IsRun = False
 
         self.Download = TDownload(self.Parent.Conf.get('Proxy', []))
-
         self.Queue = asyncio.Queue()
-        #self.Queue.put_nowait(UrlChekIP)
-        self.Queue.put_nowait(aUrlRoot)
 
         self.Event = asyncio.Event()
         self.Wait(False)
 
-    async def _DoGrab(self, aUrl: str, aSoup, aStatus: int, aTaskId: int):
+    async def _DoUrl(self, aUrl: str, aData, aStatus: int):
         raise NotImplementedError()
 
-    @staticmethod
-    def IsMimeApp(aUrl: str) -> bool:
-        Path = urlparse(aUrl).path
-        Ext = os.path.splitext(Path)[1]
-        return Ext in ['.zip', '.rar', '.xml', '.pdf', '.jpg', '.jpeg', '.png', '.gif']
+    def Wait(self, aEnable: bool):
+        if  (aEnable):
+            self.Event.clear()
+        else:
+            self.Event.set()
 
-    async def _GrabHref(self, aUrl: str, aData: str, aStatus: int, aTaskId: int):
-        self.TotalData += len(aData)
-        self.UrlCnt += 1
+    def Stop(self):
+        self.Wait(False)
+        self.IsRun = False
 
-        Soup = BeautifulSoup(aData, "lxml")
-        for A in Soup.find_all("a"):
-            Href = A.get("href", '').strip().rstrip('/')
-            if (Href):
-                Path = urlparse(Href).path
-                Ext = os.path.splitext(Path)[1]
-
-                if (Href.startswith('/')):
-                    Href = self.UrlRoot + Href
-
-                if (Href.startswith(self.UrlRoot)) and \
-                   (not Href.startswith('#')) and \
-                   (not Href in self.Url) and \
-                   (not self.IsMimeApp(Href)):
-                    self.Url.append(Href)
-                    self.Queue.put_nowait(Href)
-                    #Log.Print(1, 'i', '_GrabHref(). Add url %s' % (Href))
-        await self._DoGrab(aUrl, Soup, aStatus, aTaskId)
-
-    async def _Worker(self, aTaskId: int):
-        await asyncio.sleep(aTaskId)
+    async def _Worker(self):
+        await asyncio.sleep(random.randint(5))
+   
         TimeStart = time.time()
         self.IsRun = True
         while (self.IsRun):
@@ -101,45 +78,47 @@ class TWebScraper():
                 if (Arr):
                     Data, Status = Arr
                     if (Status == 200):
-                        await self._GrabHref(Url, Data, Status, aTaskId)
+                        self.TotalData += len(Data)
+                        self.TotalUrl += 1
+                    await self._DoUrl(Url, Data, Status)
                 self.Queue.task_done()
             except (aiohttp.ClientConnectorError, aiohttp.ClientError, asyncio.TimeoutError, Exception) as E:
                 Log.Print(1, 'x', '_Worker(). %s' % (Url), aE = E)
-        Log.Print(1, 'i', '_Worker(). %d done' % (aTaskId))
+        Log.Print(1, 'i', '_Worker(). done')
 
-    def GetInfo(self) -> dict:
-        return {'UrlRoot': self.UrlRoot, 'UrlCnt': self.UrlCnt, 'UrlFound': len(self.Url), 'TotalData': self.TotalData, 'Sleep': self.Sleep, 'MaxTasks': self.MaxTasks}
+class TWebScraperFull(TWebScraper):
+    def __init__(self, aParent, aScheme: dict, aUrlRoot: str, aSleep: int = 1):
+        super().__init__(aParent, aScheme, aSleep)
 
-    def Wait(self, aEnable: bool):
-        if  (aEnable):
-            self.Event.clear()
-        else:
-            self.Event.set()
+        self.UrlRoot = aUrlRoot
+        self.Url = []
+        self.Queue.put_nowait(aUrlRoot)
 
-    def Stop(self):
-        self.Wait(False)
-        self.IsRun = False
-        if (self.Queue.empty()):
-            for Task in self.Tasks():
-                Task.cancel()
-            self.Tasks = []
+    @staticmethod
+    def IsMimeApp(aUrl: str) -> bool:
+        Path = urlparse(aUrl).path
+        Ext = os.path.splitext(Path)[1]
+        return Ext in ['.zip', '.rar', '.xml', '.pdf', '.jpg', '.jpeg', '.png', '.gif']
 
-    async def Run(self):
-        self.Tasks = [asyncio.create_task(self._Worker(i)) for i in range(self.MaxTasks)]
-        Log.Print(1, 'i', 'Parse(). URL:%s, Tasks:%d(%d)' % (self.UrlRoot, self.MaxTasks, len(asyncio.all_tasks())))
-        await asyncio.gather(*self.Tasks)
-        self.IsRun = False
-        Log.Print(1, 'i', 'Parse(). Done')
+    async def _DoUrl(self, aUrl: str, aData: str, aStatus: int):
+        Soup = BeautifulSoup(aData, "lxml")
+        for A in Soup.find_all("a"):
+            Href = A.get("href", '').strip().rstrip('/')
+            if (Href):
+                if (Href.startswith('/')):
+                    Href = self.UrlRoot + Href
 
+                if (Href.startswith(self.UrlRoot)) and \
+                   (not Href.startswith('#')) and \
+                   (not Href in self.Url) and \
+                   (not self.IsMimeApp(Href)):
+                    self.Url.append(Href)
+                    self.Queue.put_nowait(Href)
+                    #Log.Print(1, 'i', '_GrabHref(). Add url %s' % (Href))
+        await self._GrabHref(aUrl, Soup, aStatus)
 
-class TWebScraperDb(TWebScraper):
-    def __init__(self, aParent, aUrlRoot: str, aMaxTasks: int, aSleep: int, aScheme: dict):
-        super().__init__(aParent, aUrlRoot, aMaxTasks, aSleep)
-        self.Scheme = aScheme
-        self.UrlScheme = 0
-
-    async def _DoGrab(self, aUrl: str, aSoup, aStatus: int, aTaskId: int):
-        Msg = 'task:%2d, status:%d, found:%2d, done:%d, total:%dM, %s ;' % (aTaskId, aStatus, len(self.Url), self.UrlCnt, self.TotalData / 1000000, aUrl)
+    async def _GrabHref(self, aUrl: str, aSoup: BeautifulSoup, aStatus: int):
+        Msg = 'task:%2d, status:%d, found:%2d, done:%d, total:%dM, %s ;' % (aStatus, len(self.Url), self.TotalUrl, self.TotalData / 1000000, aUrl)
         Log.Print(1, 'i', Msg)
 
         Res = TScheme.Parse(aSoup, self.Scheme)
@@ -147,3 +126,17 @@ class TWebScraperDb(TWebScraper):
             self.UrlScheme += 1
             #print('---x1', Res)
             #await self.Parent.Db.InsertUrl(aUrl, Res.get('Name', ''), Res.get('Price', 0), Res.get('PriceOld', 0), Res.get('OnStock', 1), Res.get('Image', ''))
+
+
+class TWebScraperUpdate(TWebScraper):
+    def __init__(self, aParent, aScheme: dict, aUrls: list, aSleep: int):
+        super().__init__(aParent, aScheme, aSleep)
+        
+        for Url in aUrls:
+            self.Queue.put_nowait(Url)
+
+    async def _DoUrl(self, aUrl: str, aData: str, aStatus: int):
+        Soup = BeautifulSoup(aData, "lxml")
+
+        Msg = 'task:%2d, status:%d, found:%2d, done:%d, total:%dM, %s ;' % (aStatus, self.TotalUrl, self.TotalData / 1000000, aUrl)
+        Log.Print(1, 'i', Msg)

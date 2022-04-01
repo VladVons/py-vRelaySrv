@@ -137,7 +137,7 @@ class TDbApp(TDbPg):
             select
                 id
             from
-                scraper
+                auth
             where
                 (enabled) and
                 (login = '{aLogin}') and
