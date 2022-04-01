@@ -13,6 +13,7 @@ import aiohttp
 #
 from IncP.Log import Log
 
+
 class TApi():
     def __init__(self, aAuth: dict):
         self.Auth = aAuth
