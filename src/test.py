@@ -52,7 +52,7 @@ def Test_2():
 
     Fields = ['red', 'green', 'blue']
     Data = [[21, 22, 23], [11, 12, 13], [111, 121, 131], [211,221,231], [31, 32, 33]]
-    Db1 = TDbList(Data, Fields)
+    Db1 = TDbList(Fields, Data)
     #Db1.SetData(Data)
 
     Db1.RecAdd([1,2,3])
@@ -74,12 +74,15 @@ def Test_2():
     Db1.RecGo(0)
 
     print()
+    print('GetHead:', Db1.Rec.GetHead())
     print('GetSize:', Db1.GetSize())
     print('Data:', Db1.Data)
     print('Rec:', Db1.Rec)
     print('GetAsDict:', Db1.Rec.GetAsDict())
     print('GetAsTuple:', Db1.Rec.GetAsTuple())
     print('GetList:', Db1.GetList('green', True))
+    print('RecPop:', Db1.RecPop())
+
 
     #Db1.Sort('green', not True)
     for Idx, Val in enumerate(Db1):

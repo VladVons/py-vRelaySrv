@@ -72,7 +72,7 @@ class TScheme():
 
         PathObj = Res.get('Path')
         if (PathObj):
-            Data = ParseSchema(PathObj, aSchema.get('Dir', {}))
+            Data = TScheme.Parse(PathObj, aSchema.get('Dir', {}))
             del Res['Path']
             Res.update(Data)
 

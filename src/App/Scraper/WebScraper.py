@@ -24,11 +24,10 @@ import random
 import time
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup
-from aiohttp_socks import ProxyConnector
 #
 from IncP.Log import Log
 from IncP.Download import TDownload
-from IncP.DB.Scraper_pg import TDbApp
+from Inc.DB.DbList import TDbList
 from .Scheme import TScheme
 
 class TWebScraper():
@@ -39,10 +38,12 @@ class TWebScraper():
 
         self.TotalData = 0
         self.TotalUrl = 0
+        self.UrlScheme = 0
         self.IsRun = False
 
         self.Download = TDownload(self.Parent.Conf.get('Proxy', []))
-        self.Queue = asyncio.Queue()
+        #self.DblQueue = TDbList(['Url']) #ToDo. aData is not empty !
+        self.DblQueue = TDbList(['Url'], [])
 
         self.Event = asyncio.Event()
         self.Wait(False)
@@ -63,17 +64,14 @@ class TWebScraper():
     async def _Worker(self):
         await asyncio.sleep(random.randint(1, 5))
    
-        TimeStart = time.time()
         self.IsRun = True
-        while (self.IsRun):
+        while (self.IsRun) and (not self.DblQueue.IsEmpty()):
             await self.Event.wait()
             await asyncio.sleep(random.randint(int(self.Sleep / 2), self.Sleep))
 
-            if (self.Queue.empty()) and (time.time() - TimeStart > 10):
-                break
-
             try:
-                Url = await asyncio.wait_for(self.Queue.get(), 10)
+                Rec = self.DblQueue.RecPop()
+                Url = Rec.GetField('Url')
                 Arr = await self.Download.Get(Url)
                 if (Arr):
                     Data, Status = Arr
@@ -81,7 +79,6 @@ class TWebScraper():
                         self.TotalData += len(Data)
                         self.TotalUrl += 1
                     await self._DoUrl(Url, Data, Status)
-                self.Queue.task_done()
             except (aiohttp.ClientConnectorError, aiohttp.ClientError, asyncio.TimeoutError, Exception) as E:
                 Log.Print(1, 'x', '_Worker(). %s' % (Url), aE = E)
         Log.Print(1, 'i', '_Worker(). done')
@@ -92,7 +89,7 @@ class TWebScraperFull(TWebScraper):
 
         self.UrlRoot = aUrlRoot
         self.Url = []
-        self.Queue.put_nowait(aUrlRoot)
+        self.DblQueue.RecAdd([aUrlRoot])
 
     @staticmethod
     def IsMimeApp(aUrl: str) -> bool:
@@ -102,7 +99,8 @@ class TWebScraperFull(TWebScraper):
 
     async def _DoUrl(self, aUrl: str, aData: str, aStatus: int):
         Soup = BeautifulSoup(aData, "lxml")
-        for A in Soup.find_all("a"):
+        Htrefs = Soup.find_all("a")
+        for A in Htrefs:
             Href = A.get("href", '').strip().rstrip('/')
             if (Href):
                 if (Href.startswith('/')):
@@ -113,12 +111,12 @@ class TWebScraperFull(TWebScraper):
                    (not Href in self.Url) and \
                    (not self.IsMimeApp(Href)):
                     self.Url.append(Href)
-                    self.Queue.put_nowait(Href)
+                    self.DblQueue.RecAdd([Href])
                     #Log.Print(1, 'i', '_GrabHref(). Add url %s' % (Href))
         await self._GrabHref(aUrl, Soup, aStatus)
 
     async def _GrabHref(self, aUrl: str, aSoup: BeautifulSoup, aStatus: int):
-        Msg = 'task:%2d, status:%d, found:%2d, done:%d, total:%dM, %s ;' % (aStatus, len(self.Url), self.TotalUrl, self.TotalData / 1000000, aUrl)
+        Msg = 'status:%d, found:%2d, done:%d, total:%dM, %s ;' % (aStatus, len(self.Url), self.TotalUrl, self.TotalData / 1000000, aUrl)
         Log.Print(1, 'i', Msg)
 
         Res = TScheme.Parse(aSoup, self.Scheme)
@@ -138,5 +136,5 @@ class TWebScraperUpdate(TWebScraper):
     async def _DoUrl(self, aUrl: str, aData: str, aStatus: int):
         Soup = BeautifulSoup(aData, "lxml")
 
-        Msg = 'task:%2d, status:%d, found:%2d, done:%d, total:%dM, %s ;' % (aStatus, self.TotalUrl, self.TotalData / 1000000, aUrl)
+        Msg = 'status:%d, found:%2d, done:%d, total:%dM, %s ;' % (aStatus, self.TotalUrl, self.TotalData / 1000000, aUrl)
         Log.Print(1, 'i', Msg)

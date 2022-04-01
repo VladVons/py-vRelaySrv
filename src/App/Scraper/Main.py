@@ -9,6 +9,7 @@ Description:
 
 import asyncio
 import random
+import json
 from collections import deque
 #
 from IncP.Log import Log
@@ -27,7 +28,7 @@ class TMain():
 
     async def _Worker(self, aTaskId: int):
         while (True):
-            Wait = random.randint(1, 5)
+            Wait = random.randint(2, 5)
             Log.Print(1, 'i', '_Worker(). Ready for task. Id %d, wait %d sec' % (aTaskId, Wait))
             await asyncio.sleep(Wait)
 
@@ -36,10 +37,12 @@ class TMain():
             if (Data):
                 Type = Data.get('Type')
                 if (Type == 'Full'):
-                    Scraper = TWebScraperFull(self, Data['site.scheme'], Data['site.url'], Data['site.sleep'])
+                    Scheme = json.loads(Data['site.scheme'])
+                    Scraper = TWebScraperFull(self, Scheme, Data['site.url'], Data['site.sleep'])
                     pass
                 elif (Type == 'Update'):
-                    Scraper = TWebScraperUpdate(self, Data['site.scheme'], Data['Urls'], Data['site.sleep'])
+                    #Scraper = TWebScraperUpdate(self, Data['site.scheme'], Data['Urls'], Data['site.sleep'])
+                    pass
                 else:
                     Log.Print(1, 'e', '_Worker(). Unknown type: %d' % (Type))
                     return 

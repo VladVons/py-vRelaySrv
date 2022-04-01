@@ -49,7 +49,6 @@ Description:
 '''
 
 
-import json
 import random
 
 
@@ -60,6 +59,9 @@ class TDbRec(list):
     def SetHead(self, aFields: list):
         #self.Head = dict(zip(aFields, range(len(aFields))))
         self.Head = {Val: Idx for Idx, Val in enumerate(aFields)}
+
+    def GetHead(self) -> list:
+        return sorted(self.Head, key= self.Head.get)
 
     def GetField(self, aName: str) -> any:
         return self[self.Head[aName]]
@@ -83,9 +85,9 @@ class TDbRec(list):
 
 
 class TDbList():
-    def __init__(self, aData: list, aHead: list):
+    def __init__(self, aHead: list, aData: list = []):
         self.Tag = 0
-        self.Data: list
+        self.Data: list = []
         self.Rec: TDbRec
 
         self.SetData(aData, aHead)
@@ -102,11 +104,14 @@ class TDbList():
             return self
 
     def _RecInit(self):
-        if (self.GetSize() > 0):
+        if (not self.IsEmpty()):
             self.Rec.SetData(self.Data[self._RecNo])
 
     def GetSize(self) -> int:
         return len(self.Data)
+
+    def IsEmpty(self) -> bool:
+        return (self.GetSize() == 0)
 
     def GetData(self) -> dict:
         return {'Data': self.Data, 'Head': self.Rec.Head, 'Tag': self.Tag}
@@ -124,7 +129,7 @@ class TDbList():
         FieldNo = [self.Rec.Head[F] for F in aFields]
         #return [list(map(i.__getitem__, FieldNo)) for i in self.Data]
         Data = [[Val[i] for i in FieldNo] for Idx, Val in enumerate(self.Data) if (aRecNo[0] <= Idx <= aRecNo[1])]
-        return TDbList(Data, aFields)
+        return TDbList(aFields, Data)
 
     def Sort(self, aField: str, aReverse: bool = True):
         FieldNo = self.Rec.Head[aField]
@@ -150,8 +155,15 @@ class TDbList():
     def RecAdd(self, aData: list = []):
         if (not aData):
             aData = [None for i in range(len(self.Rec.Head))]
+        assert (len(aData) == len(self.Rec.Head)), 'length mismatch'
+
         self.Data.append(aData)
         self.RecGo(self.GetSize())
 
     def RecFlush(self):
         self.Data[self._RecNo] = self.Rec.copy()
+
+    def RecPop(self) -> TDbRec:
+        Res = TDbRec(self.Rec.GetHead())
+        Res.SetData(self.Data.pop())
+        return Res

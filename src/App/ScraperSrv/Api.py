@@ -19,7 +19,7 @@ from Inc.DB.DbList import TDbList
 class TApiTask():
     def __init__(self, aParent: 'TApi'):
         self.Parent = aParent
-        self.Tasks = TDbList([], ['SiteId', 'StartAt', 'Urls'])
+        self.Tasks = TDbList(['SiteId', 'StartAt', 'Urls'])
         self.Lock = asyncio.Lock()
 
     async def Get(self, aData: dict) -> dict:
@@ -27,7 +27,7 @@ class TApiTask():
             ExclId = self.Tasks.GetList('SiteId')
 
             DblUpdFull = await self.Parent.Db.GetSitesForUpdateFull(aExclId = ExclId, aUpdDaysX = 2)
-            if (DblUpdFull.GetSize() > 10):
+            if (DblUpdFull.GetSize() > 0):
                 DblUpdFull.Tag = 'Full'
                 Res = {'Type': DblUpdFull.Tag}
                 DblUpdFull.Shuffle()

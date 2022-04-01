@@ -90,6 +90,8 @@ Install()
 {
   Log "$0->$FUNCNAME($*)"
 
+  pip3 install -r requires.txt
+
   ExecM "pip3 install nuitka"
   ExecM "pip3 install --upgrade nuitka"
   ExecM "sudo apt install python3-dev --no-install-recommends"
