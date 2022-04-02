@@ -50,7 +50,8 @@ class TDbApp(TDbPg):
                 site.id,
                 site.url,
                 site.sleep,
-                site.scheme
+                site.scheme,
+                site.sitemap
             from
                 site
             where
@@ -83,6 +84,7 @@ class TDbApp(TDbPg):
                 site.url,
                 site.sleep,
                 site.scheme,
+                site.sitemap,
                 count(*) as url_count,
                 sum(data_size) as data_size
             from

@@ -70,7 +70,7 @@ class TDbRec(list):
         self[self.Head[aName]] = aValue
 
     def SetData(self, aData: list):
-        assert (len(aData) == len(self.Head)), 'length mismatch'
+        assert (len(aData) == len(self.Head)), 'length mismatch: %d, %d' % (len(aData), len(self.Head))
         self.clear()
         self.extend(aData)
 

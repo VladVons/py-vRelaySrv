@@ -18,6 +18,8 @@ UrlChekIP = 'http://icanhazip.com'
 
 
 import os
+import re
+import gzip
 import asyncio
 import aiohttp
 import random
@@ -42,14 +44,20 @@ class TWebScraper():
         self.IsRun = False
 
         self.Download = TDownload(self.Parent.Conf.get('Proxy', []))
-        #self.DblQueue = TDbList(['Url']) #ToDo. aData is not empty !
+        #self.DblQueue = TDbList(['Url']) #ToDo. default aData is not empty in constructor!
         self.DblQueue = TDbList(['Url'], [])
 
         self.Event = asyncio.Event()
         self.Wait(False)
 
-    async def _DoUrl(self, aUrl: str, aData, aStatus: int):
+    async def _DoWorkerUrl(self, aUrl: str, aData, aStatus: int):
         raise NotImplementedError()
+
+    async def _DoWorkerStart(self):
+        pass
+
+    async def _DoWorkerEnd(self):
+        pass
 
     def Wait(self, aEnable: bool):
         if  (aEnable):
@@ -62,8 +70,9 @@ class TWebScraper():
         self.IsRun = False
 
     async def _Worker(self):
+        await self._DoWorkerStart()
+
         await asyncio.sleep(random.randint(1, 5))
-   
         self.IsRun = True
         while (self.IsRun) and (not self.DblQueue.IsEmpty()):
             await self.Event.wait()
@@ -78,10 +87,11 @@ class TWebScraper():
                     if (Status == 200):
                         self.TotalData += len(Data)
                         self.TotalUrl += 1
-                    await self._DoUrl(Url, Data, Status)
+                    await self._DoWorkerUrl(Url, Data, Status)
             except (aiohttp.ClientConnectorError, aiohttp.ClientError, asyncio.TimeoutError, Exception) as E:
                 Log.Print(1, 'x', '_Worker(). %s' % (Url), aE = E)
         Log.Print(1, 'i', '_Worker(). done')
+        await self._DoWorkerEnd()
 
 class TWebScraperFull(TWebScraper):
     def __init__(self, aParent, aScheme: dict, aUrlRoot: str, aSleep: int = 1):
@@ -97,11 +107,11 @@ class TWebScraperFull(TWebScraper):
         Ext = os.path.splitext(Path)[1]
         return Ext in ['.zip', '.rar', '.xml', '.pdf', '.jpg', '.jpeg', '.png', '.gif']
 
-    async def _DoUrl(self, aUrl: str, aData: str, aStatus: int):
-        Soup = BeautifulSoup(aData, "lxml")
-        Htrefs = Soup.find_all("a")
+    async def _DoWorkerUrl(self, aUrl: str, aData: str, aStatus: int):
+        Soup = BeautifulSoup(aData, 'lxml')
+        Htrefs = Soup.find_all('a')
         for A in Htrefs:
-            Href = A.get("href", '').strip().rstrip('/')
+            Href = A.get('href', '').strip().rstrip('/')
             if (Href):
                 if (Href.startswith('/')):
                     Href = self.UrlRoot + Href
@@ -125,6 +135,44 @@ class TWebScraperFull(TWebScraper):
             #print('---x1', Res)
             #await self.Parent.Db.InsertUrl(aUrl, Res.get('Name', ''), Res.get('Price', 0), Res.get('PriceOld', 0), Res.get('OnStock', 1), Res.get('Image', ''))
 
+class TWebScraperSitemap(TWebScraper):
+    def __init__(self, aParent, aScheme: dict, aUrlRoot: str, aSleep: int):
+        super().__init__(aParent, aScheme, aSleep)
+
+        self.UrlRoot = aUrlRoot
+
+    async def LoadSiteMap(self, aUrl: str) -> list:
+        Res = []
+
+        Info = await self.Download.Get(aUrl)
+        if (Info):
+            Data, Status = Info
+            if (Status == 200):
+                if (aUrl.endswith('.xml.gz')):
+                    Data = gzip.decompress(Data)
+
+            Urls = re.findall('<loc>(.*?)</loc>', Data.decode())
+            for Url in Urls:
+                if (Url.endswith('.xml')) or (Url.endswith('.xml.gz')):
+                    Res += await self.LoadSiteMap(Url)
+                else:
+                    Res.append(Url.strip('/'))
+        return Res
+
+    async def _DoWorkerStart(self):
+        SiteMap = await self.LoadSiteMap(self.UrlRoot + '/sitemap.xml')
+        if (SiteMap):
+            self.DblQueue.SetData(SiteMap)    
+        else:
+            Log.Print(1, 'e', 'No sitemap %' % (self.UrlRoot))
+
+    async def _DoWorkerUrl(self, aUrl: str, aData: str, aStatus: int):
+        Soup = BeautifulSoup(aData, 'lxml')
+        Scheme = TScheme.Parse(Soup, self.Scheme)
+        if (Scheme):
+            self.UrlScheme += 1
+            print('---x1', aUrl, Scheme)
+
 
 class TWebScraperUpdate(TWebScraper):
     def __init__(self, aParent, aScheme: dict, aUrls: list, aSleep: int):
@@ -133,8 +181,9 @@ class TWebScraperUpdate(TWebScraper):
         for Url in aUrls:
             self.Queue.put_nowait(Url)
 
-    async def _DoUrl(self, aUrl: str, aData: str, aStatus: int):
+    async def _DoWorkerUrl(self, aUrl: str, aData: str, aStatus: int):
         Soup = BeautifulSoup(aData, "lxml")
 
         Msg = 'status:%d, found:%2d, done:%d, total:%dM, %s ;' % (aStatus, self.TotalUrl, self.TotalData / 1000000, aUrl)
         Log.Print(1, 'i', Msg)
+

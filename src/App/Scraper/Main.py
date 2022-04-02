@@ -13,7 +13,7 @@ import json
 from collections import deque
 #
 from IncP.Log import Log
-from .WebScraper import TWebScraperFull, TWebScraperUpdate
+from .WebScraper import TWebScraperFull, TWebScraperUpdate, TWebScraperSitemap
 from .Api import TApi
 from IncP.Log import Log
 
@@ -37,7 +37,10 @@ class TMain():
             if (Data):
                 Type = Data.get('Type')
                 if (Type == 'Full'):
-                    Scraper = TWebScraperFull(self, Data['site.scheme'], Data['site.url'], Data['site.sleep'])
+                    if (Data['site.sitemap']):
+                        Scraper = TWebScraperSitemap(self, Data['site.scheme'], Data['site.url'], Data['site.sleep'])
+                    else:
+                        Scraper = TWebScraperFull(self, Data['site.scheme'], Data['site.url'], Data['site.sleep'])
                 elif (Type == 'Update'):
                     #Scraper = TWebScraperUpdate(self, Data['site.scheme'], Data['Urls'], Data['site.sleep'])
                     pass

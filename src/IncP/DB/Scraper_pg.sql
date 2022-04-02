@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS site(
     url           VARCHAR(64) UNIQUE NOT NULL,
     scheme        TEXT NOT NULL,
     sleep         FLOAT DEFAULT 3,
+    sitemap       BOOLEAN DEFAULT FALSE,
     enabled       BOOLEAN DEFAULT TRUE
 );
 
