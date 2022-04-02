@@ -48,15 +48,17 @@ class TLog():
         #List = [i for i in self.Echoes if (i.__class__.__name__ == Name)]
         List = list(filter(lambda i: (i.__class__.__name__ == Name), self.Echoes))
         if (not List):
-            self.Echoes.append(aEcho) 
+            self.Echoes.append(aEcho)
 
-    def Print(self, aLevel: int, aType: str, aMsg: str, aList: tuple = '', aE: Exception = '') -> str:
+    def Print(self, aLevel: int, aType: str, aMsg: str, aList: list = [], aE: Exception = None) -> str:
         if (aE):
-            self._DoExcept(aE)
-            aE = aE.__class__.__name__
+            aList.append(aE.__class__.__name__)
+            EMsg = self._DoExcept(aE)
+            if (EMsg):
+                aList.append(EMsg)
 
         self.Cnt += 1
-        Res = '%s,%s,%03d,%d,%s,%s,%s,%s' % (GetDate(), GetTime(), self.Cnt, aLevel, aType, aMsg, aList, aE)
+        Res = '%s,%s,%03d,%d,%s,%s,%s' % (GetDate(), GetTime(), self.Cnt, aLevel, aType, aMsg, aList)
         for Echo in self.Echoes:
             if (aLevel <= Echo.Level) and (aType in Echo.Type):
                 Echo.Write(Res)

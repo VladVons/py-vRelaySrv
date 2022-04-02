@@ -9,7 +9,7 @@ import time
 #from aiocfscrape import CloudflareScraper
 #
 #from IncP.DB.Scraper_pg import TDbApp
-from Inc.Log import Log, TEchoConsole
+from IncP.Log import Log
 
 
 DbAuth = {
@@ -50,16 +50,6 @@ async def TestA_1():
 def Test_2():
     from Inc.DB.DbList import TDbList
 
-    Fields = ['red', 'green']
-    Data = [21,22,23]
-    Db1 = TDbList(Fields)
-    Db1.AddList(Data, 'red')
-    Db1.Empty()
-    print('Data:', Db1.Data)
-    
-    
-    return
-
     Fields = ['red', 'green', 'blue']
     Data = [[21, 22, 23], [11, 12, 13], [111, 121, 131], [211,221,231], [31, 32, 33]]
     Db1 = TDbList(Fields, Data)
@@ -81,8 +71,10 @@ def Test_2():
     Db1.RecAdd()
     Db1.Rec.SetAsDict({'red': 250, 'green': 251, 'blue': 252})
     Db1.RecFlush()
-    Db1.RecGo(0)
 
+    Db1.AddList('red', [90, 91, 92, 94, 95, 96])
+
+    Db1.RecGo(0)
     print()
     print('GetHead:', Db1.Rec.GetHead())
     print('GetSize:', Db1.GetSize())
@@ -92,7 +84,6 @@ def Test_2():
     print('GetAsTuple:', Db1.Rec.GetAsTuple())
     print('GetList:', Db1.GetList('green', True))
     print('RecPop:', Db1.RecPop())
-
 
     #Db1.Sort('green', not True)
     for Idx, Val in enumerate(Db1):
@@ -126,7 +117,12 @@ def Main1():
 
 #Main1()
 
+class Tx1():
+    def M1(self):
+        try:
+            q = 2/0
+        except Exception as E:
+            Log.Print(1, 'x', 'Hello', aE=E)
 
-aSchema = {'one': 1, '-two': 2, 'three': 3}
-for SKey, SVal in filter(lambda Item: not Item[0].startswith('-'), aSchema.items()):
-    print(SKey, SVal)
+x1 = Tx1()
+x1.M1()

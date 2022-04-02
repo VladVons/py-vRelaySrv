@@ -45,12 +45,10 @@ class TResult():
         self.Dbl.Rec.SetAsDict(aData)
 
         if (self.Dbl.GetSize() > self.MaxSize):
-            self.Parent.Wait(True)
             Data = self.Dbl.GetData()
             SrvRes = await Api.SendResult(Data)
             if (SrvRes):
                 self.Dbl.Empty()
-            self.Parent.Wait(False)
 
 class TWebScraper():
     def __init__(self, aParent, aScheme: dict, aSleep: int = 1):
@@ -183,7 +181,7 @@ class TWebScraperSitemap(TWebScraper):
     async def _DoWorkerStart(self):
         SiteMap = await self.LoadSiteMap(self.UrlRoot + '/sitemap.xml')
         if (SiteMap):
-            self.DblQueue.AddList(SiteMap, 'Url')  
+            self.DblQueue.AddList('Url', SiteMap)  
         else:
             Log.Print(1, 'e', 'No sitemap %' % (self.UrlRoot))
 

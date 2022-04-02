@@ -10,7 +10,8 @@ import os
 import asyncio 
 #
 from App import ConfApp
-from IncP.Log  import Log, TEchoFile
+from Inc.Log  import TEchoFile
+from IncP.Log  import Log
 from Inc.Plugin import Plugin
 
 

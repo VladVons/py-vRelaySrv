@@ -144,7 +144,7 @@ class TDbList():
         random.shuffle(self.Data)
         self.RecGo(0)
 
-    def AddList(self, aData: list, aField: str):
+    def AddList(self, aField: str, aData: list):
         Head = self.Rec.Head
         Blank = [None for i in range(len(self.Rec.Head))]
         for Val in aData:
