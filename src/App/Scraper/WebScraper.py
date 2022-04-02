@@ -31,6 +31,26 @@ from IncP.Log import Log
 from IncP.Download import TDownload
 from Inc.DB.DbList import TDbList
 from .Scheme import TScheme
+from .Api import Api
+
+
+class TResult():
+    def __init__(self, aParent: 'TWebScraper'):
+        self.Parent = aParent
+        self.MaxSize = 3
+        self.Dbl = TDbList(['Id', 'Url', 'Name', 'Price', 'PriceOld', 'Image', 'OnStock'], [])
+
+    async def Add(self, aData: dict):
+        self.Dbl.RecAdd()
+        self.Dbl.Rec.SetAsDict(aData)
+
+        if (self.Dbl.GetSize() > self.MaxSize):
+            self.Parent.Wait(True)
+            Data = self.Dbl.GetData()
+            SrvRes = await Api.SendResult(Data)
+            if (SrvRes):
+                self.Dbl.Empty()
+            self.Parent.Wait(False)
 
 class TWebScraper():
     def __init__(self, aParent, aScheme: dict, aSleep: int = 1):
@@ -46,6 +66,7 @@ class TWebScraper():
         self.Download = TDownload(self.Parent.Conf.get('Proxy', []))
         #self.DblQueue = TDbList(['Url']) #ToDo. default aData is not empty in constructor!
         self.DblQueue = TDbList(['Url'], [])
+        self.Result = TResult(self)
 
         self.Event = asyncio.Event()
         self.Wait(False)
@@ -162,7 +183,7 @@ class TWebScraperSitemap(TWebScraper):
     async def _DoWorkerStart(self):
         SiteMap = await self.LoadSiteMap(self.UrlRoot + '/sitemap.xml')
         if (SiteMap):
-            self.DblQueue.SetData(SiteMap)    
+            self.DblQueue.AddList(SiteMap, 'Url')  
         else:
             Log.Print(1, 'e', 'No sitemap %' % (self.UrlRoot))
 
@@ -172,6 +193,7 @@ class TWebScraperSitemap(TWebScraper):
         if (Scheme):
             self.UrlScheme += 1
             print('---x1', aUrl, Scheme)
+            await self.Result.Add(Scheme)
 
 
 class TWebScraperUpdate(TWebScraper):

@@ -50,6 +50,16 @@ async def TestA_1():
 def Test_2():
     from Inc.DB.DbList import TDbList
 
+    Fields = ['red', 'green']
+    Data = [21,22,23]
+    Db1 = TDbList(Fields)
+    Db1.AddList(Data, 'red')
+    Db1.Empty()
+    print('Data:', Db1.Data)
+    
+    
+    return
+
     Fields = ['red', 'green', 'blue']
     Data = [[21, 22, 23], [11, 12, 13], [111, 121, 131], [211,221,231], [31, 32, 33]]
     Db1 = TDbList(Fields, Data)
@@ -111,16 +121,12 @@ def Main1():
 #        async with session.get(url) as resp:
 #            return await resp.text()
 
-from IncP.Download import TDownload
-from App.Scraper.Utils import LoadSiteMap
-
 #Log.AddEcho(TEchoConsole())
 #Log.Print(1, 'x', 'hello')
 
-Main1()
-#Task = test_open_page(Url)
+#Main1()
 
-#Task = LoadSiteMap('https://cthp.net.ua/sitemap.xml')
-#Task = LoadSiteMap(TDownload().Get, 'http://oster.com.ua/sitemap.xml')
-#[print(i) for i in sorted(asyncio.run(Task))]
 
+aSchema = {'one': 1, '-two': 2, 'three': 3}
+for SKey, SVal in filter(lambda Item: not Item[0].startswith('-'), aSchema.items()):
+    print(SKey, SVal)

@@ -9,13 +9,11 @@ Description:
 
 import asyncio
 import random
-import json
 from collections import deque
 #
 from IncP.Log import Log
 from .WebScraper import TWebScraperFull, TWebScraperUpdate, TWebScraperSitemap
-from .Api import TApi
-from IncP.Log import Log
+from .Api import Api
 
 
 class TMain():
@@ -32,7 +30,7 @@ class TMain():
             #Log.Print(1, 'i', '_Worker(). Ready for task. Id %d, wait %d sec' % (aTaskId, Wait))
             await asyncio.sleep(Wait)
 
-            ApiData, Code = await self.Api.GetTask()
+            ApiData, Code = await Api.GetTask()
             Data = ApiData.get('Data')
             if (Data):
                 Type = Data.get('Type')
@@ -62,10 +60,9 @@ class TMain():
         WaitLocalHost = 1
         await asyncio.sleep(WaitLocalHost)
 
-        self.Api = TApi(self.Conf.SrvAuth)
         while (True):
             try:
-                Data, Code = await self.Api.GetConfig()
+                Data, Code = await Api.GetConfig()
                 Data = Data.get('Data')
                 if (Data):
                     MaxWorkers = Data.get('MaxWorkers', self.Conf.get('MaxWorkers', 5))

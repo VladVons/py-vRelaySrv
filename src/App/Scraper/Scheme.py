@@ -50,7 +50,7 @@ class TScheme():
     @staticmethod
     def Parse(aObj, aSchema: dict) -> dict:
         Res = {}
-        for SKey, SVal in aSchema.items():
+        for SKey, SVal in filter(lambda x: not x[0].startswith('-'), aSchema.items()):
             Obj = aObj
             for Val in SVal:
                 ObjEx = getattr(TScheme, Val[0], None)

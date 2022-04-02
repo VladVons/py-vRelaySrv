@@ -15,7 +15,7 @@ from IncP.Log import Log
 
 
 class TApi():
-    def __init__(self, aAuth: dict):
+    def __init__(self, aAuth: dict = {}):
         self.Auth = aAuth
 
     async def _Send(self, aPath: str, aPost: dict = {}):
@@ -35,3 +35,8 @@ class TApi():
 
     async def GetTask(self):
         return await self._Send('get_task')
+
+    async def SendResult(self, aData: dict):
+        return await self._Send('send_result', aData)
+
+Api = TApi()

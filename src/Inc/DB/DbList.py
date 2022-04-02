@@ -113,6 +113,10 @@ class TDbList():
     def IsEmpty(self) -> bool:
         return (self.GetSize() == 0)
 
+    def Empty(self):
+        self.Data = []
+        self.RecGo(0)
+        
     def GetData(self) -> dict:
         return {'Data': self.Data, 'Head': self.Rec.Head, 'Tag': self.Tag}
 
@@ -139,6 +143,14 @@ class TDbList():
     def Shuffle(self):
         random.shuffle(self.Data)
         self.RecGo(0)
+
+    def AddList(self, aData: list, aField: str):
+        Head = self.Rec.Head
+        Blank = [None for i in range(len(self.Rec.Head))]
+        for Val in aData:
+            Arr = Blank.copy()
+            Arr[Head[aField]] = Val               
+            self.Data.append(Arr)
 
     def SetData(self, aData: list, aHead: list = []):
         self.Data = aData

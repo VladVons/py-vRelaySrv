@@ -105,7 +105,7 @@ class TDblFields(TDbFields):
         return R
 
 
-class TDbl(TDb):
+class TDbPack(TDb):
     Sign: int = 71
 
     def _StructWrite(self, aFields: TDblFields):

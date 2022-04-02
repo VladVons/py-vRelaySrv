@@ -55,7 +55,8 @@ class TApiTask():
 class TApi():
     Url = {
         'get_task':     {'param': []},
-        'get_config':   {'param': ['user']}
+        'get_config':   {'param': ['user']},
+        'send_result':  {'param': ['...']}
     }
 
     def __init__(self):
@@ -94,6 +95,9 @@ class TApi():
                 else:
                     Param = {}
 
+                if (ParamInf) and (ParamInf[0] == '...'):
+                    ParamInf = Param.keys()
+
                 ErrMsg = self.CheckParam(Param, ParamInf)
                 if (ErrMsg):
                     Log.Print(1, 'e', ErrMsg)
@@ -118,6 +122,9 @@ class TApi():
     async def path_get_config(self, aData: dict) -> dict:
         DBL = await self.Db.GetConfig(aData.get('user'))
         return DBL.Rec.GetAsDict()
+
+    async def path_send_result(self, aData: dict) -> dict:
+        return {'ok'}
 
     async def DbInit(self, aAuth):
         self.Db = TDbApp(aAuth)
