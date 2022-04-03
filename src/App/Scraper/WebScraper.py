@@ -23,7 +23,6 @@ import gzip
 import asyncio
 import aiohttp
 import random
-import time
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 #
@@ -34,21 +33,25 @@ from .Scheme import TScheme
 from .Api import Api
 
 
-class TResult():
-    def __init__(self, aParent: 'TWebScraper'):
+class TSender():
+    def __init__(self, aParent: 'TWebScraper', aMaxSize: int = 3):
         self.Parent = aParent
-        self.MaxSize = 3
+        self.MaxSize = aMaxSize
         self.Dbl = TDbList(['Id', 'Url', 'Name', 'Price', 'PriceOld', 'Image', 'OnStock'], [])
 
     async def Add(self, aData: dict):
         self.Dbl.RecAdd()
         self.Dbl.Rec.SetAsDict(aData)
-
         if (self.Dbl.GetSize() > self.MaxSize):
+            await self.Flush()
+
+    async def Flush(self):
+        if (not self.Dbl.IsEmpty()):
             Data = self.Dbl.GetData()
             SrvRes = await Api.SendResult(Data)
             if (SrvRes):
                 self.Dbl.Empty()
+
 
 class TWebScraper():
     def __init__(self, aParent, aScheme: dict, aSleep: int = 1):
@@ -64,7 +67,7 @@ class TWebScraper():
         self.Download = TDownload(self.Parent.Conf.get('Proxy', []))
         #self.DblQueue = TDbList(['Url']) #ToDo. default aData is not empty in constructor!
         self.DblQueue = TDbList(['Url'], [])
-        self.Result = TResult(self)
+        self.Sender = TSender(self)
 
         self.Event = asyncio.Event()
         self.Wait(False)
@@ -109,8 +112,9 @@ class TWebScraper():
                     await self._DoWorkerUrl(Url, Data, Status)
             except (aiohttp.ClientConnectorError, aiohttp.ClientError, asyncio.TimeoutError, Exception) as E:
                 Log.Print(1, 'x', '_Worker(). %s' % (Url), aE = E)
-        Log.Print(1, 'i', '_Worker(). done')
+        await self.Sender.Flush()
         await self._DoWorkerEnd()
+        Log.Print(1, 'i', '_Worker(). done')
 
 class TWebScraperFull(TWebScraper):
     def __init__(self, aParent, aScheme: dict, aUrlRoot: str, aSleep: int = 1):
@@ -191,7 +195,7 @@ class TWebScraperSitemap(TWebScraper):
         if (Scheme):
             self.UrlScheme += 1
             print('---x1', aUrl, Scheme)
-            await self.Result.Add(Scheme)
+            await self.Sender.Add(Scheme)
 
 
 class TWebScraperUpdate(TWebScraper):

@@ -35,6 +35,10 @@ class TApiTask():
                 Res.update(DblUpdFull.Rec.GetAsDict())
                 Res['site.scheme'] = json.loads(Res['site.scheme'])
                 self.Tasks.RecAdd([SiteId, datetime.now(), DblUpdFull])
+
+                Task = TDbList(['SiteId', 'StartAt', 'Urls'])
+                Task.GetSize()
+
                 return Res
             else:
                 DblUpd = await self.Parent.Db.GetSitesForUpdate(aExclId = ExclId)

@@ -52,9 +52,29 @@ Description:
 import random
 
 
+class TDbFields(dict):
+    def __init__(self):
+        self.IdxOrd = {}
+
+    def Add(self, aName: str, aType: type, aDef = None):
+        if (aDef):
+            assert (type(aDef) == aType), 'types mismatch'
+        else:
+            Def = {'str': '', 'int': 0, 'float': 0.0, 'bool': False, 'tuple': (), 'list': [], 'dict': {}}
+            aDef = Def.get(aType.__name__)
+
+        Len = len(self)
+        self[aName] = (Len, aType, aDef)
+        self.IdxOrd[Len] = (aName, aType, aDef)
+
+    def AddFields(self, aFields: dict):
+        for Field in aFields:
+            self.Add(Field)
+
+
 class TDbRec(list):
-    def __init__(self, aHead: list):
-        self.SetHead(aHead)
+    def __init__(self, aParent: 'TDbList'):
+        self.Parent = aParent
 
     def SetHead(self, aFields: list):
         #self.Head = dict(zip(aFields, range(len(aFields))))
@@ -70,7 +90,9 @@ class TDbRec(list):
         self[self.Head[aName]] = aValue
 
     def SetData(self, aData: list):
-        assert (len(aData) == len(self.Head)), 'length mismatch: %d, %d' % (len(aData), len(self.Head))
+        IdxOrd = self.Parent.Fields.IdxOrd
+        for Idx, Field in enumerate(aData):
+            assert (type(Field) == IdxOrd[Idx][1]), 'types mismatch'
         self.clear()
         self.extend(aData)
 
@@ -85,13 +107,11 @@ class TDbRec(list):
 
 
 class TDbList():
-    def __init__(self, aHead: list, aData: list = []):
+    def __init__(self, aFields: TDbFields):
         self.Tag = 0
-        self.Data: list
-        self.Fields = TDbFields()
-        self.Rec: TDbRec
-
-        self.SetData(aData, aHead)
+        self.Data = []
+        self.Fields = aFields
+        self.Rec = TDbRec(self)
 
     def __iter__(self):
         return self
@@ -150,13 +170,15 @@ class TDbList():
         Blank = [None for i in range(len(self.Rec.Head))]
         for Val in aData:
             Arr = Blank.copy()
-            Arr[Head[aField]] = Val               
+            Arr[Head[aField]] = Val  
             self.Data.append(Arr)
 
-    def SetData(self, aData: list, aHead: list = []):
-        self.Data = aData
-        if (aHead):
-            self.Rec = TDbRec(aHead)
+    def SetData(self, aData: list, aCheck: bool = True):
+        if (aCheck):
+            for Rec in aData:
+                self.RecAdd(Rec)
+        else:
+            self.Data = aData
         self.RecGo(0)
 
     def RecGo(self, aNo: int):
@@ -180,3 +202,13 @@ class TDbList():
         Res = TDbRec(self.Rec.GetHead())
         Res.SetData(self.Data.pop())
         return Res
+
+if (__name__ == '__main__'):
+    Fields = TDbFields()
+    Fields.Add('User', str)
+    Fields.Add('Age', int)
+    Fields.Add('Male', bool)
+
+    Data = [['User1', 11, False], ['User2', 22, 1], ['User3', 33, True]]
+    Db1 = TDbList(Fields)
+    Db1.SetData(Data)

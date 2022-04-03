@@ -3,6 +3,7 @@ import asyncio
 import binascii
 import random
 import time
+from Inc.DB.DbList import TDbList, TDbRec
 #
 #import cfscrape
 #import cloudscraper
@@ -117,12 +118,12 @@ def Main1():
 
 #Main1()
 
-class Tx1():
-    def M1(self):
-        try:
-            q = 2/0
-        except Exception as E:
-            Log.Print(1, 'x', 'Hello', aE=E)
+class TClass1():
+    def __init__(self, aData = []):
+        self.Data = aData
+        print(self.Data)
 
-x1 = Tx1()
-x1.M1()
+c1 = TClass1()
+c1.Data.append([21,22,23])
+
+c2 = TClass1()
