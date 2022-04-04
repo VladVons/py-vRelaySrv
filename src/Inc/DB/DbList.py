@@ -217,7 +217,6 @@ class TDbList():
         Res.Data = Data
         return Res
 
-
     def Sort(self, aField: str, aReverse: bool = False):
         FieldNo = self.Fields[aField][0]
         self.Data.sort(key=lambda x:x[FieldNo], reverse=aReverse)
