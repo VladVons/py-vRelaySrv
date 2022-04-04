@@ -12,13 +12,14 @@ import asyncio
 import json
 import psycopg2.extras
 #
-from Inc.DB.DbList import TDbList
+from Inc.DB.DbList import TDbList, TDbFields
 from IncP.Log  import Log
 
 
 class TDbFetch(TDbList):
     def __init__(self, aDb):
-        super().__init__([], [])
+        super().__init__(None)
+        self.Safe = False
         self._Db = aDb
 
     async def _GetSelectFields(self, aQuery: str) -> list:
@@ -38,8 +39,10 @@ class TDbFetch(TDbList):
 
     async def Query(self, aQuery: str):
         Fields = await self._GetSelectFields(aQuery)
+        self.Fields = TDbFields()
+
         Data = await self._Db.Fetch(aQuery)
-        self.SetData(Data, Fields)
+        self.SetData(Data)
         return self
 
 

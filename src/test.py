@@ -118,12 +118,8 @@ def Main1():
 
 #Main1()
 
-class TClass1():
-    def __init__(self, aData = []):
-        self.Data = aData
-        print(self.Data)
 
-c1 = TClass1()
-c1.Data.append([21,22,23])
-
-c2 = TClass1()
+t1 = object
+t2 = str
+v1 = 'hello'
+print(t1 , t2, type(v1) == object)

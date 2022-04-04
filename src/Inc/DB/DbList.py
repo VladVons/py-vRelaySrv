@@ -3,46 +3,51 @@ Author:      Vladimir Vons, Oster Inc.
 Created:     2022.03.24
 License:     GNU, see LICENSE for more details
 Description:
-    Fields = ['red', 'green', 'blue']
-    Data = [[21, 22, 23], [11, 12, 13], [111, 121, 131], [211,221,231], [31, 32, 33]]
-    Db1 = TDbList(Data, Fields)
-    #Db1.SetData(Data)
+    Fields = TDbFields( (('User', str), ('Age', int), ('Male', bool, True)) )
+    #Fields.Add('User', str)
+    #Fields.Add('Age', int)
+    #Fields.Add('Male', bool, true)
+    Db1 = TDbList(Fields)
+    Db1.Safe = True
 
-    Db1.RecAdd([1,2,3])
+    Data = [['User2', 22, True], ['User1', 11, False], ['User3', 33, True]]
+    Db1.SetData(Data)
+
+    Db1.RecAdd()
+    #Db1.RecFlush()
+
+    Db1.RecAdd()
+    Db1.Rec.SetField('User', 'User4')
+    Db1.Rec.SetField('Age', 20)
+    Db1.Rec.SetField('Male', False)
+    Db1.RecFlush()
+
+    Db1.Data.append(['User5', 30, False])
+    Db1.RecAdd(['User6', 40, True])
     Db1.RecFlush()
 
     Db1.RecAdd()
-    Db1.Rec.SetField('red', 10)
-    Db1.Rec.SetField('green', 20)
-    Db1.Rec.SetField('blue', 30)
+    Db1.Rec.SetAsDict({'User': 'User7', 'Age': 45, 'Male': True})
     Db1.RecFlush()
 
-    Db1.Data.append([101, 102, 103])
-    Db1.RecAdd([22, 33, 44])
-    Db1.RecFlush()
-
-    Db1.RecAdd()
-    Db1.Rec.SetAsDict({'red': 250, 'green': 251, 'blue': 252})
-    Db1.RecFlush()
     Db1.RecGo(0)
-
     print()
     print('GetSize:', Db1.GetSize())
     print('Data:', Db1.Data)
     print('Rec:', Db1.Rec)
-    print('GetAsDict:', Db1.Rec.GetAsDict())
-    print('GetAsTuple:', Db1.Rec.GetAsTuple())
-    print('GetList:', Db1.GetList('green', True))
+    print('Rec.GetAsDict:', Db1.Rec.GetAsDict())
+    print('Rec.GetAsTuple:', Db1.Rec.GetAsTuple())
+    print('Rec.GetList:', Db1.GetList('User', True))
 
-    #Db1.Sort('green', not True)
+    Db1.Sort('User', True)
     for Idx, Val in enumerate(Db1):
-        print(Idx, Val.Rec.GetField('red'),  Val.Rec[1])
+        print(Idx, Val.Rec.GetField('User'),  Val.Rec[1])
 
     print()
-    Db2 = Db1.Clone(['red', 'green'], (0, 2))
+    Db2 = Db1.Clone(['User', 'Age'], (0, 3))
     Db2.Shuffle()
     for Idx, Val in enumerate(Db2):
-        print(Idx, Val.Rec.GetField('red'),  Val.Rec[1])
+        print(Idx, Val.Rec.GetField('User'),  Val.Rec[1])
 
     Db2.RecGo(-2)
     print('Db2.Rec', Db2.Rec)
@@ -52,46 +57,77 @@ Description:
 import random
 
 
+class TDbFields(dict):
+    def __init__(self, aFields: tuple = ()):
+        super().__init__()
+
+        self.IdxOrd = {}
+        self.AddFields(aFields)
+
+    def Add(self, aName: str, aType: type, aDef = None):
+        if (aDef):
+            assert (type(aDef) == aType), 'types mismatch'
+        else:
+            Def = {'str': '', 'int': 0, 'float': 0.0, 'bool': False, 'tuple': (), 'list': [], 'dict': {}}
+            aDef = Def.get(aType.__name__, any)
+
+        Len = len(self)
+        self[aName] = (Len, aType, aDef)
+        self.IdxOrd[Len] = (aName, aType, aDef)
+
+    def AddFields(self, aFields: tuple):
+        for Field in aFields:
+            self.Add(*Field)
+
+    def GetList(self) -> list:
+        return [self.IdxOrd[i][0] for i in range(len(self))]
+
+
 class TDbRec(list):
-    def __init__(self, aHead: list):
-        self.SetHead(aHead)
-
-    def SetHead(self, aFields: list):
-        #self.Head = dict(zip(aFields, range(len(aFields))))
-        self.Head = {Val: Idx for Idx, Val in enumerate(aFields)}
-
-    def GetHead(self) -> list:
-        return sorted(self.Head, key= self.Head.get)
+    def __init__(self, aParent: 'TDbList'):
+        super().__init__()
+        self.Parent = aParent
 
     def GetField(self, aName: str) -> any:
-        return self[self.Head[aName]]
+        Idx = self.Parent.Fields[aName][0]
+        return self[Idx]
 
     def SetField(self, aName: str, aValue: any):
-        self[self.Head[aName]] = aValue
+        Idx = self.Parent.Fields[aName][0]
+        if (self.Parent.Safe):
+            assert (type(aValue) == self.Parent.Fields[aName][1]), 'types mismatch'
+        self[Idx] = aValue
 
     def SetData(self, aData: list):
-        assert (len(aData) == len(self.Head)), 'length mismatch: %d, %d' % (len(aData), len(self.Head))
-        self.clear()
-        self.extend(aData)
+        if (self.Parent.Safe):
+            IdxOrd = self.Parent.Fields.IdxOrd
+            for Idx, Field in enumerate(aData):
+                assert (type(Field) == IdxOrd[Idx][1]), 'types mismatch'
+        super().__init__(aData)
 
     def SetAsDict(self, aData: dict):
         [self.SetField(Key, Val) for Key, Val in aData.items()]
 
     def GetAsDict(self) -> dict:
-        return {Key: self[Val] for Key, Val in self.Head.items()}
+        return {Key: self[Val[0]] for Key, Val in self.Parent.Fields.items()}
 
     def GetAsTuple(self) -> list:
-        return [(Key, self[Val]) for Key, Val in self.Head.items()]
+        return [(Key, self[Val[0]]) for Key, Val in self.Parent.Fields.items()]
 
+    def Init(self):
+        Fields = self.Parent.Fields
+        Rec = [None] * len(Fields)
+        for Idx in range(len(Fields)):
+            Rec[Idx] = Fields.IdxOrd[Idx][2]
+        super().__init__(Rec)
 
 class TDbList():
-    def __init__(self, aHead: list, aData: list = []):
+    def __init__(self, aFields: TDbFields):
         self.Tag = 0
-        self.Data: list
-        self.Fields = TDbFields()
-        self.Rec: TDbRec
-
-        self.SetData(aData, aHead)
+        self.Data = []
+        self.Fields = aFields
+        self.Rec = TDbRec(self)
+        self.Safe = True
 
     def __iter__(self):
         return self
@@ -119,25 +155,32 @@ class TDbList():
         self.RecGo(0)
         
     def GetData(self) -> dict:
-        return {'Data': self.Data, 'Head': self.Rec.Head, 'Tag': self.Tag}
+        return {'Data': self.Data, 'Head': self.Fields, 'Tag': self.Tag}
 
     def GetList(self, aField: str, aUniq = False) -> list:
-        FieldNo = self.Rec.Head[aField]
+        FieldNo = self.Fields[aField][0]
         Res = [D[FieldNo] for D in self.Data]
         if (aUniq):
             Res = list(set(Res))
         return Res
 
-    def Clone(self, aFields: list, aRecNo: tuple = (0, -1)) -> 'TDbList':
+    def Clone(self, aFields: list, aRecNo: list = [0, -1]) -> 'TDbList':
         if (aRecNo[1] == -1):
             aRecNo[1] = self.GetSize()
-        FieldNo = [self.Rec.Head[F] for F in aFields]
+        FieldNo = [self.Fields[F][0] for F in aFields]
         #return [list(map(i.__getitem__, FieldNo)) for i in self.Data]
         Data = [[Val[i] for i in FieldNo] for Idx, Val in enumerate(self.Data) if (aRecNo[0] <= Idx <= aRecNo[1])]
-        return TDbList(aFields, Data)
 
-    def Sort(self, aField: str, aReverse: bool = True):
-        FieldNo = self.Rec.Head[aField]
+        DbFields = TDbFields()
+        for Field in aFields:
+            F = self.Fields[Field]
+            DbFields.Add(Field, F[1], F[2])
+        Res = TDbList(DbFields)
+        Res.SetData(Data)
+        return Res 
+
+    def Sort(self, aField: str, aReverse: bool = False):
+        FieldNo = self.Fields[aField][0]
         self.Data.sort(key=lambda x:x[FieldNo], reverse=aReverse)
         self.RecGo(0)
 
@@ -146,17 +189,20 @@ class TDbList():
         self.RecGo(0)
 
     def AddList(self, aField: str, aData: list):
-        Head = self.Rec.Head
-        Blank = [None for i in range(len(self.Rec.Head))]
+        Rec = TDbRec(self)
+        Rec.Init()
+        FieldNo = self.Fields[aField][0]
         for Val in aData:
-            Arr = Blank.copy()
-            Arr[Head[aField]] = Val               
+            Arr = Rec.copy()
+            Arr[FieldNo] = Val  
             self.Data.append(Arr)
 
-    def SetData(self, aData: list, aHead: list = []):
-        self.Data = aData
-        if (aHead):
-            self.Rec = TDbRec(aHead)
+    def SetData(self, aData: list):
+        if (self.Safe):
+            for Rec in aData:
+                self.RecAdd(Rec)
+        else:
+            self.Data = aData
         self.RecGo(0)
 
     def RecGo(self, aNo: int):
@@ -164,19 +210,23 @@ class TDbList():
             aNo = self.GetSize() + aNo
         self._RecNo = min(aNo, self.GetSize() - 1)
         self._RecInit()
+        return self.Rec
+
+    def RecGoLast(self):
+        return self.RecGo(-1)
 
     def RecAdd(self, aData: list = []):
-        if (not aData):
-            aData = [None for i in range(len(self.Rec.Head))]
-        assert (len(aData) == len(self.Rec.Head)), 'length mismatch'
-
-        self.Data.append(aData)
-        self.RecGo(self.GetSize())
+        if (aData):
+            self.Rec.SetData(aData)
+        else:
+            self.Rec.Init()
+        self.Data.append(self.Rec.copy())
+        self._RecNo = self.GetSize() - 1
 
     def RecFlush(self):
         self.Data[self._RecNo] = self.Rec.copy()
 
     def RecPop(self) -> TDbRec:
-        Res = TDbRec(self.Rec.GetHead())
+        Res = TDbRec(self)
         Res.SetData(self.Data.pop())
         return Res

@@ -19,7 +19,7 @@ from Inc.DB.DbList import TDbList
 class TApiTask():
     def __init__(self, aParent: 'TApi'):
         self.Parent = aParent
-        self.Tasks = TDbList(['SiteId', 'StartAt', 'Urls'])
+        self.Tasks = TDbList( (('SiteId', int), ('StartAt', datetime), ('Urls', int)) )
         self.Lock = asyncio.Lock()
 
     async def Get(self, aData: dict) -> dict:
@@ -35,10 +35,6 @@ class TApiTask():
                 Res.update(DblUpdFull.Rec.GetAsDict())
                 Res['site.scheme'] = json.loads(Res['site.scheme'])
                 self.Tasks.RecAdd([SiteId, datetime.now(), DblUpdFull])
-
-                Task = TDbList(['SiteId', 'StartAt', 'Urls'])
-                Task.GetSize()
-
                 return Res
             else:
                 DblUpd = await self.Parent.Db.GetSitesForUpdate(aExclId = ExclId)
