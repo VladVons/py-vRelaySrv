@@ -3,14 +3,9 @@ Author:      Vladimir Vons, Oster Inc.
 Created:     2022.03.24
 License:     GNU, see LICENSE for more details
 Description:
-    Fields = TDbFields( [('User', str), ('Age', int), ('Male', bool, True)] )
-    #Fields.Add('User', str)
-    #Fields.Add('Age', int)
-    #Fields.Add('Male', bool, true)
-    Db1 = TDbList(Fields)
-    Db1.Safe = True
-
+    Db1 = TDbList( [('User', str), ('Age', int), ('Male', bool, True)] )
     Data = [['User2', 22, True], ['User1', 11, False], ['User3', 33, True]]
+    Db1.Safe = True
     Db1.SetData(Data)
 
     Db1.RecAdd()
@@ -20,15 +15,15 @@ Description:
     Db1.Rec.SetField('User', 'User4')
     Db1.Rec.SetField('Age', 20)
     Db1.Rec.SetField('Male', False)
-    Db1.RecFlush()
+    Db1.Rec.Flush()
 
     Db1.Data.append(['User5', 30, False])
     Db1.RecAdd(['User6', 40, True])
-    Db1.RecFlush()
+    Db1.Rec.Flush()
 
     Db1.RecAdd()
     Db1.Rec.SetAsDict({'User': 'User7', 'Age': 45, 'Male': True})
-    Db1.RecFlush()
+    Db1.Rec.Flush()
 
     Db1.RecGo(0)
     print()
@@ -69,8 +64,8 @@ class TDbFields(dict):
             if (aType != type(aDef)):
                 raise AssertionError('types mismatch %s, %s' % (aType, aDef))
         else:
-            Def = {'str': '', 'int': 0, 'float': 0.0, 'bool': False, 'tuple': (), 'list': [], 'dict': {}}
-            aDef = Def.get(aType.__name__, any)
+            Def = {'str': '', 'int': 0, 'float': 0.0, 'bool': False, 'tuple': (), 'list': [], 'dict': {}, 'set': set()}
+            aDef = Def.get(aType.__name__, object)
 
         Len = len(self)
         self[aName] = (Len, aType, aDef)
@@ -96,6 +91,9 @@ class TDbRec(list):
         super().__init__()
         self.Parent = aParent
 
+    def Flush(self):
+        self.Parent.Data[self.Parent._RecNo] = self.copy()
+
     def GetField(self, aName: str) -> any:
         Idx = self.Parent.Fields[aName][0]
         return self[Idx]
@@ -103,7 +101,8 @@ class TDbRec(list):
     def SetField(self, aName: str, aValue: any):
         Idx = self.Parent.Fields[aName][0]
         if (self.Parent.Safe):
-            assert (type(aValue) == self.Parent.Fields[aName][1]), 'types mismatch'
+            if (type(aValue) != self.Parent.Fields[aName][1]):
+                raise AssertionError('types mismatch %s, %s' % (type(aValue), self.Parent.Fields[aName]))
         self[Idx] = aValue
 
     def SetData(self, aData: list):
@@ -114,14 +113,19 @@ class TDbRec(list):
                     raise AssertionError('types mismatch %s, %s' % (type(Field), IdxOrd[Idx]))
         super().__init__(aData)
 
-    def SetAsDict(self, aData: dict):
-        [self.SetField(Key, Val) for Key, Val in aData.items()]
-
     def GetAsDict(self) -> dict:
         return {Key: self[Val[0]] for Key, Val in self.Parent.Fields.items()}
 
+    def SetAsDict(self, aData: dict):
+        [self.SetField(Key, Val) for Key, Val in aData.items()]
+        self.Flush()
+
     def GetAsTuple(self) -> list:
         return [(Key, self[Val[0]]) for Key, Val in self.Parent.Fields.items()]
+
+    def SetAsTuple(self, aData: tuple):
+        [self.SetField(Key, Val) for Key, Val in aData]
+        self.Flush()
 
     def Init(self):
         Fields = self.Parent.Fields
@@ -129,6 +133,7 @@ class TDbRec(list):
         for Idx in range(len(Fields)):
             Rec[Idx] = Fields.IdxOrd[Idx][2]
         super().__init__(Rec)
+
 
 class TDbList():
     def __init__(self, aFields: list = [], aData: list = None):
@@ -230,9 +235,6 @@ class TDbList():
         self._RecInit()
         return self.Rec
 
-    def RecGoLast(self):
-        return self.RecGo(-1)
-
     def RecAdd(self, aData: list = []):
         if (aData):
             self.Rec.SetData(aData)
@@ -240,9 +242,6 @@ class TDbList():
             self.Rec.Init()
         self.Data.append(self.Rec.copy())
         self._RecNo = self.GetSize() - 1
-
-    def RecFlush(self):
-        self.Data[self._RecNo] = self.Rec.copy()
 
     def RecPop(self) -> TDbRec:
         Res = TDbRec(self)

@@ -52,54 +52,19 @@ async def TestA_1():
 def Test_2():
     from Inc.DB.DbList import TDbList
 
-    Fields = ['red', 'green', 'blue']
-    Data = [[21, 22, 23], [11, 12, 13], [111, 121, 131], [211,221,231], [31, 32, 33]]
-    Db1 = TDbList(Fields, Data)
-    #Db1.SetData(Data)
-
-    Db1.RecAdd([1,2,3])
-    Db1.RecFlush()
+    Db1 = TDbList( [('User', str), ('Age', int), ('Male', set, set([1,2,3]))] )
+    Db1.Safe = True
+    Data = [ ['User2', 22, set([10,20,30])], ['User1', 11, set([11,21,31])], ['User3', 33, set([12,22,32])] ]
+    Db1.SetData(Data)
 
     Db1.RecAdd()
-    Db1.Rec.SetField('red', 10)
-    Db1.Rec.SetField('green', 20)
-    Db1.Rec.SetField('blue', 30)
-    Db1.RecFlush()
-
-    Db1.Data.append([101, 102, 103])
-    Db1.RecAdd([22, 33, 44])
-    Db1.RecFlush()
-
+    Db1.Rec.SetAsTuple( [('User', 'pink')])
     Db1.RecAdd()
-    Db1.Rec.SetAsDict({'red': 250, 'green': 251, 'blue': 252})
-    Db1.RecFlush()
+    Db1.Rec.SetAsTuple( [('User', 'floyd'), ('Age', 50)])
+    Db1.Rec.Flush()
 
-    Db1.AddList('red', [90, 91, 92, 94, 95, 96])
-
-    Db1.RecGo(0)
-    print()
-    print('GetHead:', Db1.Rec.GetHead())
-    print('GetSize:', Db1.GetSize())
-    print('Data:', Db1.Data)
-    print('Rec:', Db1.Rec)
-    print('GetAsDict:', Db1.Rec.GetAsDict())
-    print('GetAsTuple:', Db1.Rec.GetAsTuple())
-    print('GetList:', Db1.GetList('green', True))
-    print('RecPop:', Db1.RecPop())
-
-    #Db1.Sort('green', not True)
-    for Idx, Val in enumerate(Db1):
-        print(Idx, Val.Rec.GetField('red'),  Val.Rec[1])
-
-    print()
-    Db2 = Db1.Clone(['red', 'green'], (0, 2))
-    Db2.Shuffle()
-    for Idx, Val in enumerate(Db2):
-        print(Idx, Val.Rec.GetField('red'),  Val.Rec[1])
-
-    Db2.RecGo(-2)
-    print('Db2.Rec', Db2.Rec)
-
+    print(Db1.GetData())
+    pass
 
 def Main1():
     Start = time.time()
@@ -117,10 +82,4 @@ def Main1():
 #Log.AddEcho(TEchoConsole())
 #Log.Print(1, 'x', 'hello')
 
-#Main1()
-
-
-t1 = object
-t2 = str
-v1 = 'hello'
-print(t1 , t2, type(v1) == object)
+Main1()
