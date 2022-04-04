@@ -39,18 +39,22 @@ Description:
         print(Idx, Val.Rec.GetField('User'),  Val.Rec[1])
 
     print()
-    Db2 = Db1.Clone(['User', 'Age'], (0, 3))
-    Db2.Shuffle()
-    for Idx, Val in enumerate(Db2):
+    Db2 = Db1.Filter([ (operator.lt, 1, 21, True) ])
+    print(Db2.GetData())
+
+    print()
+    Db3 = Db1.Clone(['User', 'Age'], (0, 3))
+    Db3.Shuffle()
+    for Idx, Val in enumerate(Db3):
         print(Idx, Val.Rec.GetField('User'),  Val.Rec[1])
 
-    Db2.RecGo(-2)
-    print('Db2.Rec', Db2.Rec)
+    Db3.RecGo(-2)
+    print('Db3.Rec', Db2.Rec)
 '''
 
 
 import random
-
+import operator as op
 
 class TDbFields(dict):
     def __init__(self, aFields: tuple = ()):
@@ -199,6 +203,21 @@ class TDbList():
         Res.SetData(Data)
         return Res 
 
+    def Filter(self, aCond: list) -> 'TDbList':
+        # aCond = [ (operator.eq, FieldNo, 'hello', True) ]
+        def Find(aRec, aCond):
+            for Func, Idx, Val, CmpRes in aCond:
+                if (not Func(aRec[Idx], Val) == CmpRes):
+                    return False
+            return True
+
+        Data = [Rec for Rec in self.Data if Find(Rec, aCond)]
+        Res = TDbList()
+        Res.Fields = self.Fields.copy()
+        Res.Data = Data
+        return Res
+
+
     def Sort(self, aField: str, aReverse: bool = False):
         FieldNo = self.Fields[aField][0]
         self.Data.sort(key=lambda x:x[FieldNo], reverse=aReverse)
@@ -242,6 +261,7 @@ class TDbList():
             self.Rec.Init()
         self.Data.append(self.Rec.copy())
         self._RecNo = self.GetSize() - 1
+        return self.Rec
 
     def RecPop(self) -> TDbRec:
         Res = TDbRec(self)

@@ -3,8 +3,10 @@ import asyncio
 import binascii
 import random 
 import time
+import operator
 from aiohttp import web
 from Inc.DB.DbList import TDbList, TDbRec
+
 #
 #import cfscrape
 #import cloudscraper
@@ -64,7 +66,10 @@ def Test_2():
     Db1.Rec.Flush()
 
     print(Db1.GetData())
-    pass
+
+    print()
+    Db2 = Db1.Filter([ (operator.lt, 1, 21, True) ])
+    print(Db2.GetData())
 
 def Main1():
     Start = time.time()
