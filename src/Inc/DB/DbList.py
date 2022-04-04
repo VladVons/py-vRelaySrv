@@ -3,7 +3,7 @@ Author:      Vladimir Vons, Oster Inc.
 Created:     2022.03.24
 License:     GNU, see LICENSE for more details
 Description:
-    Fields = TDbFields( (('User', str), ('Age', int), ('Male', bool, True)) )
+    Fields = TDbFields( [('User', str), ('Age', int), ('Male', bool, True)] )
     #Fields.Add('User', str)
     #Fields.Add('Age', int)
     #Fields.Add('Male', bool, true)
@@ -64,9 +64,10 @@ class TDbFields(dict):
         self.IdxOrd = {}
         self.AddFields(aFields)
 
-    def Add(self, aName: str, aType: type, aDef = None):
+    def Add(self, aName: str, aType: type = str, aDef = None):
         if (aDef):
-            assert (type(aDef) == aType), 'types mismatch'
+            if (aType != type(aDef)):
+                raise AssertionError('types mismatch %s, %s' % (aType, aDef))
         else:
             Def = {'str': '', 'int': 0, 'float': 0.0, 'bool': False, 'tuple': (), 'list': [], 'dict': {}}
             aDef = Def.get(aType.__name__, any)
@@ -75,9 +76,16 @@ class TDbFields(dict):
         self[aName] = (Len, aType, aDef)
         self.IdxOrd[Len] = (aName, aType, aDef)
 
-    def AddFields(self, aFields: tuple):
+    def AddFields(self, aFields: list):
         for Field in aFields:
             self.Add(*Field)
+
+    def Auto(self, aFields: list, aData: list):
+        for i in range(len(aFields)):
+            if (aData):
+                self.Add(aFields[i], type(aData[i]))
+            else:
+                self.Add(aFields[i])
 
     def GetList(self) -> list:
         return [self.IdxOrd[i][0] for i in range(len(self))]
@@ -102,7 +110,8 @@ class TDbRec(list):
         if (self.Parent.Safe):
             IdxOrd = self.Parent.Fields.IdxOrd
             for Idx, Field in enumerate(aData):
-                assert (type(Field) == IdxOrd[Idx][1]), 'types mismatch'
+                if (type(Field) != IdxOrd[Idx][1]):
+                    raise AssertionError('types mismatch %s, %s' % (type(Field), IdxOrd[Idx]))
         super().__init__(aData)
 
     def SetAsDict(self, aData: dict):
@@ -122,12 +131,13 @@ class TDbRec(list):
         super().__init__(Rec)
 
 class TDbList():
-    def __init__(self, aFields: TDbFields):
+    def __init__(self, aFields: list = [], aData: list = None):
         self.Tag = 0
+        self.Fields = None
         self.Data = []
-        self.Fields = aFields
         self.Rec = TDbRec(self)
         self.Safe = True
+        self._Init(aFields, aData)
 
     def __iter__(self):
         return self
@@ -139,6 +149,11 @@ class TDbList():
             self._RecInit()
             self._RecNo += 1
             return self
+
+    def _Init(self, aFields: list, aData: list = None):
+        self.Fields = TDbFields()
+        self.Fields.AddFields(aFields)
+        self.SetData(aData)
 
     def _RecInit(self):
         if (not self.IsEmpty()):
@@ -198,12 +213,15 @@ class TDbList():
             self.Data.append(Arr)
 
     def SetData(self, aData: list):
-        if (self.Safe):
-            for Rec in aData:
-                self.RecAdd(Rec)
+        if (aData):
+            if (self.Safe):
+                for Rec in aData:
+                    self.RecAdd(Rec)
+            else:
+                self.Data = aData
+            self.RecGo(0)
         else:
-            self.Data = aData
-        self.RecGo(0)
+            self.Data = []
 
     def RecGo(self, aNo: int):
         if (aNo < 0):

@@ -14,19 +14,19 @@ from datetime import datetime
 from IncP.Log import Log, TEchoDb
 from IncP.DB.Scraper_pg import TDbApp
 from Inc.DB.DbList import TDbList
-
+from IncP.DB.Db import TDbFetch
 
 class TApiTask():
     def __init__(self, aParent: 'TApi'):
         self.Parent = aParent
-        self.Tasks = TDbList( (('SiteId', int), ('StartAt', datetime), ('Urls', int)) )
+        self.Tasks = TDbList( [('SiteId', int), ('StartAt', type(datetime.now())), ('Urls', TDbFetch)] )
         self.Lock = asyncio.Lock()
 
     async def Get(self, aData: dict) -> dict:
         async with self.Lock:
             ExclId = self.Tasks.GetList('SiteId')
 
-            DblUpdFull = await self.Parent.Db.GetSitesForUpdateFull(aExclId = ExclId, aUpdDaysX = 2)
+            DblUpdFull = await self.Parent.Db.GetSitesForUpdateFull(aExclId=ExclId, aUpdDaysX=2)
             if (DblUpdFull.GetSize() > 0):
                 DblUpdFull.Tag = 'Full'
                 Res = {'Type': DblUpdFull.Tag}
@@ -37,7 +37,7 @@ class TApiTask():
                 self.Tasks.RecAdd([SiteId, datetime.now(), DblUpdFull])
                 return Res
             else:
-                DblUpd = await self.Parent.Db.GetSitesForUpdate(aExclId = ExclId)
+                DblUpd = await self.Parent.Db.GetSitesForUpdate(aExclId=ExclId)
                 if (DblUpd.GetSize() > 0):
                     DblUpd.Shuffle()
                     SiteId = DblUpd.Rec.GetField('site.id')
@@ -78,9 +78,9 @@ class TApi():
         Diff = set(aParam) - set(aPattern)
         if (Diff):
             return 'param unknown. %s' % Diff
- 
-    #@staticmethod
-    #def GetRandStr(aLen: int, aPattern = 'YourPattern') -> str:
+
+    # @staticmethod
+    # def GetRandStr(aLen: int, aPattern = 'YourPattern') -> str:
     #    return ''.join((random.choice(aPattern)) for x in range(aLen))
 
     async def Call(self, aPath: str, aParam: str) -> dict:
@@ -108,7 +108,7 @@ class TApi():
                         self.Cnt += 1
                     except Exception as E:
                         Data = None
-                        Log.Print(1, 'x', 'Call()', aE = E)
+                        Log.Print(1, 'x', 'Call()', aE=E)
                     Res = {'Data': Data}
             else:
                 Res = {'Err': 'unknown method %s' % (MethodName)}
@@ -129,6 +129,6 @@ class TApi():
     async def DbInit(self, aAuth):
         self.Db = TDbApp(aAuth)
         await self.Db.Connect()
-        #await self.Db.ExecFile('IncP/DB/Scraper_pg.sql')
+        # await self.Db.ExecFile('IncP/DB/Scraper_pg.sql')
 
         Log.AddEcho(TEchoDb(self.Db))

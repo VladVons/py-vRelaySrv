@@ -18,7 +18,7 @@ from IncP.Log  import Log
 
 class TDbFetch(TDbList):
     def __init__(self, aDb):
-        super().__init__(None)
+        super().__init__()
         self.Safe = False
         self._Db = aDb
 
@@ -38,10 +38,12 @@ class TDbFetch(TDbList):
             return Res
 
     async def Query(self, aQuery: str):
-        Fields = await self._GetSelectFields(aQuery)
-        self.Fields = TDbFields()
-
         Data = await self._Db.Fetch(aQuery)
+        Fields = await self._GetSelectFields(aQuery)
+    
+        self.Fields = TDbFields()
+        if (Data):
+            self.Fields.Auto(Fields, Data[0])
         self.SetData(Data)
         return self
 

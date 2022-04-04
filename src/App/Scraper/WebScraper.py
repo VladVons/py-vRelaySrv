@@ -37,7 +37,7 @@ class TSender():
     def __init__(self, aParent: 'TWebScraper', aMaxSize: int = 3):
         self.Parent = aParent
         self.MaxSize = aMaxSize
-        self.Dbl = TDbList( ('Id', int), ('Url', str), ('Name', str), ('Price', float), ('PriceOld', float), ('Image', str), ('OnStock', bool) )
+        self.Dbl = TDbList( [('Id', int), ('Url', str), ('Name', str), ('Price', float), ('PriceOld', float), ('Image', str), ('OnStock', bool)] )
 
     async def Add(self, aData: dict):
         self.Dbl.RecAdd()
@@ -66,7 +66,7 @@ class TWebScraper():
 
         self.Download = TDownload(self.Parent.Conf.get('Proxy', []))
         #self.DblQueue = TDbList(['Url']) #ToDo. default aData is not empty in constructor!
-        self.DblQueue = TDbList(('Url', str))
+        self.DblQueue = TDbList( [('Url', str)] )
         self.Sender = TSender(self)
 
         self.Event = asyncio.Event()
