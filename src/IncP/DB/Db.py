@@ -10,7 +10,7 @@ Based on aioodbc, aiomysql, aiopg
 import re
 import asyncio
 import json
-import psycopg2.extras
+#import psycopg2.extras
 #
 from Inc.DB.DbList import TDbList, TDbFields
 from IncP.Log  import Log

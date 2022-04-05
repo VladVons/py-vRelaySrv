@@ -11,7 +11,9 @@ try:
 except:
   import uasyncio as asyncio
 
-import os, sys, gc
+import os
+import sys
+import gc
 #
 from Inc.Log  import Log
 from Inc.Conf import TConf
@@ -47,7 +49,7 @@ class TPlugin(dict):
                 self.LoadMod(aDir.replace('/', '.') + '.' + DirName)
 
     def LoadList(self, aModules: str):
-        for Module in aModules.split(' '):
+        for Module in aModules.split():
             self.LoadMod(Module)
 
     def LoadMod(self, aPath: str):

@@ -92,9 +92,9 @@ Install()
 
   pip3 install -r requires.txt
 
-  # --- search unused variables
+  # --- search unused variables, func, imports
   #ExecM "pip3 install vulture"
-  #vulture . | grep 100
+  #vulture ./src
 
   ExecM "pip3 install nuitka"
   ExecM "pip3 install --upgrade nuitka"

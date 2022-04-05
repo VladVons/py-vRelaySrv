@@ -1,6 +1,5 @@
 import os
 import asyncio
-import binascii
 import random 
 import time
 import operator
