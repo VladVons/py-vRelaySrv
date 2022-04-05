@@ -3,56 +3,10 @@ Author:      Vladimir Vons, Oster Inc.
 Created:     2022.03.24
 License:     GNU, see LICENSE for more details
 Description:
-    Db1 = TDbList( [('User', str), ('Age', int), ('Male', bool, True)] )
-    Data = [['User2', 22, True], ['User1', 11, False], ['User3', 33, True]]
-    Db1.Safe = True
-    Db1.SetData(Data)
-
-    Db1.RecAdd()
-    #Db1.RecFlush()
-
-    Db1.RecAdd()
-    Db1.Rec.SetField('User', 'User4')
-    Db1.Rec.SetField('Age', 20)
-    Db1.Rec.SetField('Male', False)
-    Db1.Rec.Flush()
-
-    Db1.Data.append(['User5', 30, False])
-    Db1.RecAdd(['User6', 40, True])
-    Db1.Rec.Flush()
-
-    Db1.RecAdd()
-    Db1.Rec.SetAsDict({'User': 'User7', 'Age': 45, 'Male': True})
-    Db1.Rec.Flush()
-
-    Db1.RecGo(0)
-    print()
-    print('GetSize:', Db1.GetSize())
-    print('Data:', Db1.Data)
-    print('Rec:', Db1.Rec)
-    print('Rec.GetAsDict:', Db1.Rec.GetAsDict())
-    print('Rec.GetAsTuple:', Db1.Rec.GetAsTuple())
-    print('Rec.GetList:', Db1.GetList('User', True))
-
-    Db1.Sort('User', True)
-    for Idx, Val in enumerate(Db1):
-        print(Idx, Val.Rec.GetField('User'),  Val.Rec[1])
-
-    print()
-    Db2 = Db1.Filter([ (operator.lt, 1, 21, True) ])
-    print(Db2.GetData())
-
-    print()
-    Db3 = Db1.Clone(['User', 'Age'], (0, 3))
-    Db3.Shuffle()
-    for Idx, Val in enumerate(Db3):
-        print(Idx, Val.Rec.GetField('User'),  Val.Rec[1])
-
-    Db3.RecGo(-2)
-    print('Db3.Rec', Db2.Rec)
 '''
 
 
+import json
 import random
 import operator as op
 
@@ -86,8 +40,19 @@ class TDbFields(dict):
             else:
                 self.Add(aFields[i])
 
+    def Export(self) -> list:
+        Items = sorted(self.items(), key = lambda k: k[1][0])
+        return [(Key, Type.__name__, Def) for Key, (No, Type, Def) in Items]
+
+    def Import(self, aFields: list):
+        Data = [(Name, type(eval(Type)()), Def) for Name, Type, Def in aFields]
+        self.AddFields(Data)
+
     def GetList(self) -> list:
         return [self.IdxOrd[i][0] for i in range(len(self))]
+
+    def GetNo(self, aName: str) -> int:
+        return self[aName][0]
 
 
 class TDbRec(list):
@@ -99,11 +64,11 @@ class TDbRec(list):
         self.Parent.Data[self.Parent._RecNo] = self.copy()
 
     def GetField(self, aName: str) -> any:
-        Idx = self.Parent.Fields[aName][0]
+        Idx = self.Parent.Fields.GetNo(aName)
         return self[Idx]
 
     def SetField(self, aName: str, aValue: any):
-        Idx = self.Parent.Fields[aName][0]
+        Idx = self.Parent.Fields.GetNo(aName)
         if (self.Parent.Safe):
             if (type(aValue) != self.Parent.Fields[aName][1]):
                 raise AssertionError('types mismatch %s, %s' % (type(aValue), self.Parent.Fields[aName]))
@@ -159,6 +124,20 @@ class TDbList():
             self._RecNo += 1
             return self
 
+    def _DbExp(self, aData: list, aFields: list = []) -> 'TDbList':
+        if (not aFields):
+            aFields = self.Fields.keys()
+
+        DbFields = TDbFields()
+        for Field in aFields:
+            F = self.Fields[Field]
+            DbFields.Add(Field, F[1], F[2])
+
+        Res = TDbList()
+        Res.Fields = DbFields
+        Res.Data = aData
+        return Res 
+
     def _Init(self, aFields: list, aData: list = None):
         self.Fields = TDbFields()
         self.Fields.AddFields(aFields)
@@ -178,47 +157,43 @@ class TDbList():
         self.Data = []
         self.RecGo(0)
         
-    def GetData(self) -> dict:
-        return {'Data': self.Data, 'Head': self.Fields, 'Tag': self.Tag}
+    def DataExport(self) -> dict:
+        return {'Data': self.Data, 'Head': self.Fields.Export(), 'Tag': self.Tag}
+
+    def DataImport(self, aData: dict):
+        self.Tag = aData['Tag']
+        self.Data = aData['Data']
+        self.Fields = TDbFields()
+        self.Fields.Import(aData['Head'])
 
     def GetList(self, aField: str, aUniq = False) -> list:
-        FieldNo = self.Fields[aField][0]
+        FieldNo = self.Fields.GetNo(aField)
         Res = [D[FieldNo] for D in self.Data]
         if (aUniq):
             Res = list(set(Res))
         return Res
 
-    def Clone(self, aFields: list, aRecNo: list = [0, -1]) -> 'TDbList':
+    def DbClone(self, aFields: list, aRecNo: list = [0, -1]) -> 'TDbList':
         if (aRecNo[1] == -1):
             aRecNo[1] = self.GetSize()
-        FieldNo = [self.Fields[F][0] for F in aFields]
+        FieldNo = [self.Fields.GetNo(F) for F in aFields]
         #return [list(map(i.__getitem__, FieldNo)) for i in self.Data]
         Data = [[Val[i] for i in FieldNo] for Idx, Val in enumerate(self.Data) if (aRecNo[0] <= Idx <= aRecNo[1])]
+        return self._DbExp(Data, aFields)
 
-        DbFields = TDbFields()
-        for Field in aFields:
-            F = self.Fields[Field]
-            DbFields.Add(Field, F[1], F[2])
-        Res = TDbList(DbFields)
-        Res.SetData(Data)
-        return Res 
-
-    def Filter(self, aCond: list) -> 'TDbList':
-        # aCond = [ (operator.eq, FieldNo, 'hello', True) ]
+    def DbFilter(self, aCond: list) -> 'TDbList':
+        # aCond = [ (operator.lt, Db1.Fields.GetNo('Age'), 40, True) ]
         def Find(aRec, aCond):
-            for Func, Idx, Val, CmpRes in aCond:
-                if (not Func(aRec[Idx], Val) == CmpRes):
+            for Func, FieldNo, Val, CmpRes in aCond:
+                if (not Func(aRec[FieldNo], Val) == CmpRes):
                     return False
             return True
 
         Data = [Rec for Rec in self.Data if Find(Rec, aCond)]
-        Res = TDbList()
-        Res.Fields = self.Fields.copy()
-        Res.Data = Data
-        return Res
+        return self._DbExp(Data)
 
     def Sort(self, aField: str, aReverse: bool = False):
-        FieldNo = self.Fields[aField][0]
+        FieldNo = self.Fields.GetNo(aField)
         self.Data.sort(key=lambda x:x[FieldNo], reverse=aReverse)
         self.RecGo(0)
 
@@ -229,7 +204,7 @@ class TDbList():
     def AddList(self, aField: str, aData: list):
         Rec = TDbRec(self)
         Rec.Init()
-        FieldNo = self.Fields[aField][0]
+        FieldNo = self.Fields.GetNo(aField)
         for Val in aData:
             Arr = Rec.copy()
             Arr[FieldNo] = Val  
@@ -266,3 +241,72 @@ class TDbList():
         Res = TDbRec(self)
         Res.SetData(self.Data.pop())
         return Res
+
+    def Save(self, aFile: str):
+        with open(aFile, 'w') as F:
+            Data = json.dumps(self.DataExport())
+            F.write(Data)
+
+    def Load(self, aFile: str):
+        with open(aFile, 'r') as F:
+            Data = json.load(F)
+            self.DataImport(Data)
+
+
+if (__name__ == '__main__'):
+    Db1 = TDbList( [('User', str), ('Age', int), ('Male', bool, True)] )
+    Data = [['User2', 22, True], ['User1', 11, False], ['User3', 33, True]]
+    Db1.Safe = True
+    Db1.SetData(Data)
+
+    Db1.RecAdd()
+    #Db1.RecFlush()
+
+    Db1.RecAdd()
+    Db1.Rec.SetField('User', 'User4')
+    Db1.Rec.SetField('Age', 20)
+    Db1.Rec.SetField('Male', False)
+    Db1.Rec.Flush()
+
+    Db1.Data.append(['User5', 30, False])
+    Db1.RecAdd(['User6', 40, True])
+    Db1.Rec.Flush()
+
+    Db1.RecAdd()
+    Db1.Rec.SetAsDict({'User': 'User7', 'Age': 45, 'Male': True})
+    Db1.Rec.Flush()
+
+    Db1.RecGo(0)
+    print()
+    print('GetSize:', Db1.GetSize())
+    print('Data:', Db1.Data)
+    print('Rec:', Db1.Rec)
+    print('Rec.GetAsDict:', Db1.Rec.GetAsDict())
+    print('Rec.GetAsTuple:', Db1.Rec.GetAsTuple())
+    print('Rec.GetList:', Db1.GetList('User', True))
+
+    Db1.Sort('User', True)
+    for Idx, Val in enumerate(Db1):
+        print(Idx, Val.Rec.GetField('User'),  Val.Rec[1])
+
+    print()
+    Db3 = Db1.DbClone(['User', 'Age'], (0, 3))
+    Db3.Shuffle()
+    for Idx, Val in enumerate(Db3):
+        print(Idx, Val.Rec.GetField('User'),  Val.Rec[1])
+
+    Db3.RecGo(-2)
+    print('Db3.Rec', Db3.Rec)
+
+    print()
+    import operator as op
+    Cond = [ 
+        (op.lt, Db1.Fields.GetNo('Age'), 40, True), 
+        (op.eq, Db1.Fields.GetNo('Male'), True, True) 
+    ]
+    Db2 = Db1.DbFilter(Cond)
+    print(Db2.Data)
+
+    Db1.Save('Db2.json')
+    Db1.Load('Db2.json')
+     
