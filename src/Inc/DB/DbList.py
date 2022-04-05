@@ -252,7 +252,7 @@ class TDbList():
             Data = json.load(F)
             self.DataImport(Data)
 
-
+'''
 if (__name__ == '__main__'):
     Db1 = TDbList( [('User', str), ('Age', int), ('Male', bool, True)] )
     Data = [['User2', 22, True], ['User1', 11, False], ['User3', 33, True]]
@@ -309,4 +309,4 @@ if (__name__ == '__main__'):
 
     Db1.Save('Db2.json')
     Db1.Load('Db2.json')
-     
+'''

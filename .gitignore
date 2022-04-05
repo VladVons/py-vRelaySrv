@@ -1,12 +1,12 @@
 *.pyc
 *.log
+*.json
 *.deb
 *.bin
 *.zip
 deb/py-relay_*
 __pycache__
 .idea
-venv
 test/
 local/
 .secret.txt

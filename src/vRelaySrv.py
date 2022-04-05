@@ -6,7 +6,6 @@ Description:
 '''
 
 
-import os
 import asyncio
 #
 from App import ConfApp

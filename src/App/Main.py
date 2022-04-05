@@ -7,7 +7,6 @@ Description:
 
 
 import os
-import asyncio 
 #
 from App import ConfApp
 from Inc.Log  import TEchoFile

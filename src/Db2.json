@@ -1,1 +1,0 @@
-{"Data": [["User7", 45, true], ["User6", 40, true], ["User5", 30, false], ["User4", 20, false], ["User3", 33, true], ["User2", 22, true], ["User1", 11, false], ["", 0, true]], "Head": [["User", "str", ""], ["Age", "int", 0], ["Male", "bool", true]], "Tag": 0}
