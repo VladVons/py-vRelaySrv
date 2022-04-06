@@ -38,7 +38,6 @@ class TSender():
         self.Parent = aParent
         self.MaxSize = aMaxSize
         self.Dbl = TDbList([
-            ('Id', int), 
             ('Url', str), 
             ('Name', str), 
             ('Price', float), 

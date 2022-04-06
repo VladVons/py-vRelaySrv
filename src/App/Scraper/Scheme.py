@@ -13,32 +13,13 @@ _Invisible = [' ', '\t', '\n', '\r', '\xA0']
 _Digits = '0123456789.'
 _XlatEntitles = [('&nbsp;', ' '), ('&lt;', '<'), ('&amp;', '&'), ('&quot;', '"'), ('&apos;', "'")]
 
+
 '''
 _ReSpace = re.compile('\s+|\xA0')
 _reSpace.split(aValue.strip())
-
-    @staticmethod
-    def X_Dig(aValue: str) -> str:
-        Res = ''
-        for i in aValue:
-            if (i in _Digits):
-                Res += i
-            elif (i == ','):
-                Res += '.'
-        return Res
-
-    @staticmethod
-    def X_DigVis(aValue: str) -> str:
-        Res = ''
-        for i in aValue:
-            if (i in _Digits):
-                Res += i
-            elif (i in _Invisible):
-                continue
-            else:
-                break
         return Res
 '''
+
 
 def DigSplit(aValue: str) -> tuple:
     Digit = ''
@@ -84,10 +65,10 @@ class TApi():
 
     @staticmethod
     def Price(aValue: str) -> tuple:
-        Bef, Dig, Aft = DigSplit(aValue) 
+        Before, Dig, After = DigSplit(aValue) 
         if (not Dig):
             Dig = '0'
-        return (float(Dig), Aft)        
+        return (float(Dig), After)        
 
     @staticmethod
     def DigLat(aValue: str) -> str:
@@ -96,6 +77,7 @@ class TApi():
             if ('0' <= i <= '9') or ('a' <= i <= 'z') or ('A' <= i <= 'Z') or (i in '.-/'):
                 Res += i
         return Res
+
 
 class TScheme():
     @staticmethod
@@ -124,10 +106,10 @@ class TScheme():
         for Key, Val in aData.items():
             if (not Key.startswith('-')):
                 if (Key.startswith('_Group')):
-                    Dir = aData.get(Key, {})
-                    R = GetItem(aSoup, Dir.get('_Path', []), Key, Res)
+                    ValG = aData.get(Key, {})
+                    R = GetItem(aSoup, ValG.get('_Path', []), Key, Res)
                     if (R):
-                        R = TScheme.Parse(R, Dir.get('_Items', {}))
+                        R = TScheme.Parse(R, ValG.get('_Items', {}))
                         Res[0].update(R[0])
                         Res[1].update(R[1])
                         Res[2].append(R[2])
