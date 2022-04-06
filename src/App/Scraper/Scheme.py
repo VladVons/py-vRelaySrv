@@ -21,11 +21,9 @@ _reSpace.split(aValue.strip())
 '''
 
 
-def DigSplit(aValue: str) -> tuple:
-    Digit = ''
-    Before = '' 
-    After = ''
-    for x in aValue:
+def DigSplit(aVal: str) -> tuple:
+    Digit = Before = After = ''
+    for x in aVal:
         if (x in _Invisible):
             continue
         elif (x in _Digits):
@@ -35,47 +33,47 @@ def DigSplit(aValue: str) -> tuple:
                 After += x
             else:
                 Before += x
-    Res = (Before, Digit, After)
-    return Res
+    return (Before, Digit, After)
 
-def XlatReplace(aValue: str, aXlat: list) -> str:
+def XlatReplace(aVal: str, aXlat: list) -> str:
     for Find, Replace in aXlat:
-        aValue = aValue.replace(Find, Replace)
-    return aValue
+        aVal = aVal.replace(Find, Replace)
+    return aVal
 
 
 class TApi():
     @staticmethod
-    def Strip(aValue: str) -> str:
-        return aValue.strip()
+    def Strip(aVal: str) -> str:
+        return aVal.strip()
 
     @staticmethod
-    def List(aValue: list, aIdx: int) -> object:
-        if (aIdx < len(aValue)):
-            return aValue[aIdx]
+    def List(aVal: list, aIdx: int) -> object:
+        if (aIdx < len(aVal)):
+            return aVal[aIdx]
+ 
     @staticmethod
-    def Compare(aValue: str, aStr: str) -> bool:
-        return (aValue in aStr.split('|'))
+    def Equal(aVal: str, aStr: str) -> bool:
+        return (aVal in aStr.split('|'))
 
     @staticmethod
-    def Split(aValue: str, aDelim: str = ' ', aIdx: int = 0) -> str:
-        Arr = aValue.split(aDelim)
-        if (aIdx <= len(aValue)):
+    def Split(aVal: str, aDelim: str = ' ', aIdx: int = 0) -> str:
+        Arr = aVal.split(aDelim)
+        if (aIdx <= len(aVal)):
             return Arr[aIdx].strip()
 
     @staticmethod
-    def Price(aValue: str) -> tuple:
-        Before, Dig, After = DigSplit(aValue) 
+    def Price(aVal: str) -> tuple:
+        Before, Dig, After = DigSplit(aVal) 
         if (not Dig):
             Dig = '0'
         return (float(Dig), After)        
 
     @staticmethod
-    def DigLat(aValue: str) -> str:
+    def DigLat(aVal: str) -> str:
         Res = ''
-        for i in aValue:
-            if ('0' <= i <= '9') or ('a' <= i <= 'z') or ('A' <= i <= 'Z') or (i in '.-/'):
-                Res += i
+        for x in aVal:
+            if ('0' <= x <= '9') or ('a' <= x <= 'z') or ('A' <= x <= 'Z') or (x in '.-/'):
+                Res += x
         return Res
 
 
