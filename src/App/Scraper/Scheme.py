@@ -7,18 +7,18 @@ Description:
 https://github.com/pythontoday/scrap_tutorial
 """
 
+import re
 
 _Invisible = [' ', '\t', '\n', '\r', '\xA0']
 _Digits = '0123456789.'
+_XlatEntitles = [('&nbsp;', ' '), ('&lt;', '<'), ('&amp;', '&'), ('&quot;', '"'), ('&apos;', "'")]
 
+'''
+_ReSpace = re.compile('\s+|\xA0')
+_reSpace.split(aValue.strip())
 
-class TScheme():
     @staticmethod
-    def Strip(aValue: str) -> str:
-        return aValue.strip()
-
-    @staticmethod
-    def Dig(aValue: str) -> str:
+    def X_Dig(aValue: str) -> str:
         Res = ''
         for i in aValue:
             if (i in _Digits):
@@ -28,15 +28,7 @@ class TScheme():
         return Res
 
     @staticmethod
-    def DigLat(aValue: str) -> str:
-        Res = ''
-        for i in aValue:
-            if ('0' <= i <= '9') or ('a' <= i <= 'z') or ('A' <= i <= 'Z') or (i in '.-/'):
-                Res += i
-        return Res
-
-    @staticmethod
-    def DigVis(aValue: str) -> str:
+    def X_DigVis(aValue: str) -> str:
         Res = ''
         for i in aValue:
             if (i in _Digits):
@@ -46,34 +38,106 @@ class TScheme():
             else:
                 break
         return Res
+'''
+
+def DigSplit(aValue: str) -> tuple:
+    Digit = ''
+    Before = '' 
+    After = ''
+    for x in aValue:
+        if (x in _Invisible):
+            continue
+        elif (x in _Digits):
+            Digit += x
+        else:
+            if (Digit): 
+                After += x
+            else:
+                Before += x
+    Res = (Before, Digit, After)
+    return Res
+
+def XlatReplace(aValue: str, aXlat: list) -> str:
+    for Find, Replace in aXlat:
+        aValue = aValue.replace(Find, Replace)
+    return aValue
+
+
+class TApi():
+    @staticmethod
+    def Strip(aValue: str) -> str:
+        return aValue.strip()
 
     @staticmethod
-    def Parse(aObj, aSchema: dict) -> dict:
-        Res = {}
-        for SKey, SVal in filter(lambda x: not x[0].startswith('-'), aSchema.items()):
-            Obj = aObj
-            for Val in SVal:
-                ObjEx = getattr(TScheme, Val[0], None)
-                if (ObjEx):
-                    Obj = ObjEx(Obj)
-                else:
-                    Obj = getattr(Obj, Val[0])
+    def List(aValue: list, aIdx: int) -> object:
+        if (aIdx < len(aValue)):
+            return aValue[aIdx]
+    @staticmethod
+    def Compare(aValue: str, aStr: str) -> bool:
+        return (aValue in aStr.split('|'))
 
-                if (Obj is None):
-                    break
+    @staticmethod
+    def Split(aValue: str, aDelim: str = ' ', aIdx: int = 0) -> str:
+        Arr = aValue.split(aDelim)
+        if (aIdx <= len(aValue)):
+            return Arr[aIdx].strip()
 
-                if (len(Val) > 1):
-                    Obj = Obj(*Val[1])
-                    #print('%10s %5s, %s' % (SKey, Obj != None, Val[1]))
-                    if (Obj is None):
-                        break
-            if (Obj):
-                Res[SKey] = Obj
+    @staticmethod
+    def Price(aValue: str) -> tuple:
+        Bef, Dig, Aft = DigSplit(aValue) 
+        if (not Dig):
+            Dig = '0'
+        return (float(Dig), Aft)        
 
-        PathObj = Res.get('Path')
-        if (PathObj):
-            Data = TScheme.Parse(PathObj, aSchema.get('Dir', {}))
-            del Res['Path']
-            Res.update(Data)
-
+    @staticmethod
+    def DigLat(aValue: str) -> str:
+        Res = ''
+        for i in aValue:
+            if ('0' <= i <= '9') or ('a' <= i <= 'z') or ('A' <= i <= 'Z') or (i in '.-/'):
+                Res += i
         return Res
+
+class TScheme():
+    @staticmethod
+    def Parse(aSoup, aData: dict) -> tuple:
+        def GetItem(aObj, aScheme: list, aKey: str, aRes: tuple) -> object:
+            for Item in aScheme:
+                if (not Item[0].startswith('-')):
+                    Obj = getattr(TApi, Item[0], None)
+                    if (Obj):
+                        Param = [aObj]
+                        if (len(Item) == 2):
+                            Param += Item[1]
+                        aObj = Obj(*Param)
+                    else:
+                        aObj = getattr(aObj, Item[0], None)
+                        if (aObj):
+                            if (len(Item) == 2):
+                                aObj = aObj(*Item[1])
+
+                    if (aObj is None):
+                        aRes[2].append('%s->%s' % (aKey, Item))
+                        break
+            return aObj
+
+        Res = (dict(), set(), list())
+        for Key, Val in aData.items():
+            if (not Key.startswith('-')):
+                if (Key.startswith('_Group')):
+                    Dir = aData.get(Key, {})
+                    R = GetItem(aSoup, Dir.get('_Path', []), Key, Res)
+                    if (R):
+                        R = TScheme.Parse(R, Dir.get('_Items', {}))
+                        Res[0].update(R[0])
+                        Res[1].update(R[1])
+                        Res[2].append(R[2])
+                else:
+                    Res[1].add(Key)
+                    R = GetItem(aSoup, Val, Key, Res)
+                    if (R is not None):
+                        Res[0][Key] = R
+        return Res
+
+    @staticmethod
+    def ParseKeys(aSoup, aData: dict) -> dict:
+        return {Key: TScheme.Parse(aSoup, Val) for Key, Val in aData.items() if (not Key.startswith('-'))}

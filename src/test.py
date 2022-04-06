@@ -50,26 +50,6 @@ async def TestA_1():
             #print(Val.Rec)
             print(Val.Rec.GetAsDict())
 
-def Test_2():
-    from Inc.DB.DbList import TDbList
-
-    Db1 = TDbList( [('User', str), ('Age', int), ('Male', set, set([1,2,3]))] )
-    Db1.Safe = True
-    Data = [ ['User2', 22, set([10,20,30])], ['User1', 11, set([11,21,31])], ['User3', 33, set([12,22,32])] ]
-    Db1.SetData(Data)
-
-    Db1.RecAdd()
-    Db1.Rec.SetAsTuple( [('User', 'pink')])
-    Db1.RecAdd()
-    Db1.Rec.SetAsTuple( [('User', 'floyd'), ('Age', 50)])
-    Db1.Rec.Flush()
-
-    print(Db1.GetData())
-
-    print()
-    Db2 = Db1.Filter([ (operator.lt, 1, 21, True) ])
-    print(Db2.GetData())
-
 def Main1():
     Start = time.time()
     for i in range(1):
@@ -86,4 +66,7 @@ def Main1():
 #Log.AddEcho(TEchoConsole())
 #Log.Print(1, 'x', 'hello')
 
-Main1()
+#Main1()
+
+s1 = '1234'
+print(float(s1))

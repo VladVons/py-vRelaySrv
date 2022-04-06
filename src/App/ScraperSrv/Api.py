@@ -7,7 +7,6 @@ Description:
 
 
 import json
-import random
 import asyncio
 from datetime import datetime
 #
@@ -15,6 +14,7 @@ from IncP.Log import Log, TEchoDb
 from IncP.DB.Scraper_pg import TDbApp
 from Inc.DB.DbList import TDbList
 from IncP.DB.Db import TDbFetch
+
 
 class TApiTask():
     def __init__(self, aParent: 'TApi'):

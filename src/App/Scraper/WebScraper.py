@@ -37,7 +37,17 @@ class TSender():
     def __init__(self, aParent: 'TWebScraper', aMaxSize: int = 3):
         self.Parent = aParent
         self.MaxSize = aMaxSize
-        self.Dbl = TDbList( [('Id', int), ('Url', str), ('Name', str), ('Price', float), ('PriceOld', float), ('Image', str), ('OnStock', bool)] )
+        self.Dbl = TDbList([
+            ('Id', int), 
+            ('Url', str), 
+            ('Name', str), 
+            ('Price', float), 
+            ('Currency', str), 
+            ('PriceOld', float), 
+            ('Image', str), 
+            ('Stock', bool),
+            ('SKU', str)
+        ])
 
     async def Add(self, aData: dict):
         self.Dbl.RecAdd()
@@ -47,7 +57,7 @@ class TSender():
 
     async def Flush(self):
         if (not self.Dbl.IsEmpty()):
-            Data = self.Dbl.GetData()
+            Data = self.Dbl.DataExport()
             SrvRes = await Api.SendResult(Data)
             if (SrvRes):
                 self.Dbl.Empty()
@@ -64,8 +74,8 @@ class TWebScraper():
         self.UrlScheme = 0
         self.IsRun = False
 
-        self.Download = TDownload(self.Parent.Conf.get('Proxy', []))
-        #self.DblQueue = TDbList(['Url']) #ToDo. default aData is not empty in constructor!
+        #self.Download = TDownload(self.Parent.Conf.get('Proxy', []))
+        self.Download = TDownload()
         self.DblQueue = TDbList( [('Url', str)] )
         self.Sender = TSender(self)
 
@@ -94,11 +104,10 @@ class TWebScraper():
     async def _Worker(self):
         await self._DoWorkerStart()
 
-        await asyncio.sleep(random.randint(1, 5))
+        #await asyncio.sleep(random.randint(1, 5))
         self.IsRun = True
         while (self.IsRun) and (not self.DblQueue.IsEmpty()):
             await self.Event.wait()
-            await asyncio.sleep(random.randint(int(self.Sleep / 2), self.Sleep))
 
             try:
                 Rec = self.DblQueue.RecPop()
@@ -112,9 +121,13 @@ class TWebScraper():
                     await self._DoWorkerUrl(Url, Data, Status)
             except (aiohttp.ClientConnectorError, aiohttp.ClientError, asyncio.TimeoutError, Exception) as E:
                 Log.Print(1, 'x', '_Worker(). %s' % (Url), aE = E)
+
+            await asyncio.sleep(random.randint(int(self.Sleep / 2), self.Sleep))
+
         await self.Sender.Flush()
         await self._DoWorkerEnd()
         Log.Print(1, 'i', '_Worker(). done')
+
 
 class TWebScraperFull(TWebScraper):
     def __init__(self, aParent, aScheme: dict, aUrlRoot: str, aSleep: int = 1):
@@ -174,12 +187,12 @@ class TWebScraperSitemap(TWebScraper):
                 if (aUrl.endswith('.xml.gz')):
                     Data = gzip.decompress(Data)
 
-            Urls = re.findall('<loc>(.*?)</loc>', Data.decode())
-            for Url in Urls:
-                if (Url.endswith('.xml')) or (Url.endswith('.xml.gz')):
-                    Res += await self.LoadSiteMap(Url)
-                else:
-                    Res.append(Url.strip('/'))
+                Urls = re.findall('<loc>(.*?)</loc>', Data.decode())
+                for Url in Urls:
+                    if (Url.endswith('.xml')) or (Url.endswith('.xml.gz')):
+                        Res += await self.LoadSiteMap(Url)
+                    else:
+                        Res.append(Url.strip('/'))
         return Res
 
     async def _DoWorkerStart(self):
@@ -187,16 +200,25 @@ class TWebScraperSitemap(TWebScraper):
         if (SiteMap):
             self.DblQueue.AddList('Url', SiteMap)  
         else:
-            Log.Print(1, 'e', 'No sitemap %' % (self.UrlRoot))
+            Log.Print(1, 'e', 'No sitemap %s' % (self.UrlRoot))
 
     async def _DoWorkerUrl(self, aUrl: str, aData: str, aStatus: int):
         Soup = BeautifulSoup(aData, 'lxml')
-        Scheme = TScheme.Parse(Soup, self.Scheme)
-        if (Scheme):
-            self.UrlScheme += 1
-            print('---x1', aUrl, Scheme)
-            await self.Sender.Add(Scheme)
+        Data = TScheme.ParseKeys(Soup, self.Scheme)
 
+        Info = Data.get('Product')
+        if (Info):
+            Value, Keys, Err = Info
+            Dif = set(Keys) - set(Value.keys())
+            if (Dif):
+                Log.Print(1, 'i', 'Missed %s in %s' % (Dif, aUrl))
+            else:
+                print('---x1', aUrl, Value)
+                self.UrlScheme += 1
+                Price = Value['Price'] 
+                Value['Price'] = Price[0]
+                Value['Currency'] = Price[1]
+                await self.Sender.Add(Value)
 
 class TWebScraperUpdate(TWebScraper):
     def __init__(self, aParent, aScheme: dict, aUrls: list, aSleep: int):
