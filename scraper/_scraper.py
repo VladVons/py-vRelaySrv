@@ -1,13 +1,13 @@
 #!/usr/bin/python3 -B
 
 
-import os, sys, time
+import os, sys, time, json
 print(os.getcwd())
 sys.path.append('../src')
 
 import json
 from bs4 import BeautifulSoup
-from App.Scraper.Scheme import TScheme
+from IncP.Scheme import TScheme
 
 
 def Main(aMod: str, aExt: str = '.html'):
@@ -27,6 +27,8 @@ def Main(aMod: str, aExt: str = '.html'):
 
         Item = Schema['Product']
         Res = TScheme.Parse(Soup, Item)
+        #Res = (dict(), set(), list())
+        Res = json.dumps(Res)
         print(Res)
     print('Time', time.time() - TimeStart)
 

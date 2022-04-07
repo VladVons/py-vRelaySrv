@@ -100,7 +100,7 @@ class TScheme():
                         break
             return aObj
 
-        Res = (dict(), set(), list())
+        Res = (dict(), list(), list())
         for Key, Val in aData.items():
             if (not Key.startswith('-')):
                 if (Key.startswith('_Group')):
@@ -109,10 +109,10 @@ class TScheme():
                     if (R):
                         R = TScheme.Parse(R, ValG.get('_Items', {}))
                         Res[0].update(R[0])
-                        Res[1].update(R[1])
+                        Res[1].append(R[1])
                         Res[2].append(R[2])
                 else:
-                    Res[1].add(Key)
+                    Res[1].append(Key)
                     R = GetItem(aSoup, Val, Key, Res)
                     if (R is not None):
                         Res[0][Key] = R

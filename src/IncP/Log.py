@@ -39,7 +39,7 @@ class TLogEx(TLog):
         Path   = Dir.replace(CurDir, '').strip('/') + '/' + File
         Method = aStack[3]
         Line   = aStack[2]
-        return '%s->%s(), line %s' % (Path, Method, Line)
+        return '%s %s(), line %s' % (Path, Method, Line)
 
     def _DoExcept(self, aE):
         traceback.print_exc()

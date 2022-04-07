@@ -58,7 +58,7 @@ class TLog():
                 aList.append(EMsg)
 
         self.Cnt += 1
-        Res = '%s,%s,%03d,%d,%s,%s,%s' % (GetDate(), GetTime(), self.Cnt, aLevel, aType, aMsg, aList)
+        Res = '%s, %s, %03d, %d, %s, %s, %s' % (GetDate(), GetTime(), self.Cnt, aLevel, aType, aMsg, aList)
         for Echo in self.Echoes:
             if (aLevel <= Echo.Level) and (aType in Echo.Type):
                 Echo.Write(Res)

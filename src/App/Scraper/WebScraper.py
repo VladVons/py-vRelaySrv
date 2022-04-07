@@ -28,8 +28,8 @@ from bs4 import BeautifulSoup
 #
 from IncP.Log import Log
 from IncP.Download import TDownload
+from IncP.Scheme import TScheme
 from Inc.DB.DbList import TDbList
-from .Scheme import TScheme
 from .Api import Api
 
 
@@ -118,7 +118,7 @@ class TWebScraper():
                         self.TotalData += len(Data)
                         self.TotalUrl += 1
                     await self._DoWorkerUrl(Url, Data, Status)
-            except (aiohttp.ClientConnectorError, aiohttp.ClientError, asyncio.TimeoutError, Exception) as E:
+            except (aiohttp.ClientConnectorError, aiohttp.ClientError) as E:
                 Log.Print(1, 'x', '_Worker(). %s' % (Url), aE = E)
 
             await asyncio.sleep(random.randint(int(self.Sleep / 2), self.Sleep))
@@ -161,7 +161,8 @@ class TWebScraperFull(TWebScraper):
         await self._GrabHref(aUrl, Soup, aStatus)
 
     async def _GrabHref(self, aUrl: str, aSoup: BeautifulSoup, aStatus: int):
-        Msg = 'status:%d, found:%2d, done:%d, total:%dM, %s ;' % (aStatus, len(self.Url), self.TotalUrl, self.TotalData / 1000000, aUrl)
+        Msg = 'status:%d, found:%2d, done:%d, total:%dM, %s ;' % (
+            aStatus, len(self.Url), self.TotalUrl, self.TotalData / 1000000, aUrl)
         Log.Print(1, 'i', Msg)
 
         Res = TScheme.Parse(aSoup, self.Scheme)
@@ -209,7 +210,7 @@ class TWebScraperSitemap(TWebScraper):
         if (Info):
             Value, Keys, Err = Info
             Dif = set(Keys) - set(Value.keys())
-            if (Dif):
+            if (Err):
                 Log.Print(1, 'i', 'Missed %s in %s' % (Dif, aUrl))
             else:
                 print('---x1', aUrl, Value)
@@ -229,6 +230,7 @@ class TWebScraperUpdate(TWebScraper):
     async def _DoWorkerUrl(self, aUrl: str, aData: str, aStatus: int):
         Soup = BeautifulSoup(aData, "lxml")
 
-        Msg = 'status:%d, found:%2d, done:%d, total:%dM, %s ;' % (aStatus, self.TotalUrl, self.TotalData / 1000000, aUrl)
+        Msg = 'status:%d, found:%2d, done:%d, total:%dM, %s ;' % (
+            aStatus, self.TotalUrl, self.TotalData / 1000000, aUrl)
         Log.Print(1, 'i', Msg)
 
