@@ -28,7 +28,9 @@ class TApp():
 
     async def Run(self):
         self.InitLog()
-        Log.Print(1, 'i', 'Run()', os.uname())
+    
+        UName = os.uname()
+        Log.Print(1, 'i', 'Run()', [UName.sysname, UName.nodename, os.environ.get('USER')])
 
         Plugin.LoadList(ConfApp.get('Plugins'))
         try:

@@ -84,11 +84,9 @@ class TWebScraper():
     async def _DoWorkerUrl(self, aUrl: str, aData, aStatus: int):
         raise NotImplementedError()
 
-    async def _DoWorkerStart(self):
-        pass
-
-    async def _DoWorkerEnd(self):
-        pass
+    async def _DoWorkerStart(self): pass
+    async def _DoWorkerEnd(self): pass
+    async def _DoWorkerException(self): pass
 
     def Wait(self, aEnable: bool):
         if  (aEnable):
@@ -114,6 +112,7 @@ class TWebScraper():
                 Arr = await self.Download.Get(Url)
             except (aiohttp.ClientConnectorError, aiohttp.ClientError, aiohttp.InvalidURL) as E:
                 Log.Print(1, 'x', '_Worker(). %s' % (Url), aE = E)
+                await self._DoWorkerException(Url, E)
                 continue
                 
             Data, Status = Arr
@@ -211,10 +210,8 @@ class TWebScraperSitemap(TWebScraper):
         if (Info):
             Value, Keys, Err = Info
             Dif = set(Keys) - set(Value.keys())
-            if (Err):
-                Log.Print(1, 'i', 'Missed %s in %s' % (Dif, aUrl))
-            else:
-                print('---x1', aUrl, Value)
+            Log.Print(1, 'i', ' %s, %s' % (aUrl, Dif))
+            if (not Err):
                 self.UrlScheme += 1
                 Price = Value['Price'] 
                 Value['Price'] = Price[0]
