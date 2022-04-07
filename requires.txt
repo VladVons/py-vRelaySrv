@@ -1,10 +1,15 @@
-asyncio
+# apt install libpq-dev python3-dev --no-install-recommends
+# pip3 install -r requires.txt
+
+# apt install python3-
 aiohttp
-aiohttp-socks
-aiomysql
 aiopg
+bs4
+
+#
+asyncio
+aiohttp-socks
 aiohttp_jinja2
 jinja2
 gmqtt
-bs4
 lxml
