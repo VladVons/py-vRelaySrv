@@ -103,26 +103,25 @@ class TWebScraper():
     async def _Worker(self):
         await self._DoWorkerStart()
 
-        #await asyncio.sleep(random.randint(1, 5))
         self.IsRun = True
         while (self.IsRun) and (not self.DblQueue.IsEmpty()):
             await self.Event.wait()
-
-            try:
-                Rec = self.DblQueue.RecPop()
-                Url = Rec.GetField('Url')
-                Arr = await self.Download.Get(Url)
-                if (Arr):
-                    Data, Status = Arr
-                    if (Status == 200):
-                        self.TotalData += len(Data)
-                        self.TotalUrl += 1
-                    await self._DoWorkerUrl(Url, Data, Status)
-            except (aiohttp.ClientConnectorError, aiohttp.ClientError) as E:
-                Log.Print(1, 'x', '_Worker(). %s' % (Url), aE = E)
-
             await asyncio.sleep(random.randint(int(self.Sleep / 2), self.Sleep))
 
+            Rec = self.DblQueue.RecPop()
+            Url = Rec.GetField('Url')
+            try:
+                Arr = await self.Download.Get(Url)
+            except (aiohttp.ClientConnectorError, aiohttp.ClientError, aiohttp.InvalidURL) as E:
+                Log.Print(1, 'x', '_Worker(). %s' % (Url), aE = E)
+                continue
+                
+            Data, Status = Arr
+            if (Status == 200):
+                self.TotalData += len(Data)
+                self.TotalUrl += 1
+            await self._DoWorkerUrl(Url, Data, Status)
+            
         await self.Sender.Flush()
         await self._DoWorkerEnd()
         Log.Print(1, 'i', '_Worker(). done')
@@ -193,6 +192,8 @@ class TWebScraperSitemap(TWebScraper):
                         Res += await self.LoadSiteMap(Url)
                     else:
                         Res.append(Url.strip('/'))
+            else:
+                Log.Print(1, 'e', 'Sitemap error %s, %s' % (Status, self.UrlRoot))
         return Res
 
     async def _DoWorkerStart(self):

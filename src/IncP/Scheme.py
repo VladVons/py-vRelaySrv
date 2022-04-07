@@ -79,8 +79,8 @@ class TApi():
 
 class TScheme():
     @staticmethod
-    def Parse(aSoup, aData: dict) -> tuple:
-        def GetItem(aObj, aScheme: list, aKey: str, aRes: tuple) -> object:
+    def Parse(aSoup, aData: dict, aPath: str = '') -> tuple:
+        def GetItem(aObj, aScheme: list, aPath: str, aRes: tuple) -> object:
             for Item in aScheme:
                 if (not Item[0].startswith('-')):
                     Obj = getattr(TApi, Item[0], None)
@@ -96,24 +96,25 @@ class TScheme():
                                 aObj = aObj(*Item[1])
 
                     if (aObj is None):
-                        aRes[2].append('%s->%s' % (aKey, Item))
+                        aRes[2].append('%s->%s' % (aPath, Item))
                         break
             return aObj
 
         Res = (dict(), list(), list())
         for Key, Val in aData.items():
+            Path = aPath + '/' + Key
             if (not Key.startswith('-')):
                 if (Key.startswith('_Group')):
                     ValG = aData.get(Key, {})
-                    R = GetItem(aSoup, ValG.get('_Path', []), Key, Res)
+                    R = GetItem(aSoup, ValG.get('_Path', []), Path, Res)
                     if (R):
-                        R = TScheme.Parse(R, ValG.get('_Items', {}))
+                        R = TScheme.Parse(R, ValG.get('_Items', {}), Path)
                         Res[0].update(R[0])
                         Res[1].append(R[1])
                         Res[2].append(R[2])
                 else:
                     Res[1].append(Key)
-                    R = GetItem(aSoup, Val, Key, Res)
+                    R = GetItem(aSoup, Val, Path, Res)
                     if (R is not None):
                         Res[0][Key] = R
         return Res

@@ -28,7 +28,7 @@ def Main(aMod: str, aExt: str = '.html'):
         Item = Schema['Product']
         Res = TScheme.Parse(Soup, Item)
         #Res = (dict(), set(), list())
-        Res = json.dumps(Res)
+        #Res = json.dumps(Res)
         print(Res)
     print('Time', time.time() - TimeStart)
 
