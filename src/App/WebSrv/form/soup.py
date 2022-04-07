@@ -21,7 +21,8 @@ class TForm(TFormBase):
             try:
                 UrlData = await Download.Get(self.Url)
             except (aiohttp.ClientConnectorError, aiohttp.ClientError, aiohttp.InvalidURL) as E:
-                Log.Print(1, 'x', '_Worker(). %s' % (self.Url), aE = E)
+                UrlData = None
+                self.Output = Log.Print(1, 'x', 'Render(). %s' % (self.Url), aE = E)
 
             if (UrlData):
                 Data, Status = UrlData
