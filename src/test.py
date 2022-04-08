@@ -2,10 +2,6 @@ import os
 import asyncio
 import random 
 import time
-import operator
-from aiohttp import web
-from Inc.DB.DbList import TDbList, TDbRec
-
 #
 #import cfscrape
 #import cloudscraper
@@ -57,16 +53,26 @@ def Main1():
         Test_2()
     print('%0.2f' % (time.time() - Start))
 
+def Main2():
+    from Inc.DB.DbList import TDbList, TDbRec
+
+    Db1 = TDbList( [('User', str), ('Age', int), ('Male', bool, True)] )
+    Data = [['User2', 22, True], ['User1', 15, False], ['User3', 33, True], ['User1', 11, False]]
+    Db1.SetData(Data)
+    Db1.Sort(['User'])
+    Db1.Sort(['User', 'Age'])
+    print(Db1.Data)
+
 
 #async def test_open_page(url):
 #    async with CloudflareScraper() as session:
 #        async with session.get(url) as resp:
 #            return await resp.text()
 
-#Log.AddEcho(TEchoConsole())
-#Log.Print(1, 'x', 'hello')
-
 #Main1()
+Main2()
 
-s1 = '1234'
-print(float(s1))
+#data=[[12, 'tall', 'blue', 1], [4, 'tall', 'blue', 15], [2, 'short', 'red', 9],[4, 'tall', 'blue', 13]]
+#data=[tuple(x) for x in data]
+#result = sorted(data, key = lambda x: (x[1], x[2], x[3]))
+#print(result)

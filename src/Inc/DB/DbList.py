@@ -192,9 +192,16 @@ class TDbList():
         Data = [Rec for Rec in self.Data if Find(Rec, aCond)]
         return self._DbExp(Data)
 
-    def Sort(self, aField: str, aReverse: bool = False):
-        FieldNo = self.Fields.GetNo(aField)
-        self.Data.sort(key=lambda x:x[FieldNo], reverse=aReverse)
+    def Sort(self, aFields: list, aReverse: bool = False):
+        if (len(aFields) == 1):
+            FieldNo = self.Fields.GetNo(aFields[0])
+            self.Data.sort(key=lambda x: (x[FieldNo]), reverse=aReverse)
+        else:
+            F = ''
+            for Field in aFields:
+                F += 'x[%s],' % self.Fields.GetNo(Field)
+            Script = 'self.Data.sort(key=lambda x: (%s), reverse=%s)' % (F, aReverse)
+            eval(Script)
         self.RecGo(0)
 
     def Shuffle(self):
@@ -285,7 +292,7 @@ if (__name__ == '__main__'):
     print('Rec.GetAsTuple:', Db1.Rec.GetAsTuple())
     print('Rec.GetList:', Db1.GetList('User', True))
 
-    Db1.Sort('User', True)
+    Db1.Sort(['User', 'Age'], True)
     for Idx, Val in enumerate(Db1):
         print(Idx, Val.Rec.GetField('User'),  Val.Rec[1])
 
