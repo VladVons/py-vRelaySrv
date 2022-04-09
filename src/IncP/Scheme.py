@@ -11,7 +11,8 @@ import re
 
 _Invisible = [' ', '\t', '\n', '\r', '\xA0']
 _Digits = '0123456789.'
-_XlatEntitles = [('&nbsp;', ' '), ('&lt;', '<'), ('&amp;', '&'), ('&quot;', '"'), ('&apos;', "'")]
+#_XlatEntitles = [('&nbsp;', ' '), ('&lt;', '<'), ('&amp;', '&'), ('&quot;', '"'), ('&apos;', "'")]
+_XlatKey = [('?', '')]
 
 
 '''
@@ -96,7 +97,8 @@ class TScheme():
                                 aObj = aObj(*Item[1])
 
                     if (aObj is None):
-                        aRes[2].append('%s->%s' % (aPath, Item))
+                        if (not '?' in aPath):
+                            aRes[2].append('%s->%s' % (aPath, Item))
                         break
             return aObj
 
@@ -113,10 +115,11 @@ class TScheme():
                         Res[1].append(R[1])
                         Res[2].append(R[2])
                 else:
-                    Res[1].append(Key)
+                    KeyPure = XlatReplace(Key, _XlatKey)
+                    Res[1].append(KeyPure)
                     R = GetItem(aSoup, Val, Path, Res)
                     if (R is not None):
-                        Res[0][Key] = R
+                        Res[0][KeyPure] = R
         return Res
 
     @staticmethod

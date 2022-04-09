@@ -63,6 +63,53 @@ def Main2():
     Db1.Sort(['User', 'Age'])
     print(Db1.Data)
 
+def Main3():
+    import urllib.robotparser as urobot
+    rp = urobot.RobotFileParser()
+
+    Urls = [
+        'http://oster.com.ua/123.php',
+        'http://oster.com.ua/images/captcha',
+
+        'http://oster.com.ua/Asite/comp',
+        'http://oster.com.ua/A/site/comp',
+        'http://oster.com.ua/site/comp',
+        'http://oster.com.ua?site',
+        'http://oster.com.ua/?site',
+        
+
+        'http://oster.com.ua/1/comp',
+        'http://oster.com.ua/comp/',
+        'http://oster.com.ua/comp/1',
+        'http://oster.com.ua/1/comp/',
+        'http://oster.com.ua/1comp',
+        'http://oster.com.ua/1/comp',
+
+        'http://oster.com.ua/Acomp/',
+        'http://oster.com.ua/cap_print/comp/',
+        'http://oster.com.ua/cap_print/123.php',
+        'http://oster.com.ua/call/123.php',
+        'http://oster.com.ua/123.php',
+        'http://oster.com.ua/captcha'
+    ]
+    
+    #rp.set_url('http://oster.com.ua/robots.txt')
+    #rp.read()
+    rp.request_rate("*")
+
+    with open('f_www.aks.ua_robots.txt') as F:
+        Data = F.readlines()
+
+        #Data = F.read()
+        #Data = Data.splitlines()
+        rp.parse(Data)
+    
+    for Url in Urls:
+        if rp.can_fetch("*", Url):
+            print('ok', Url)
+        else:
+            print('err', Url)
+
 
 #async def test_open_page(url):
 #    async with CloudflareScraper() as session:
@@ -70,9 +117,5 @@ def Main2():
 #            return await resp.text()
 
 #Main1()
-Main2()
-
-#data=[[12, 'tall', 'blue', 1], [4, 'tall', 'blue', 15], [2, 'short', 'red', 9],[4, 'tall', 'blue', 13]]
-#data=[tuple(x) for x in data]
-#result = sorted(data, key = lambda x: (x[1], x[2], x[3]))
-#print(result)
+#Main2()
+Main3()

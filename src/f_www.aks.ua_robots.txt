@@ -1,0 +1,22 @@
+User-Agent: *
+
+#Disallow: /
+Disallow: /cart
+Disallow: /backend
+Disallow: /index
+Disallow: */comp/
+Disallow: /item/rate
+Disallow: /compare
+Disallow: /profile
+Disallow: /forgot
+Disallow: /search
+Disallow: /call
+Disallow: /price
+Disallow: /promos
+Disallow: /images/captcha
+Disallow: *?site
+Disallow: *?print
+Disallow: *?tab
+
+Sitemap: https://www.aks.ua/sitemap.xml
+Sitemap: https://www.aks.ua/sitemap-images.xml

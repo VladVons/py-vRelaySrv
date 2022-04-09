@@ -5,11 +5,11 @@ License:     GNU, see LICENSE for more details
 Description:
 """
 
-
+import time
 import random
 import aiohttp
 from aiohttp_socks import ProxyConnector
-
+from IncP.Log import Log
 
 class THeaders():
     def __init__(self):
@@ -38,10 +38,16 @@ class TDownload():
         self.Auth = aAuth
 
     async def Get(self, aUrl: str) -> tuple:
-        async with aiohttp.ClientSession(connector=self._GetConnector(), auth=self._GetAuth()) as Session:
-            async with Session.get(aUrl, headers=self._GetHeaders()) as Response:
-                Data = await Response.read()
-                return (Data, Response.status)
+        TimeAt = time.time()
+        try:
+            async with aiohttp.ClientSession(connector=self._GetConnector(), auth=self._GetAuth()) as Session:
+                async with Session.get(aUrl, headers=self._GetHeaders()) as Response:
+                    Data = await Response.read()
+                    Res = {'Data': Data, 'Status': Response.status, 'Time': time.time() - TimeAt}
+        except (aiohttp.ClientConnectorError, aiohttp.ClientError, aiohttp.InvalidURL) as E:
+                    ErrMsg = Log.Print(1, 'x', 'Download.Get(). %s' % (aUrl), aE = E)
+                    Res = {'Err': E, 'Msg': ErrMsg}
+        return Res
 
     def _GetConnector(self) -> ProxyConnector:
         if (self.Proxies):

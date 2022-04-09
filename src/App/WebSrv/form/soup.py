@@ -18,14 +18,12 @@ class TForm(TFormBase):
             self.Script = Post.get('script')
 
             Download = TDownload()
-            try:
-                UrlData = await Download.Get(self.Url)
-            except (aiohttp.ClientConnectorError, aiohttp.ClientError, aiohttp.InvalidURL) as E:
-                UrlData = None
-                self.Output = Log.Print(1, 'x', 'Render(). %s' % (self.Url), aE = E)
-
-            if (UrlData):
-                Data, Status = UrlData
+            UrlDown = await Download.Get(self.Url)
+            if (UrlDown.get('Err')):
+                self.Output = 'Error loading %s, %s' % (self.Url, UrlDown.get('Msg')) 
+            else:
+                Data = UrlDown['Data']
+                Status = UrlDown['Status']
                 if (Status == 200):
                     Soup = BeautifulSoup(Data, 'lxml')
                     try:
@@ -36,4 +34,5 @@ class TForm(TFormBase):
                         self.Output = str(E.args)                            
                 else:
                     self.Output = 'Error loading %s' % (self.Url) 
+            
         return self._Render()

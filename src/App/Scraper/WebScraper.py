@@ -24,6 +24,7 @@ import asyncio
 import aiohttp
 import random
 from urllib.parse import urlparse
+from urllib.robotparser import RobotFileParser
 from bs4 import BeautifulSoup
 #
 from IncP.Log import Log
@@ -108,18 +109,16 @@ class TWebScraper():
 
             Rec = self.DblQueue.RecPop()
             Url = Rec.GetField('Url')
-            try:
-                Arr = await self.Download.Get(Url)
-            except (aiohttp.ClientConnectorError, aiohttp.ClientError, aiohttp.InvalidURL) as E:
-                Log.Print(1, 'x', '_Worker(). %s' % (Url), aE = E)
-                await self._DoWorkerException(Url, E)
-                continue
-                
-            Data, Status = Arr
-            if (Status == 200):
-                self.TotalData += len(Data)
-                self.TotalUrl += 1
-            await self._DoWorkerUrl(Url, Data, Status)
+            UrlDown = await self.Download.Get(Url)
+            if (UrlDown.get('Err')):
+                await self._DoWorkerException(Url, UrlDown.get('Err'))
+            else:
+                Data = UrlDown['Data']
+                Status = UrlDown['Status']
+                if (Status == 200):
+                    self.TotalData += len(Data)
+                    self.TotalUrl += 1
+                await self._DoWorkerUrl(Url, Data, Status)
             
         await self.Sender.Flush()
         await self._DoWorkerEnd()
@@ -132,6 +131,7 @@ class TWebScraperFull(TWebScraper):
 
         self.UrlRoot = aUrlRoot
         self.Url = []
+        self.RobotFile: RobotFileParser = None
         self.DblQueue.RecAdd([aUrlRoot])
 
     @staticmethod
@@ -139,6 +139,18 @@ class TWebScraperFull(TWebScraper):
         Path = urlparse(aUrl).path
         Ext = os.path.splitext(Path)[1]
         return Ext in ['.zip', '.rar', '.xml', '.pdf', '.jpg', '.jpeg', '.png', '.gif']
+
+    async def InitRobotFile(self, aUrl: str):
+        self.RobotFile = RobotFileParser()
+        UrlDown = await self.Download.Get(aUrl)
+        if (not UrlDown.get('Err')) and (UrlDown['Status'] == 200):
+            Data = UrlDown['Data'].decode().splitlines()
+            self.RobotFile.parse(Data)
+        else:
+            self.RobotFile.allow_all = True
+
+    async def _DoWorkerStart(self):
+        await self.InitRobotFile(self.UrlRoot + '/robots.txt')
 
     async def _DoWorkerUrl(self, aUrl: str, aData: str, aStatus: int):
         Soup = BeautifulSoup(aData, 'lxml')
@@ -151,6 +163,7 @@ class TWebScraperFull(TWebScraper):
 
                 if (Href.startswith(self.UrlRoot)) and \
                    (not Href.startswith('#')) and \
+                   (self.RobotFile.can_fetch('*', Href)) and \
                    (not Href in self.Url) and \
                    (not self.IsMimeApp(Href)):
                     self.Url.append(Href)
@@ -169,18 +182,20 @@ class TWebScraperFull(TWebScraper):
             #print('---x1', Res)
             #await self.Parent.Db.InsertUrl(aUrl, Res.get('Name', ''), Res.get('Price', 0), Res.get('PriceOld', 0), Res.get('OnStock', 1), Res.get('Image', ''))
 
+
 class TWebScraperSitemap(TWebScraper):
     def __init__(self, aParent, aScheme: dict, aUrlRoot: str, aSleep: int):
         super().__init__(aParent, aScheme, aSleep)
 
         self.UrlRoot = aUrlRoot
-
+  
     async def LoadSiteMap(self, aUrl: str) -> list:
         Res = []
 
-        Info = await self.Download.Get(aUrl)
-        if (Info):
-            Data, Status = Info
+        UrlDown = await self.Download.Get(aUrl)
+        if (not UrlDown.get('Err')):
+            Data = UrlDown['Data']
+            Status = UrlDown['Status']
             if (Status == 200):
                 if (aUrl.endswith('.xml.gz')):
                     Data = gzip.decompress(Data)
@@ -200,7 +215,7 @@ class TWebScraperSitemap(TWebScraper):
         if (SiteMap):
             self.DblQueue.AddList('Url', SiteMap)  
         else:
-            Log.Print(1, 'e', 'No sitemap %s' % (self.UrlRoot))
+            Log.Print(1, 'i', 'No sitemap %s' % (self.UrlRoot))
 
     async def _DoWorkerUrl(self, aUrl: str, aData: str, aStatus: int):
         Soup = BeautifulSoup(aData, 'lxml')

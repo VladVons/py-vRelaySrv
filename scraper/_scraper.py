@@ -33,8 +33,7 @@ def Main(aMod: str, aExt: str = '.html'):
     print('Time', time.time() - TimeStart)
 
 
-
 #Main('empire-tech.prom.ua')
 #Main('oster.com.ua')
-#Main('bigmo.com.ua')
-Main('artline.ua')
+Main('bigmo.com.ua')
+#Main('artline.ua')
