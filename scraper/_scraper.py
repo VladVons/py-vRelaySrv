@@ -39,11 +39,14 @@ def Find(aMod: str, aExt: str = '.html'):
 
     Soup = BeautifulSoup(Data, 'lxml')
     
-    Text = 'Адаптер PoE TP-LINK TL-PoE150S Power Over Ethernet'
-    Text = 'В наличии на складе'
+    #Text = 'Адаптер PoE TP-LINK TL-PoE150S Power Over Ethernet'
+    #Text = 'В наличии на складе'
     Text = '626'
-    R = TScheme.GetParents(Soup, Text)
-    pass
+    x11 = TScheme.GetParents(Soup, Text)
+
+    for x1 in x11:
+        for x in reversed(x1):
+            print(json.dumps(x))
 
 
 #Test('empire-tech.prom.ua')

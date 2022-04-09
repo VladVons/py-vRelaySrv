@@ -1,5 +1,4 @@
 import json
-import aiohttp
 from bs4 import BeautifulSoup
 #
 from .FForm import TFormBase
@@ -9,13 +8,13 @@ from IncP.Log import Log
 
 
 class TForm(TFormBase):
-    Title = "Check soup"
+    Title = "Soup test"
 
     async def Render(self):
         Post = await self.Request.post()
         if (Post):
-            self.Url = Post.get('url')
-            self.Script = Post.get('script')
+            self.Url = Post.get('Url').strip()
+            self.Script = Post.get('Script').strip()
 
             Download = TDownload()
             UrlDown = await Download.Get(self.Url)
@@ -31,8 +30,7 @@ class TForm(TFormBase):
                         ResScheme = TScheme.ParseKeys(Soup, Script)
                         self.Output = json.dumps(ResScheme,  indent=4, sort_keys=True, ensure_ascii=False)
                     except (json.decoder.JSONDecodeError, AttributeError) as E:
-                        self.Output = str(E.args)                            
+                        self.Output = str(E.args)
                 else:
                     self.Output = 'Error loading %s' % (self.Url) 
-            
         return self._Render()

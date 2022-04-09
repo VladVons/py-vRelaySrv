@@ -88,11 +88,11 @@ class TScheme():
             while (Item):
                 Attr = getattr(Item, 'attrs', None)
                 if (Attr):
-                    Res.append((Item.name, Attr))
+                    Res.append([Item.name, Attr])
                 elif (Item.name):
-                    Res.append((Item.name, {}))
+                    Res.append([Item.name, {}])
                 else:
-                    Res.append((Item, {}))
+                    Res.append([Item, {}])
 
                 Item = Item.parent
             ResAll.append(Res)
