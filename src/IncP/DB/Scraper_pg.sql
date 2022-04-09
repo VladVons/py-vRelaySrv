@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS site(
     scheme        TEXT NOT NULL,
     sleep         FLOAT DEFAULT 3,
     sitemap       BOOLEAN DEFAULT FALSE,
+    hours         VARCHAR(64),
     enabled       BOOLEAN DEFAULT TRUE
 );
 

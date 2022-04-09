@@ -56,6 +56,7 @@ class TDbApp(TDbPg):
                 site
             where
                 (site.enabled) and
+                ((site.hours = '') or (site.hours is  null) or (site.hours like CONCAT('%', LPAD(DATE_PART('hour', NOW())::text, 2, '0'), '%'))) and
                 (DATE_PART('day', NOW() - site.update_date) > site.update_days * {aUpdDaysX})
                 {CondExcl}
             order by
@@ -93,6 +94,7 @@ class TDbApp(TDbPg):
                 (url.site_id = site.id)
             where
                 (site.enabled) and
+                ((site.hours = '') or (site.hours is  null) or (site.hours like CONCAT('%', LPAD(DATE_PART('hour', NOW())::text, 2, '0'), '%'))) and
                 (DATE_PART('day', NOW() - url.update_date) > site.update_days * {aUpdDaysX})
                 {CondExcl}
             group by
@@ -122,6 +124,7 @@ class TDbApp(TDbPg):
                 (url.site_id = site.id)
             where
                 (site.enabled) and 
+                ((site.hours = '') or (site.hours is  null) or (site.hours like CONCAT('%', LPAD(DATE_PART('hour', NOW())::text, 2, '0'), '%'))) and
                 (url.site_id = {aSiteId}) and
                 (DATE_PART('day', NOW() - url.update_date) > site.update_days)
                 {CondOnlyProduct}
