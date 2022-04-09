@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 from IncP.Scheme import TScheme
 
 
-def Main(aMod: str, aExt: str = '.html'):
+def Test(aMod: str, aExt: str = '.html'):
     print(aMod, aExt)
 
     with open(aMod + '.json') as hFile:
@@ -33,7 +33,22 @@ def Main(aMod: str, aExt: str = '.html'):
     print('Time', time.time() - TimeStart)
 
 
-#Main('empire-tech.prom.ua')
-#Main('oster.com.ua')
-Main('bigmo.com.ua')
-#Main('artline.ua')
+def Find(aMod: str, aExt: str = '.html'):
+    with open(aMod + aExt) as hFile:
+        Data = hFile.read()
+
+    Soup = BeautifulSoup(Data, 'lxml')
+    
+    Text = 'Адаптер PoE TP-LINK TL-PoE150S Power Over Ethernet'
+    Text = 'В наличии на складе'
+    Text = '626'
+    R = TScheme.GetParents(Soup, Text)
+    pass
+
+
+#Test('empire-tech.prom.ua')
+#Test('oster.com.ua')
+#Test('bigmo.com.ua')
+#Test('artline.ua')
+
+Find('bigmo.com.ua')

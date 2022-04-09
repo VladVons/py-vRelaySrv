@@ -1,6 +1,7 @@
 -- postgres
 -- https://linuxhint.com/postgresql-full-text-search-tutorial
 
+
 CREATE TABLE IF NOT EXISTS site(
     id            SERIAL PRIMARY KEY,
     update_days   INTEGER DEFAULT 7,

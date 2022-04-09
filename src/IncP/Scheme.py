@@ -80,6 +80,25 @@ class TApi():
 
 class TScheme():
     @staticmethod
+    def GetParents(aSoup, aSearch: str) -> list:
+        ResAll = []
+        Items = aSoup.findAll(text=aSearch)
+        for Item in Items:
+            Res = []
+            while (Item):
+                Attr = getattr(Item, 'attrs', None)
+                if (Attr):
+                    Res.append((Item.name, Attr))
+                elif (Item.name):
+                    Res.append((Item.name, {}))
+                else:
+                    Res.append((Item, {}))
+
+                Item = Item.parent
+            ResAll.append(Res)
+        return ResAll
+
+    @staticmethod
     def Parse(aSoup, aData: dict, aPath: str = '') -> tuple:
         def GetItem(aObj, aScheme: list, aPath: str, aRes: tuple) -> object:
             for Item in aScheme:
