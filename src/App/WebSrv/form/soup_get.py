@@ -15,7 +15,6 @@ class TForm(TFormBase):
         if (Post):
             self.Url = Post.get('Url').strip()
             self.Find = Post.get('Find').strip()
-            self.Start = Post.get('Start', '').strip()
 
             Download = TDownload()
             UrlDown = await Download.Get(self.Url)
@@ -27,9 +26,6 @@ class TForm(TFormBase):
                 if (Status == 200):
                     Soup = BeautifulSoup(Data, 'lxml')
                     try:
-                        if (self.Start):
-                            Start = json.loads(self.Start)
-
                         self.Output = ''
                         x11 = TScheme.GetParents(Soup, self.Find)
                         for x1 in x11:

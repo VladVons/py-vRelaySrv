@@ -17,12 +17,6 @@
             </td>
         </tr>
         <tr>
-            <td>Start</td>
-            <td>
-                <input type="text" name="Start" placeholder="scheme" style="width:100%" value="{{ Form.Start }}">
-            </td>
-        </tr>
-        <tr>
             <td>Result</td>
             <td>
                 <textarea readonly name="Output" rows="30" style="width:100%" wrap='off'>{{ Form.Output }}</textarea>
