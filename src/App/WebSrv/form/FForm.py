@@ -1,6 +1,8 @@
 import aiohttp_jinja2
 
 class TFormBase():
+    Title = 'Title'
+
     def __init__(self, aRequest, aTpl: str):
         self.Request = aRequest
         self.Tpl = aTpl
