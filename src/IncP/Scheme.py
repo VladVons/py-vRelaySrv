@@ -82,7 +82,9 @@ class TScheme():
     @staticmethod
     def GetParents(aSoup, aSearch: str) -> list:
         ResAll = []
-        Items = aSoup.findAll(text=aSearch)
+        #Items = aSoup.findAll(string=aSearch)
+        Items = aSoup.findAll(string=re.compile(aSearch))
+
         for Item in Items:
             Res = []
             while (Item):
