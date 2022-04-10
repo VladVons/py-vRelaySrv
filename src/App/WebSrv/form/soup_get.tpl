@@ -1,37 +1,28 @@
 {% extends "Layout.tpl" %}
 
 {% block content %}
-<!--soup_get.tpl begin-->
-<form name="FormParse" method="post" action="/form/soup_get?action=go" onsubmit="return validateForm()" enctype="multipart/form-data">
-    <table width="100%" class="table1">
-        <tr>
-            <td>url</td>
-            <td>
-                <input type="text" name="Url" placeholder="url" style="width:100%" required value="{{ Form.Url }}">
-            </td>
-        </tr>
-        <tr>
-            <td>Find</td>
-            <td>
-                <input type="text" name="Find" placeholder="text" style="width:100%" required value="{{ Form.Find }}">
-            </td>
-        </tr>
-        <tr>
-            <td>Result</td>
-            <td>
-                <textarea readonly name="Output" rows="30" style="width:100%" wrap='off'>{{ Form.Output }}</textarea>
-            </td>
-        <tr>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-        </tr>
-        <tr>
-            <td>&nbsp;</td>
-            <td align="center">
-                <input type="submit" name="btn" value="OK" class="btn"> 
-            </td>
-        </tr>
-    </table>
-</form>
+    </style>
+    <form name="FormParse" method="post" action="/form/soup_get?action=go" enctype="multipart/form-data">
+        <table style="width:100%">
+            <tr>
+                <th></th>
+                <th style="width :90%"></th>
+            <tr>
+                <td>url</td>
+                <td style="width:90%"><input type="text" name="Url" placeholder="url" style="width:100%" required value="{{ Form.Url }}"></td>
+            </tr>
+            <tr>
+                <td>Find regEx</td>
+                <td><input type="text" name="Find" placeholder="text" style="width:100%" required value="{{ Form.Find }}"></td>
+            </tr>
+            <tr>
+                <td>Output</td>
+                <td><textarea readonly name="Output" rows="30">{{ Form.Output }}</textarea> </td>
+            <tr>
+            <tr>
+                <td colspan="2" style="text-align:center"><input type="submit" name="btn" value="OK" class="btn"></td>
+            </tr>
+        </table>
+    </form>
 <!-soup_get.tpl end-->
 {% endblock %}

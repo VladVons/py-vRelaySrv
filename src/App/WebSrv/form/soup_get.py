@@ -11,11 +11,7 @@ class TForm(TFormBase):
     Title = "Soup get"
 
     async def Render(self):
-        Post = await self.Request.post()
-        if (Post):
-            self.Url = Post.get('Url').strip()
-            self.Find = Post.get('Find').strip()
-
+        if (await self.PostToForm()):
             Download = TDownload()
             UrlDown = await Download.Get(self.Url)
             if (UrlDown.get('Err')):

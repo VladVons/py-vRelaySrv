@@ -7,8 +7,8 @@
     <title>{{ Form.Title }}</title>
     {% endblock %}
   </head>
-
   <body>
+    <h2>{{ Form.Title }}</h2>
     <div id="content">
         {% block content %}{% endblock %}
     </div>
@@ -17,5 +17,4 @@
         <a href="http://oster.com.ua">VladVons@gmail.com, 2022</a>
     </div>
   </body>
-
 </html>

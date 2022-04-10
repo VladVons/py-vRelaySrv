@@ -1,13 +1,7 @@
 body {
     font-family: Arial;
     background-color: #3498DB;
-    padding: 50px;
-}
-
-.table1 {
-  margin-left: auto;
-  margin-right: auto;
-  border: 0px solid yellow;
+    padding: 10px;
 }
 
 input {
@@ -18,13 +12,32 @@ input {
     font-size: 16px;
     font-weight: 200;
     padding: 10px 0;
-    width: 250px;
+    width1: 250px;
     transition: border .5s;
 }
 
 input:focus {
     border: 2px solid #3498DB;
     box-shadow: none;
+}
+
+table, th, td {
+    border: 1px solid yellow;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 2px;
+    text-align: left;
+}
+
+textarea {
+    border:1px solid #999999;
+    width:100%;
+    margin:2px 0;
+    padding:3px;
+    box-sizing: content-box;
+    overflow:scroll;
 }
 
 .btn {
