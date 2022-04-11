@@ -13,7 +13,7 @@
           <tr>
             <td>Path</td>
             <td colspan="4">
-            <input type="text" name="Path" placeholder="path script" style="width:100%" value="{{ Form.Path }}">
+            <input type="text" name="Path" placeholder="path script" style="width:100%" value="{{ Form.Path }}" required>
             </td>  
           </tr>
           <tr>
