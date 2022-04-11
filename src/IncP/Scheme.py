@@ -106,6 +106,10 @@ class TScheme():
     @staticmethod
     def GetItem(aObj, aScheme: list, aRes: tuple, aPath: str = '') -> object:
         for Item in aScheme:
+            if (type(Item).__name__ != 'list'):
+                aRes[2].append('%s->%s. Not a list' % (aPath, Item))
+                return     
+            
             if (not Item[0].startswith('-')):
                 Obj = getattr(TApi, Item[0], None)
                 if (Obj):
