@@ -8,8 +8,12 @@
                 <th></th>
                 <th style="width :90%"></th>
             <tr>
-                <td>url</td>
-                <td style="width:90%"><input type="text" name="Url" placeholder="url" style="width:100%" required value="{{ Form.Url }}"></td>
+                <td>Url</td>
+                <td><input type="text" name="Url" placeholder="url" style="width:100%" required value="{{ Form.Url }}"></td>
+            </tr>
+            <tr>
+                <td>Path</td>
+                <td><input type="text" name="Path" placeholder="path script" style="width:100%" value="{{ Form.Path }}"></td>
             </tr>
             <tr>
                 <td>Find regEx</td>

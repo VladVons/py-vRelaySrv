@@ -13,20 +13,20 @@ class TForm(TFormBase):
     async def Render(self):
         if (await self.PostToForm()):
             Download = TDownload()
-            UrlDown = await Download.Get(self.Url)
+            UrlDown = await Download.Get(self.Data.Url)
             if (UrlDown.get('Err')):
-                self.Output = 'Error loading %s, %s' % (self.Url, UrlDown.get('Msg')) 
+                self.Data.Output = 'Error loading %s, %s' % (self.Data.Url, UrlDown.get('Msg')) 
             else:
                 Data = UrlDown['Data']
                 Status = UrlDown['Status']
                 if (Status == 200):
                     Soup = BeautifulSoup(Data, 'lxml')
                     try:
-                        Script = json.loads(self.Script)
+                        Script = json.loads(self.Data.Script)
                         ResScheme = TScheme.ParseKeys(Soup, Script)
-                        self.Output = json.dumps(ResScheme,  indent=4, sort_keys=True, ensure_ascii=False)
+                        self.Data.Output = json.dumps(ResScheme,  indent=2, sort_keys=True, ensure_ascii=False)
                     except (json.decoder.JSONDecodeError, AttributeError) as E:
-                        self.Output = str(E.args)
+                        self.Data.Output = str(E.args)
                 else:
-                    self.Output = 'Error loading %s' % (self.Url) 
+                    self.Data.Output = 'Error loading %s' % (self.Data.Url) 
         return self._Render()

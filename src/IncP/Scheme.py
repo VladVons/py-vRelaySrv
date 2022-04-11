@@ -8,6 +8,7 @@ https://github.com/pythontoday/scrap_tutorial
 """
 
 import re
+from Inc.Util.UObj import GetTree
 
 _Invisible = [' ', '\t', '\n', '\r', '\xA0']
 _Digits = '0123456789.'
@@ -87,13 +88,15 @@ class TScheme():
 
         for Item in Items:
             Res = []
-            while (Item):
+            while (Item) and (Item != aSoup):
                 Attr = getattr(Item, 'attrs', None)
                 if (Attr):
                     Res.append([Item.name, Attr])
                 elif (Item.name):
                     Res.append([Item.name, {}])
                 else:
+                    if (type(Item).__name__ == 'Script'): 
+                        break
                     Res.append([Item, {}])
 
                 Item = Item.parent
@@ -101,27 +104,29 @@ class TScheme():
         return ResAll
 
     @staticmethod
-    def Parse(aSoup, aData: dict, aPath: str = '') -> tuple:
-        def GetItem(aObj, aScheme: list, aPath: str, aRes: tuple) -> object:
-            for Item in aScheme:
-                if (not Item[0].startswith('-')):
-                    Obj = getattr(TApi, Item[0], None)
-                    if (Obj):
-                        Param = [aObj]
+    def GetItem(aObj, aScheme: list, aRes: tuple, aPath: str = '') -> object:
+        for Item in aScheme:
+            if (not Item[0].startswith('-')):
+                Obj = getattr(TApi, Item[0], None)
+                if (Obj):
+                    Param = [aObj]
+                    if (len(Item) == 2):
+                        Param += Item[1]
+                    aObj = Obj(*Param)
+                else:
+                    aObj = getattr(aObj, Item[0], None)
+                    if (aObj):
                         if (len(Item) == 2):
-                            Param += Item[1]
-                        aObj = Obj(*Param)
-                    else:
-                        aObj = getattr(aObj, Item[0], None)
-                        if (aObj):
-                            if (len(Item) == 2):
-                                aObj = aObj(*Item[1])
+                            aObj = aObj(*Item[1])
 
-                    if (aObj is None):
-                        if (not '?' in aPath):
-                            aRes[2].append('%s->%s' % (aPath, Item))
-                        break
-            return aObj
+                if (aObj is None):
+                    if (not '?' in aPath):
+                        aRes[2].append('%s->%s' % (aPath, Item))
+                    break
+        return aObj
+
+    @staticmethod
+    def Parse(aSoup, aData: dict, aPath: str = '') -> tuple:
 
         Res = (dict(), list(), list())
         for Key, Val in aData.items():
@@ -129,7 +134,7 @@ class TScheme():
             if (not Key.startswith('-')):
                 if (Key.startswith('_Group')):
                     ValG = aData.get(Key, {})
-                    R = GetItem(aSoup, ValG.get('_Path', []), Path, Res)
+                    R = TScheme.GetItem(aSoup, ValG.get('_Path', []), Res, Path)
                     if (R):
                         R = TScheme.Parse(R, ValG.get('_Items', {}), Path)
                         Res[0].update(R[0])
@@ -138,7 +143,7 @@ class TScheme():
                 else:
                     KeyPure = XlatReplace(Key, _XlatKey)
                     Res[1].append(KeyPure)
-                    R = GetItem(aSoup, Val, Path, Res)
+                    R = TScheme.GetItem(aSoup, Val, Res, Path)
                     if (R is not None):
                         Res[0][KeyPure] = R
         return Res
