@@ -120,3 +120,7 @@ def Main3():
 #Main1()
 #Main2()
 #Main3()
+
+alist = [[], [1]]
+print(any(alist))
+

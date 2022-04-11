@@ -127,19 +127,20 @@ class TScheme():
 
     @staticmethod
     def Parse(aSoup, aData: dict, aPath: str = '') -> tuple:
-
         Res = (dict(), list(), list())
         for Key, Val in aData.items():
             Path = aPath + '/' + Key
             if (not Key.startswith('-')):
                 if (Key.startswith('_Group')):
                     ValG = aData.get(Key, {})
-                    R = TScheme.GetItem(aSoup, ValG.get('_Path', []), Res, Path)
-                    if (R):
-                        R = TScheme.Parse(R, ValG.get('_Items', {}), Path)
-                        Res[0].update(R[0])
-                        Res[1].append(R[1])
-                        Res[2].append(R[2])
+                    _Path = ValG.get('_Path')
+                    if (any(_Path)):
+                        R = TScheme.GetItem(aSoup, _Path, Res, Path)
+                        if (R):
+                            R = TScheme.Parse(R, ValG.get('_Items', {}), Path)
+                            Res[0].update(R[0])
+                            Res[1].append(R[1])
+                            Res[2].append(R[2])
                 else:
                     KeyPure = XlatReplace(Key, _XlatKey)
                     Res[1].append(KeyPure)

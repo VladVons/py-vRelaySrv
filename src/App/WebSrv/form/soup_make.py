@@ -7,6 +7,9 @@ from IncP.Scheme import TScheme
 from IncP.Log import Log
 
 
+_FieldPrefix = 'Script_'
+
+
 def GetLeadCharCnt(aValue: str, aChar: str) -> int:
     return len(aValue) - len(aValue.lstrip(aChar))
 
@@ -26,7 +29,6 @@ def FormatScript(aScript: str) -> str:
 
 class TForm(TFormBase):
     Title = "Soup make"
-    _Prefix = 'Script_'
 
     def StripDataLines(self, aPrefix: str):
         for Key, Val in self.Data.items():
@@ -48,8 +50,8 @@ class TForm(TFormBase):
         Items = {}
         ItemsStr = ''
         for Key, Val in self.Data.items():
-            if (Key.startswith(self._Prefix)) and (Val):
-                Key = Key.replace(self._Prefix, '')
+            if (Key.startswith(_FieldPrefix)) and (Val):
+                Key = Key.replace(_FieldPrefix, '')
                 try: 
                     Items[Key] = json.loads(f'[{Val}]')
                 except ValueError as E:
@@ -85,7 +87,7 @@ class TForm(TFormBase):
     
     async def Render(self):
         if (await self.PostToForm()):
-            self.StripDataLines('Script_')
+            self.StripDataLines(_FieldPrefix)
             Script, ScriptStr, Err = self.Compile()
             if (Err):
                 self.Data.Script = ''
