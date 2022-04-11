@@ -5,6 +5,7 @@ from .FForm import TFormBase
 from IncP.Download import TDownload
 from IncP.Scheme import TScheme
 from IncP.Log import Log
+from .Utils import TJsonEncoder
 
 
 class TForm(TFormBase):
@@ -24,7 +25,7 @@ class TForm(TFormBase):
                     try:
                         Script = json.loads(self.Data.Script)
                         ResScheme = TScheme.ParseKeys(Soup, Script)
-                        self.Data.Output = json.dumps(ResScheme,  indent=2, sort_keys=True, ensure_ascii=False)
+                        self.Data.Output = json.dumps(ResScheme,  indent=2, sort_keys=True, ensure_ascii=False, cls=TJsonEncoder)
                     except (json.decoder.JSONDecodeError, AttributeError) as E:
                         self.Data.Output = str(E.args)
                 else:

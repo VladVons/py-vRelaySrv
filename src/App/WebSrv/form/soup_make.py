@@ -5,33 +5,10 @@ from .FForm import TFormBase
 from IncP.Download import TDownload
 from IncP.Scheme import TScheme
 from IncP.Log import Log
+from .Utils import TJsonEncoder, GetLeadCharCnt, FormatScript
 
 
 _FieldPrefix = 'Script_'
-
-
-def GetLeadCharCnt(aValue: str, aChar: str) -> int:
-    return len(aValue) - len(aValue.lstrip(aChar))
-
-def FormatScript(aScript: str) -> str: 
-    Res = []
-    Lines = aScript.splitlines()
-    PadSpaces = GetLeadCharCnt(Lines[1], ' ')
-    for Idx, Line in enumerate(Lines):
-        if (Line.strip()):
-            if (Line.startswith(' ')):
-                Line = Line[PadSpaces:]
-            else:
-                Spaces = GetLeadCharCnt(Res[-1], ' ')
-                Line = (' ' * Spaces) + Line
-            Res.append(Line)
-    return '\n'.join(Res)
-
-
-class TJsonEncoder(json.JSONEncoder):
-    def default(self, aObj):
-        As = str(aObj)
-        return As
 
 
 class TForm(TFormBase):
