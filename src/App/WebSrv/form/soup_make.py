@@ -27,6 +27,13 @@ def FormatScript(aScript: str) -> str:
             Res.append(Line)
     return '\n'.join(Res)
 
+
+class TJsonEncoder(json.JSONEncoder):
+    def default(self, aObj):
+        As = str(aObj)
+        return As
+
+
 class TForm(TFormBase):
     Title = "Soup make"
 
@@ -104,7 +111,7 @@ class TForm(TFormBase):
                         self.Data.Script = ScriptStr
                         Soup = BeautifulSoup(Data, 'lxml')
                         Scheme = TScheme.ParseKeys(Soup, Script)
-                        self.Data.Output = json.dumps(Scheme,  indent=2, sort_keys=True, ensure_ascii=False)
+                        self.Data.Output = json.dumps(Scheme, indent=2, sort_keys=True, ensure_ascii=False, cls=TJsonEncoder)
                     else:
                         self.Data.Output = 'Error loading %s' % (self.Data.Url) 
         return self._Render()
