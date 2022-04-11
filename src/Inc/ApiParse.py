@@ -20,7 +20,7 @@ def QueryToDict(aQuery: str) -> dict:
     return R
 
 # simplify QueryUrl + GetApi to avoid `too many recursuin`
-async def QueryUrl(aPath: str, aQuery: dict) -> str: 
+async def QueryUrl(aPath: str, aQuery: dict) -> str:
     DirCore = 'IncP/Api'
     DirUser = 'Plugin/Api'
 

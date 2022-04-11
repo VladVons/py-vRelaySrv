@@ -117,10 +117,9 @@ def Main3():
 #        async with session.get(url) as resp:
 #            return await resp.text()
 
-#Main1()
-#Main2()
-#Main3()
 
-alist = [[], [1]]
-print(any(alist))
-
+from fake_useragent import UserAgent
+ua = UserAgent()
+print(ua.chrome)
+for i in range(30):
+    print(ua.random)

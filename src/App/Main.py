@@ -14,7 +14,7 @@ from IncP.Log  import Log
 from Inc.Plugin import Plugin
 
 
-class TApp(): 
+class TApp():
     def InitLog(self):
         _, Name = os.path.split(__file__)
         FileLog = '/var/log/py-vRelaySrv/%s.log' % (Name)
@@ -28,7 +28,7 @@ class TApp():
 
     async def Run(self):
         self.InitLog()
-    
+
         UName = os.uname()
         Log.Print(1, 'i', 'Run()', [UName.sysname, UName.nodename, os.environ.get('USER')])
 

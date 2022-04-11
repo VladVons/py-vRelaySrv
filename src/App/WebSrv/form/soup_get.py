@@ -15,7 +15,7 @@ class TForm(TFormBase):
             Download = TDownload()
             UrlDown = await Download.Get(self.Data.Url)
             if (UrlDown.get('Err')):
-                self.Data.Output = 'Error loading %s, %s' % (self.Data.Url, UrlDown.get('Msg')) 
+                self.Data.Output = 'Error loading %s, %s' % (self.Data.Url, UrlDown.get('Msg'))
             else:
                 Data = UrlDown['Data']
                 Status = UrlDown['Status']
@@ -26,8 +26,8 @@ class TForm(TFormBase):
                         if (self.Data.Path):
                             Path = '[%s]' % self.Data.Path
                             Path = json.loads(Path)
-                            Soup = TScheme.GetItem(Soup, [Path], ({}, [], [])) 
-                    
+                            Soup = TScheme.GetItem(Soup, [Path], ({}, [], []))
+
                         if (Soup):
                             x11 = TScheme.GetParents(Soup, self.Data.Find)
                             for x1 in x11:
@@ -37,5 +37,5 @@ class TForm(TFormBase):
                     except (json.decoder.JSONDecodeError, AttributeError) as E:
                         self.Data.Output = str(E.args)
                 else:
-                    self.Data.Output = 'Error loading %s' % (self.Data.Url) 
+                    self.Data.Output = 'Error loading %s' % (self.Data.Url)
         return self._Render()

@@ -21,7 +21,7 @@ def FormatScript(aScript: str) -> str:
     Res = []
     Lines = aScript.splitlines()
     PadSpaces = GetLeadCharCnt(Lines[1], ' ')
-    for Idx, Line in enumerate(Lines):
+    for Line in Lines:
         if (Line.strip()):
             if (Line.startswith(' ')):
                 Line = Line[PadSpaces:]

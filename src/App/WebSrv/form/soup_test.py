@@ -16,7 +16,7 @@ class TForm(TFormBase):
             Download = TDownload()
             UrlDown = await Download.Get(self.Data.Url)
             if (UrlDown.get('Err')):
-                self.Data.Output = 'Error loading %s, %s' % (self.Data.Url, UrlDown.get('Msg')) 
+                self.Data.Output = 'Error loading %s, %s' % (self.Data.Url, UrlDown.get('Msg'))
             else:
                 Data = UrlDown['Data']
                 Status = UrlDown['Status']
@@ -28,6 +28,7 @@ class TForm(TFormBase):
                         self.Data.Output = json.dumps(ResScheme,  indent=2, sort_keys=True, ensure_ascii=False, cls=TJsonEncoder)
                     except (json.decoder.JSONDecodeError, AttributeError) as E:
                         self.Data.Output = str(E.args)
+                        Log.Print(1, 'x', self.Data.Output, aE=E)
                 else:
-                    self.Data.Output = 'Error loading %s' % (self.Data.Url) 
+                    self.Data.Output = 'Error loading %s' % (self.Data.Url)
         return self._Render()

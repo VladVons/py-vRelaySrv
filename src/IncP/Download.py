@@ -9,7 +9,13 @@ import time
 import random
 import aiohttp
 from aiohttp_socks import ProxyConnector
+#
 from IncP.Log import Log
+
+#from fake_useragent import UserAgent
+#self.ua = UserAgent()
+#ua.random
+
 
 class THeaders():
     def __init__(self):
@@ -24,7 +30,9 @@ class THeaders():
             'Opera/45'
         ]
 
+
     def Get(self):
+        ua.random
         return  {
             'Accept': '*/*',
             'User-Agent': 'Mozilla/5.0 (%s) %s' % (random.choice(self.OS), random.choice(self.Browser))

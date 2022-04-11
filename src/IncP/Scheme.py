@@ -31,7 +31,7 @@ def DigSplit(aVal: str) -> tuple:
         elif (x in _Digits):
             Digit += x
         else:
-            if (Digit): 
+            if (Digit):
                 After += x
             else:
                 Before += x
@@ -52,7 +52,7 @@ class TApi():
     def List(aVal: list, aIdx: int) -> object:
         if (aIdx < len(aVal)):
             return aVal[aIdx]
- 
+
     @staticmethod
     def Equal(aVal: str, aStr: str) -> bool:
         return (aVal in aStr.split('|'))
@@ -65,10 +65,10 @@ class TApi():
 
     @staticmethod
     def Price(aVal: str) -> tuple:
-        Before, Dig, After = DigSplit(aVal) 
+        Before, Dig, After = DigSplit(aVal)
         if (not Dig):
             Dig = '0'
-        return (float(Dig), After)        
+        return (float(Dig), After)
 
     @staticmethod
     def DigLat(aVal: str) -> str:
@@ -95,7 +95,7 @@ class TScheme():
                 elif (Item.name):
                     Res.append([Item.name, {}])
                 else:
-                    if (type(Item).__name__ == 'Script'): 
+                    if (type(Item).__name__ == 'Script'):
                         break
                     Res.append([Item, {}])
 
@@ -107,9 +107,9 @@ class TScheme():
     def GetItem(aObj, aScheme: list, aRes: tuple, aPath: str = '') -> object:
         for Item in aScheme:
             if (type(Item).__name__ != 'list'):
-                aRes[2].append('%s->%s. Not a list' % (aPath, Item))
-                return     
-            
+                aRes[2].append('%s->%s not a list' % (aPath, Item))
+                return
+
             if (not Item[0].startswith('-')):
                 Obj = getattr(TApi, Item[0], None)
                 if (Obj):

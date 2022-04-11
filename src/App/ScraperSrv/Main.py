@@ -36,7 +36,7 @@ class TScraperSrv():
         else:
             Res = {'Err': 'Authorization'}
             return web.json_response(Res, status=403)
- 
+
     async def Run(self, aSleep: int = 10):
         App = web.Application()
         App.add_routes([

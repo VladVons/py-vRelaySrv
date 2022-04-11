@@ -5,7 +5,7 @@ from .FForm import TFormBase
 from IncP.Download import TDownload
 from IncP.Scheme import TScheme
 from IncP.Log import Log
-from .Utils import TJsonEncoder, GetLeadCharCnt, FormatScript
+from .Utils import TJsonEncoder, FormatScript
 
 
 _FieldPrefix = 'Script_'
@@ -25,7 +25,7 @@ class TForm(TFormBase):
     def Compile(self) -> tuple:
         Err = ''
 
-        try: 
+        try:
             Path = json.loads('[%s]' % self.Data.Path)
         except ValueError as E:
             Path = []
@@ -36,11 +36,11 @@ class TForm(TFormBase):
         for Key, Val in self.Data.items():
             if (Key.startswith(_FieldPrefix)) and (Val):
                 Key = Key.replace(_FieldPrefix, '')
-                try: 
+                try:
                     Items[Key] = json.loads(f'[{Val}]')
                 except ValueError as E:
                     Err += '%s: %s\n' % (Key, E.args)
-                ItemsStr += ''' 
+                ItemsStr += '''
                             "%s": [
                                 %s
                             ]''' % (Key, Val)
@@ -68,7 +68,7 @@ class TForm(TFormBase):
         ''' % (self.Data.Path, ItemsStr)
 
         return (Script, FormatScript(ScriptStr), Err)
-    
+
     async def Render(self):
         if (await self.PostToForm()):
             self.StripDataLines(_FieldPrefix)
@@ -80,7 +80,7 @@ class TForm(TFormBase):
                 Download = TDownload()
                 UrlDown = await Download.Get(self.Data.Url)
                 if (UrlDown.get('Err')):
-                    self.Data.Output = 'Error loading %s, %s' % (self.Data.Url, UrlDown.get('Msg')) 
+                    self.Data.Output = 'Error loading %s, %s' % (self.Data.Url, UrlDown.get('Msg'))
                 else:
                     Data = UrlDown['Data']
                     Status = UrlDown['Status']
@@ -90,5 +90,5 @@ class TForm(TFormBase):
                         Scheme = TScheme.ParseKeys(Soup, Script)
                         self.Data.Output = json.dumps(Scheme, indent=2, sort_keys=True, ensure_ascii=False, cls=TJsonEncoder)
                     else:
-                        self.Data.Output = 'Error loading %s' % (self.Data.Url) 
+                        self.Data.Output = 'Error loading %s' % (self.Data.Url)
         return self._Render()

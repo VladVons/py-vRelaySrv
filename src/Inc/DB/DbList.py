@@ -156,7 +156,7 @@ class TDbList():
     def Empty(self):
         self.Data = []
         self.RecGo(0)
-        
+
     def DataExport(self) -> dict:
         return {'Data': self.Data, 'Head': self.Fields.Export(), 'Tag': self.Tag}
 
@@ -214,7 +214,7 @@ class TDbList():
         FieldNo = self.Fields.GetNo(aField)
         for Val in aData:
             Arr = Rec.copy()
-            Arr[FieldNo] = Val  
+            Arr[FieldNo] = Val
             self.Data.append(Arr)
 
     def SetData(self, aData: list):

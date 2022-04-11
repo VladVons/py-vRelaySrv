@@ -40,7 +40,7 @@ class TDbFetch(TDbList):
     async def Query(self, aQuery: str):
         Data = await self._Db.Fetch(aQuery)
         Fields = await self._GetSelectFields(aQuery)
-    
+
         self.Fields = TDbFields()
         if (Data):
             self.Fields.Auto(Fields, Data[0])
@@ -58,7 +58,7 @@ class TDb():
     async def Close(self):
         if (self.Pool):
             self.Pool.close()
-            await self.Pool.wait_closed() 
+            await self.Pool.wait_closed()
             self.Pool = None
 
     async def Exec(self, aSql: str):

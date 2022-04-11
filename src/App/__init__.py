@@ -6,4 +6,4 @@ ConfApp.Load()
 
 __all__ = (
     'ConfApp'
-) 
+)

@@ -44,7 +44,7 @@ class TMain():
                     pass
                 else:
                     Log.Print(1, 'e', '_Worker(). Unknown type: %d' % (Type))
-                    return 
+                    return
 
                 self.Scrapers.append(Scraper)
                 await Scraper._Worker()
@@ -68,7 +68,7 @@ class TMain():
                     MaxWorkers = Data.get('MaxWorkers', self.Conf.get('MaxWorkers', 5))
                     await self._CreateTasks(MaxWorkers)
                 else:
-                    Log.Print(1, 'i', 'Run(). Cant get config from server')    
+                    Log.Print(1, 'i', 'Run(). Cant get config from server')
             except Exception as E:
-                Log.Print(1, 'x', 'Run()', aE = E)    
+                Log.Print(1, 'x', 'Run()', aE = E)
             await asyncio.sleep(30)

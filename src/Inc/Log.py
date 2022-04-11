@@ -44,7 +44,7 @@ class TLog():
         self.AddEcho(TEchoConsole())
 
     def AddEcho(self, aEcho: TEcho):
-        Name = aEcho.__class__.__name__ 
+        Name = aEcho.__class__.__name__
         #List = [i for i in self.Echoes if (i.__class__.__name__ == Name)]
         List = list(filter(lambda i: (i.__class__.__name__ == Name), self.Echoes))
         if (not List):

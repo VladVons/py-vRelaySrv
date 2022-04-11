@@ -21,26 +21,26 @@ class TDbApp(TDbPg):
 
     async def InsertLog(self, aType: int, aDescr: str):
         Query = f'''
-            INSERT INTO log(type_id, descr) 
+            INSERT INTO log(type_id, descr)
             VALUES ({aType}, '{aDescr}')
             '''
         await self.Exec(Query)
 
     async def UpdateFreeTask(self, aId: int):
         Query = '''
-            UPDATE 
+            UPDATE
                 sites
             SET
-                update_date=NOW() 
-            WHERE 
+                update_date=NOW()
+            WHERE
                 id=%d;
-            COMMIT; 
+            COMMIT;
             ''' % (aId)
         await self.Exec(Query)
 
     async def GetSitesForUpdateFull(self, aExclId: list = [], aLimit: int = 10, aUpdDaysX: float = 1) -> TDbFetch:
         ExclId = self.ListToComma(aExclId)
-        if (ExclId): 
+        if (ExclId):
             CondExcl = 'and (not site.id in(%s))' % ExclId
         else:
             CondExcl = ''
@@ -68,13 +68,13 @@ class TDbApp(TDbPg):
 
     async def GetSitesForUpdate(self, aExclId: list = [], aCount: tuple = (0, -1), aLimit: int = 10, aUpdDaysX: float = 1) -> TDbFetch:
         ExclId = self.ListToComma(aExclId)
-        if (ExclId): 
+        if (ExclId):
             CondExcl = 'and (not site.id in(%s))' % ExclId
         else:
             CondExcl = ''
 
         CountMin, CountMax = aCount
-        if (CountMin < CountMax): 
+        if (CountMin < CountMax):
             CondCount =  '(count(*) between %d and %d)' % (CountMin, CountMax)
         else:
             CondCount = '(count(*) > %d)' % CountMin
@@ -99,7 +99,7 @@ class TDbApp(TDbPg):
                 {CondExcl}
             group by
                 site.id
-            having 
+            having
                 {CondCount}
             order by
                 url_count desc
@@ -123,7 +123,7 @@ class TDbApp(TDbPg):
             left join site on
                 (url.site_id = site.id)
             where
-                (site.enabled) and 
+                (site.enabled) and
                 ((site.hours = '') or (site.hours is  null) or (site.hours like CONCAT('%', LPAD(DATE_PART('hour', NOW())::text, 2, '0'), '%'))) and
                 (url.site_id = {aSiteId}) and
                 (DATE_PART('day', NOW() - url.update_date) > site.update_days)

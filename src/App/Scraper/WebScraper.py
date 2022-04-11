@@ -39,12 +39,12 @@ class TSender():
         self.Parent = aParent
         self.MaxSize = aMaxSize
         self.Dbl = TDbList([
-            ('Url', str), 
-            ('Name', str), 
-            ('Price', float), 
-            ('Currency', str), 
-            ('PriceOld', float), 
-            ('Image', str), 
+            ('Url', str),
+            ('Name', str),
+            ('Price', float),
+            ('Currency', str),
+            ('PriceOld', float),
+            ('Image', str),
             ('Stock', bool),
             ('SKU', str)
         ])
@@ -119,7 +119,7 @@ class TWebScraper():
                     self.TotalData += len(Data)
                     self.TotalUrl += 1
                 await self._DoWorkerUrl(Url, Data, Status)
-            
+
         await self.Sender.Flush()
         await self._DoWorkerEnd()
         Log.Print(1, 'i', '_Worker(). done')
@@ -188,7 +188,7 @@ class TWebScraperSitemap(TWebScraper):
         super().__init__(aParent, aScheme, aSleep)
 
         self.UrlRoot = aUrlRoot
-  
+
     async def LoadSiteMap(self, aUrl: str) -> list:
         Res = []
 
@@ -213,7 +213,7 @@ class TWebScraperSitemap(TWebScraper):
     async def _DoWorkerStart(self):
         SiteMap = await self.LoadSiteMap(self.UrlRoot + '/sitemap.xml')
         if (SiteMap):
-            self.DblQueue.AddList('Url', SiteMap)  
+            self.DblQueue.AddList('Url', SiteMap)
         else:
             Log.Print(1, 'i', 'No sitemap %s' % (self.UrlRoot))
 
@@ -228,7 +228,7 @@ class TWebScraperSitemap(TWebScraper):
             Log.Print(1, 'i', ' %s, %s' % (aUrl, Dif))
             if (not Err):
                 self.UrlScheme += 1
-                Price = Value['Price'] 
+                Price = Value['Price']
                 Value['Price'] = Price[0]
                 Value['Currency'] = Price[1]
                 await self.Sender.Add(Value)
@@ -236,7 +236,7 @@ class TWebScraperSitemap(TWebScraper):
 class TWebScraperUpdate(TWebScraper):
     def __init__(self, aParent, aScheme: dict, aUrls: list, aSleep: int):
         super().__init__(aParent, aScheme, aSleep)
-        
+
         for Url in aUrls:
             self.Queue.put_nowait(Url)
 
