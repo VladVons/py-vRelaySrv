@@ -32,7 +32,6 @@ class THeaders():
 
 
     def Get(self):
-        ua.random
         return  {
             'Accept': '*/*',
             'User-Agent': 'Mozilla/5.0 (%s) %s' % (random.choice(self.OS), random.choice(self.Browser))
