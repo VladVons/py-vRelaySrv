@@ -26,6 +26,15 @@ def FormatScript(aScript: str) -> str:
 
 class TForm(TFormBase):
     Title = "Soup make"
+    _Prefix = 'Script_'
+
+    def StripDataLines(self, aPrefix: str):
+        for Key, Val in self.Data.items():
+            if (Key.startswith(aPrefix)) and (Val):
+                Str = ''
+                for Line in Val.splitlines():
+                    Str += Line.strip() + '\n'
+                self.Data[Key] = Str
 
     def Compile(self) -> tuple:
         Err = ''
@@ -36,12 +45,11 @@ class TForm(TFormBase):
             Path = []
             Err += '_Path: %s\n' % E.args
 
-        Prefix = 'Script_'
         Items = {}
         ItemsStr = ''
         for Key, Val in self.Data.items():
-            if (Key.startswith(Prefix)) and (Val):
-                Key = Key.replace(Prefix, '')
+            if (Key.startswith(self._Prefix)) and (Val):
+                Key = Key.replace(self._Prefix, '')
                 try: 
                     Items[Key] = json.loads(f'[{Val}]')
                 except ValueError as E:
@@ -77,6 +85,7 @@ class TForm(TFormBase):
     
     async def Render(self):
         if (await self.PostToForm()):
+            self.StripDataLines('Script_')
             Script, ScriptStr, Err = self.Compile()
             if (Err):
                 self.Data.Script = ''
