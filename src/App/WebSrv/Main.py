@@ -71,6 +71,12 @@ class TWebSrv():
             Headers = {"Content-disposition": "attachment; filename=%s" % (Name)}
             return web.Response(body=FileSender(aFile=File), headers=Headers)
 
+    async def _rApi(self, aRequest) -> web.Response:
+        Name = aRequest.match_info.get('Name')
+        Post = await aRequest.text()
+        Res = [{'name': Name}, {'name': 'pink'}, {'name': 'floyd'}]
+        return web.json_response(Res)
+
     async def _rForm(self, aRequest) -> web.Response:
         Name = aRequest.match_info.get('Name')
         return await self._LoadForm(Name, aRequest)
@@ -82,6 +88,7 @@ class TWebSrv():
         App = web.Application()
         App.add_routes([
             web.get("/", self._rIndex),
+            web.post('/api/{Name}', self._rApi),
             web.get('/form/{Name}', self._rForm),
             web.post('/form/{Name}', self._rForm),
             web.get('/download/{Name:.*}', self._rDownload)
