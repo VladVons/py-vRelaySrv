@@ -13,7 +13,9 @@ import os
 from aiohttp import web, streamer
 import jinja2
 import aiohttp_jinja2
+import base64
 #
+from .Api import Api
 from .Routes import *
 
 
@@ -50,6 +52,16 @@ class TWebSrv():
         self.DirDownload = 'download'
         self.Dir3w = 'www'
 
+    async def AuthUser(self, aRequest: web.Request) -> bool:
+        if (self.Conf.get('Auth')):
+            Auth = aRequest.headers.get('Authorization')
+            if (Auth):
+                User, Passw = base64.b64decode(Auth.split()[1]).decode().split(':')
+                DBL = await self.Api.Db.AuthUser(User, Passw)
+                return DBL.GetSize() > 0
+        else:
+            return True
+
     async def _LoadForm(self, aName: str, aRequest) -> web.Response:
         Form = '%s/%s/%s' % (self.DirRoot, self.DirForm, aName)
         if (not os.path.isfile(Form + '.tpl')):
@@ -74,7 +86,7 @@ class TWebSrv():
     async def _rApi(self, aRequest) -> web.Response:
         Name = aRequest.match_info.get('Name')
         Post = await aRequest.text()
-        Res = [{'name': Name}, {'name': 'pink'}, {'name': 'floyd'}]
+        Res = await Api._Send(Name, Post)
         return web.json_response(Res)
 
     async def _rForm(self, aRequest) -> web.Response:

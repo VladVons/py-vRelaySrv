@@ -3,9 +3,9 @@ from bs4 import BeautifulSoup
 #
 from .FForm import TFormBase
 from IncP.Download import TDownload
-from IncP.Scheme import TScheme
+from IncP.Scheme import TScheme, FormatJsonStr
 from IncP.Log import Log
-from .Utils import TJsonEncoder, FormatScript
+from .Utils import TJsonEncoder
 
 
 _FieldPrefix = 'Script_'
@@ -67,7 +67,7 @@ class TForm(TFormBase):
 
         ''' % (self.Data.Path, ItemsStr)
 
-        return (Script, FormatScript(ScriptStr), Err)
+        return (Script, FormatJsonStr(ScriptStr), Err)
 
     async def Render(self):
         if (await self.PostToForm()):
@@ -75,7 +75,7 @@ class TForm(TFormBase):
             Script, ScriptStr, Err = self.Compile()
             if (Err):
                 self.Data.Script = ''
-                self.Data.Output = ''
+                self.Data.Output = Err
             else:
                 Download = TDownload()
                 UrlDown = await Download.Get(self.Data.Url)

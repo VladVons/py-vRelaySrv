@@ -1,7 +1,5 @@
-pageCounter = 1;
-
 function HttpRequest(aUrl, aFunc, aPostJson = null) {
-    console.log(aUrl, aPostJson);
+    //console.log(aUrl, aPostJson);
 
     xhr = new XMLHttpRequest();
     if (aPostJson) {
@@ -29,35 +27,3 @@ function HttpRequest(aUrl, aFunc, aPostJson = null) {
     }
     xhr.send(aPostJson);
 }
-
-function Func1() {
-    //Url = 'https://learnwebcode.github.io/json-example/animals-' + pageCounter + '.json';
-    Url = '/api/get_task';
-    Post = {
-        name: "hello",
-        surname: "world"
-    };
-
-    HttpRequest(
-        Url,
-        function(aData) {
-            console.log("aData", aData);
-
-            htmlString = "";
-            for (i = 0; i < aData.length; i++) {
-                htmlString += "<p>" + aData[i].name;
-            }
-
-            animalContainer = document.getElementById("animal-info");
-            animalContainer.insertAdjacentHTML('beforeend', htmlString);
-
-            if (pageCounter++ > 3) {
-                btn.classList.add("hide-me");
-            }
-        },
-        Post
-    );
-}
-
-btn = document.getElementById("btn");
-btn.addEventListener("click", Func1);

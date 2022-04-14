@@ -11,8 +11,7 @@ input {
     border-radius: 5px;
     font-size: 16px;
     font-weight: 200;
-    padding: 10px 0;
-    width1: 250px;
+    padding: 3px 0;
     transition: border .5s;
 }
 

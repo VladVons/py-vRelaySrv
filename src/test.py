@@ -118,8 +118,23 @@ def Main3():
 #            return await resp.text()
 
 
-from fake_useragent import UserAgent
-ua = UserAgent()
-print(ua.chrome)
-for i in range(30):
-    print(ua.random)
+from App.WebSrv.form.Utils import FormatJsonStr
+
+s1 = '''
+    "_Items": {
+"Name": [
+["find", ["h1"]],
+["find", ["bdi"]],
+["text"]
+    ],
+    "Price": [
+["find", ["span", {"class": "ty-price"}]],
+["text"],
+    ["Price"]
+]
+}
+'''
+
+s2 = FormatJsonStr(s1)
+print()
+print(s2)

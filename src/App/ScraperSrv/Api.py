@@ -27,7 +27,7 @@ class TApiTask():
             ExclId = self.Tasks.GetList('SiteId')
 
             DblUpdFull = await self.Parent.Db.GetSitesForUpdateFull(aExclId=ExclId, aUpdDaysX=2)
-            if (DblUpdFull.GetSize() > 0):
+            if (not DblUpdFull.IsEmpty()):
                 DblUpdFull.Tag = 'Full'
                 Res = {'Type': DblUpdFull.Tag}
                 DblUpdFull.Shuffle()
@@ -38,7 +38,7 @@ class TApiTask():
                 return Res
             else:
                 DblUpd = await self.Parent.Db.GetSitesForUpdate(aExclId=ExclId)
-                if (DblUpd.GetSize() > 0):
+                if (not DblUpd.IsEmpty()):
                     DblUpd.Shuffle()
                     SiteId = DblUpd.Rec.GetField('site.id')
 
@@ -54,9 +54,10 @@ class TApiTask():
 
 class TApi():
     Url = {
-        'get_task':     {'param': []},
-        'get_config':   {'param': ['user']},
-        'send_result':  {'param': ['*']}
+        'get_task':             {'param': []},
+        'get_config':           {'param': ['user']},
+        'get_empty_scheme':     {'param': []},
+        'send_result':          {'param': ['*']}
     }
 
     def __init__(self):
@@ -122,6 +123,12 @@ class TApi():
     async def path_get_config(self, aData: dict) -> dict:
         DBL = await self.Db.GetConfig(aData.get('user'))
         return DBL.Rec.GetAsDict()
+
+    async def path_get_empty_scheme(self, aData: dict) -> dict:
+        Dbl = await self.Db.GetEmptyScheme()
+        if (not Dbl.IsEmpty()):
+            Dbl.Shuffle()
+            return Dbl.Rec.GetAsDict()
 
     async def path_send_result(self, aData: dict) -> dict:
         return True
