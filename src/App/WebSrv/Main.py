@@ -87,6 +87,9 @@ class TWebSrv():
         Name = aRequest.match_info.get('Name')
         Post = await aRequest.text()
         Res = await Api._Send(Name, Post)
+        Res = Res.get("Data", {})
+        if (Res.get("Err", {})):
+            Res = {}
         return web.json_response(Res)
 
     async def _rForm(self, aRequest) -> web.Response:

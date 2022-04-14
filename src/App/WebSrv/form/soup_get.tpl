@@ -37,15 +37,16 @@
     <script>
         function BtnGet_OnClick() {
             HttpRequest(
-                '/api/get_empty_scheme',
+                '/api/get_empty_scheme1',
                 function(aData) {
-                    //console.log("aData", aData);
-                    if (aData && aData[1] == 200) {
-                        Data = aData[0]["Data"]
-                        document.getElementById("Url").value = Data["site.url"];
+                    console.log("aData", aData);
+                    if (Object.keys(aData).length == 0) {
+                        alert("request error")
+                    }else{
+                        document.getElementById("Url").value = aData["Data"]["site.url"];
                     }
                 },
-                {name: "hello"}
+                {}
             );
         };
     </script>

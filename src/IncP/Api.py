@@ -7,6 +7,7 @@ Description:
 """
 
 
+import time
 import aiohttp
 #
 from IncP.Log import Log
@@ -19,10 +20,13 @@ class TApiBase():
     async def _Send(self, aPath: str, aPost: dict = {}):
         Auth = aiohttp.BasicAuth(self.Auth.get('User'), self.Auth.get('Password'))
         Url = 'http://%s:%s/%s' % (self.Auth.get('Server'), self.Auth.get('Port'), aPath)
+        TimeAt = time.time()
         try:
             async with aiohttp.ClientSession(auth=Auth) as Session:
                 async with Session.post(Url, json=aPost) as Response:
                     Data = await Response.json()
-                    return (Data, Response.status)
-        except (aiohttp.client_exceptions.ContentTypeError, aiohttp.client_exceptions.ClientConnectorError) as E:
-            Log.Print(1, 'x', '_Send()', aE = E)
+                    Res = {'Data': Data, 'Status': Response.status, 'Time': time.time() - TimeAt}
+        except (aiohttp.ContentTypeError, aiohttp.ClientConnectorError, aiohttp.InvalidURL) as E:
+            ErrMsg = Log.Print(1, 'x', '_Send(). %s' % (Url), aE = E)
+            Res = {'Err': E, 'Msg': ErrMsg}
+        return Res

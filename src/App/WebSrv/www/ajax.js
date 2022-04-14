@@ -1,5 +1,5 @@
 function HttpRequest(aUrl, aFunc, aPostJson = null) {
-    //console.log(aUrl, aPostJson);
+    console.log(aUrl, aPostJson);
 
     xhr = new XMLHttpRequest();
     if (aPostJson) {
