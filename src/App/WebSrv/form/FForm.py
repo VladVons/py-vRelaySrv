@@ -1,9 +1,15 @@
+'''
+Copyright:   Vladimir Vons, UA
+Author:      Vladimir Vons <VladVons@gmail.com>
+Created:     2022.02.14
+License:     GNU, see LICENSE for more details
+Description:
+'''
+
+
 import aiohttp_jinja2
-
-
-class TDictStr(dict):
-    def __getattr__(self, aName: str) -> object:
-        return self.get(aName, '')
+#
+from IncP.Utils import TDictStr
 
 
 class TFormBase():

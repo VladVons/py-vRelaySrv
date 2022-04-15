@@ -1,10 +1,10 @@
-"""
+'''
 Copyright:   Vladimir Vons, UA
 Author:      Vladimir Vons <VladVons@gmail.com>
 Created:     2021.02.28
 License:     GNU, see LICENSE for more details
 Description:
-"""
+'''
 
 
 import time
@@ -28,5 +28,5 @@ class TApiBase():
                     Res = {'Data': Data, 'Status': Response.status, 'Time': time.time() - TimeAt}
         except (aiohttp.ContentTypeError, aiohttp.ClientConnectorError, aiohttp.InvalidURL) as E:
             ErrMsg = Log.Print(1, 'x', '_Send(). %s' % (Url), aE = E)
-            Res = {'Err': E, 'Msg': ErrMsg}
+            Res = {'Err': E, 'Msg': ErrMsg, 'Time': time.time() - TimeAt}
         return Res

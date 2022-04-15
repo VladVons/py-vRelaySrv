@@ -165,6 +165,8 @@ class TDbList():
         self.Data = aData['Data']
         self.Fields = TDbFields()
         self.Fields.Import(aData['Head'])
+        self.RecGo(0)
+        return self
 
     def GetList(self, aField: str, aUniq = False) -> list:
         FieldNo = self.Fields.GetNo(aField)

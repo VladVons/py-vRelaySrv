@@ -11,6 +11,7 @@ from aiohttp import web
 #
 from IncP.Log import Log
 from .Api import TApi
+from IncP.Utils import TJsonEncoder
 
 
 class TScraperSrv():
@@ -23,7 +24,7 @@ class TScraperSrv():
             if (Auth):
                 User, Passw = base64.b64decode(Auth.split()[1]).decode().split(':')
                 DBL = await self.Api.Db.AuthUser(User, Passw)
-                return DBL.GetSize() > 0
+                return (not DBL.IsEmpty())
         else:
             return True
 
@@ -32,7 +33,7 @@ class TScraperSrv():
             Name = aRequest.match_info.get('Name')
             Post = await aRequest.text()
             Res = await self.Api.Call(Name, Post)
-            return web.json_response(Res)
+            return web.json_response(Res, dumps=TJsonEncoder.Dumps)
         else:
             Res = {'Err': 'Authorization'}
             return web.json_response(Res, status=403)

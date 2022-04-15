@@ -1,3 +1,11 @@
+'''
+Copyright:   Vladimir Vons, UA
+Author:      Vladimir Vons <VladVons@gmail.com>
+Created:     2022.04.11
+License:     GNU, see LICENSE for more details
+Description:
+'''
+
 import json
 from bs4 import BeautifulSoup
 #
@@ -5,7 +13,7 @@ from .FForm import TFormBase
 from IncP.Download import TDownload
 from IncP.Scheme import TScheme, FormatJsonStr
 from IncP.Log import Log
-from .Utils import TJsonEncoder
+from IncP.Utils import TJsonEncoder
 
 
 _FieldPrefix = 'Script_'

@@ -53,6 +53,18 @@ class TDbApp(TDbPg):
             '''
         return await TDbFetch(self).Query(Query)
 
+    async def GetSites(self, aLimit: int = 10) -> TDbFetch:
+        Query = f'''
+           Select
+                site.id,
+                site.url
+            from
+                site
+            limit
+                {aLimit}
+            '''
+        return await TDbFetch(self).Query(Query)
+
     async def GetSitesForUpdateFull(self, aExclId: list = [], aLimit: int = 10, aUpdDaysX: float = 1) -> TDbFetch:
         ExclId = self.ListToComma(aExclId)
         if (ExclId):

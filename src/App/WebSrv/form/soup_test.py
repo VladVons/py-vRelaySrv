@@ -5,7 +5,7 @@ from .FForm import TFormBase
 from IncP.Download import TDownload
 from IncP.Scheme import TScheme
 from IncP.Log import Log
-from .Utils import TJsonEncoder
+from IncP.Utils import TJsonEncoder
 
 
 class TForm(TFormBase):

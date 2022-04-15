@@ -51,6 +51,7 @@ class TWebSrv():
         self.DirForm = 'form'
         self.DirDownload = 'download'
         self.Dir3w = 'www'
+        self.TplExt = '.tpl.html'
 
     async def AuthUser(self, aRequest: web.Request) -> bool:
         if (self.Conf.get('Auth')):
@@ -64,14 +65,14 @@ class TWebSrv():
 
     async def _LoadForm(self, aName: str, aRequest) -> web.Response:
         Form = '%s/%s/%s' % (self.DirRoot, self.DirForm, aName)
-        if (not os.path.isfile(Form + '.tpl')):
+        if (not os.path.isfile(Form + self.TplExt)):
             aName = 'not_found'
             Form = '%s/%s/%s' % (self.DirRoot, self.DirForm, aName)
 
         Class = 'TForm'
         Mod = __import__(Form.replace('/', '.'), None, None, [Class])
         TClass = getattr(Mod, Class)
-        Obj = TClass(aRequest, aName + '.tpl')
+        Obj = TClass(aRequest, aName + self.TplExt)
         return await Obj.Render()
 
     async def _rDownload(self, aRequest):

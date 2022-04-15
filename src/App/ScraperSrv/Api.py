@@ -57,6 +57,7 @@ class TApi():
         'get_task':             {'param': []},
         'get_config':           {'param': ['user']},
         'get_empty_scheme':     {'param': []},
+        'get_sites':            {'param': []},
         'send_result':          {'param': ['*']}
     }
 
@@ -111,6 +112,8 @@ class TApi():
                         Data = None
                         Log.Print(1, 'x', 'Call()', aE=E)
                     Res = {'Data': Data}
+                    Res['Dbl'] = TDbList()
+                    Res['Set'] = set([1,2,3])
             else:
                 Res = {'Err': 'unknown method %s' % (MethodName)}
         else:
@@ -129,6 +132,10 @@ class TApi():
         if (not Dbl.IsEmpty()):
             Dbl.Shuffle()
             return Dbl.Rec.GetAsDict()
+
+    async def path_get_sites(self, aData: dict) -> dict:
+        Dbl = await self.Db.GetSites()
+        return Dbl.DataExport()
 
     async def path_send_result(self, aData: dict) -> dict:
         return True
