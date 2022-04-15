@@ -7,7 +7,7 @@ Description:
 
 
 import json
-
+import random
 
 class TJsonEncoder(json.JSONEncoder):
     def default(self, aObj):
@@ -31,3 +31,6 @@ class TDictStr(dict):
 
 def GetLeadCharCnt(aValue: str, aChar: str) -> int:
     return len(aValue) - len(aValue.lstrip(aChar))
+
+def GetRandStr(aLen: int, aPattern = 'YourPattern') -> str:
+    return ''.join((random.choice(aPattern)) for x in range(aLen))

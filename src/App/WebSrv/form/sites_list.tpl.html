@@ -1,30 +1,55 @@
 {% extends "Layout.tpl.html" %}
 
+{% block head %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script src="/www/ajax.js"></script>
+<script>
+    function BtnGet_OnClick(aId) {
+        HttpRequest(
+            '/api/get_scheme_by_id',
+            function(aData) {
+                console.log("aData", aData);
+                if (Object.keys(aData).length == 0) {
+                    alert("request error")
+                }else{
+                    document.getElementById("Script").value = aData["Data"]["site.scheme"];
+                }
+            },
+            {'id': aId}
+        );
+    };
+</script>
+<style>
+    tr:nth-child(even) {background-color: #00ccff;}
+</style>
+{% endblock %}
+
 {% block content %}
-<form name="FormParse" method="post" action="/form/sites_list?action=go" enctype="multipart/form-data">
     <table style="width:100%">
         <tr>
             <td>
                 <table style="width:100%">
                     <tr>
-                        <th></th>
-                        <th style="width :90%"></th>
+                        <th>No</th>
+                        <th style="width :90%">Url</th>
+                        <th>Scheme</th>
                     </tr>
-                    {% for Site in Form.Sites %}
+                    {% for Rec in Form.Sites %}
                     <tr>
-                        <td>Url</td>
-                        <td><a href="{{ Site.Rec.GetField('site.url') }}">{{ Site.Rec.GetField('site.url') }}</a></td>
+                        <td>{{loop.index}}</td>
+                        <td><a href="{{ Rec.GetField('site.url') }}">{{ Rec.GetField('site.url') }}</a></td>
+                        <td>
+                            {% if Rec.GetField('has_scheme') %}
+                            <button onclick="BtnGet_OnClick({{ Rec.GetField('site.id') }})">get</button>
+                            {% endif %}
+                        </td>
                     </tr>
                     {% endfor %}
-                    <tr>
-                        <td colspan="2" style="text-align:center"><input type="submit" name="BtnOk" value="OK" class="btn"></td>
-                    </tr>
                 </table>
             </td>
             <td>
-                <textarea readonly name="Script" rows="25">{{ Form.Title }}</textarea>
+                <textarea readonly name="Script" id="Script" rows="25">{{ Form.Title }}</textarea>
             </td>
         </tr>
     </table>
-</form>
 {% endblock %}

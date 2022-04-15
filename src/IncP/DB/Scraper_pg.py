@@ -38,7 +38,7 @@ class TDbApp(TDbPg):
             ''' % (aId)
         await self.Exec(Query)
 
-    async def GetEmptyScheme(self, aLimit: int = 10) -> TDbFetch:
+    async def GetSchemeEmpty(self, aLimit: int = 10) -> TDbFetch:
         Query = f'''
            Select
                 site.id,
@@ -53,13 +53,30 @@ class TDbApp(TDbPg):
             '''
         return await TDbFetch(self).Query(Query)
 
+    async def GetSiteById(self, aId: int) -> TDbFetch:
+        Query = f'''
+           Select
+                site.id,
+                site.url,
+                site.scheme
+            from
+                site
+            where
+                (site.id = {aId})
+            '''
+        return await TDbFetch(self).Query(Query)
+
     async def GetSites(self, aLimit: int = 10) -> TDbFetch:
         Query = f'''
            Select
                 site.id,
-                site.url
+                site.url,
+                site.scheme is not null as has_scheme,
+                site.enabled
             from
                 site
+            order by
+                site.url
             limit
                 {aLimit}
             '''

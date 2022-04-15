@@ -10,6 +10,7 @@ https://docs.aiohttp.org/en/stable/web_advanced.html#aiohttp-web-app-runners
 
 
 import os
+import json
 from aiohttp import web, streamer
 import jinja2
 import aiohttp_jinja2
@@ -87,7 +88,8 @@ class TWebSrv():
     async def _rApi(self, aRequest) -> web.Response:
         Name = aRequest.match_info.get('Name')
         Post = await aRequest.text()
-        Res = await Api._Send(Name, Post)
+        PostObj = json.loads(Post)
+        Res = await Api._Send(Name, PostObj)
         Res = Res.get("Data", {})
         if (Res.get("Err", {})):
             Res = {}

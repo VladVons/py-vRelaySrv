@@ -6,7 +6,7 @@
 <script>
     function BtnGet_OnClick() {
         HttpRequest(
-            '/api/get_empty_scheme',
+            '/api/get_scheme_empty',
             function(aData) {
                 console.log("aData", aData);
                 if (Object.keys(aData).length == 0) {

@@ -122,7 +122,7 @@ class TDbList():
         else:
             self._RecInit()
             self._RecNo += 1
-            return self
+            return self.Rec
 
     def _DbExp(self, aData: list, aFields: list = []) -> 'TDbList':
         if (not aFields):
@@ -296,13 +296,13 @@ if (__name__ == '__main__'):
 
     Db1.Sort(['User', 'Age'], True)
     for Idx, Val in enumerate(Db1):
-        print(Idx, Val.Rec.GetField('User'),  Val.Rec[1])
+        print(Idx, Val.GetField('User'),  Val[1])
 
     print()
     Db3 = Db1.DbClone(['User', 'Age'], (0, 3))
     Db3.Shuffle()
     for Idx, Val in enumerate(Db3):
-        print(Idx, Val.Rec.GetField('User'),  Val.Rec[1])
+        print(Idx, Val.GetField('User'),  Val[1])
 
     Db3.RecGo(-2)
     print('Db3.Rec', Db3.Rec)

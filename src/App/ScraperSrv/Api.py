@@ -56,7 +56,8 @@ class TApi():
     Url = {
         'get_task':             {'param': []},
         'get_config':           {'param': ['user']},
-        'get_empty_scheme':     {'param': []},
+        'get_scheme_empty':     {'param': []},
+        'get_scheme_by_id':     {'param': ['id']},
         'get_sites':            {'param': []},
         'send_result':          {'param': ['*']}
     }
@@ -80,10 +81,6 @@ class TApi():
         Diff = set(aParam) - set(aPattern)
         if (Diff):
             return 'param unknown. %s' % Diff
-
-    # @staticmethod
-    # def GetRandStr(aLen: int, aPattern = 'YourPattern') -> str:
-    #    return ''.join((random.choice(aPattern)) for x in range(aLen))
 
     async def Call(self, aPath: str, aParam: str) -> dict:
         UrlInf = self.Url.get(aPath)
@@ -112,8 +109,6 @@ class TApi():
                         Data = None
                         Log.Print(1, 'x', 'Call()', aE=E)
                     Res = {'Data': Data}
-                    Res['Dbl'] = TDbList()
-                    Res['Set'] = set([1,2,3])
             else:
                 Res = {'Err': 'unknown method %s' % (MethodName)}
         else:
@@ -127,11 +122,15 @@ class TApi():
         DBL = await self.Db.GetConfig(aData.get('user'))
         return DBL.Rec.GetAsDict()
 
-    async def path_get_empty_scheme(self, aData: dict) -> dict:
-        Dbl = await self.Db.GetEmptyScheme()
+    async def path_get_scheme_empty(self, aData: dict) -> dict:
+        Dbl = await self.Db.GetSchemeEmpty()
         if (not Dbl.IsEmpty()):
             Dbl.Shuffle()
             return Dbl.Rec.GetAsDict()
+
+    async def path_get_scheme_by_id(self, aData: dict) -> dict:
+        Dbl = await self.Db.GetSiteById(aData.get('id'))
+        return Dbl.Rec.GetAsDict()
 
     async def path_get_sites(self, aData: dict) -> dict:
         Dbl = await self.Db.GetSites()
