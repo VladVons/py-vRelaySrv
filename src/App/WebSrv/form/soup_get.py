@@ -16,7 +16,7 @@ from IncP.Log import Log
 
 
 class TForm(TFormBase):
-    Title = "Soup get"
+    Title = 'Soup get'
 
     async def Render(self):
         if (await self.PostToForm()):

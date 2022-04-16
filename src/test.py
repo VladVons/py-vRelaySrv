@@ -50,4 +50,12 @@ def Main1():
     print('%0.2f' % (time.time() - Start))
 
 
-Main1()
+#Main1()
+
+
+q1 = [1,2,3,4,12]
+q2 = [9,3,4,5,6,7,8]
+q3 = set(q2) - set(q1)
+q4 = set(q1) - set(q2)
+print(q3, q4)
+

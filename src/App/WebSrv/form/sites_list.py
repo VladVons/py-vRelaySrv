@@ -8,12 +8,11 @@ Description:
 
 
 from .FForm import TFormBase
-from IncP.Log import Log
 from ..Api import Api
 from Inc.DB.DbList import TDbList
 
 class TForm(TFormBase):
-    Title = "Site list"
+    Title = 'Site list'
 
     async def Render(self):
         Data = await Api._Send('get_sites')

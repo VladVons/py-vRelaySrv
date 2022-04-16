@@ -20,7 +20,7 @@ _FieldPrefix = 'Script_'
 
 
 class TForm(TFormBase):
-    Title = "Soup make"
+    Title = 'Soup make'
 
     def StripDataLines(self, aPrefix: str):
         for Key, Val in self.Data.items():

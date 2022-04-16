@@ -17,7 +17,7 @@ from IncP.Utils import TJsonEncoder
 
 
 class TForm(TFormBase):
-    Title = "Soup test"
+    Title = 'Soup test'
 
     async def Render(self):
         if (await self.PostToForm()):
