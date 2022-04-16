@@ -14,4 +14,8 @@ aiohttp_jinja2
 jinja2
 gmqtt
 lxml
-fake_useragent
+
+#fake_useragent
+
+#js2py
+#apt-get install nodejs

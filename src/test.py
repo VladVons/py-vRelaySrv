@@ -6,11 +6,6 @@ import collections
 #
 #import cfscrape
 #import cloudscraper
-#from aiocfscrape import CloudflareScraper
-#
-#from IncP.DB.Scraper_pg import TDbApp
-from IncP.Log import Log
-
 
 DbAuth = {
     'Server': 'localhost',
@@ -54,67 +49,5 @@ def Main1():
         Test_2()
     print('%0.2f' % (time.time() - Start))
 
-def Main2():
-    from Inc.DB.DbList import TDbList, TDbRec
 
-    Db1 = TDbList( [('User', str), ('Age', int), ('Male', bool, True)] )
-    Data = [['User2', 22, True], ['User1', 15, False], ['User3', 33, True], ['User1', 11, False]]
-    Db1.SetData(Data)
-    Db1.Sort(['User'])
-    Db1.Sort(['User', 'Age'])
-    print(Db1.Data)
-
-def Main3():
-    import urllib.robotparser as urobot
-    rp = urobot.RobotFileParser()
-
-    Urls = [
-        'http://oster.com.ua/123.php',
-        'http://oster.com.ua/images/captcha',
-
-        'http://oster.com.ua/Asite/comp',
-        'http://oster.com.ua/A/site/comp',
-        'http://oster.com.ua/site/comp',
-        'http://oster.com.ua?site',
-        'http://oster.com.ua/?site',
-        
-
-        'http://oster.com.ua/1/comp',
-        'http://oster.com.ua/comp/',
-        'http://oster.com.ua/comp/1',
-        'http://oster.com.ua/1/comp/',
-        'http://oster.com.ua/1comp',
-        'http://oster.com.ua/1/comp',
-
-        'http://oster.com.ua/Acomp/',
-        'http://oster.com.ua/cap_print/comp/',
-        'http://oster.com.ua/cap_print/123.php',
-        'http://oster.com.ua/call/123.php',
-        'http://oster.com.ua/123.php',
-        'http://oster.com.ua/captcha'
-    ]
-    
-    #rp.set_url('http://oster.com.ua/robots.txt')
-    #rp.read()
-    rp.request_rate("*")
-
-    with open('f_www.aks.ua_robots.txt') as F:
-        Data = F.readlines()
-
-        #Data = F.read()
-        #Data = Data.splitlines()
-        rp.parse(Data)
-    
-    for Url in Urls:
-        if rp.can_fetch("*", Url):
-            print('ok', Url)
-        else:
-            print('err', Url)
-
-
-#async def test_open_page(url):
-#    async with CloudflareScraper() as session:
-#        async with session.get(url) as resp:
-#            return await resp.text()
-
-y
+Main1()

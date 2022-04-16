@@ -51,6 +51,7 @@ class TScraperSrv():
                 await self.Api.DbInit(self.Conf.DbAuth)
                 await web._run_app(App, host = '0.0.0.0', port = self.Conf.get('Port', 8081), shutdown_timeout = 60.0,  keepalive_timeout = 75.0)
             except Exception as E:
+                await asyncio.sleep(2)
                 Log.Print(1, 'x', 'Run()', aE = E)
             finally:
                 await self.Api.DbClose()

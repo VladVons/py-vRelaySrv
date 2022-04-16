@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 '''
 Author:      Vladimir Vons, Oster Inc.
 Created:     2021.02.26

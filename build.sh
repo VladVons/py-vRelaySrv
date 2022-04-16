@@ -113,14 +113,14 @@ Postgres()
   sudo -u postgres psql -c "CREATE DATABASE scraper1;"
 
   #sudo -u postgres createuser u_scraper
-  #sudo -u postgres psql -c "ALTER USER u_scraper PASSWORD 'xxx';"
-  sudo -u postgres psql -c "create user u_scraper with encrypted password 'xxx';"
+  sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'xxx';"
+  #sudo -u postgres psql -c "create user u_scraper with encrypted password 'xxx';"
 
-  sudo -u postgres psql -c "grant all privileges on database scraper1 to u_scraper;"
-  sudo -u postgres psql -c "GRANT CONNECT ON DATABASE scraper1 TO u_scraper;"
-  sudo -u postgres psql -c "ALTER DATABASE scraper1 OWNER TO u_scraper;"
+  #sudo -u postgres psql -c "grant all privileges on database scraper1 to u_scraper;"
+  #sudo -u postgres psql -c "GRANT CONNECT ON DATABASE scraper1 TO u_scraper;"
+  #sudo -u postgres psql -c "ALTER DATABASE scraper1 OWNER TO u_scraper;"
 
-  #psql --host=localhost --username=u_scraper --password --dbname=scraper1 -c "SELECT version();"
+  #psql --host=localhost --username=postgres --password --dbname=scraper1 -c "SELECT version();"
   sudo -u postgres psql -c "SELECT version();"
 
   sudo -u postgres psql -l 
@@ -131,7 +131,7 @@ Postgres()
   gunzip -c test1.sql.gz | psql --host=localhost --username=postgres --password scraper1
   gunzip -c test1.sql.gz | sudo -u postgres psql scraper1
   
-  psql --host=192.168.2.115 --username=u_scraper --password --dbname=scraper1 -c "SELECT url from site;"
+  psql --host=192.168.2.115 --username=postgres --password --dbname=scraper1 -c "SELECT url from site;"
 
   sudo -u postgres psql
   \?
