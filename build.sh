@@ -101,6 +101,23 @@ Install()
   ExecM "sudo apt install python3-dev --no-install-recommends"
 }
 
+DbDump()
+{
+  sudo -u postgres psql
+
+  sudo -u postgres psql -l 
+  sudo -u postgres psql -c "SELECT datname, dattablespace, datctype FROM pg_database WHERE datistemplate = false;"
+
+  sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'new-password';"
+
+  pg_dump  --host=localhost --username=postgres --password --dbname=test1 | gzip > test1.sql.gz
+
+  sudo -u postgres psql -c "CREATE DATABASE test2;"
+  createdb --host=localhost --username=postgres --password test2
+
+  gunzip -c test1.sql.gz | psql --host=localhost --username=postgres --password test2
+  gunzip -c test1.sql.gz | sudo -u postgres psql test2
+}
 
 App()
 {
