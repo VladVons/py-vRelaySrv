@@ -53,6 +53,6 @@ class TScraperSrv():
             except Exception as E:
                 Log.Print(1, 'x', 'Run()', aE = E)
             finally:
-                await self.Api.Db.Close()
+                await self.Api.DbClose()
 
             await asyncio.sleep(aSleep)

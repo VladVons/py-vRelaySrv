@@ -3,6 +3,62 @@ Author:      Vladimir Vons, Oster Inc.
 Created:     2022.03.24
 License:     GNU, see LICENSE for more details
 Description:
+
+    Db1 = TDbList( [('User', str), ('Age', int), ('Male', bool, True)] )
+    Data = [['User2', 22, True], ['User1', 11, False], ['User3', 33, True]]
+    Db1.Safe = True
+    Db1.SetData(Data)
+
+    Db1.RecAdd()
+    #Db1.RecFlush()
+
+    Db1.RecAdd()
+    Db1.Rec.SetField('User', 'User4')
+    Db1.Rec.SetField('Age', 20)
+    Db1.Rec.SetField('Male', False)
+    Db1.Rec.Flush()
+
+    Db1.Data.append(['User5', 30, False])
+    Db1.RecAdd(['User6', 40, True])
+    Db1.Rec.Flush()
+
+    Db1.RecAdd()
+    Db1.Rec.SetAsDict({'User': 'User7', 'Age': 45, 'Male': True})
+    Db1.Rec.Flush()
+
+    Db1.RecGo(0)
+    print()
+    print('GetSize:', Db1.GetSize())
+    print('Data:', Db1.Data)
+    print('Rec:', Db1.Rec)
+    print('Rec.GetAsDict:', Db1.Rec.GetAsDict())
+    print('Rec.GetAsTuple:', Db1.Rec.GetAsTuple())
+    print('Rec.GetList:', Db1.GetList('User', True))
+
+    Db1.Sort(['User', 'Age'], True)
+    for Idx, Rec in enumerate(Db1):
+        print(Idx, Rec.GetField('User'),  Rec[1])
+
+    print()
+    Db3 = Db1.DbClone(['User', 'Age'], (0, 3))
+    Db3.Shuffle()
+    for Idx, Rec in enumerate(Db3):
+        print(Idx, Rec.GetField('User'),  Rec[1])
+
+    Db3.RecGo(-2)
+    print('Db3.Rec', Db3.Rec)
+
+    print()
+    import operator as op
+    Cond = [
+        (op.lt, Db1.Fields.GetNo('Age'), 40, True),
+        (op.eq, Db1.Fields.GetNo('Male'), True, True)
+    ]
+    Db2 = Db1.DbFilter(Cond)
+    print(Db2.Data)
+
+    Db1.Save('Db2.json')
+    Db1.Load('Db2.json')
 '''
 
 
@@ -265,57 +321,7 @@ class TDbList():
 if (__name__ == '__main__'):
     Db1 = TDbList( [('User', str), ('Age', int), ('Male', bool, True)] )
     Data = [['User2', 22, True], ['User1', 11, False], ['User3', 33, True]]
-    Db1.Safe = True
     Db1.SetData(Data)
-
-    Db1.RecAdd()
-    #Db1.RecFlush()
-
-    Db1.RecAdd()
-    Db1.Rec.SetField('User', 'User4')
-    Db1.Rec.SetField('Age', 20)
-    Db1.Rec.SetField('Male', False)
-    Db1.Rec.Flush()
-
-    Db1.Data.append(['User5', 30, False])
-    Db1.RecAdd(['User6', 40, True])
-    Db1.Rec.Flush()
-
-    Db1.RecAdd()
-    Db1.Rec.SetAsDict({'User': 'User7', 'Age': 45, 'Male': True})
-    Db1.Rec.Flush()
-
-    Db1.RecGo(0)
-    print()
-    print('GetSize:', Db1.GetSize())
-    print('Data:', Db1.Data)
-    print('Rec:', Db1.Rec)
-    print('Rec.GetAsDict:', Db1.Rec.GetAsDict())
-    print('Rec.GetAsTuple:', Db1.Rec.GetAsTuple())
-    print('Rec.GetList:', Db1.GetList('User', True))
-
-    Db1.Sort(['User', 'Age'], True)
-    for Idx, Val in enumerate(Db1):
-        print(Idx, Val.GetField('User'),  Val[1])
-
-    print()
-    Db3 = Db1.DbClone(['User', 'Age'], (0, 3))
-    Db3.Shuffle()
-    for Idx, Val in enumerate(Db3):
-        print(Idx, Val.GetField('User'),  Val[1])
-
-    Db3.RecGo(-2)
-    print('Db3.Rec', Db3.Rec)
-
-    print()
-    import operator as op
-    Cond = [ 
-        (op.lt, Db1.Fields.GetNo('Age'), 40, True), 
-        (op.eq, Db1.Fields.GetNo('Male'), True, True) 
-    ]
-    Db2 = Db1.DbFilter(Cond)
-    print(Db2.Data)
-
-    Db1.Save('Db2.json')
-    Db1.Load('Db2.json')
+    for Idx, Rec in enumerate(Db1):
+        print(Idx, Rec.GetField('User'),  Rec[1])
 '''

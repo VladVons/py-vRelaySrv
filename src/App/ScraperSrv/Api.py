@@ -143,5 +143,9 @@ class TApi():
         self.Db = TDbApp(aAuth)
         await self.Db.Connect()
         # await self.Db.ExecFile('IncP/DB/Scraper_pg.sql')
-
         Log.AddEcho(TEchoDb(self.Db))
+
+    async def DbClose(self):
+        List = Log.FindEcho(TEchoDb.__name__)
+        Log.Echoes.remove(List[0])
+        await self.Db.Close()

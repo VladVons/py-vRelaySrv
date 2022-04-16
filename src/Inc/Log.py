@@ -43,11 +43,13 @@ class TLog():
 
         self.AddEcho(TEchoConsole())
 
+    def FindEcho(self, aClassName: str) -> list:
+        #return list(filter(lambda i: (i.__class__.__name__ == aClassName), self.Echoes))
+        return [i for i in self.Echoes if (i.__class__.__name__ == aClassName)]
+
     def AddEcho(self, aEcho: TEcho):
         Name = aEcho.__class__.__name__
-        #List = [i for i in self.Echoes if (i.__class__.__name__ == Name)]
-        List = list(filter(lambda i: (i.__class__.__name__ == Name), self.Echoes))
-        if (not List):
+        if (not self.FindEcho(Name)):
             self.Echoes.append(aEcho)
 
     def Print(self, aLevel: int, aType: str, aMsg: str, aList: list = [], aE: Exception = None) -> str:
