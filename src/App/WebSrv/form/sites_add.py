@@ -26,12 +26,26 @@ class TForm(TFormBase):
                 if (Data):
                     Dbl = TDbList().DataImport(Data)
                     Lines = self.Data.Sites.splitlines()
+                    Lines = [x for x in Lines if (x)]
                     Diff = Dbl.GetDiff('site.url', Lines)
+
+                    Output = []
+                    Output.append('Exists:')
+                    Output += list(set(Lines) - Diff[1])
+                    Output.append('')
+
                     Download = TDownload()
                     Data = await Download.Gets(Diff[1])
                     UrlOk = [x.get('Url') for x in Data if (x.get('Status') == 200)]
+                    Output.append('New:')
+                    Output += UrlOk
+                    Output.append('')
 
-                    self.Data.Output = '\n'.join(UrlOk)
+                    Output.append('Bad:')
+                    Output += list(Diff[1] - set(UrlOk))
+                    Output.append('')
+
+                    self.Data.Output = '\n'.join(Output)
                 else:
                     self.Data.Output = Log.Print(1, 'e', 'Cant get data from server')
         return self._Render()

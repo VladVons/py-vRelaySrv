@@ -234,7 +234,7 @@ class TDbList():
     def GetDiff(self, aField: str, aList: list) -> tuple:
         Set1 = set(self.GetList(aField))
         Set2 = set(aList)
-        return (list(Set1 - Set2), list(Set2 - Set1))
+        return (Set1 - Set2, Set2 - Set1)
 
     def DbClone(self, aFields: list, aRecNo: list = [0, -1]) -> 'TDbList':
         if (aRecNo[1] == -1):
