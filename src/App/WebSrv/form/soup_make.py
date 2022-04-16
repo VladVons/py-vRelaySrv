@@ -11,9 +11,9 @@ from bs4 import BeautifulSoup
 #
 from .FForm import TFormBase
 from IncP.Download import TDownload
-from IncP.Scheme import TScheme, FormatJsonStr
+from IncP.Scheme import TScheme
 from IncP.Log import Log
-from IncP.Utils import TJsonEncoder
+from IncP.Utils import TJsonEncoder, FormatJsonStr
 
 
 _FieldPrefix = 'Script_'

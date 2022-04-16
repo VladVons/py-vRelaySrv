@@ -101,26 +101,46 @@ Install()
   ExecM "sudo apt install python3-dev --no-install-recommends"
 }
 
-DbDump()
+Postgres()
 {
+  sudo apt install postgresql postgresql-contrib
+  #sudo -u postgres /usr/lib/postgresql/11/bin/initdb -D /var/lib/postgresql/data1 --locale=uk_UA.UTF-8 --lc-collate=uk_UA.UTF-8 --lc-ctype=uk_UA.UTF-8 --encoding=UTF8
+  #sudo -u postgres /usr/lib/postgresql/11/bin/pg_ctl -D /var/lib/postgresql/data1 start
+
+  psql -V
+
+  #createdb --host=localhost --username=postgres --password scraper1
+  sudo -u postgres psql -c "CREATE DATABASE scraper1;"
+
+  #sudo -u postgres createuser u_scraper
+  #sudo -u postgres psql -c "ALTER USER u_scraper PASSWORD 'xxx';"
+  sudo -u postgres psql -c "create user u_scraper with encrypted password 'xxx';"
+
+  sudo -u postgres psql -c "grant all privileges on database scraper1 to u_scraper;"
+  sudo -u postgres psql -c "GRANT CONNECT ON DATABASE scraper1 TO u_scraper;"
+  sudo -u postgres psql -c "ALTER DATABASE scraper1 OWNER TO u_scraper;"
+
+  #psql --host=localhost --username=u_scraper --password --dbname=scraper1 -c "SELECT version();"
+  sudo -u postgres psql -c "SELECT version();"
+
+  sudo -u postgres psql -l 
+  sudo -u postgres psql -c "SELECT datname, dattablespace, datctype FROM pg_database WHERE datistemplate = false;"
+
+  pg_dump  --host=localhost --username=postgres --password --dbname=scraper1 | gzip > test1.sql.gz
+
+  gunzip -c test1.sql.gz | psql --host=localhost --username=postgres --password scraper1
+  gunzip -c test1.sql.gz | sudo -u postgres psql scraper1
+  
+  psql --host=192.168.2.115 --username=u_scraper --password --dbname=scraper1 -c "SELECT url from site;"
+
   sudo -u postgres psql
   \?
   \h
   \connect scraper1;
   \dt
 
-  sudo -u postgres psql -l 
-  sudo -u postgres psql -c "SELECT datname, dattablespace, datctype FROM pg_database WHERE datistemplate = false;"
-
-  sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'new-password';"
-
-  pg_dump  --host=localhost --username=postgres --password --dbname=test1 | gzip > test1.sql.gz
-
-  sudo -u postgres psql -c "CREATE DATABASE test2;"
-  createdb --host=localhost --username=postgres --password test2
-
-  gunzip -c test1.sql.gz | psql --host=localhost --username=postgres --password test2
-  gunzip -c test1.sql.gz | sudo -u postgres psql test2
+  select * from pg_tables where tablename = 'my_tbl';
+  select * from pg_tables where tableowner = 'username';
 }
 
 App()

@@ -117,24 +117,4 @@ def Main3():
 #        async with session.get(url) as resp:
 #            return await resp.text()
 
-
-from App.WebSrv.form.Utils import FormatJsonStr
-
-s1 = '''
-    "_Items": {
-"Name": [
-["find", ["h1"]],
-["find", ["bdi"]],
-["text"]
-    ],
-    "Price": [
-["find", ["span", {"class": "ty-price"}]],
-["text"],
-    ["Price"]
-]
-}
-'''
-
-s2 = FormatJsonStr(s1)
-print()
-print(s2)
+y
