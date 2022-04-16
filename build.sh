@@ -104,6 +104,10 @@ Install()
 DbDump()
 {
   sudo -u postgres psql
+  \?
+  \h
+  \connect scraper1;
+  \dt
 
   sudo -u postgres psql -l 
   sudo -u postgres psql -c "SELECT datname, dattablespace, datctype FROM pg_database WHERE datistemplate = false;"
