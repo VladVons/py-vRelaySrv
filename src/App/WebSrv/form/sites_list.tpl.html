@@ -21,6 +21,7 @@
 </script>
 <style>
     tr:nth-child(even) {background-color: #00ccff;}
+    .tableFixHead      { overflow: auto; height: 600px; }
 </style>
 {% endblock %}
 
@@ -28,6 +29,7 @@
     <table style="width:100%">
         <tr>
             <td>
+                <div class="tableFixHead">
                 <table style="width:100%">
                     <tr>
                         <th>No</th>
@@ -46,9 +48,10 @@
                     </tr>
                     {% endfor %}
                 </table>
+                </div>
             </td>
             <td>
-                <textarea readonly name="Script" id="Script" rows="25">{{ Form.Title }}</textarea>
+                <textarea readonly name="Script" id="Script" rows="40">{{ Form.Title }}</textarea>
             </td>
         </tr>
     </table>
