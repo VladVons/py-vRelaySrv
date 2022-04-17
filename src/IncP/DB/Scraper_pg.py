@@ -7,7 +7,7 @@ Description:
 
 
 import aiopg
-from .Db import TDbFetch
+from .Db import TDbSql
 from .DbPg import TDbPg
 
 
@@ -19,7 +19,14 @@ class TDbApp(TDbPg):
             '''
             await self.Exec(Query)
 
-    async def InsertLog(self, aType: int, aDescr: str):
+    async def AddLog(self, aType: int, aDescr: str):
+        Query = f'''
+            INSERT INTO log(type_id, descr)
+            VALUES ({aType}, '{aDescr}')
+            '''
+        await self.Exec(Query)
+
+    async def AddSites(self, aUrls: list):
         Query = f'''
             INSERT INTO log(type_id, descr)
             VALUES ({aType}, '{aDescr}')
@@ -38,7 +45,7 @@ class TDbApp(TDbPg):
             ''' % (aId)
         await self.Exec(Query)
 
-    async def GetSchemeEmpty(self, aLimit: int = 10) -> TDbFetch:
+    async def GetSchemeEmpty(self, aLimit: int = 10) -> TDbSql:
         Query = f'''
            Select
                 site.id,
@@ -51,9 +58,9 @@ class TDbApp(TDbPg):
             limit
                 {aLimit}
             '''
-        return await TDbFetch(self).Query(Query)
+        return await TDbSql(self).Query(Query)
 
-    async def GetSiteById(self, aId: int) -> TDbFetch:
+    async def GetSiteById(self, aId: int) -> TDbSql:
         Query = f'''
            Select
                 site.id,
@@ -64,9 +71,9 @@ class TDbApp(TDbPg):
             where
                 (site.id = {aId})
             '''
-        return await TDbFetch(self).Query(Query)
+        return await TDbSql(self).Query(Query)
 
-    async def GetSites(self, aLimit: int = 10) -> TDbFetch:
+    async def GetSites(self, aLimit: int = 10) -> TDbSql:
         Query = f'''
            Select
                 site.id,
@@ -80,9 +87,9 @@ class TDbApp(TDbPg):
             limit
                 {aLimit}
             '''
-        return await TDbFetch(self).Query(Query)
+        return await TDbSql(self).Query(Query)
 
-    async def GetSitesForUpdateFull(self, aExclId: list = [], aLimit: int = 10, aUpdDaysX: float = 1) -> TDbFetch:
+    async def GetSitesForUpdateFull(self, aExclId: list = [], aLimit: int = 10, aUpdDaysX: float = 1) -> TDbSql:
         ExclId = self.ListToComma(aExclId)
         if (ExclId):
             CondExcl = 'and (not site.id in(%s))' % ExclId
@@ -108,9 +115,9 @@ class TDbApp(TDbPg):
             limit
                 {aLimit}
             '''
-        return await TDbFetch(self).Query(Query)
+        return await TDbSql(self).Query(Query)
 
-    async def GetSitesForUpdate(self, aExclId: list = [], aCount: tuple = (0, -1), aLimit: int = 10, aUpdDaysX: float = 1) -> TDbFetch:
+    async def GetSitesForUpdate(self, aExclId: list = [], aCount: tuple = (0, -1), aLimit: int = 10, aUpdDaysX: float = 1) -> TDbSql:
         ExclId = self.ListToComma(aExclId)
         if (ExclId):
             CondExcl = 'and (not site.id in(%s))' % ExclId
@@ -150,9 +157,9 @@ class TDbApp(TDbPg):
             limit
                 {aLimit}
             '''
-        return await TDbFetch(self).Query(Query)
+        return await TDbSql(self).Query(Query)
 
-    async def GetSiteUrlsForUpdate(self, aSiteId: int, aLimit: int = 10, aOnlyProduct: bool = False) -> TDbFetch:
+    async def GetSiteUrlsForUpdate(self, aSiteId: int, aLimit: int = 10, aOnlyProduct: bool = False) -> TDbSql:
         if (aOnlyProduct):
             CondOnlyProduct = 'and url.product_id'
         else:
@@ -177,9 +184,9 @@ class TDbApp(TDbPg):
             limit
                 {aLimit}
             '''
-        return await TDbFetch(self).Query(Query)
+        return await TDbSql(self).Query(Query)
 
-    async def AuthUser(self, aLogin: str, aPassw: str) -> TDbFetch:
+    async def AuthUser(self, aLogin: str, aPassw: str) -> TDbSql:
         Query = f'''
             select
                 id
@@ -190,9 +197,9 @@ class TDbApp(TDbPg):
                 (login = '{aLogin}') and
                 (passw = '{aPassw}')
             '''
-        return await TDbFetch(self).Query(Query)
+        return await TDbSql(self).Query(Query)
 
-    async def GetConfig(self, aUser: str) -> TDbFetch:
+    async def GetConfig(self, aUser: str) -> TDbSql:
         Query = f'''
             select
                 workers,
@@ -202,4 +209,4 @@ class TDbApp(TDbPg):
             where
                 (login = '{aUser}')
             '''
-        return await TDbFetch(self).Query(Query)
+        return await TDbSql(self).Query(Query)

@@ -11,6 +11,7 @@ import json
 from .FForm import TFormBase
 from IncP.Download import TDownload
 from Inc.DB.DbList import TDbList
+from IncP.DB.Db import TDbSql
 from ..Api import Api
 from IncP.Log import Log
 
@@ -21,12 +22,13 @@ class TForm(TFormBase):
     async def Render(self):
         if (await self.PostToForm()):
             if (self.Data.Sites):
-                Data = await Api._Send('get_sites')
+                Lines = self.Data.Sites.splitlines()
+                Lines = [x.strip() for x in Lines if (x)]
+
+                Data = await Api._Send('get_sites', {'limit': len(Lines)})
                 Data = Data.get('Data', {}).get('Data')
                 if (Data):
                     Dbl = TDbList().DataImport(Data)
-                    Lines = self.Data.Sites.splitlines()
-                    Lines = [x for x in Lines if (x)]
                     Diff = Dbl.GetDiff('site.url', Lines)
 
                     Output = []
@@ -37,6 +39,7 @@ class TForm(TFormBase):
                     Download = TDownload()
                     Data = await Download.Gets(Diff[1])
                     UrlOk = [x.get('Url') for x in Data if (x.get('Status') == 200)]
+                    Data = await Api._Send('set_sites')
                     Output.append('New:')
                     Output += UrlOk
                     Output.append('')
@@ -46,6 +49,11 @@ class TForm(TFormBase):
                     Output.append('')
 
                     self.Data.Output = '\n'.join(Output)
+
+                    if (UrlOk):
+                        Dbl = TDbSql(None)
+                        Dbl.InitList(('url', str), UrlOk)
+                        await Api._Send('add_sites', {'dbl': Dbl.DataExport()})
                 else:
                     self.Data.Output = Log.Print(1, 'e', 'Cant get data from server')
         return self._Render()

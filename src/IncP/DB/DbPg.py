@@ -8,7 +8,7 @@ pip3 install aiopg
 '''
 
 import aiopg
-from .Db import TDb, TDbFetch
+from .Db import TDb, TDbSql
 
 
 class TDbPg(TDb):
@@ -26,7 +26,7 @@ class TDbPg(TDb):
                 password = self.Auth.get('Password')
         )
 
-    async def GetTableColumns(self, aName: str) -> TDbFetch:
+    async def GetTableColumns(self, aName: str) -> TDbSql:
         Query = f'''
             SELECT
                 column_name as name

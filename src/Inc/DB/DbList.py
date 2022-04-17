@@ -66,6 +66,7 @@ import json
 import random
 import operator as op
 
+
 class TDbFields(dict):
     def __init__(self, aFields: tuple = ()):
         super().__init__()
@@ -141,6 +142,18 @@ class TDbRec(list):
     def GetAsDict(self) -> dict:
         return {Key: self[Val[0]] for Key, Val in self.Parent.Fields.items()}
 
+    def GetAsSql(self) -> str:
+        Res = []
+        for _, (FNo, FType, _) in self.Parent.Fields.items():
+            if (FType == bool):
+                Val = str(int(self[FNo]))
+            elif (FType in [int, float]):
+                Val = str(self[FNo])
+            else:
+                Val = "'" + str(self[FNo]) + "'"
+            Res.append(Val)
+        return ', '.join(Res)
+
     def SetAsDict(self, aData: dict):
         [self.SetField(Key, Val) for Key, Val in aData.items()]
         self.Flush()
@@ -167,7 +180,7 @@ class TDbList():
         self.Data = []
         self.Rec = TDbRec(self)
         self.Safe = True
-        self._Init(aFields, aData)
+        self.Init(aFields, aData)
 
     def __iter__(self):
         return self
@@ -192,12 +205,17 @@ class TDbList():
         Res = TDbList()
         Res.Fields = DbFields
         Res.Data = aData
-        return Res 
+        return Res
 
-    def _Init(self, aFields: list, aData: list = None):
+    def Init(self, aFields: list, aData: list = None):
         self.Fields = TDbFields()
         self.Fields.AddFields(aFields)
         self.SetData(aData)
+
+    def InitList(self, aField: tuple, aData: list):
+        self.Fields = TDbFields()
+        self.Fields.Add(*aField)
+        self.AddList(aField[0], aData)
 
     def _RecInit(self):
         if (not self.IsEmpty()):
@@ -212,6 +230,10 @@ class TDbList():
     def Empty(self):
         self.Data = []
         self.RecGo(0)
+
+    def GetInsertQuery(self) -> str:
+        for Rec in self:
+            pass
 
     def DataExport(self) -> dict:
         return {'Data': self.Data, 'Head': self.Fields.Export(), 'Tag': self.Tag}
@@ -230,6 +252,26 @@ class TDbList():
         if (aUniq):
             Res = list(set(Res))
         return Res
+
+    def AddList(self, aField: str, aData: list):
+        Rec = TDbRec(self)
+        Rec.Init()
+        FieldNo = self.Fields.GetNo(aField)
+        for Val in aData:
+            Arr = Rec.copy()
+            Arr[FieldNo] = Val
+            self.Data.append(Arr)
+
+    def SetData(self, aData: list):
+        if (aData):
+            if (self.Safe):
+                for Rec in aData:
+                    self.RecAdd(Rec)
+            else:
+                self.Data = aData
+            self.RecGo(0)
+        else:
+            self.Data = []
 
     def GetDiff(self, aField: str, aList: list) -> tuple:
         Set1 = set(self.GetList(aField))
@@ -271,26 +313,6 @@ class TDbList():
         random.shuffle(self.Data)
         self.RecGo(0)
 
-    def AddList(self, aField: str, aData: list):
-        Rec = TDbRec(self)
-        Rec.Init()
-        FieldNo = self.Fields.GetNo(aField)
-        for Val in aData:
-            Arr = Rec.copy()
-            Arr[FieldNo] = Val
-            self.Data.append(Arr)
-
-    def SetData(self, aData: list):
-        if (aData):
-            if (self.Safe):
-                for Rec in aData:
-                    self.RecAdd(Rec)
-            else:
-                self.Data = aData
-            self.RecGo(0)
-        else:
-            self.Data = []
-
     def RecGo(self, aNo: int):
         if (aNo < 0):
             aNo = self.GetSize() + aNo
@@ -325,8 +347,7 @@ class TDbList():
 '''
 if (__name__ == '__main__'):
     Db1 = TDbList( [('User', str), ('Age', int), ('Male', bool, True)] )
-    Data = [['User2', 22, True], ['User1', 11, False], ['User3', 33, True]]
+    Data = [['User2', 22, True], ['User1', 11, False], ['User3', 33, True], ['User4', 44, True]]
     Db1.SetData(Data)
-    for Idx, Rec in enumerate(Db1):
-        print(Idx, Rec.GetField('User'),  Rec[1])
+    Db1.GetQueryInsert('site')
 '''

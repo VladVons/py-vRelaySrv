@@ -13,10 +13,10 @@ import json
 #import psycopg2.extras
 #
 from Inc.DB.DbList import TDbList, TDbFields
-from IncP.Log  import Log
+from IncP.Log import Log
 
 
-class TDbFetch(TDbList):
+class TDbSql(TDbList):
     def __init__(self, aDb):
         super().__init__()
         self.Safe = False
@@ -47,6 +47,14 @@ class TDbFetch(TDbList):
         self.SetData(Data)
         return self
 
+    def GetInsertStr(self, aTable: str):
+        Fields = [Val[0] for Key, Val in self.Fields.IdxOrd.items()]
+        Values = [Rec.GetAsSql() for Rec in self]
+        return 'INSERT INTO %s (%s) VALUES (%s)' % (aTable, ', '.join(Fields), '), ('.join(Values))
+
+    async def Insert(self, aTable: str):
+        Query = self.GetInsertStr(aTable)
+        await self._Db.Exec(Query)
 
 class TDb():
     Pool = None
@@ -70,7 +78,10 @@ class TDb():
                 #        await Cur.execute(Sql)
                 if (self.Debug):
                     print(aSql)
-                await Cur.execute(aSql)
+                try:
+                    await Cur.execute(aSql)
+                except Exception as E:
+                    Log.Print(1, 'x', 'Exec() %s' % (aSql), aE=E)
             #await Con.commit()
 
     async def ExecFile(self, aFile: str):

@@ -48,7 +48,7 @@ class TMqtt():
             Log.Print(1, 'i', 'on_message', (Ok, Id, Data))
 
         if (not Ok):
-            await self.Db.InsertLog(1, "%s, %s" % (Id, Data))
+            await self.Db.AddLog(1, "%s, %s" % (Id, Data))
             Log.Print(1, 'i', 'on_message bad', (Id, Data))
 
     async def Run(self):

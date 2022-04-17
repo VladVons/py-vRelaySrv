@@ -13,13 +13,13 @@ from datetime import datetime
 from IncP.Log import Log, TEchoDb
 from IncP.DB.Scraper_pg import TDbApp
 from Inc.DB.DbList import TDbList
-from IncP.DB.Db import TDbFetch
+from IncP.DB.Db import TDbSql
 
 
 class TApiTask():
     def __init__(self, aParent: 'TApi'):
         self.Parent = aParent
-        self.Tasks = TDbList( [('SiteId', int), ('StartAt', type(datetime.now())), ('Urls', TDbFetch)] )
+        self.Tasks = TDbList( [('SiteId', int), ('StartAt', type(datetime.now())), ('Urls', TDbSql)] )
         self.Lock = asyncio.Lock()
 
     async def Get(self, aData: dict) -> dict:
@@ -58,7 +58,8 @@ class TApi():
         'get_config':           {'param': ['user']},
         'get_scheme_empty':     {'param': []},
         'get_scheme_by_id':     {'param': ['id']},
-        'get_sites':            {'param': []},
+        'get_sites':            {'param': ['*']},
+        'add_sites':            {'param': ['dbl']},
         'send_result':          {'param': ['*']}
     }
 
@@ -133,8 +134,14 @@ class TApi():
         return Dbl.Rec.GetAsDict()
 
     async def path_get_sites(self, aData: dict) -> dict:
-        Dbl = await self.Db.GetSites()
+        Dbl = await self.Db.GetSites(aData.get('limit', 10))
         return Dbl.DataExport()
+
+    async def path_add_sites(self, aData: dict) -> dict:
+        Data = aData.get('dbl')
+        Dbl = TDbSql(self.Db).DataImport(Data)
+        await Dbl.Insert('site')
+        return True
 
     async def path_send_result(self, aData: dict) -> dict:
         return True

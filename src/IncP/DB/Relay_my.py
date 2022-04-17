@@ -11,7 +11,7 @@ pip3 install aiomysql
 
 import aiomysql
 #
-from .Db import TDb, TDbFetch
+from .Db import TDb, TDbSql
 
 
 class TDbApp(TDb):
@@ -29,11 +29,17 @@ class TDbApp(TDb):
             password = self.Auth.get('Password')
         )
 
+    async def AddLog(self, aType: int, aDescr: str):
+        Query = '''
+            INSERT INTO log(type_id, descr) VALUES({Type}, "{Descr}")
+        '''.format(Type=aType, Descr=aDescr)
+        await self.Exec(Query)
+
     async def GetDeviceByUniq(self, aUniq: str, aAlias: str):
         Query = '''
             SELECT
                 id
-            FROM 
+            FROM
                 devices
             WHERE
                 (enable = 1) AND
@@ -71,7 +77,7 @@ class TDbApp(TDb):
             ORDER BY
                 Date
         '''.format(Id=aId, Begin=aBegin, End=aEnd)
-        return await TDbFetch(self).Load(Query)
+        return await TDbSql(self).Load(Query)
 
     async def GetDeviceCount(self, aBegin, aEnd):
         Query = '''
@@ -87,10 +93,4 @@ class TDbApp(TDb):
             ORDER BY
                 Device
         '''.format(Begin=aBegin, End=aEnd)
-        return await TDbFetch(self).Load(Query)
-
-    async def InsertLog(self, aType: int, aDescr: str):
-        Query = '''
-            INSERT INTO log(type_id, descr) VALUES({Type}, "{Descr}")
-        '''.format(Type=aType, Descr=aDescr)
-        await self.Exec(Query)
+        return await TDbSql(self).Load(Query)

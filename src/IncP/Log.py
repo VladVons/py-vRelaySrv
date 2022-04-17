@@ -26,7 +26,7 @@ class TEchoDb(TEcho):
         return aMsg[Commas[3]+1 :]
 
     async def _Write(self, aMsg: str):
-        await self.Db.InsertLog(1, self.TrimMsg(aMsg))
+        await self.Db.AddLog(1, self.TrimMsg(aMsg))
 
     def Write(self, aMsg: str):
         asyncio.create_task(self._Write(aMsg))

@@ -4,6 +4,7 @@
 
 CREATE TABLE IF NOT EXISTS site(
     id                  SERIAL PRIMARY KEY,
+    create_date         TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_days         INTEGER DEFAULT 7,
     update_date         TIMESTAMP DEFAULT "2000-12-31",
     url                 VARCHAR(64) UNIQUE NOT NULL,
@@ -13,7 +14,7 @@ CREATE TABLE IF NOT EXISTS site(
     sleep               FLOAT DEFAULT 3,
     sitemap             BOOLEAN DEFAULT FALSE,
     hours               VARCHAR(64),
-    enabled             BOOLEAN DEFAULT TRUE
+    enabled             BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE IF NOT EXISTS url(
