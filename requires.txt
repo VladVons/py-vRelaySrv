@@ -14,6 +14,7 @@ aiohttp_jinja2
 jinja2
 gmqtt
 lxml
+websockets
 
 #fake_useragent
 

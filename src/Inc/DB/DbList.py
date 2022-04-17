@@ -198,14 +198,18 @@ class TDbList():
             aFields = self.Fields.keys()
 
         DbFields = TDbFields()
-        for Field in aFields:
-            F = self.Fields[Field]
-            DbFields.Add(Field, F[1], F[2])
+        for Name in aFields:
+            F = self.Fields[Name]
+            DbFields.Add(Name, F[1], F[2])
 
         Res = TDbList()
         Res.Fields = DbFields
         Res.Data = aData
         return Res
+
+    def _RecInit(self):
+        if (not self.IsEmpty()):
+            self.Rec.SetData(self.Data[self._RecNo])
 
     def Init(self, aFields: list, aData: list = None):
         self.Fields = TDbFields()
@@ -217,10 +221,6 @@ class TDbList():
         self.Fields.Add(*aField)
         self.AddList(aField[0], aData)
 
-    def _RecInit(self):
-        if (not self.IsEmpty()):
-            self.Rec.SetData(self.Data[self._RecNo])
-
     def GetSize(self) -> int:
         return len(self.Data)
 
@@ -230,10 +230,6 @@ class TDbList():
     def Empty(self):
         self.Data = []
         self.RecGo(0)
-
-    def GetInsertQuery(self) -> str:
-        for Rec in self:
-            pass
 
     def DataExport(self) -> dict:
         return {'Data': self.Data, 'Head': self.Fields.Export(), 'Tag': self.Tag}
@@ -343,11 +339,9 @@ class TDbList():
         with open(aFile, 'r') as F:
             Data = json.load(F)
             self.DataImport(Data)
-
 '''
 if (__name__ == '__main__'):
     Db1 = TDbList( [('User', str), ('Age', int), ('Male', bool, True)] )
     Data = [['User2', 22, True], ['User1', 11, False], ['User3', 33, True], ['User4', 44, True]]
     Db1.SetData(Data)
-    Db1.GetQueryInsert('site')
 '''
