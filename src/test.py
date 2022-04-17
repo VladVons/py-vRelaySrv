@@ -53,9 +53,17 @@ def Main1():
 #Main1()
 
 
-q1 = [1,2,3,4,12]
-q2 = [9,3,4,5,6,7,8]
-q3 = set(q2) - set(q1)
-q4 = set(q1) - set(q2)
-print(q3, q4)
+import asyncio
+import websockets
+ 
+async def handler(websocket, path):
+    print('hello')
+    data = await websocket.recv()
+    reply = f"Data recieved as:  {data}!"
+    await websocket.send(reply)
 
+start_server = websockets.serve(handler, "localhost", 8000)
+#asyncio.run(start_server)
+
+asyncio.get_event_loop().run_until_complete(start_server)
+asyncio.get_event_loop().run_forever()

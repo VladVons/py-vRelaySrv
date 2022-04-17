@@ -13,12 +13,15 @@ class TWebSock():
     def __init__(self, aConf: dict):
         self.Conf = aConf
 
-    async def Handler(self, websocket, path):
-        data = await websocket.recv()
-        reply = f"Data recieved as:  {data}!"
-        await websocket.send(reply)
+    async def Handler(self, aWebSocket, aPath):
+        Data = await aWebSocket.recv()
+        Reply = f'Path: {aPath}, Data: {Data}'
+        print(Reply)
+        await aWebSocket.send(Reply)
+        pass
 
-    async def Run(self, aSleep: int = 30):
+    async def Run(self):
+        await websockets.serve(self.Handler, 'localhost', 8082)
+
         while True:
-            await websockets.serve(self.Handler, "localhost", 8082)
-            await asyncio.sleep(aSleep)
+            await asyncio.sleep(60)

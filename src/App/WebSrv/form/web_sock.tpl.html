@@ -1,0 +1,25 @@
+{% extends "Layout.tpl.html" %}
+
+{% block head %}
+<script>
+    const socket = new WebSocket('ws://localhost:8082/test');
+
+    socket.addEventListener('open', function (event) {
+        console.log('open');
+        socket.send('Connection Established');
+    });
+
+    socket.addEventListener('message', function (event) {
+        console.log('message', event.data);
+    });
+
+    const contactServer = () => {
+        console.log('click');
+        socket.send("Initialize");
+    }
+</script>
+{% endblock %}
+
+{% block content %}
+    <button onclick="contactServer">Click</button>
+{% endblock %}

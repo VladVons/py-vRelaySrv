@@ -65,14 +65,18 @@ class TWebSrv():
             return True
 
     async def _LoadForm(self, aName: str, aRequest) -> web.Response:
-        Form = '%s/%s/%s' % (self.DirRoot, self.DirForm, aName)
-        if (not os.path.isfile(Form + self.TplExt)):
+        FormDir = '%s/%s' % (self.DirRoot, self.DirForm)
+        if (not os.path.isfile('%s/%s%s' % (FormDir, aName, self.TplExt))):
             aName = 'not_found'
-            Form = '%s/%s/%s' % (self.DirRoot, self.DirForm, aName)
 
-        Class = 'TForm'
-        Mod = __import__(Form.replace('/', '.'), None, None, [Class])
-        TClass = getattr(Mod, Class)
+        for Module, Class in [(aName, 'TForm'), ('FForm', 'TFormBase')]:
+            try:
+                Path = FormDir + '/' + Module
+                Mod = __import__(Path.replace('/', '.'), None, None, [Class])
+                TClass = getattr(Mod, Class)
+                break
+            except ModuleNotFoundError: pass
+
         Obj = TClass(aRequest, aName + self.TplExt)
         return await Obj.Render()
 
