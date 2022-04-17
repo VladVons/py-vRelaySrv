@@ -18,6 +18,12 @@
             {}
         );
     };
+
+    function BtnGo_OnClick() {
+        Url = document.getElementById("Url").value;
+        //window.location.href = Url;
+        window.open(Url, '_blank').focus();
+    }
 </script>
 {% endblock %}
 
@@ -30,8 +36,9 @@
         <tr>
             <td>Url</td>
             <td>
-                <input type="text" name="Url" id="Url" placeholder="url" style="width:95%" required value="{{ Form.Url }}">
-                <button id="BtnGet" style="width:4%" onclick="BtnGet_OnClick()">get</button>
+                <input type="text" name="Url" id="Url" placeholder="url" style="width:90%" required value="{{ Form.Url }}">
+                <button style="width:4%" onclick="BtnGet_OnClick()">get</button>
+                <button style="width:4%" onclick="BtnGo_OnClick()">go</button>
             </td>
         </tr>
         <tr>

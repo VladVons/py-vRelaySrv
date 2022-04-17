@@ -1,3 +1,10 @@
+/*
+opyright:    Vladimir Vons, UA
+Author:      Vladimir Vons <VladVons@gmail.com>
+Created:     2022.04.10
+*/
+
+
 function HttpRequest(aUrl, aFunc, aPostJson = null) {
     console.log(aUrl, aPostJson);
 
