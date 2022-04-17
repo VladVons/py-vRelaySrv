@@ -36,22 +36,22 @@
         <tr>
             <td>Url</td>
             <td>
-                <input type="text" name="Url" id="Url" placeholder="url" style="width:90%" required value="{{ Form.Url }}">
+                <input type="text" name="Url" id="Url" placeholder="url" style="width:90%" required value="{{ Data.Url }}">
                 <button style="width:4%" onclick="BtnGet_OnClick()">get</button>
                 <button style="width:4%" onclick="BtnGo_OnClick()">go</button>
             </td>
         </tr>
         <tr>
             <td>Path</td>
-            <td><input type="text" name="Path" placeholder="path script" style="width:100%" value="{{ Form.Path }}"></td>
+            <td><input type="text" name="Path" placeholder="path script" style="width:100%" value="{{ Data.Path }}"></td>
         </tr>
         <tr>
             <td>Find regEx</td>
-            <td><input type="text" name="Find" id="Find" placeholder="text" style="width:100%" required value="{{ Form.Find }}"></td>
+            <td><input type="text" name="Find" id="Find" placeholder="text" style="width:100%" required value="{{ Data.Find }}"></td>
         </tr>
         <tr>
             <td>Output</td>
-            <td><textarea readonly name="Output" rows="30">{{ Form.Output }}</textarea> </td>
+            <td><textarea readonly name="Output" rows="30">{{ Data.Output }}</textarea> </td>
         <tr>
         <tr>
             <td colspan="2" style="text-align:center"><input type="submit" name="BtnOk" value="OK" class="btn"></td>

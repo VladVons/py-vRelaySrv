@@ -27,4 +27,4 @@ class TFormBase():
         return bool(Post)
 
     def _Render(self):
-        return aiohttp_jinja2.render_template(self.Tpl, self.Request, {'Form': self.Data})
+        return aiohttp_jinja2.render_template(self.Tpl, self.Request, {'Data': self.Data, 'Form': self})

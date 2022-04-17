@@ -18,15 +18,15 @@
     <table width="100%">
         <tr>
             <td>url</td>
-            <td><input type="text" name="Url" placeholder="url" style="width:100%" required value="{{ Form.Url }}"></td>
+            <td><input type="text" name="Url" placeholder="url" style="width:100%" required value="{{ Data.Url }}"></td>
         </tr>
         <tr>
             <td>Script</td>
-            <td><textarea name="Script" class="lined" rows="30" required>{{ Form.Script }}</textarea></td>
+            <td><textarea name="Script" class="lined" rows="30" required>{{ Data.Script }}</textarea></td>
         </tr>
         <tr>
             <td>Output</td>
-            <td><textarea readonly name="Output" rows="10">{{ Form.Output }}</textarea></td>
+            <td><textarea readonly name="Output" rows="10">{{ Data.Output }}</textarea></td>
         <tr>
             <td colspan="2" style="text-align:center"><input type="submit" name="btn" value="OK" class="btn"></td>
         </tr>

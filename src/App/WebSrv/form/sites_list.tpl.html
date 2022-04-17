@@ -36,7 +36,7 @@
                         <th style="width: 70%">Url</th>
                         <th>Scheme</th>
                     </tr>
-                    {% for Rec in Form.Sites %}
+                    {% for Rec in Data.Sites %}
                     <tr>
                         <td>{{loop.index}}</td>
                         <td><a href="{{ Rec.GetField('site.url') }}">{{ Rec.GetField('site.url') }}</a></td>
@@ -51,7 +51,7 @@
                 </div>
             </td>
             <td>
-                <textarea readonly name="Script" id="Script" rows="40">{{ Form.Title }}</textarea>
+                <textarea readonly name="Script" id="Script" rows="40">{{ Data.Script }}</textarea>
             </td>
         </tr>
     </table>
