@@ -9,7 +9,7 @@ Description:
 import json
 #
 from .FForm import TFormBase
-from IncP.Download import TDownload
+from IncP.Download import TDownload, CheckHost
 from Inc.DB.DbList import TDbList
 from IncP.DB.Db import TDbSql
 from ..Api import Api
@@ -25,7 +25,7 @@ class TForm(TFormBase):
                 Lines = self.Data.Sites.splitlines()
                 Lines = [x.strip() for x in Lines if (x)]
 
-                Data = await Api._Send('get_sites', {'limit': len(Lines)})
+                Data = await Api._Send('get_sites')
                 Data = Data.get('Data', {}).get('Data')
                 if (Data):
                     Dbl = TDbList().DataImport(Data)
@@ -36,9 +36,10 @@ class TForm(TFormBase):
                     Output += list(set(Lines) - Diff[1])
                     Output.append('')
 
-                    Download = TDownload()
-                    Data = await Download.Gets(Diff[1])
-                    UrlOk = [x.get('Url') for x in Data if (x.get('Status') == 200)]
+                    #Data = await TDownload().Gets(Diff[1])
+                    #UrlOk = [x.get('Url') for x in Data if (x.get('Status') == 200)]
+                    UrlOk = [x for x in Diff[1] if CheckHost(x)]
+
                     Data = await Api._Send('set_sites')
                     Output.append('New:')
                     Output += UrlOk

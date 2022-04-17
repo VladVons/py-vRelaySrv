@@ -73,7 +73,11 @@ class TDbApp(TDbPg):
             '''
         return await TDbSql(self).Query(Query)
 
-    async def GetSites(self, aLimit: int = 10) -> TDbSql:
+    async def GetSites(self, aLimit: int = -1) -> TDbSql:
+        Limit = ''
+        if (aLimit > 0):
+            Limit = 'limit %s' % aLimit
+
         Query = f'''
            Select
                 site.id,
@@ -84,8 +88,7 @@ class TDbApp(TDbPg):
                 site
             order by
                 site.url
-            limit
-                {aLimit}
+            {Limit}
             '''
         return await TDbSql(self).Query(Query)
 

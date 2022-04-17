@@ -21,7 +21,6 @@ import os
 import re
 import gzip
 import asyncio
-import aiohttp
 import random
 from urllib.parse import urlparse
 from urllib.robotparser import RobotFileParser

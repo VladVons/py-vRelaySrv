@@ -9,6 +9,8 @@ import time
 import random
 import asyncio
 import aiohttp
+import socket
+from urllib.parse import urlparse
 from aiohttp_socks import ProxyConnector
 #
 from IncP.Log import Log
@@ -16,6 +18,11 @@ from IncP.Log import Log
 #from fake_useragent import UserAgent
 #self.ua = UserAgent()
 #ua.random
+
+
+def CheckHost(aUrl: str) -> bool:
+    Host = urlparse(aUrl).hostname
+    return socket.gethostbyname(Host)
 
 
 class THeaders():

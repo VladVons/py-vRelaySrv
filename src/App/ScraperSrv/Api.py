@@ -134,7 +134,7 @@ class TApi():
         return Dbl.Rec.GetAsDict()
 
     async def path_get_sites(self, aData: dict) -> dict:
-        Dbl = await self.Db.GetSites(aData.get('limit', 10))
+        Dbl = await self.Db.GetSites()
         return Dbl.DataExport()
 
     async def path_add_sites(self, aData: dict) -> dict:
