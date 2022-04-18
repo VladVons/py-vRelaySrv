@@ -13,7 +13,7 @@ from IncP.Utils import TDictStr
 
 
 class TFormBase():
-    Title = 'Title'
+    Title = 'TFormBase'
 
     def __init__(self, aRequest, aTpl: str):
         self.Request = aRequest

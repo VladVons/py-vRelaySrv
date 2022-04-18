@@ -2,24 +2,47 @@
 
 {% block head %}
 <script>
-    const socket = new WebSocket('ws://localhost:8082/test');
+    class TMyClass {
+        constructor() {
+            this.Init()
+        }
 
-    socket.addEventListener('open', function (event) {
-        console.log('open');
-        socket.send('Connection Established');
-    });
+        Init() {
+            this.ws = new WebSocket("ws://localhost:8082/test");
 
-    socket.addEventListener('message', function (event) {
-        console.log('message', event.data);
-    });
+            this.ws.onopen = function() {
+                console.log('open');
+            };
 
-    const contactServer = () => {
-        console.log('click');
-        socket.send("Initialize");
+            this.ws.onmessage = function(aEvent) {
+                var received_msg = aEvent.data;
+                document.getElementById("showMes").value += received_msg + "\n";
+            };
+
+            this.ws.onclose = function() {
+                alert("close");
+            };
+        }
+
+        sendMeg() {
+            var Msg = document.getElementById("User").value + ":" + document.getElementById("Login").value;
+            document.getElementById("showMes").value += Msg + "\n\n";
+            this.ws.send(Msg);
+        }
     }
+
+    console.log('start script');
+    MyClass = new TMyClass()
 </script>
 {% endblock %}
 
 {% block content %}
-    <button onclick="contactServer">Click</button>
+<textarea rows="3" cols="30" id="showMes" style="width:300px;height:500px;"></textarea>
+<br/>
+<label>user</label>
+<input type="text" id="User"/>
+<br/>
+<label>passw</label>
+<input type="text" id="Login"/>
+<button onclick="MyClass.sendMeg();">send</button>
 {% endblock %}
