@@ -1,11 +1,12 @@
-"""
+'''
 Author:      Vladimir Vons <VladVons@gmail.com>
 Created:     2022.03.01
 License:     GNU, see LICENSE for more details
 Description:
 
 https://github.com/pythontoday/scrap_tutorial
-"""
+'''
+
 
 import re
 from Inc.Util.UObj import GetTree
