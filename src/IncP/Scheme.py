@@ -80,7 +80,7 @@ class TApi():
         return Res
 
 
-class TScheme():
+class TSoupScheme():
     @staticmethod
     def GetParents(aSoup, aSearch: str) -> list:
         ResAll = []
@@ -140,20 +140,20 @@ class TScheme():
                     ValG = aData.get(Key, {})
                     _Path = ValG.get('_Path')
                     if (any(_Path)):
-                        R = TScheme.GetItem(aSoup, _Path, Res, Path)
+                        R = TSoupScheme.GetItem(aSoup, _Path, Res, Path)
                         if (R):
-                            R = TScheme.Parse(R, ValG.get('_Items', {}), Path)
+                            R = TSoupScheme.Parse(R, ValG.get('_Items', {}), Path)
                             Res[0].update(R[0])
                             Res[1].append(R[1])
                             Res[2].append(R[2])
                 else:
                     KeyPure = XlatReplace(Key, _XlatKey)
                     Res[1].append(KeyPure)
-                    R = TScheme.GetItem(aSoup, Val, Res, Path)
+                    R = TSoupScheme.GetItem(aSoup, Val, Res, Path)
                     if (R is not None):
                         Res[0][KeyPure] = R
         return Res
 
     @staticmethod
     def ParseKeys(aSoup, aData: dict) -> dict:
-        return {Key: TScheme.Parse(aSoup, Val) for Key, Val in aData.items() if (not Key.startswith('-'))}
+        return {Key: TSoupScheme.Parse(aSoup, Val) for Key, Val in aData.items() if (not Key.startswith('-'))}

@@ -11,7 +11,7 @@ from bs4 import BeautifulSoup
 #
 from .FForm import TFormBase
 from IncP.Download import TDownload
-from IncP.Scheme import TScheme
+from IncP.Scheme import TSoupScheme
 from IncP.Log import Log
 
 
@@ -34,10 +34,10 @@ class TForm(TFormBase):
                         if (self.Data.Path):
                             Path = '[%s]' % self.Data.Path
                             Path = json.loads(Path)
-                            Soup = TScheme.GetItem(Soup, [Path], ({}, [], []))
+                            Soup = TSoupScheme.GetItem(Soup, [Path], ({}, [], []))
 
                         if (Soup):
-                            x11 = TScheme.GetParents(Soup, self.Data.Find)
+                            x11 = TSoupScheme.GetParents(Soup, self.Data.Find)
                             for x1 in x11:
                                 for x in reversed(x1):
                                     self.Data.Output += json.dumps(x, ensure_ascii=False) + '\n'

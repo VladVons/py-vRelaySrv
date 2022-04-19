@@ -11,7 +11,7 @@ https://ipinfo.io/json'
 
 https://gist.github.com/DusanMadar/8d11026b7ce0bce6a67f7dd87b999f6b
 torify curl https://brain.com.ua
-torify wget --user-agent=mozilla --output-document=brain-proxy.html https://brain.com.ua 
+torify wget --user-agent=mozilla --output-document=brain-proxy.html https://brain.com.ua
 
 UrlChekIP = 'http://icanhazip.com'
 '''
@@ -28,7 +28,7 @@ from bs4 import BeautifulSoup
 #
 from IncP.Log import Log
 from IncP.Download import TDownload
-from IncP.Scheme import TScheme
+from IncP.Scheme import TSoupScheme
 from Inc.DB.DbList import TDbList
 from .Api import Api
 
@@ -175,7 +175,7 @@ class TWebScraperFull(TWebScraper):
             aStatus, len(self.Url), self.TotalUrl, self.TotalData / 1000000, aUrl)
         Log.Print(1, 'i', Msg)
 
-        Res = TScheme.Parse(aSoup, self.Scheme)
+        Res = TSoupScheme.Parse(aSoup, self.Scheme)
         if (Res):
             self.UrlScheme += 1
             #print('---x1', Res)
@@ -218,7 +218,7 @@ class TWebScraperSitemap(TWebScraper):
 
     async def _DoWorkerUrl(self, aUrl: str, aData: str, aStatus: int):
         Soup = BeautifulSoup(aData, 'lxml')
-        Data = TScheme.ParseKeys(Soup, self.Scheme)
+        Data = TSoupScheme.ParseKeys(Soup, self.Scheme)
 
         Info = Data.get('Product')
         if (Info):

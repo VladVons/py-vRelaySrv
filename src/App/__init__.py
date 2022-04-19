@@ -1,9 +1,6 @@
+import os
 from Inc.Conf import TConf
 
 ConfApp = TConf('Conf/App.py')
 ConfApp.Load()
-
-
-__all__ = (
-    'ConfApp'
-)
+ConfApp.Def['Env_EmailPassw'] = os.getenv('Env_EmailPassw')

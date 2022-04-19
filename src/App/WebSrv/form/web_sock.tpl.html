@@ -8,7 +8,7 @@
         }
 
         Init() {
-            this.ws = new WebSocket("ws://localhost:8082/test");
+            this.ws = new WebSocket('ws://localhost:8082/test');
 
             this.ws.onopen = function() {
                 console.log('open');
@@ -16,17 +16,17 @@
 
             this.ws.onmessage = function(aEvent) {
                 var received_msg = aEvent.data;
-                document.getElementById("showMes").value += received_msg + "\n";
+                document.getElementById('showMes').value += received_msg + '\n';
             };
 
             this.ws.onclose = function() {
-                alert("close");
+                alert('close');
             };
         }
 
         sendMeg() {
-            var Msg = document.getElementById("User").value + ":" + document.getElementById("Login").value;
-            document.getElementById("showMes").value += Msg + "\n\n";
+            var Msg = document.getElementById('User').value + ':' + document.getElementById('Login').value;
+            document.getElementById('showMes').value += Msg + '\n\n';
             this.ws.send(Msg);
         }
     }
@@ -39,10 +39,10 @@
 {% block content %}
 <textarea rows="3" cols="30" id="showMes" style="width:300px;height:500px;"></textarea>
 <br/>
-<label>user</label>
+<label>User</label>
 <input type="text" id="User"/>
 <br/>
-<label>passw</label>
+<label>Passw</label>
 <input type="text" id="Login"/>
 <button onclick="MyClass.sendMeg();">send</button>
 {% endblock %}

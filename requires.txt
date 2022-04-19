@@ -5,7 +5,11 @@
 # apt install python3-
 aiohttp
 aiopg
+
+# --- html parser
 bs4
+lxml
+
 
 #
 asyncio
@@ -13,10 +17,18 @@ aiohttp-socks
 aiohttp_jinja2
 jinja2
 gmqtt
-lxml
 websockets
 
+#--- random user agent 
 #fake_useragent
 
+#--- web browser emulator
+#selenium
+#webdriver_manager
+
+#--- google map tools 
+#folium
+
+#--- JavaScript emulator
 #js2py
 #apt-get install nodejs

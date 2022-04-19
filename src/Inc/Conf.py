@@ -29,7 +29,7 @@ class TConfD(dict):
         super().__init__()
 
         self.File = aFile
-        self.Def = None
+        self.Def = {}
 
     def __getattr__(self, aName: str):
         return self.Get(aName)
@@ -42,10 +42,7 @@ class TConfD(dict):
                 self._Load(File)
 
     def Get(self, aName: str):
-        Res = self.get(aName)
-        if (Res is None) and (self.Def):
-            Res = self.Def.Get(aName)
-        return Res
+        return self.get(aName, self.Def.get(aName))
 
 class TConf(TConfD):
     def _Load(self, aFile: str):

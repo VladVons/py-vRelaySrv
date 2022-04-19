@@ -231,6 +231,9 @@ class TDbList():
         self.Data = []
         self.RecGo(0)
 
+    def DataExportAsDict(self) -> dict:
+        return [Rec.GetAsDict() for Rec in self]
+
     def DataExport(self) -> dict:
         return {'Data': self.Data, 'Head': self.Fields.Export(), 'Tag': self.Tag}
 
@@ -339,6 +342,8 @@ class TDbList():
         with open(aFile, 'r') as F:
             Data = json.load(F)
             self.DataImport(Data)
+
+
 '''
 if (__name__ == '__main__'):
     Db1 = TDbList( [('User', str), ('Age', int), ('Male', bool, True)] )

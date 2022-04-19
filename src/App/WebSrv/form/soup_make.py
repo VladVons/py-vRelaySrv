@@ -11,7 +11,7 @@ from bs4 import BeautifulSoup
 #
 from .FForm import TFormBase
 from IncP.Download import TDownload
-from IncP.Scheme import TScheme
+from IncP.Scheme import TSoupScheme
 from IncP.Log import Log
 from IncP.Utils import TJsonEncoder, FormatJsonStr
 
@@ -95,7 +95,7 @@ class TForm(TFormBase):
                     if (Status == 200):
                         self.Data.Script = ScriptStr
                         Soup = BeautifulSoup(Data, 'lxml')
-                        Scheme = TScheme.ParseKeys(Soup, Script)
+                        Scheme = TSoupScheme.ParseKeys(Soup, Script)
                         self.Data.Output = json.dumps(Scheme, indent=2, sort_keys=True, ensure_ascii=False, cls=TJsonEncoder)
                     else:
                         self.Data.Output = 'Error loading %s' % (self.Data.Url)
