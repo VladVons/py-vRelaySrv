@@ -53,10 +53,7 @@ if __name__ == '__main__':
   #color = fg('blue')
 
   import Inc.Colored as Cl
-  #Cl.Print('End', Cl.cRed)
-  #Colored = Cl.Formats([('Hello ', Cl.cRed), ('World !', Cl.cYellow)])
-  #print(Colored)
-  print(Cl.fg(Cl.cRed) + 'Hello')
+  print(Cl.fg(Cl.cRed) + 'Hello ' + Cl.fg(Cl.cGreen) + 'World !')
   print(Cl.Format('World', Cl.cBlue))
   Cl.Print('World', Cl.cYellow)
 

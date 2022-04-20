@@ -5,10 +5,9 @@ License:     GNU, see LICENSE for more details
 Description:
 
 import Inc.Colored as Cl
-#
-Cl.Print('End', Cl.cRed)
-Colored = Cl.Formats([('Hello ', Cl.cRed), ('World !', Cl.cYellow)])
-print(Colored)
+Cl.Print('Hello World colored example', Cl.cYellow)
+print(Cl.Format('World', Cl.cBlue))
+print(Cl.fg(Cl.cRed) + 'Hello ' + Cl.fg(Cl.cGreen) + 'World !')
 '''
 
 
@@ -25,10 +24,10 @@ cWhite = (255, 255, 255)
 cDef = cSilver
 #
 
-def fg(aColor):
+def fg(aColor: tuple) -> str:
     return '\033[38;2;%sm' % (';'.join(str(x) for x in aColor))
 
-def Format(aText: str, aColor: tuple = cWhite):
+def Format(aText: str, aColor: tuple = cWhite) -> str:
     return fg(aColor) + aText
 
 def Print(aText: str, aColor: tuple = cWhite):
