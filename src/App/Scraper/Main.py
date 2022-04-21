@@ -13,6 +13,7 @@ from collections import deque
 #
 from IncP.Log import Log
 from .WebScraper import TWebScraperFull, TWebScraperUpdate, TWebScraperSitemap
+from .Selenium import TStarter
 from .Api import Api
 
 
@@ -30,8 +31,8 @@ class TMain():
             #Log.Print(1, 'i', '_Worker(). Ready for task. Id %d, wait %d sec' % (aTaskId, Wait))
             await asyncio.sleep(Wait)
 
-            ApiData, Code = await Api.GetTask()
-            Data = ApiData.get('Data')
+            DataA = await Api.GetTask()
+            Data = DataA.get('Data', {}).get('Data')
             if (Data):
                 Type = Data.get('Type')
                 if (Type == 'Full'):
@@ -40,8 +41,10 @@ class TMain():
                     else:
                         Scraper = TWebScraperFull(self, Data['site.scheme'], Data['site.url'], Data['site.sleep'])
                 elif (Type == 'Update'):
-                    #Scraper = TWebScraperUpdate(self, Data['site.scheme'], Data['Urls'], Data['site.sleep'])
-                    pass
+                    Scraper = TWebScraperUpdate(self, Data['site.scheme'], Data['Urls'], Data['site.sleep'])
+                elif (Type == 'UpdateSelenium'):
+                    await TStarter().ThreadCreate(Data['Urls'])
+                    continue
                 else:
                     Log.Print(1, 'e', '_Worker(). Unknown type: %d' % (Type))
                     return
@@ -62,8 +65,8 @@ class TMain():
 
         while (True):
             try:
-                Data, Code = await Api.GetConfig()
-                Data = Data.get('Data')
+                DataA = await Api.GetConfig()
+                Data = DataA.get('Data', {}).get('Data')
                 if (Data):
                     MaxWorkers = Data.get('MaxWorkers', self.Conf.get('MaxWorkers', 5))
                     await self._CreateTasks(MaxWorkers)

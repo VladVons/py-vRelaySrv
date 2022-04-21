@@ -16,6 +16,7 @@ Starter.ThreadCreate(Urls, 5)
 '''
 
 
+import asyncio
 import time
 import multiprocessing
 
@@ -29,7 +30,7 @@ class TSelenium():
 
         Opt = Options()
         #Opt.add_argument('start-maximized')
-        Opt.add_argument('--headless')
+        #Opt.add_argument('--headless')
         self.Driver = webdriver.Firefox(options=Opt)
 
     def Close(self):
@@ -37,7 +38,7 @@ class TSelenium():
         self.Driver.quit()
 
     def Run(self, aQueue):
-        while (not aQueue.empty()):
+        while (self.Parent.IsRun.value) and (not aQueue.empty()):
             Url = aQueue.get()
             print('Run', Url)
             self.Driver.get(Url)
@@ -55,7 +56,10 @@ class TStarter():
             Obj.Close()
         #print('ThreadRun end')
 
-    def ThreadCreate(self, aUrls: list, aCnt: int = 1):
+    async def ThreadCreate(self, aUrls: list, aCnt: int = 1):
+        self.IsRun = multiprocessing.Value('i')
+        self.IsRun.value = True
+
         Queue = multiprocessing.JoinableQueue()
         [Queue.put(x) for x in aUrls]
 
@@ -65,6 +69,12 @@ class TStarter():
             process.start()
             time.sleep(0.5)
 
-        Queue.join()
-        time.sleep(3)
-        #print('ThreadCreate end')
+        #--- sync wait
+        #Queue.join()
+        #time.sleep(3)
+
+        #--- async wait
+        while (not Queue.empty()):
+            await asyncio.sleep(10)
+
+        print('ThreadCreate end')

@@ -15,8 +15,8 @@ class TForm(TFormBase):
     Title = 'Site list'
 
     async def Render(self):
-        Data = await Api._Send('get_sites')
-        Data = Data.get('Data', {}).get('Data')
+        DataA = await Api._Send('get_sites')
+        Data = DataA.get('Data', {}).get('Data')
         if (Data):
             self.Data.Sites = TDbList().DataImport(Data)
         return self._Render()

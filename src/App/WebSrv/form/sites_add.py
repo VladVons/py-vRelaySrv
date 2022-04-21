@@ -25,8 +25,8 @@ class TForm(TFormBase):
                 Lines = self.Data.Sites.splitlines()
                 Lines = [x.strip() for x in Lines if (x)]
 
-                Data = await Api._Send('get_sites')
-                Data = Data.get('Data', {}).get('Data')
+                DataA = await Api._Send('get_sites')
+                Data = DataA.get('Data', {}).get('Data')
                 if (Data):
                     Dbl = TDbList().DataImport(Data)
                     Diff = Dbl.GetDiff('site.url', Lines)
