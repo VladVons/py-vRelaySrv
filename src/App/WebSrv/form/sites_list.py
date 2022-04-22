@@ -18,5 +18,5 @@ class TForm(TFormBase):
         DataA = await Api._Send('get_sites')
         Data = DataA.get('Data', {}).get('Data')
         if (Data):
-            self.Data.Sites = TDbList().DataImport(Data)
+            self.Data.Sites = TDbList().Import(Data)
         return self._Render()

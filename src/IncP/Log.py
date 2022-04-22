@@ -19,18 +19,15 @@ class TEchoDb(TEcho):
     def __init__(self, aDb):
         super().__init__(aType = 'ex')
         self.Db = aDb
-
-    @staticmethod
-    def TrimMsg(aMsg: str) -> str:
-        aMsg = aMsg.replace("'", '')
-        Commas = [F.start() for F in re.finditer(',', aMsg)]
-        return aMsg[Commas[3]+1 :]
+        self.Fmt = ['aL', 'aT', 'aM', 'aD', 'aE']
 
     async def _Write(self, aMsg: str):
         await self.Db.AddLog(1, self.TrimMsg(aMsg))
 
-    def Write(self, aMsg: str):
-        asyncio.create_task(self._Write(aMsg))
+    def Write(self, aArgs: dict):
+        if (aArgs.get('aL') <= self.Level) and (aArgs.get('aT') in self.Type):
+            Msg = self._Format(aArgs)
+            asyncio.create_task(self._Write(Msg))
 
 class TLogEx(TLog):
     @staticmethod

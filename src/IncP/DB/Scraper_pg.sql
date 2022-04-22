@@ -6,28 +6,40 @@ CREATE TABLE IF NOT EXISTS site(
     id                  SERIAL PRIMARY KEY,
     create_date         TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_days         INTEGER DEFAULT 7,
-    update_date         TIMESTAMP DEFAULT "2000-12-31",
-    url                 VARCHAR(64) UNIQUE NOT NULL,
+    update_date         TIMESTAMP,
+    url                 VARCHAR(64) NOT NULL,
     scheme              TEXT NOT NULL,
     scheme_date         DATE,
     robots              TEXT,
     sleep               FLOAT DEFAULT 3,
     sitemap             BOOLEAN DEFAULT FALSE,
     hours               VARCHAR(64),
-    enabled             BOOLEAN DEFAULT FALSE
+    enabled             BOOLEAN DEFAULT FALSE,
+    UNIQUE (url)
+);
+
+CREATE TABLE IF NOT EXISTS site_ext(
+    id                  SERIAL PRIMARY KEY,
+    site_id             INTEGER,
+    name                VARCHAR(24) NOT NULL,
+    data                TEXT,
+    enabled             BOOLEAN DEFAULT TRUE,
+    FOREIGN KEY (site_id) REFERENCES site(id),
+    UNIQUE (site_id, name)
 );
 
 CREATE TABLE IF NOT EXISTS url(
     id                  SERIAL PRIMARY KEY,
     create_date         TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    update_date         TIMESTAMP DEFAULT "2000-12-31",
+    update_date         TIMESTAMP,
     site_id             INTEGER,
-    url                 VARCHAR(256) UNIQUE NOT NULL,
+    url                 VARCHAR(256) NOT NULL,
     data_size           INTEGER DEFAULT 0,
     url_count           SMALLINT DEFAULT 0,
     status              SMALLINT,
     product_id          INTEGER,
-    FOREIGN KEY (site_id) REFERENCES site(id)
+    FOREIGN KEY (site_id) REFERENCES site(id),
+    UNIQUE (url)
 );
 
 CREATE TABLE IF NOT EXISTS product(
@@ -45,10 +57,11 @@ CREATE TABLE IF NOT EXISTS product(
 CREATE TABLE IF NOT EXISTS auth(
     id                  SERIAL PRIMARY KEY,
     create_date         TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    login               VARCHAR(16) UNIQUE NOT NULL,
+    login               VARCHAR(16) NOT NULL,
     passw               VARCHAR(16),
     workers             SMALLINT DEFAULT 5,
-    enabled             BOOLEAN DEFAULT TRUE
+    enabled             BOOLEAN DEFAULT TRUE,
+    UNIQUE (login)
 );
 
 CREATE TABLE IF NOT EXISTS proxy(

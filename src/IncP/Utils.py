@@ -13,7 +13,7 @@ class TJsonEncoder(json.JSONEncoder):
     def default(self, aObj):
         Type = type(aObj).__name__
         if (Type == 'TDbList'):
-            Res = aObj.DataExport()
+            Res = aObj.Export()
         elif (Type == 'set'):
             Res = list(aObj)
         else:

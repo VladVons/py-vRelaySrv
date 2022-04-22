@@ -33,7 +33,7 @@ Description:
     print('Rec:', Db1.Rec)
     print('Rec.GetAsDict:', Db1.Rec.GetAsDict())
     print('Rec.GetAsTuple:', Db1.Rec.GetAsTuple())
-    print('Rec.GetList:', Db1.GetList('User', True))
+    print('Rec.GetList:', Db1.ExportList('User', True))
 
     Db1.Sort(['User', 'Age'], True)
     for Idx, Rec in enumerate(Db1):
@@ -219,7 +219,7 @@ class TDbList():
     def InitList(self, aField: tuple, aData: list):
         self.Fields = TDbFields()
         self.Fields.Add(*aField)
-        self.AddList(aField[0], aData)
+        self.ImportList(aField[0], aData)
 
     def GetSize(self) -> int:
         return len(self.Data)
@@ -231,28 +231,25 @@ class TDbList():
         self.Data = []
         self.RecGo(0)
 
-    def DataExportAsDict(self) -> dict:
+    def ExportPair(self, aFieldKey: str, aFieldVal: str) -> dict:
+        KeyNo = self.Fields.GetNo(aFieldKey)
+        ValNo = self.Fields.GetNo(aFieldVal)
+        return {x[KeyNo]: x[ValNo] for x in self.Data}
+
+    def ExportDict(self) -> list:
         return [Rec.GetAsDict() for Rec in self]
 
-    def DataExport(self) -> dict:
-        return {'Data': self.Data, 'Head': self.Fields.Export(), 'Tag': self.Tag}
-
-    def DataImport(self, aData: dict):
-        self.Tag = aData['Tag']
-        self.Data = aData['Data']
-        self.Fields = TDbFields()
-        self.Fields.Import(aData['Head'])
-        self.RecGo(0)
-        return self
-
-    def GetList(self, aField: str, aUniq = False) -> list:
+    def ExportList(self, aField: str, aUniq = False) -> list:
         FieldNo = self.Fields.GetNo(aField)
         Res = [D[FieldNo] for D in self.Data]
         if (aUniq):
             Res = list(set(Res))
         return Res
 
-    def AddList(self, aField: str, aData: list):
+    def Export(self) -> dict:
+        return {'Data': self.Data, 'Head': self.Fields.Export(), 'Tag': self.Tag}
+
+    def ImportList(self, aField: str, aData: list):
         Rec = TDbRec(self)
         Rec.Init()
         FieldNo = self.Fields.GetNo(aField)
@@ -260,6 +257,14 @@ class TDbList():
             Arr = Rec.copy()
             Arr[FieldNo] = Val
             self.Data.append(Arr)
+
+    def Import(self, aData: dict):
+        self.Tag = aData['Tag']
+        self.Data = aData['Data']
+        self.Fields = TDbFields()
+        self.Fields.Import(aData['Head'])
+        self.RecGo(0)
+        return self
 
     def SetData(self, aData: list):
         if (aData):
@@ -273,7 +278,7 @@ class TDbList():
             self.Data = []
 
     def GetDiff(self, aField: str, aList: list) -> tuple:
-        Set1 = set(self.GetList(aField))
+        Set1 = set(self.ExportList(aField))
         Set2 = set(aList)
         return (Set1 - Set2, Set2 - Set1)
 
@@ -335,13 +340,13 @@ class TDbList():
 
     def Save(self, aFile: str):
         with open(aFile, 'w') as F:
-            Data = json.dumps(self.DataExport())
+            Data = json.dumps(self.Export())
             F.write(Data)
 
     def Load(self, aFile: str):
         with open(aFile, 'r') as F:
             Data = json.load(F)
-            self.DataImport(Data)
+            self.Import(Data)
 
 
 '''

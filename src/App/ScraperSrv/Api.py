@@ -24,7 +24,7 @@ class TApiTask():
 
     async def Get(self, aData: dict) -> dict:
         async with self.Lock:
-            ExclId = self.Tasks.GetList('SiteId')
+            ExclId = self.Tasks.ExportList('SiteId')
 
             DblUpdFull = await self.Parent.Db.GetSitesForUpdateFull(aExclId=ExclId, aUpdDaysX=2)
             if (not DblUpdFull.IsEmpty()):
@@ -135,11 +135,11 @@ class TApi():
 
     async def path_get_sites(self, aData: dict) -> dict:
         Dbl = await self.Db.GetSites()
-        return Dbl.DataExport()
+        return Dbl.Export()
 
     async def path_add_sites(self, aData: dict) -> dict:
         Data = aData.get('dbl')
-        Dbl = TDbSql(self.Db).DataImport(Data)
+        Dbl = TDbSql(self.Db).Import(Data)
         await Dbl.Insert('site')
         return True
 

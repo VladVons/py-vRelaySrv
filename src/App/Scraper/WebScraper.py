@@ -56,7 +56,7 @@ class TSender():
 
     async def Flush(self):
         if (not self.Dbl.IsEmpty()):
-            Data = self.Dbl.DataExport()
+            Data = self.Dbl.Export()
             SrvRes = await Api.SendResult(Data)
             if (SrvRes):
                 self.Dbl.Empty()
@@ -212,7 +212,7 @@ class TWebScraperSitemap(TWebScraper):
     async def _DoWorkerStart(self):
         SiteMap = await self.LoadSiteMap(self.UrlRoot + '/sitemap.xml')
         if (SiteMap):
-            self.DblQueue.AddList('Url', SiteMap)
+            self.DblQueue.ImportList('Url', SiteMap)
         else:
             Log.Print(1, 'i', 'No sitemap %s' % (self.UrlRoot))
 

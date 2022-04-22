@@ -16,13 +16,24 @@ class TEcho():
     def __init__(self, aLevel: int = 1, aType: str = 'iexd'):
         self.Level = aLevel
         self.Type = aType
+        self.Fmt = ['d', 't', 'c', 'aL', 'aT', 'aM', 'aD', 'aE']
 
-    def Write(self, aMsg: str):
+    def _Format(self, aArgs: dict) -> str:
+        #Arr = [x + ':' +str(aArgs.get(x, '')) for x in self.Fmt]
+        Arr = [str(aArgs.get(x, '')) for x in self.Fmt]
+        return ', '.join(Arr)
+
+    def _Write(self, aMsg: str):
         raise NotImplementedError
+
+    def Write(self, aArgs: dict):
+        if (aArgs.get('aL') <= self.Level) and (aArgs.get('aT') in self.Type):
+            Msg = self._Format(aArgs)
+            self._Write(Msg)
 
 
 class TEchoConsole(TEcho):
-    def Write(self, aMsg: str):
+    def _Write(self, aMsg: str):
         print(aMsg)
 
 
@@ -31,7 +42,7 @@ class TEchoFile(TEcho):
         super().__init__()
         self.Name = aName
 
-    def Write(self, aMsg: str):
+    def _Write(self, aMsg: str):
         with open(self.Name, 'a+') as F:
             F.write(aMsg + '\n')
 
@@ -52,19 +63,17 @@ class TLog():
         if (not self.FindEcho(Name)):
             self.Echoes.append(aEcho)
 
-    def Print(self, aLevel: int, aType: str, aMsg: str, aList: list = [], aE: Exception = None) -> str:
+    def Print(self, aLevel: int, aType: str, aMsg: str, aData: list = [], aE: Exception = None) -> str:
         if (aE):
-            aList.append(aE.__class__.__name__)
+            aData.append(aE.__class__.__name__)
             EMsg = self._DoExcept(aE)
             if (EMsg):
-                aList.append(EMsg)
+                aData.append(EMsg)
 
         self.Cnt += 1
-        Res = '%s, %s, %03d, %d, %s, %s, %s' % (GetDate(), GetTime(), self.Cnt, aLevel, aType, aMsg, aList)
+        Args = {'aL': aLevel, 'aT': aType, 'aM': aMsg, 'aD': aData, 'aE': aE, 'c': self.Cnt, 'd': GetDate(), 't': GetTime()}
         for Echo in self.Echoes:
-            if (aLevel <= Echo.Level) and (aType in Echo.Type):
-                Echo.Write(Res)
-        return Res
+            Echo.Write(Args)
 
     def _DoExcept(self, aE):
         sys.print_exception(aE)

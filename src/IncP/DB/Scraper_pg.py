@@ -73,6 +73,19 @@ class TDbApp(TDbPg):
             '''
         return await TDbSql(self).Query(Query)
 
+    async def GetSiteExtById(self, aId: int) -> TDbSql:
+        Query = f'''
+            select 
+                name,
+                data
+            from 
+                site_ext
+            where 
+                (enabled) and
+                (site_id = {aId})
+            '''
+        return await TDbSql(self).Query(Query)
+
     async def GetSites(self, aLimit: int = -1) -> TDbSql:
         Limit = ''
         if (aLimit > 0):

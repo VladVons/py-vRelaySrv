@@ -28,7 +28,7 @@ class TForm(TFormBase):
                 DataA = await Api._Send('get_sites')
                 Data = DataA.get('Data', {}).get('Data')
                 if (Data):
-                    Dbl = TDbList().DataImport(Data)
+                    Dbl = TDbList().Import(Data)
                     Diff = Dbl.GetDiff('site.url', Lines)
 
                     Output = []
@@ -54,7 +54,7 @@ class TForm(TFormBase):
                     if (UrlOk):
                         Dbl = TDbSql(None)
                         Dbl.InitList(('url', str), UrlOk)
-                        await Api._Send('add_sites', {'dbl': Dbl.DataExport()})
+                        await Api._Send('add_sites', {'dbl': Dbl.Export()})
                 else:
                     self.Data.Output = Log.Print(1, 'e', 'Cant get data from server')
         return self._Render()
