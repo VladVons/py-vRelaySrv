@@ -22,7 +22,7 @@ class TEchoDb(TEcho):
         self.Fmt = ['aL', 'aT', 'aM', 'aD', 'aE']
 
     async def _Write(self, aMsg: str):
-        await self.Db.AddLog(1, self.TrimMsg(aMsg))
+        await self.Db.AddLog(1, aMsg)
 
     def Write(self, aArgs: dict):
         if (aArgs.get('aL') <= self.Level) and (aArgs.get('aT') in self.Type):

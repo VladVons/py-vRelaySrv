@@ -20,7 +20,12 @@ class TEcho():
 
     def _Format(self, aArgs: dict) -> str:
         #Arr = [x + ':' +str(aArgs.get(x, '')) for x in self.Fmt]
-        Arr = [str(aArgs.get(x, '')) for x in self.Fmt]
+        #Arr = [str(aArgs.get(x, '')) for x in self.Fmt]
+        Arr = []
+        for x in self.Fmt:
+            Val = aArgs.get(x)
+            if (Val):
+                Arr.append(str(Val))
         return ', '.join(Arr)
 
     def _Write(self, aMsg: str):

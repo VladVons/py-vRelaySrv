@@ -224,7 +224,7 @@ class TWebScraperSitemap(TWebScraper):
         if (Info):
             Value, Keys, Err = Info
             Dif = set(Keys) - set(Value.keys())
-            Log.Print(1, 'i', ' %s, %s' % (aUrl, Dif))
+            Log.Print(1, 'i', ' %s' % aUrl, Dif)
             if (not Err):
                 self.UrlScheme += 1
                 Price = Value['Price']
