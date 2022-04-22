@@ -48,7 +48,8 @@ class TDbApp(TDbPg):
     async def GetDbVersion(self) -> TDbSql:
         Query = f'''
             select
-                version() as version
+                version() as version,
+                date_trunc('second', current_timestamp - pg_postmaster_start_time()) as uptime
             '''
         return await TDbSql(self).Query(Query)
 

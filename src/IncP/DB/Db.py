@@ -33,6 +33,8 @@ class TDbSql(TDbList):
                     Columns = await self._Db.GetTableColumns(Arr[0])
                     for Column in Columns:
                         Res.append(Column[0])
+                # skip comma inside functions
+                #elif (not [x for x in '()' if (x in Name)]):
                 else:
                     Res.append(Name)
             return Res

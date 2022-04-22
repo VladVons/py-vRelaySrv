@@ -9,6 +9,7 @@ Description:
 import json
 import random
 
+
 class TJsonEncoder(json.JSONEncoder):
     def default(self, aObj):
         Type = type(aObj).__name__
@@ -23,7 +24,6 @@ class TJsonEncoder(json.JSONEncoder):
     @staticmethod
     def Dumps(aObj):
         return json.dumps(aObj, cls=TJsonEncoder)
-
 
 class TDictStr(dict):
     def __getattr__(self, aName: str) -> object:
@@ -50,5 +50,13 @@ def FormatJsonStr(aScript: str, aPad: int = 2, aChar: str = ' ') -> str:
 def GetLeadCharCnt(aValue: str, aChar: str) -> int:
     return len(aValue) - len(aValue.lstrip(aChar))
 
-def GetRandStr(aLen: int, aPattern = 'YourPattern') -> str:
+def GetRandStr(aLen: int) -> str:
+    def Range(aStart: int, aEnd: int) -> list:
+        return [chr(i) for i in range(aStart,  aEnd)]
+
+    Pattern = Range(48, 57) + Range(65, 90) + Range(97, 122)
+    Rand = random.sample(Pattern, aLen)
+    return ''.join(Rand)
+
+def GetRandStrPattern(aLen: int, aPattern = 'YourPattern') -> str:
     return ''.join((random.choice(aPattern)) for x in range(aLen))
