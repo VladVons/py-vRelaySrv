@@ -23,7 +23,7 @@ class TDbSql(TDbList):
         self._Db = aDb
 
     async def _GetSelectFields(self, aQuery: str) -> list:
-        Match = re.search('select(.*)from', aQuery, re.DOTALL | re.IGNORECASE)
+        Match = re.search('select(.*)(from|$)', aQuery, re.DOTALL | re.IGNORECASE)
         if (Match):
             Res = []
             for Item in  Match.group(1).split(','):

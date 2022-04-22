@@ -150,6 +150,10 @@ class TApi():
         self.Db = TDbApp(aAuth)
         await self.Db.Connect()
         # await self.Db.ExecFile('IncP/DB/Scraper_pg.sql')
+
+        Dbl = await self.Db.GetDbVersion()
+        Log.Print(1, 'i', Dbl.Rec.GetField('version'))
+
         Log.AddEcho(TEchoDb(self.Db))
 
     async def DbClose(self):

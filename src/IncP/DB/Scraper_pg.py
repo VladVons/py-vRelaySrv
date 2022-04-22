@@ -45,9 +45,16 @@ class TDbApp(TDbPg):
             ''' % (aId)
         await self.Exec(Query)
 
+    async def GetDbVersion(self) -> TDbSql:
+        Query = f'''
+            select
+                version() as version
+            '''
+        return await TDbSql(self).Query(Query)
+
     async def GetSchemeEmpty(self, aLimit: int = 10) -> TDbSql:
         Query = f'''
-           Select
+           select
                 site.id,
                 site.url,
                 site.scheme
@@ -62,7 +69,7 @@ class TDbApp(TDbPg):
 
     async def GetSiteById(self, aId: int) -> TDbSql:
         Query = f'''
-           Select
+           select
                 site.id,
                 site.url,
                 site.scheme
@@ -92,7 +99,7 @@ class TDbApp(TDbPg):
             Limit = 'limit %s' % aLimit
 
         Query = f'''
-           Select
+            select
                 site.id,
                 site.url,
                 site.scheme is not null as has_scheme,
@@ -113,7 +120,7 @@ class TDbApp(TDbPg):
             CondExcl = ''
 
         Query = f'''
-           Select
+            select
                 site.id,
                 site.url,
                 site.sleep,
@@ -147,7 +154,7 @@ class TDbApp(TDbPg):
             CondCount = '(count(*) > %d)' % CountMin
 
         Query = f'''
-           Select
+            select
                 site.id,
                 site.url,
                 site.sleep,
