@@ -63,7 +63,7 @@ class TLog():
         if (not self.FindEcho(Name)):
             self.Echoes.append(aEcho)
 
-    def Print(self, aLevel: int, aType: str, aMsg: str, aData: list = [], aE: Exception = None) -> str:
+    def Print(self, aLevel: int, aType: str, aMsg: str, aData: list = [], aE: Exception = None):
         if (aE):
             aData.append(aE.__class__.__name__)
             EMsg = self._DoExcept(aE)
