@@ -151,10 +151,13 @@ class TApi():
         await self.Db.Connect()
         # await self.Db.ExecFile('IncP/DB/Scraper_pg.sql')
 
-        #Dbl = await self.Db.GetDbVersion()
-        #Version = Dbl.Rec.GetField('version').split()[:2]
-        #UptimeDays = Dbl.Rec.GetField('uptime').days
-        #Log.Print(1, 'i', 'DB Ver: %s, Uptime: %sd' % (' '.join(Version), UptimeDays))
+        Dbl = await self.Db.GetDbVersion()
+        Rec = Dbl.Rec
+        Version = Rec.GetField('version').split()[:2]
+        Uptime = Rec.GetField('uptime')
+        Log.Print(1, 'i', 'Server: %s, Uptime: %sd%sh, DbName: %s, DbSize: %sM' %
+            (' '.join(Version), Uptime.days, int(Uptime.seconds/3600), Rec.GetField('name'), round(Rec.GetField('size') / 1000000, 2))
+        )
 
         Log.AddEcho(TEchoDb(self.Db))
 

@@ -26,13 +26,6 @@ class TDbApp(TDbPg):
             '''
         await self.Exec(Query)
 
-    async def AddSites(self, aUrls: list):
-        Query = f'''
-            INSERT INTO log(type_id, descr)
-            VALUES ({aType}, '{aDescr}')
-            '''
-        await self.Exec(Query)
-
     async def UpdateFreeTask(self, aId: int):
         Query = '''
             UPDATE
@@ -48,8 +41,10 @@ class TDbApp(TDbPg):
     async def GetDbVersion(self) -> TDbSql:
         Query = f'''
             select
+                current_database() as name,
                 version() as version,
-                date_trunc('second', current_timestamp - pg_postmaster_start_time()) as uptime
+                date_trunc('second', current_timestamp - pg_postmaster_start_time()) as uptime,
+                pg_database_size(current_database()) as size
             '''
         return await TDbSql(self).Query(Query)
 
@@ -83,12 +78,12 @@ class TDbApp(TDbPg):
 
     async def GetSiteExtById(self, aId: int) -> TDbSql:
         Query = f'''
-            select 
+            select
                 name,
                 data
-            from 
+            from
                 site_ext
-            where 
+            where
                 (enabled) and
                 (site_id = {aId})
             '''

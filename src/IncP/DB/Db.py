@@ -9,7 +9,6 @@ Based on aioodbc, aiomysql, aiopg
 
 import re
 import asyncio
-import json
 #import psycopg2.extras
 #
 from Inc.DB.DbList import TDbList, TDbFields
@@ -23,7 +22,13 @@ class TDbSql(TDbList):
         self._Db = aDb
 
     async def _GetSelectFields(self, aQuery: str) -> list:
-        Match = re.search('select(.*)(from|$)', aQuery, re.DOTALL | re.IGNORECASE)
+        # ToDo
+        if ('from' in aQuery.lower()):
+            Pattern = 'select(.*)from'
+        else:
+            Pattern = 'select(.*)'
+
+        Match = re.search(Pattern, aQuery, re.DOTALL | re.IGNORECASE)
         if (Match):
             Res = []
             for Item in  Match.group(1).split(','):
@@ -34,8 +39,7 @@ class TDbSql(TDbList):
                     for Column in Columns:
                         Res.append(Column[0])
                 # skip comma inside functions
-                #elif (not [x for x in '()' if (x in Name)]):
-                else:
+                elif (not [x for x in '()' if (x in Name)]):
                     Res.append(Name)
             return Res
 
@@ -74,6 +78,7 @@ class TDb():
     async def Exec(self, aSql: str):
         async with self.Pool.acquire() as Con:
             async with Con.cursor() as Cur:
+                # ToDo
                 #for Sql in filter(None, aSql.split(';')):
                 #    Sql = Sql.strip()
                 #    if (Sql):

@@ -67,6 +67,8 @@ import random
 import operator as op
 
 
+class TDbListException(Exception): ...
+
 class TDbFields(dict):
     def __init__(self, aFields: tuple = ()):
         super().__init__()
@@ -77,7 +79,7 @@ class TDbFields(dict):
     def Add(self, aName: str, aType: type = str, aDef = None):
         if (aDef):
             if (aType != type(aDef)):
-                raise AssertionError('types mismatch %s, %s' % (aType, aDef))
+                raise TDbListException('types mismatch %s, %s' % (aType, aDef))
         else:
             Def = {'str': '', 'int': 0, 'float': 0.0, 'bool': False, 'tuple': (), 'list': [], 'dict': {}, 'set': set()}
             aDef = Def.get(aType.__name__, object)
@@ -128,7 +130,7 @@ class TDbRec(list):
         Idx = self.Parent.Fields.GetNo(aName)
         if (self.Parent.Safe):
             if (type(aValue) != self.Parent.Fields[aName][1]):
-                raise AssertionError('types mismatch %s, %s' % (type(aValue), self.Parent.Fields[aName]))
+                raise TDbListException('types mismatch %s, %s' % (type(aValue), self.Parent.Fields[aName]))
         self[Idx] = aValue
 
     def SetData(self, aData: list):
@@ -136,7 +138,7 @@ class TDbRec(list):
             IdxOrd = self.Parent.Fields.IdxOrd
             for Idx, Field in enumerate(aData):
                 if (type(Field) != IdxOrd[Idx][1]):
-                    raise AssertionError('types mismatch %s, %s' % (type(Field), IdxOrd[Idx]))
+                    raise TDbListException('types mismatch %s, %s' % (type(Field), IdxOrd[Idx]))
         super().__init__(aData)
 
     def GetAsDict(self) -> dict:
@@ -268,6 +270,9 @@ class TDbList():
 
     def SetData(self, aData: list):
         if (aData):
+            if (len(aData[0]) != len(self.Fields)):
+                raise TDbListException('fields count mismatch %s and %s' % (len(aData[0]), len(self.Fields)))
+
             if (self.Safe):
                 for Rec in aData:
                     self.RecAdd(Rec)
@@ -352,6 +357,6 @@ class TDbList():
 '''
 if (__name__ == '__main__'):
     Db1 = TDbList( [('User', str), ('Age', int), ('Male', bool, True)] )
-    Data = [['User2', 22, True], ['User1', 11, False], ['User3', 33, True], ['User4', 44, True]]
+    Data = [['User2', 22, True, 1], ['User1', 11, False], ['User3', 33, True], ['User4', 44, True]]
     Db1.SetData(Data)
 '''
