@@ -16,7 +16,7 @@
 
             this.ws.onmessage = function(aEvent) {
                 var received_msg = aEvent.data;
-                document.getElementById('showMes').value += received_msg + '\n';
+                document.getElementById('TextA1').value += received_msg + '\n';
             };
 
             this.ws.onclose = function() {
@@ -24,10 +24,12 @@
             };
         }
 
-        sendMeg() {
-            var Msg = document.getElementById('User').value + ':' + document.getElementById('Login').value;
-            document.getElementById('showMes').value += Msg + '\n\n';
-            this.ws.send(Msg);
+        SendMsg() {
+            var Msg = document.getElementById('User').value;
+            document.getElementById('TextA1').value += Msg + '\n\n';
+
+            var Data = JSON.stringify({'Msg': Msg});
+            this.ws.send(Data);
         }
     }
 
@@ -37,12 +39,9 @@
 {% endblock %}
 
 {% block content %}
-<textarea rows="3" cols="30" id="showMes" style="width:300px;height:500px;"></textarea>
+<textarea rows="3" cols="30" id="TextA1" style="width:300px;height:500px;"></textarea>
 <br/>
 <label>User</label>
 <input type="text" id="User"/>
-<br/>
-<label>Passw</label>
-<input type="text" id="Login"/>
-<button onclick="MyClass.sendMeg();">send</button>
+<button onclick="MyClass.SendMsg();">Send</button>
 {% endblock %}

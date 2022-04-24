@@ -51,6 +51,7 @@ class TEchoFile(TEcho):
         with open(self.Name, 'a+') as F:
             F.write(aMsg + '\n')
 
+
 class TLog():
     def __init__(self):
         self.Cnt    = 0
@@ -71,6 +72,5 @@ class TLog():
         for Echo in self.Echoes:
             if (not Echo.__class__.__name__ in aSkipEcho):
                 Echo.Write(Args)
-
 
 Log = TLog()

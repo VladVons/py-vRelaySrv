@@ -7,10 +7,10 @@ Description:
 '''
 
 
-from IncP.Api import TApiBase
+from IncP.ApiWeb import TWebClient
 
 
-class TApi(TApiBase):
+class TApi(TWebClient):
     async def GetConfig(self):
         Data = {'user': self.Auth.get('User')}
         return await self._Send('web/get_config', Data)

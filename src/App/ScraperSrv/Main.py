@@ -6,17 +6,20 @@ Description:
 '''
 
 import asyncio
+import json
 import base64
 from aiohttp import web
 #
 from IncP.Log import Log
-from .Api import TApi
 from IncP.Utils import TJsonEncoder
+from IncP.ApiWeb import TWebSockServer
+from .Api import TApi
 
 
 class TScraperSrv():
     def __init__(self, aConf: dict):
         self.Conf = aConf
+        self.WebSockServer = TWebSockServer()
 
     #async def cbOnStartup(self, aApp: web.Application):
     #    pass
@@ -43,10 +46,16 @@ class TScraperSrv():
             return True
 
     async def _rIndex(self, aRequest: web.Request) -> web.Response:
+        #await self.WebSockServer.SendAll({'hello': 111})
+
         if (await self.AuthUser(aRequest)):
             #Conf = aRequest.app.get('Conf')
             Name = aRequest.match_info.get('Name')
             Post = await aRequest.text()
+
+            # ToDo. Test for safety
+            #Res = await asyncio.shield(self.Api.Call(Name, Post))
+
             Res = await self.Api.Call(Name, Post)
             return web.json_response(Res, dumps=TJsonEncoder.Dumps)
         else:
@@ -55,21 +64,10 @@ class TScraperSrv():
 
     async def _rWebSock(self, aRequest: web.Request) -> web.WebSocketResponse:
         WS = web.WebSocketResponse()
-        await WS.prepare(aRequest)
+        if (not await self.AuthUser(aRequest)):
+            return WS
 
-        # ToDo
-        #await asyncio.shield(myFunc())
-
-        try:
-            async for Msg in WS:
-                if (Msg.type == web.WSMsgType.text):
-                    await WS.send_str('Server replay: %s' % Msg.data)
-                elif (Msg.type == web.WSMsgType.binary):
-                    await WS.send_bytes(Msg.data)
-                elif (Msg.type == web.WSMsgType.close):
-                    break
-        finally:
-            pass
+        await self.WebSockServer.AddHandler(aRequest, WS)
         return WS
 
     async def Run(self, aSleep: int = 10):

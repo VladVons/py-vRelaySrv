@@ -7,10 +7,10 @@ Description:
 '''
 
 
-from IncP.Api import TApiBase
+from IncP.ApiWeb import TWebClient
 
 
-class TApi(TApiBase):
+class TApi(TWebClient):
     pass
 
 Api = TApi()

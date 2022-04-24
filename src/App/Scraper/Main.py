@@ -13,6 +13,7 @@ import aiohttp
 from collections import deque
 #
 from IncP.Log import Log
+from IncP.ApiWeb import TWebSockClient
 from .WebScraper import TWebScraperFull, TWebScraperUpdate, TWebScraperSitemap
 from .Selenium import TStarter
 from .Api import Api
@@ -23,14 +24,23 @@ class TMain():
         self.Conf = aConf
         self.Scrapers = deque((), self.Conf.get('MaxTasks', 10))
 
+        self.WebSock = TWebSockClient(aConf.SrvAuth)
+        self.WebSock.OnMessage = self._OnWebSockMessage
+
     async def _DoPost(self, aOwner, aMsg):
         pass
+
+    async def _OnWebSockMessage(self, aData: dict):
+        print(aData)
 
     async def _Worker(self, aTaskId: int):
         while (True):
             Wait = random.randint(2, 5)
             #Log.Print(1, 'i', '_Worker(). Ready for task. Id %d, wait %d sec' % (aTaskId, Wait))
             await asyncio.sleep(Wait)
+
+            #await self.WebSock.Send({'Data': 'Hellow from client. Id %s' % aTaskId})
+            continue
 
             DataA = await Api.GetTask()
             Data = DataA.get('Data', {}).get('Data')
@@ -60,31 +70,13 @@ class TMain():
     def GetInfo(self) -> list:
         return [x.GetInfo() for x in self.Scrapers]
 
-    async def cbWebSock(self, aData):
-        print('--x', aData)
-        pass
-
-    async def WebSock(self):
-        Auth = self.Conf.SrvAuth
-        Url = 'http://%s:%s/%s/api' % (Auth.get('Server'), Auth.get('Port'), Auth.get('WebSock'))
-        async with aiohttp.ClientSession() as Session:
-            async with Session.ws_connect(Url) as WS:
-                await WS.send_str('123')
-
-                async for Msg in WS:
-                    if (Msg.type == aiohttp.WSMsgType.TEXT):
-                        await self.cbWebSock(Msg.data)
-                    elif (Msg.type == aiohttp.WSMsgType.CLOSED) or (Msg.type == aiohttp.WSMsgType.ERROR):
-                        break
-
     async def Run(self):
         WaitLocalHost = 1
         await asyncio.sleep(WaitLocalHost)
 
         while (True):
             try:
-                WebSock = self.WebSock()
-                asyncio.create_task(WebSock)
+                TaskWS = asyncio.create_task(self.WebSock.Connect('ws/api', {'id': 1}))
 
                 DataA = await Api.GetConfig()
                 Data = DataA.get('Data', {}).get('Data')
@@ -96,5 +88,5 @@ class TMain():
             except Exception as E:
                 Log.Print(1, 'x', 'Run()', aE = E)
             finally:
-                WebSock.cancel()
+                TaskWS.cancel()
             await asyncio.sleep(30)
