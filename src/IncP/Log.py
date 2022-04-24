@@ -12,7 +12,34 @@ import asyncio
 import traceback
 import inspect
 #
-from Inc.Log import TLog, TEcho
+from Inc.Log import TLog, TEcho, TEchoConsole
+
+
+def _GetStack(aStack) -> str:
+    CurDir    = os.getcwd()
+    Dir, File = os.path.split(aStack[1])
+    Path   = Dir.replace(CurDir, '').strip('/') + '/' + File
+    Method = aStack[3]
+    Line   = aStack[2]
+    return '%s %s(), line %s' % (Path, Method, Line)
+
+def _DoExcept():
+    traceback.print_exc()
+    return _GetStack(inspect.stack()[2])
+
+
+class TEchoConsoleEx(TEchoConsole):
+    def ParseE(self, aArgs: dict):
+        aE = aArgs.get('aE')
+        if (aE):
+            aArgs['aD'].append(aE.__class__.__name__)
+            EMsg = _DoExcept()
+            if (EMsg):
+                aArgs['aD'].append(EMsg)
+
+    def Write(self, aArgs: dict):
+        self.ParseE(aArgs)
+        super().Write(aArgs)
 
 
 class TEchoDb(TEcho):
@@ -29,18 +56,4 @@ class TEchoDb(TEcho):
             Msg = self._Format(aArgs)
             asyncio.create_task(self._Write(Msg))
 
-class TLogEx(TLog):
-    @staticmethod
-    def _GetStack(aStack) -> str:
-        CurDir    = os.getcwd()
-        Dir, File = os.path.split(aStack[1])
-        Path   = Dir.replace(CurDir, '').strip('/') + '/' + File
-        Method = aStack[3]
-        Line   = aStack[2]
-        return '%s %s(), line %s' % (Path, Method, Line)
-
-    def _DoExcept(self, aE):
-        traceback.print_exc()
-        return self._GetStack(inspect.stack()[2])
-
-Log = TLogEx()
+Log = TLog()

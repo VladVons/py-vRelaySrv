@@ -51,13 +51,10 @@ class TEchoFile(TEcho):
         with open(self.Name, 'a+') as F:
             F.write(aMsg + '\n')
 
-
 class TLog():
     def __init__(self):
         self.Cnt    = 0
         self.Echoes = []
-
-        self.AddEcho(TEchoConsole())
 
     def FindEcho(self, aClassName: str) -> list:
         #return list(filter(lambda i: (i.__class__.__name__ == aClassName), self.Echoes))
@@ -68,20 +65,12 @@ class TLog():
         if (not self.FindEcho(Name)):
             self.Echoes.append(aEcho)
 
-    def Print(self, aLevel: int, aType: str, aMsg: str, aData: list = [], aE: Exception = None):
-        if (aE):
-            aData.append(aE.__class__.__name__)
-            EMsg = self._DoExcept(aE)
-            if (EMsg):
-                aData.append(EMsg)
-
+    def Print(self, aLevel: int, aType: str, aMsg: str, aData: list = [], aE: Exception = None, aSkipEcho: list = []):
         self.Cnt += 1
         Args = {'aL': aLevel, 'aT': aType, 'aM': aMsg, 'aD': aData, 'aE': aE, 'c': self.Cnt, 'd': GetDate(), 't': GetTime()}
         for Echo in self.Echoes:
-            Echo.Write(Args)
-
-    def _DoExcept(self, aE):
-        sys.print_exception(aE)
+            if (not Echo.__class__.__name__ in aSkipEcho):
+                Echo.Write(Args)
 
 
 Log = TLog()

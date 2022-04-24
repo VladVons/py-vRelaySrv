@@ -146,7 +146,7 @@ class TApi():
     async def path_send_result(self, aData: dict) -> dict:
         return True
 
-    async def DbInit(self, aAuth):
+    async def DbInit(self, aAuth: dict):
         self.Db = TDbApp(aAuth)
         await self.Db.Connect()
         # await self.Db.ExecFile('IncP/DB/Scraper_pg.sql')

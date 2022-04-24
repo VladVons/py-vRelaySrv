@@ -10,7 +10,6 @@ aiopg
 bs4
 lxml
 
-
 #
 asyncio
 aiohttp-socks
@@ -20,11 +19,14 @@ gmqtt
 websockets
 
 #--- random user agent 
-#fake_useragent
+fake_useragent
 
 #--- web browser emulator
-#selenium
-#webdriver_manager
+selenium
+webdriver_manager
+
+#--- python test application
+pytest
 
 #--- google map tools 
 #folium

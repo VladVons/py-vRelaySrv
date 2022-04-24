@@ -10,12 +10,14 @@ import os
 #
 from App import ConfApp
 from Inc.Log  import TEchoFile
-from IncP.Log  import Log
+from IncP.Log  import Log, TEchoConsoleEx
 from Inc.Plugin import Plugin
 
 
 class TApp():
     def InitLog(self):
+        Log.AddEcho(TEchoConsoleEx())
+
         _, Name = os.path.split(__file__)
         FileLog = '/var/log/py-vRelaySrv/%s.log' % (Name)
         try:

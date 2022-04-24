@@ -85,10 +85,12 @@ class TDb():
                 #        await Cur.execute(Sql)
                 if (self.Debug):
                     print(aSql)
+
                 try:
                     await Cur.execute(aSql)
                 except Exception as E:
-                    Log.Print(1, 'x', 'Exec() %s' % (aSql), aE=E)
+                    Log.Print(1, 'x', 'Exec() %s' % (aSql), aE=E, aSkipEcho=['TEchoDb'])
+                    asyncio.sleep(1)
             #await Con.commit()
 
     async def ExecFile(self, aFile: str):
@@ -96,19 +98,18 @@ class TDb():
             Query = File.read().strip()
             await self.Exec(Query)
 
-    async def Fetch(self, aSql: str, aOne: bool = False):
+    async def Fetch(self, aSql: str):
         async with self.Pool.acquire() as Con:
             async with Con.cursor() as Cur:
             #async with Con.cursor(cursor_factory = psycopg2.extras.RealDictCursor) as Cur:
                 if (self.Debug):
                     print(aSql)
 
-                await Cur.execute(aSql)
-                if (aOne):
-                    Res = await Cur.fetchone()
-                else:
-                    Res = await Cur.fetchall()
-                return Res
+                try:
+                    await Cur.execute(aSql)
+                    return await Cur.fetchall()
+                except Exception as E:
+                    Log.Print(1, 'x', 'Fetch()', aE = E)
 
     async def FetchWait(self, aSql: str, aTimeout = 5):
           try:

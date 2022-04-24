@@ -40,8 +40,16 @@ async def Test_pyppeteer():
     page_text = await page.content()
     await browser.close()
 
+async def TestA_3(aArg1):
+    print('TestA_3', aArg1)
+    await asyncio.sleep(aArg1)
+    return aArg1
+
+async def TestA_2():
+    for x in [await TestA_3(i) for i in range(10)]:
+        print(x)
+
 
 #asyncio.run(TestA_1())
+asyncio.run(TestA_2())
 #asyncio.run(Test_pyppeteer())
-Log.Print(1, 'i', 'Main()', (1,2,3))
-Log.Print(1, 'i', 'Run()')

@@ -90,7 +90,7 @@ Install()
 {
   Log "$0->$FUNCNAME($*)"
 
-  pip3 install -r requires.txt
+  pip3 install -U -r requires.txt
 
   # --- search unused variables, func, imports
   #ExecM "pip3 install vulture"

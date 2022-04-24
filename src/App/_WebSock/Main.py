@@ -3,6 +3,7 @@ Author:      Vladimir Vons, Oster Inc.
 Created:     2022.04.17
 License:     GNU, see LICENSE for more details
 Description:
+see ScraperSrv/Main/TScraperSrv/_rWebSock()
 '''
 
 import asyncio

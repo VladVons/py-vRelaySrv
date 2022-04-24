@@ -16,6 +16,7 @@ import jinja2
 import aiohttp_jinja2
 import base64
 #
+from Inc.Log import Log
 from .Api import Api
 from .Routes import *
 
@@ -93,7 +94,7 @@ class TWebSrv():
         Name = aRequest.match_info.get('Name')
         Post = await aRequest.text()
         PostObj = json.loads(Post)
-        Res = await Api._Send(Name, PostObj)
+        Res = await Api._Send('web/' + Name, PostObj)
         Res = Res.get("Data", {})
         if (Res.get("Err", {})):
             Res = {}
@@ -122,11 +123,13 @@ class TWebSrv():
             404: rError_404
         })
 
+        aiohttp_jinja2.setup(App, loader=jinja2.FileSystemLoader(self.DirRoot + '/' + self.DirForm))
+
         #Runner = web.AppRunner(App)
         #await Runner.setup()
         #Site = web.TCPSite(Runner, '0.0.0.0', self.Conf.get('Port', 8080))
         #await Site.start()
 
-        aiohttp_jinja2.setup(App, loader=jinja2.FileSystemLoader(self.DirRoot + '/' + self.DirForm))
-
-        await web._run_app(App, host = '0.0.0.0', port = self.Conf.get('Port', 8080), shutdown_timeout = 60.0,  keepalive_timeout = 75.0)
+        Port = self.Conf.get('Port', 8080)
+        Log.Print(1, 'i', 'WebSrv on port %s' % (Port))
+        await web._run_app(App, host = '0.0.0.0', port = Port, shutdown_timeout = 60.0,  keepalive_timeout = 75.0)
