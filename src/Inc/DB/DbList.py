@@ -45,7 +45,7 @@ Description:
     for Idx, Rec in enumerate(Db3):
         print(Idx, Rec.GetField('User'),  Rec[1])
 
-    Db3.        self.RecNo = -2
+    Db3.self.RecNo = -2
     print('Db3.Rec', Db3.Rec)
 
     print()
@@ -258,7 +258,7 @@ class TDbList():
 
     def Empty(self):
         self.Data = []
-        self._RecNo = 0 
+        self._RecNo = 0
 
     def ExportPair(self, aFieldKey: str, aFieldVal: str) -> dict:
         KeyNo = self.Fields.GetNo(aFieldKey)
