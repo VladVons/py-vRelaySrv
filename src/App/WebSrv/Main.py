@@ -35,13 +35,14 @@ def CreateErroMiddleware(aOverrides):
         try:
             return await handler(request)
         except web.HTTPException as E:
-            override = aOverrides.get(E.status)
-            if (override):
-                return await override(request)
-            raise
-        except Exception:
-            request.protocol.logger.exception("Error handling request")
-            return await aOverrides[500](request)
+            Override = aOverrides.get(E.status)
+            if (Override):
+                return await Override(request)
+        except Exception as E:
+            Log.Print(1, 'x', 'ErroMiddleware()', aE = E)
+            Override = aOverrides.get('def')
+            if (Override):
+                return await Override(request)
     return ErroMiddleware
 
 
@@ -68,7 +69,7 @@ class TWebSrv():
     async def _LoadForm(self, aName: str, aRequest) -> web.Response:
         FormDir = '%s/%s' % (self.DirRoot, self.DirForm)
         if (not os.path.isfile('%s/%s%s' % (FormDir, aName, self.TplExt))):
-            aName = 'not_found'
+            aName = 'err_404'
 
         for Module, Class in [(aName, 'TForm'), ('FForm', 'TFormBase')]:
             try:
@@ -120,8 +121,10 @@ class TWebSrv():
         App.router.add_static('/www', self.DirRoot + '/' + self.Dir3w, show_index=True, follow_symlinks=True)
 
         Middleware = CreateErroMiddleware({
-            404: rError_404
+            404: rErr_404,
+            'def': rErr_Def
         })
+        App.middlewares.append(Middleware)
 
         aiohttp_jinja2.setup(App, loader=jinja2.FileSystemLoader(self.DirRoot + '/' + self.DirForm))
 

@@ -40,11 +40,11 @@ class TMain():
             await asyncio.sleep(Wait)
 
             #await self.WebSock.Send({'Data': 'Hellow from client. Id %s' % aTaskId})
-            continue
+            #continue
 
             DataA = await Api.GetTask()
             Data = DataA.get('Data', {}).get('Data')
-            if (Data):  
+            if (Data):
                 Type = Data.get('Type')
                 if (Type == 'Full'):
                     if (Data['site.sitemap']):
