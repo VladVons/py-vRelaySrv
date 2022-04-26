@@ -88,12 +88,11 @@ class TWebSockServer():
                     #await aWS.close(code=aWS.close_code, message=Msg.extra)
                     break
         except Exception as E:
-            pass
+            Log.Print(1, 'x', 'AddHandler()', aE=E)
         finally:
             self.DblWS.RecNo = 0
             RecNo = self.DblWS.FindField('WS', aWS)
             self.DblWS.RecPop(RecNo)
-            pass
 
     async def Send(self, aWS, aData: dict):
         await aWS.send_json(aData)

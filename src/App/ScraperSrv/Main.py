@@ -5,8 +5,8 @@ License:     GNU, see LICENSE for more details
 Description:
 '''
 
+
 import asyncio
-import json
 import base64
 from aiohttp import web
 #
@@ -19,11 +19,15 @@ from .Api import TApi
 class TScraperSrv():
     def __init__(self, aConf: dict):
         self.Conf = aConf
-        self.WebSockServer = TWebSockServer()
+
+        self.WebSockSrv = TWebSockServer()
+        self.WebSockSrv.OnReplay = self.cbWebSockReplay
+
+    async def cbWebSockReplay(self, aWS, aData: dict):
+        print('cbWebSockServer', aData)
+        await aWS.send_json(aData)
 
     #async def cbOnStartup(self, aApp: web.Application):
-    #    pass
-
     async def cbInit(self, aApp: web.Application):
         aApp['Conf'] = self.Conf
 
@@ -67,7 +71,7 @@ class TScraperSrv():
         if (not await self.AuthUser(aRequest)):
             return WS
 
-        await self.WebSockServer.AddHandler(aRequest, WS)
+        await self.WebSockSrv.AddHandler(aRequest, WS)
         return WS
 
     async def Run(self, aSleep: int = 10):
