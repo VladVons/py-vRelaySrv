@@ -15,7 +15,7 @@ from collections import deque
 from IncP.Log import Log
 from IncP.ApiWeb import TWebSockClient
 from .WebScraper import TWebScraperFull, TWebScraperUpdate, TWebScraperSitemap
-from .Selenium import TStarter
+#from .Selenium import TStarter
 from .Api import Api
 
 
@@ -54,7 +54,7 @@ class TMain():
                 elif (Type == 'Update'):
                     Scraper = TWebScraperUpdate(self, Data['site.scheme'], Data['Urls'], Data['site.sleep'])
                 elif (Type == 'UpdateSelenium'):
-                    await TStarter().ThreadCreate(Data['Urls'])
+                    #await TStarter().ThreadCreate(Data['Urls'])
                     continue
                 else:
                     Log.Print(1, 'e', '_Worker(). Unknown type: %d' % (Type))

@@ -1,5 +1,5 @@
 # https://hugovk.github.io/top-pypi-packages
-# apt install libpq-dev python3-dev --no-install-recommends
+# apt install libpq-dev python3-dev libffi-dev --no-install-recommends
 # pip3 install -r requires.txt
 
 # apt install python3-
