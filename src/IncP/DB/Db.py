@@ -90,7 +90,7 @@ class TDb():
                     await Cur.execute(aSql)
                 except Exception as E:
                     Log.Print(1, 'x', 'Exec() %s' % (aSql), aE=E, aSkipEcho=['TEchoDb'])
-                    asyncio.sleep(1)
+                    await asyncio.sleep(1)
             #await Con.commit()
 
     async def ExecFile(self, aFile: str):

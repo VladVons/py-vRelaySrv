@@ -44,7 +44,7 @@ class TMain():
 
             DataA = await Api.GetTask()
             Data = DataA.get('Data', {}).get('Data')
-            if (Data):
+            if (Data):  
                 Type = Data.get('Type')
                 if (Type == 'Full'):
                     if (Data['site.sitemap']):

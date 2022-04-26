@@ -46,7 +46,7 @@ class TScraperSrv():
             return True
 
     async def _rIndex(self, aRequest: web.Request) -> web.Response:
-        #await self.WebSockServer.SendAll({'hello': 111})
+        #await self.WebSockServer.SendAll({'hello': 111}, '/ws/test')
 
         if (await self.AuthUser(aRequest)):
             #Conf = aRequest.app.get('Conf')

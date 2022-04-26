@@ -24,7 +24,7 @@ def Run():
         Loop.slow_callback_duration = 0.001
         Loop.run_until_complete(Task)
     else:
-        if (sys.version_info.minor >= 7):
+        if (sys.version_info >= (3, 7)):
             asyncio.run(Task)
         else:
             Loop = asyncio.get_event_loop()

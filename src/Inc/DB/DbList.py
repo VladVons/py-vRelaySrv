@@ -26,7 +26,7 @@ Description:
     Db1.Rec.SetAsDict({'User': 'User7', 'Age': 45, 'Male': True})
     Db1.Rec.Flush()
 
-    Db1.RecGo(0)
+    Db1.RecNo = 0
     print()
     print('GetSize:', Db1.GetSize())
     print('Data:', Db1.Data)
@@ -45,11 +45,10 @@ Description:
     for Idx, Rec in enumerate(Db3):
         print(Idx, Rec.GetField('User'),  Rec[1])
 
-    Db3.RecGo(-2)
+    Db3.        self.RecNo = -2
     print('Db3.Rec', Db3.Rec)
 
     print()
-    import operator as op
     Cond = [
         (op.lt, Db1.Fields.GetNo('Age'), 40, True),
         (op.eq, Db1.Fields.GetNo('Male'), True, True)
@@ -68,6 +67,15 @@ import operator as op
 
 
 class TDbListException(Exception): ...
+
+
+# aCond is [ (operator.lt, Db1.Fields.GetNo('Age'), 40, True), (...) ]
+def _FindInList(aData: list, aCond: list) -> bool:
+    for Func, FieldNo, Val, CmpRes in aCond:
+        if (not Func(aData[FieldNo], Val) == CmpRes):
+            return False
+    return True
+
 
 class TDbFields(dict):
     def __init__(self, aFields: tuple = ()):
@@ -118,6 +126,9 @@ class TDbRec(list):
     def __init__(self, aParent: 'TDbList'):
         super().__init__()
         self.Parent = aParent
+
+    def Find(self, aCond: list) -> bool:
+        return _FindInList(self, aCond)
 
     def Flush(self):
         self.Parent.Data[self.Parent._RecNo] = self.copy()
@@ -180,8 +191,9 @@ class TDbList():
         self.Tag = 0
         self.Fields = None
         self.Data = []
-        self.Rec = TDbRec(self)
+        self._RecNo = 0
         self.Safe = True
+        self.Rec = TDbRec(self)
         self.Init(aFields, aData)
 
     def __iter__(self):
@@ -213,6 +225,21 @@ class TDbList():
         if (not self.IsEmpty()):
             self.Rec.SetData(self.Data[self._RecNo])
 
+    @property
+    def RecNo(self):
+        return self._RecNo
+
+    @RecNo.setter
+    def RecNo(self, aNo: int):
+        if (self.GetSize() == 0):
+            self._RecNo = 0
+        else:
+            if (aNo < 0):
+                aNo = self.GetSize() + aNo
+            self._RecNo = min(aNo, self.GetSize() - 1)
+        self._RecInit()
+        return self.Rec
+
     def Init(self, aFields: list, aData: list = None):
         self.Fields = TDbFields()
         self.Fields.AddFields(aFields)
@@ -231,7 +258,7 @@ class TDbList():
 
     def Empty(self):
         self.Data = []
-        self.RecGo(0)
+        self._RecNo = 0 
 
     def ExportPair(self, aFieldKey: str, aFieldVal: str) -> dict:
         KeyNo = self.Fields.GetNo(aFieldKey)
@@ -265,7 +292,7 @@ class TDbList():
         self.Data = aData['Data']
         self.Fields = TDbFields()
         self.Fields.Import(aData['Head'])
-        self.RecGo(0)
+        self.RecNo = 0
         return self
 
     def SetData(self, aData: list):
@@ -278,14 +305,25 @@ class TDbList():
                     self.RecAdd(Rec)
             else:
                 self.Data = aData
-            self.RecGo(0)
+            self.RecNo = 0
         else:
-            self.Data = []
+            self.Empty()
 
     def GetDiff(self, aField: str, aList: list) -> tuple:
         Set1 = set(self.ExportList(aField))
         Set2 = set(aList)
         return (Set1 - Set2, Set2 - Set1)
+
+    def Find(self, aCond: list) -> int:
+        for i in range(self._RecNo, self.GetSize()):
+            if (_FindInList(self.Data[i], aCond)):
+                return i
+
+    def FindField(self, aName: str, aValue) -> int:
+        FieldNo = self.Fields.GetNo(aName)
+        for i in range(self._RecNo, self.GetSize()):
+            if (self.Data[i][FieldNo] == aValue):
+                return i
 
     def DbClone(self, aFields: list, aRecNo: list = [0, -1]) -> 'TDbList':
         if (aRecNo[1] == -1):
@@ -296,14 +334,7 @@ class TDbList():
         return self._DbExp(Data, aFields)
 
     def DbFilter(self, aCond: list) -> 'TDbList':
-        # aCond = [ (operator.lt, Db1.Fields.GetNo('Age'), 40, True) ]
-        def Find(aRec, aCond):
-            for Func, FieldNo, Val, CmpRes in aCond:
-                if (not Func(aRec[FieldNo], Val) == CmpRes):
-                    return False
-            return True
-
-        Data = [Rec for Rec in self.Data if Find(Rec, aCond)]
+        Data = [x for x in self.Data if _FindInList(x, aCond)]
         return self._DbExp(Data)
 
     def Sort(self, aFields: list, aReverse: bool = False):
@@ -316,18 +347,11 @@ class TDbList():
                 F += 'x[%s],' % self.Fields.GetNo(Field)
             Script = 'self.Data.sort(key=lambda x: (%s), reverse=%s)' % (F, aReverse)
             eval(Script)
-        self.RecGo(0)
+        self.RecNo = 0
 
     def Shuffle(self):
         random.shuffle(self.Data)
-        self.RecGo(0)
-
-    def RecGo(self, aNo: int):
-        if (aNo < 0):
-            aNo = self.GetSize() + aNo
-        self._RecNo = min(aNo, self.GetSize() - 1)
-        self._RecInit()
-        return self.Rec
+        self.RecNo = 0
 
     def RecAdd(self, aData: list = []):
         if (aData):
@@ -338,9 +362,9 @@ class TDbList():
         self._RecNo = self.GetSize() - 1
         return self.Rec
 
-    def RecPop(self) -> TDbRec:
+    def RecPop(self, aRecNo: int = -1) -> TDbRec:
         Res = TDbRec(self)
-        Res.SetData(self.Data.pop())
+        Res.SetData(self.Data.pop(aRecNo))
         return Res
 
     def Save(self, aFile: str):
@@ -357,6 +381,11 @@ class TDbList():
 '''
 if (__name__ == '__main__'):
     Db1 = TDbList( [('User', str), ('Age', int), ('Male', bool, True)] )
-    Data = [['User2', 22, True, 1], ['User1', 11, False], ['User3', 33, True], ['User4', 44, True]]
+    Data = [['User2', 22, True], ['User1', 11, False], ['User3', 33, True], ['User4', 44, True]]
     Db1.SetData(Data)
+
+    Db1.RecNo += 1
+    for Rec in Db1:
+        print(Rec)
+    pass
 '''

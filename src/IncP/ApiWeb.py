@@ -11,7 +11,9 @@ import time
 import json
 import aiohttp
 from aiohttp import web
+import operator as op
 #
+from Inc.DB.DbList import TDbList
 from IncP.Log import Log
 
 
@@ -65,33 +67,42 @@ class TWebSockClient():
 
 class TWebSockServer():
     def __init__(self):
-        self.WS = []
+        self.DblWS = TDbList([('WS', web.WebSocketResponse), ('Path', str), ('Query', dict)])
         self.OnReplay = None
 
     async def AddHandler(self, aRequest, aWS):
-        #q1 = aRequest.query
-        #q2 = aRequest.path
-
         await aWS.prepare(aRequest)
         try:
-            self.WS.append(aWS)
+            self.DblWS.RecAdd([aWS, aRequest.path, dict(aRequest.query)])
             async for Msg in aWS:
                 if (Msg.type == web.WSMsgType.text):
-                    Data = json.loads(Msg.data)
+                    Data = {'Msg': Msg.json(), 'Path': aRequest.path, 'Query': dict(aRequest.query)}
                     await self.DoReplay(aWS, Data)
+                #elif (Msg.type == web.MsgType.binary):
+                #    await aWS.send_bytes(Msg.data)
+                #elif (Msg.type == aiohttp.WSMsgType.PING):
+                #    await aWS.ping()
+                #elif (Msg.type == aiohttp.WSMsgType.PONG):
+                #    await aWS.pong()
                 elif (Msg.type == web.WSMsgType.close):
+                    #await aWS.close(code=aWS.close_code, message=Msg.extra)
                     break
         except Exception as E:
             pass
         finally:
-            self.WS.remove(aWS)
+            self.DblWS.RecNo = 0
+            RecNo = self.DblWS.FindField('WS', aWS)
+            self.DblWS.RecPop(RecNo)
+            pass
 
     async def Send(self, aWS, aData: dict):
         await aWS.send_json(aData)
 
-    async def SendAll(self, aData: dict):
-        for WS in self.WS:
-            await self.Send(WS, aData)
+    async def SendAll(self, aData: dict, aFilter: str = ''):
+        self.DblWS.RecNo = 0
+        for Rec in self.DblWS:
+            if (aFilter == '') or (Rec.GetField('Path') == aFilter):
+                await self.Send(Rec.GetField('WS'), aData)
 
     async def DoReplay(self, aWS, aData):
         if (self.OnReplay):
