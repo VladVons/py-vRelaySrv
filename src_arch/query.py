@@ -20,3 +20,11 @@
                     Res.append(Name)
             return Res
 
+
+
+    def _GetFields(self, aData: list, aDescr: tuple) -> TDbFields:
+        if (aData):
+            Res = TDbFields()
+            for i in range(len(aData[0])):
+                Res.Add(aDescr[i].name, type(aData[0][i]))
+            return Res

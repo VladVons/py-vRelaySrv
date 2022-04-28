@@ -40,7 +40,7 @@ Description:
         print(Idx, Rec.GetField('User'),  Rec[1])
 
     print()
-    Db3 = Db1.DbClone(['User', 'Age'], (0, 3))
+    Db3 = Db1.Clone(['User', 'Age'], (0, 3))
     Db3.Shuffle()
     for Idx, Rec in enumerate(Db3):
         print(Idx, Rec.GetField('User'),  Rec[1])
@@ -53,7 +53,7 @@ Description:
         (op.lt, Db1.Fields.GetNo('Age'), 40, True),
         (op.eq, Db1.Fields.GetNo('Male'), True, True)
     ]
-    Db2 = Db1.DbFilter(Cond)
+    Db2 = Db1.Clone(aCond=Cond)
     print(Db2.Data)
 
     Db1.Save('Db2.json')
@@ -85,6 +85,9 @@ class TDbFields(dict):
         self.AddFields(aFields)
 
     def Add(self, aName: str, aType: type = str, aDef = None):
+        if (self.get(aName)):
+            raise TDbListException('field already exists %s' % (aName))
+
         if (aDef):
             if (aType != type(aDef)):
                 raise TDbListException('types mismatch %s, %s' % (aType, aDef))
@@ -100,7 +103,7 @@ class TDbFields(dict):
         for Field in aFields:
             self.Add(*Field)
 
-    def Auto(self, aFields: list, aData: list):
+    def AddAuto(self, aFields: list, aData: list):
         for i in range(len(aFields)):
             if (aData):
                 self.Add(aFields[i], type(aData[i]))
@@ -207,10 +210,7 @@ class TDbList():
             self._RecNo += 1
             return self.Rec
 
-    def _DbExp(self, aData: list, aFields: list = []) -> 'TDbList':
-        if (not aFields):
-            aFields = self.Fields.keys()
-
+    def _DbExp(self, aData: list, aFields: list) -> 'TDbList':
         DbFields = TDbFields()
         for Name in aFields:
             F = self.Fields[Name]
@@ -325,17 +325,23 @@ class TDbList():
             if (self.Data[i][FieldNo] == aValue):
                 return i
 
-    def DbClone(self, aFields: list, aRecNo: list = [0, -1]) -> 'TDbList':
-        if (aRecNo[1] == -1):
-            aRecNo[1] = self.GetSize()
-        FieldNo = [self.Fields.GetNo(F) for F in aFields]
-        #return [list(map(i.__getitem__, FieldNo)) for i in self.Data]
-        Data = [[Val[i] for i in FieldNo] for Idx, Val in enumerate(self.Data) if (aRecNo[0] <= Idx <= aRecNo[1])]
-        return self._DbExp(Data, aFields)
+    def Clone(self, aFields: list = [], aCond: list = [], aRecNo: tuple = (0, -1)) -> 'TDbList':
+        Start, Finish = aRecNo
+        if (Finish == -1):
+            Finish = self.GetSize()
 
-    def DbFilter(self, aCond: list) -> 'TDbList':
-        Data = [x for x in self.Data if _FindInList(x, aCond)]
-        return self._DbExp(Data)
+        if (aFields):
+            FieldsNo = [self.Fields.GetNo(F) for F in aFields]
+        else:
+            aFields = self.Fields.GetList()
+            FieldsNo = list(range(len(self.Fields)))
+
+        if (aCond):
+            Data = [[Val[i] for i in FieldsNo] for Val in self.Data[Start:Finish] if _FindInList(Val, aCond)]
+        else:
+            #return [list(map(i.__getitem__, FieldsNo)) for i in self.Data[Start:Finish]]
+            Data = [[Val[i] for i in FieldsNo] for Val in self.Data[Start:Finish]]
+        return self._DbExp(Data, aFields)
 
     def Sort(self, aFields: list, aReverse: bool = False):
         if (len(aFields) == 1):
@@ -377,15 +383,9 @@ class TDbList():
             Data = json.load(F)
             self.Import(Data)
 
-
 '''
 if (__name__ == '__main__'):
     Db1 = TDbList( [('User', str), ('Age', int), ('Male', bool, True)] )
     Data = [['User2', 22, True], ['User1', 11, False], ['User3', 33, True], ['User4', 44, True]]
     Db1.SetData(Data)
-
-    Db1.RecNo += 1
-    for Rec in Db1:
-        print(Rec)
-    pass
 '''

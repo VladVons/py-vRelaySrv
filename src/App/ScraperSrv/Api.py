@@ -26,29 +26,29 @@ class TApiTask():
         async with self.Lock:
             ExclId = self.Tasks.ExportList('SiteId')
 
-            DblUpdFull = await self.Parent.Db.GetSitesForUpdateFull(aExclId=ExclId, aUpdDaysX=2)
-            if (not DblUpdFull.IsEmpty()):
-                DblUpdFull.Tag = 'Full'
-                Res = {'Type': DblUpdFull.Tag}
-                DblUpdFull.Shuffle()
-                SiteId = DblUpdFull.Rec.GetField('id')
-                Res.update(DblUpdFull.Rec.GetAsDict())
+            Dbl = await self.Parent.Db.GetSitesForUpdateFull(aExclId=ExclId, aUpdDaysX=2)
+            if (not Dbl.IsEmpty()):
+                Dbl.Tag = 'Full'
+                Res = {'Type': Dbl.Tag}
+                Dbl.Shuffle()
+                SiteId = Dbl.Rec.GetField('id')
+                Res.update(Dbl.Rec.GetAsDict())
                 Res['scheme'] = json.loads(Res['scheme'])
-                self.Tasks.RecAdd([SiteId, datetime.now(), DblUpdFull])
+                self.Tasks.RecAdd([SiteId, datetime.now(), Dbl])
                 return Res
             else:
-                DblUpd = await self.Parent.Db.GetSitesForUpdate(aExclId=ExclId)
-                if (not DblUpd.IsEmpty()):
-                    DblUpd.Shuffle()
-                    SiteId = DblUpd.Rec.GetField('id')
+                Dbl = await self.Parent.Db.GetSitesForUpdate(aExclId=ExclId)
+                if (not Dbl.IsEmpty()):
+                    Dbl.Shuffle()
+                    SiteId = Dbl.Rec.GetField('id')
+                    Res = Dbl.Rec.GetAsDict()
 
-                    DblUpdUrls = await self.Parent.Db.GetSiteUrlsForUpdate(SiteId)
-                    DblUpdUrls.Tag = 'Update'
-                    Res = {'Type': DblUpdUrls.Tag}
-                    Res.update(DblUpd.Rec.GetAsDict())
-                    Res['Urls'] = DblUpdUrls.GetData()
+                    Dbl = await self.Parent.Db.GetSiteUrlsForUpdate(SiteId)
+                    Dbl.Tag = 'Update'
+                    Res['Type'] = Dbl.Tag
+                    Res['Urls'] = Dbl.GetData()
 
-                    self.Tasks.RecAdd([SiteId, datetime.now(), DblUpdUrls])
+                    self.Tasks.RecAdd([SiteId, datetime.now(), Dbl])
                     return Res
 
 
