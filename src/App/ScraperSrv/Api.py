@@ -29,12 +29,11 @@ class TApiTask():
             Dbl = await self.Parent.Db.GetSitesForUpdateFull(aExclId=ExclId, aUpdDaysX=2)
             if (not Dbl.IsEmpty()):
                 Dbl.Tag = 'Full'
-                Res = {'Type': Dbl.Tag}
                 Dbl.Shuffle()
-                SiteId = Dbl.Rec.GetField('id')
-                Res.update(Dbl.Rec.GetAsDict())
+                Res = Dbl.Rec.GetAsDict()
+                Res['Type'] = Dbl.Tag
                 Res['scheme'] = json.loads(Res['scheme'])
-                self.Tasks.RecAdd([SiteId, datetime.now(), Dbl])
+                self.Tasks.RecAdd([Dbl.Rec.GetField('id'), datetime.now(), Dbl])
                 return Res
             else:
                 Dbl = await self.Parent.Db.GetSitesForUpdate(aExclId=ExclId)
