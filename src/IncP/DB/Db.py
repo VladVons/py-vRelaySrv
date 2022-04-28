@@ -18,38 +18,18 @@ from IncP.Log import Log
 class TDbSql(TDbList):
     def __init__(self, aDb):
         super().__init__()
-        self.Safe = False
         self._Db = aDb
 
-    async def _GetSelectFields(self, aQuery: str) -> list:
-        # ToDo
-        if ('from' in aQuery.lower()):
-            Pattern = 'select(.*)from'
-        else:
-            Pattern = 'select(.*)'
-
-        Match = re.search(Pattern, aQuery, re.DOTALL | re.IGNORECASE)
-        if (Match):
-            Res = []
-            for Item in  Match.group(1).split(','):
-                Name = Item.strip().split()[-1]
-                Arr = Name.split('.*')
-                if (len(Arr) == 2):
-                    Columns = await self._Db.GetTableColumns(Arr[0])
-                    for Column in Columns:
-                        Res.append(Column[0])
-                # skip comma inside functions
-                elif (not [x for x in '()' if (x in Name)]):
-                    Res.append(Name)
+    def _GetFields(self, aData: list, aDescr: tuple) -> TDbFields:
+        if (aData):
+            Res = TDbFields()
+            for i in range(len(aData[0])):
+                Res.Add(aDescr[i].name, type(aData[0][i]))
             return Res
 
     async def Query(self, aQuery: str):
-        Data = await self._Db.Fetch(aQuery)
-        Fields = await self._GetSelectFields(aQuery)
-
-        self.Fields = TDbFields()
-        if (Data):
-            self.Fields.Auto(Fields, Data[0])
+        Data, Descr = await self._Db.Fetch(aQuery)
+        self.Fields = self._GetFields(Data, Descr)
         self.SetData(Data)
         return self
 
@@ -98,16 +78,20 @@ class TDb():
             Query = File.read().strip()
             await self.Exec(Query)
 
-    async def Fetch(self, aSql: str):
-        async with self.Pool.acquire() as Con:
-            async with Con.cursor() as Cur:
+    async def Fetch(self, aSql: str, aAll = True):
+        async with self.Pool.acquire() as Connect:
+            async with Connect.cursor() as Cursor:
             #async with Con.cursor(cursor_factory = psycopg2.extras.RealDictCursor) as Cur:
                 if (self.Debug):
                     print(aSql)
 
                 try:
-                    await Cur.execute(aSql)
-                    return await Cur.fetchall()
+                    await Cursor.execute(aSql)
+                    if (aAll):
+                        Res = await Cursor.fetchall()
+                    else:
+                        Res = await Cursor.fetchone()
+                    return (Res, Cursor.description)
                 except Exception as E:
                     Log.Print(1, 'x', 'Fetch()', aE = E)
 

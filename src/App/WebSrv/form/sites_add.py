@@ -29,7 +29,7 @@ class TForm(TFormBase):
                 Data = DataA.get('Data', {}).get('Data')
                 if (Data):
                     Dbl = TDbList().Import(Data)
-                    Diff = Dbl.GetDiff('site.url', Lines)
+                    Diff = Dbl.GetDiff('url', Lines)
 
                     Output = []
                     Output.append('Exists:')

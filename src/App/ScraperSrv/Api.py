@@ -31,16 +31,16 @@ class TApiTask():
                 DblUpdFull.Tag = 'Full'
                 Res = {'Type': DblUpdFull.Tag}
                 DblUpdFull.Shuffle()
-                SiteId = DblUpdFull.Rec.GetField('site.id')
+                SiteId = DblUpdFull.Rec.GetField('id')
                 Res.update(DblUpdFull.Rec.GetAsDict())
-                Res['site.scheme'] = json.loads(Res['site.scheme'])
+                Res['scheme'] = json.loads(Res['scheme'])
                 self.Tasks.RecAdd([SiteId, datetime.now(), DblUpdFull])
                 return Res
             else:
                 DblUpd = await self.Parent.Db.GetSitesForUpdate(aExclId=ExclId)
                 if (not DblUpd.IsEmpty()):
                     DblUpd.Shuffle()
-                    SiteId = DblUpd.Rec.GetField('site.id')
+                    SiteId = DblUpd.Rec.GetField('id')
 
                     DblUpdUrls = await self.Parent.Db.GetSiteUrlsForUpdate(SiteId)
                     DblUpdUrls.Tag = 'Update'
@@ -155,8 +155,8 @@ class TApi():
         Rec = Dbl.Rec
         Version = Rec.GetField('version').split()[:2]
         Uptime = Rec.GetField('uptime')
-        Log.Print(1, 'i', 'Server: %s, Uptime: %sd%sh, DbName: %s, DbSize: %sM' %
-            (' '.join(Version), Uptime.days, int(Uptime.seconds/3600), Rec.GetField('name'), round(Rec.GetField('size') / 1000000, 2))
+        Log.Print(1, 'i', 'Server: %s, Uptime: %sd%sh, DbName: %s, DbSize: %sM, Tables %s' %
+            (' '.join(Version), Uptime.days, int(Uptime.seconds/3600), Rec.GetField('name'), round(Rec.GetField('size') / 1000000, 2), Rec.GetField('tables'))
         )
 
         Log.AddEcho(TEchoDb(self.Db))

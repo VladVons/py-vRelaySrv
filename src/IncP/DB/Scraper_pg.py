@@ -44,7 +44,11 @@ class TDbApp(TDbPg):
                 current_database() as name,
                 version() as version,
                 date_trunc('second', current_timestamp - pg_postmaster_start_time()) as uptime,
-                pg_database_size(current_database()) as size
+                pg_database_size(current_database()) as size,
+                (select count(*) as count
+                    from information_schema.tables
+                    where (table_catalog = current_database()) and (table_schema = 'public')
+                ) as tables
             '''
         return await TDbSql(self).Query(Query)
 
