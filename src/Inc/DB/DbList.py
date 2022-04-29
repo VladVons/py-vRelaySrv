@@ -82,7 +82,7 @@ class TDbFields(dict):
         super().__init__()
 
         self.IdxOrd = {}
-        self.AddFields(aFields)
+        self.AddList(aFields)
 
     def Add(self, aName: str, aType: type = str, aDef = None):
         if (self.get(aName)):
@@ -99,7 +99,7 @@ class TDbFields(dict):
         self[aName] = (Len, aType, aDef)
         self.IdxOrd[Len] = (aName, aType, aDef)
 
-    def AddFields(self, aFields: list):
+    def AddList(self, aFields: list):
         for Field in aFields:
             self.Add(*Field)
 
@@ -116,7 +116,7 @@ class TDbFields(dict):
 
     def Import(self, aFields: list):
         Data = [(Name, type(eval(Type)()), Def) for Name, Type, Def in aFields]
-        self.AddFields(Data)
+        self.AddList(Data)
 
     def GetList(self) -> list:
         return [self.IdxOrd[i][0] for i in range(len(self))]
@@ -136,11 +136,11 @@ class TDbRec(list):
     def Flush(self):
         self.Parent.Data[self.Parent._RecNo] = self.copy()
 
-    def GetField(self, aName: str) -> any:
+    def GetField(self, aName: str) -> object:
         Idx = self.Parent.Fields.GetNo(aName)
         return self[Idx]
 
-    def SetField(self, aName: str, aValue: any):
+    def SetField(self, aName: str, aValue: object):
         Idx = self.Parent.Fields.GetNo(aName)
         if (self.Parent.Safe):
             if (type(aValue) != self.Parent.Fields[aName][1]):
@@ -213,8 +213,8 @@ class TDbList():
     def _DbExp(self, aData: list, aFields: list) -> 'TDbList':
         DbFields = TDbFields()
         for Name in aFields:
-            F = self.Fields[Name]
-            DbFields.Add(Name, F[1], F[2])
+            Len, Type, Def = self.Fields[Name]
+            DbFields.Add(Name, Type, Def)
 
         Res = TDbList()
         Res.Fields = DbFields
@@ -242,7 +242,7 @@ class TDbList():
 
     def Init(self, aFields: list, aData: list = None):
         self.Fields = TDbFields()
-        self.Fields.AddFields(aFields)
+        self.Fields.AddList(aFields)
         self.SetData(aData)
 
     def InitList(self, aField: tuple, aData: list):
@@ -383,9 +383,15 @@ class TDbList():
             Data = json.load(F)
             self.Import(Data)
 
+
 '''
 if (__name__ == '__main__'):
     Db1 = TDbList( [('User', str), ('Age', int), ('Male', bool, True)] )
     Data = [['User2', 22, True], ['User1', 11, False], ['User3', 33, True], ['User4', 44, True]]
     Db1.SetData(Data)
+
+    #print(dir(Db1.Rec))
+    print(Db1.Rec[1])
+    #print(Db1.Rec.Field('112'))
+    print('end')
 '''

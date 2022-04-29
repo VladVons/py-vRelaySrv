@@ -21,6 +21,20 @@ def Test_1():
     print('set', asizeof(set()))
     print('Log', asizeof(TLog))
 
+def Test_2():
+    import speedtest
+    st = speedtest.Speedtest()
+    serv = st.get_best_server()
+    print(serv)
+
+
+    #d_st = st.download()
+    #print('download', int(d_st/10**6))
+    #u_st = st.upload()
+    #print('upload', int(u_st/10**6))
+    #print('done')
+
+
 DbAuth = {
     'Server': 'localhost',
     'Database': 'test1',
@@ -55,19 +69,19 @@ async def Test_pyppeteer():
     page_text = await page.content()
     await browser.close()
 
-async def TestA_3(aArg1):
-    print('TestA_3', aArg1)
-    await asyncio.sleep(aArg1)
-    return aArg1
 
-async def TestA_2():
-    import async_timeout
-    async with async_timeout.timeout(5):
-        await asyncio.sleep(3)
-        print('ok')
-    print('end')
+async def Test_speed():
+    from IncP.DownloadSpeed import TDownloadSpeed
+    #Url = 'http://212.183.159.230/20MB.zip'
+    Url = 'https://speed.hetzner.de/100MB.bin'
+    await TDownloadSpeed(3).Test(Url)
+
+
 
 #asyncio.run(TestA_1())
-asyncio.run(TestA_2())
+#asyncio.run(TestA_2())
 #asyncio.run(Test_pyppeteer())
+asyncio.run(Test_speed())
+#Test_2()
 
+#speed_test(1)

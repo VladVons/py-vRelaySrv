@@ -16,7 +16,7 @@ from .HttpLib import ReadHead
 
 
 async def UrlLoad(aUrl: str, aStream):
-    _, _, Host, Path = aUrl. split('/', 3)
+    _, _, Host, Path = aUrl.split('/', 3)
     Reader, Writer = await asyncio.open_connection(Host, 80)
     Data = bytes('GET /%s HTTP/1.0\r\nHost: %s\r\n\r\n' % (Path, Host), 'utf8')
     await Writer.awrite(Data)

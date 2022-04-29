@@ -25,6 +25,9 @@ fake_useragent
 selenium
 webdriver_manager
 
+#--- internet speed test 
+speedtest-cli
+
 #--- python test application
 pytest
 

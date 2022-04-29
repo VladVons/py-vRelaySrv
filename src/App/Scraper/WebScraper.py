@@ -84,9 +84,9 @@ class TWebScraper():
     async def _DoWorkerUrl(self, aUrl: str, aData, aStatus: int):
         raise NotImplementedError()
 
-    async def _DoWorkerStart(self): pass
-    async def _DoWorkerEnd(self): pass
-    async def _DoWorkerException(self): pass
+    async def _DoWorkerStart(self): ...
+    async def _DoWorkerEnd(self): ...
+    async def _DoWorkerException(self): ...
 
     def Wait(self, aEnable: bool):
         if  (aEnable):
