@@ -9,4 +9,5 @@ __pycache__
 .idea
 test/
 local/
+src_arch/
 .secret.txt
