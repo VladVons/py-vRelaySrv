@@ -12,7 +12,10 @@
                 if (Object.keys(aData).length == 0) {
                     alert('request error')
                 }else{
-                    document.getElementById('Script').value = aData['Data']['Data']['scheme'];
+                    var Scheme = aData['Data']['Data']['scheme']
+                    document.getElementById('Script').value = Scheme;
+                    var SchemeObj = JSON.parse(Scheme)
+                    document.getElementById('Url').value = SchemeObj['Product']['-Url'];
                 }
             },
             {
@@ -33,6 +36,11 @@
             }
         );
     };
+
+    function BtnGo_OnClick() {
+        var Url = document.getElementById("Url").value;
+        window.open(Url, '_blank').focus();
+    };
 </script>
 <style>
     tr:nth-child(even) {background-color: #00ccff;}
@@ -46,6 +54,12 @@
             <td style="width: 30%">
                 <div class="tableFixHead">
                 <table style="width:100%">
+                    <tr>
+                        <td colspan="3">
+                            <input type="text" name="Url" id="Url" style="width:90%">
+                            <button style="width:6%" onclick="BtnGo_OnClick()">go</button>
+                        </td>
+                    </tr>
                     <tr>
                         <th>No</th>
                         <th style="width: 70%">Url</th>
