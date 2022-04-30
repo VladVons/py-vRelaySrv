@@ -31,7 +31,7 @@ class TMain():
         pass
 
     async def _OnWebSockMessage(self, aData: dict):
-        print(aData)
+        print('--- _OnWebSockMessage', aData)
 
     async def _Worker(self, aTaskId: int):
         while (True):
@@ -57,7 +57,7 @@ class TMain():
                     #await TStarter().ThreadCreate(Data['Urls'])
                     continue
                 else:
-                    Log.Print(1, 'e', '_Worker(). Unknown type: %d' % (Type))
+                    Log.Print(1, 'e', '_Worker(). Unknown type: `%d`' % (Type))
                     return
 
                 self.Scrapers.append(Scraper)

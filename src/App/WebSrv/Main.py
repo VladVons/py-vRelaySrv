@@ -117,8 +117,7 @@ class TWebSrv():
         App.router.add_static('/', self.DirRoot + '/' + self.Dir3w, show_index=True, follow_symlinks=True)
 
         Middleware = CreateErroMiddleware({
-            404: rErr_404,
-            'def': rErr_Def
+            404: rErr_404
         })
         App.middlewares.append(Middleware)
 
