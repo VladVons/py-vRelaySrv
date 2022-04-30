@@ -9,9 +9,10 @@ Description:
 import os
 #
 from App import ConfApp
+from Inc.Plugin import Plugin
 from Inc.Log  import TEchoFile
 from IncP.Log  import Log, TEchoConsoleEx
-from Inc.Plugin import Plugin
+from IncP import Info
 
 
 class TApp():
@@ -32,7 +33,7 @@ class TApp():
         self.InitLog()
 
         UName = os.uname()
-        Log.Print(1, 'i', 'Run()', [UName.sysname, UName.nodename, os.environ.get('USER')])
+        Log.Print(1, 'i', 'Run()', [UName.sysname, UName.nodename, os.environ.get('USER'), Info.get('Version'), Info.get('Date')])
 
         Plugin.LoadList(ConfApp.get('Plugins'))
         try:
