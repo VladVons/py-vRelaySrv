@@ -40,7 +40,7 @@ class TForm(TFormBase):
             Err += '_Path: %s\n' % E.args
 
         Items = {}
-        ItemsStr = ''
+        ItemsStr = []
         for Key, Val in self.Data.items():
             if (Key.startswith(_FieldPrefix)) and (Val):
                 Key = Key.replace(_FieldPrefix, '')
@@ -48,10 +48,11 @@ class TForm(TFormBase):
                     Items[Key] = json.loads(f'[{Val}]')
                 except ValueError as E:
                     Err += '%s: %s\n' % (Key, E.args)
-                ItemsStr += '''
+
+                ItemsStr.append('''
                             "%s": [
                                 %s
-                            ]''' % (Key, Val)
+                            ]''' % (Key, Val))
         Script = {
             'Product': {
                 '_Group1': {
@@ -65,7 +66,7 @@ class TForm(TFormBase):
             {
                 "Product": {
                     "_Group1": {
-                        "_Path": [%s],
+                        "_Path": [[%s]],
                         "_Items": {
                             %s
                         }
@@ -73,7 +74,7 @@ class TForm(TFormBase):
                 }
             }
 
-        ''' % (self.Data.Path, ItemsStr)
+        ''' % (self.Data.Path, ','.join(ItemsStr))
 
         return (Script, FormatJsonStr(ScriptStr), Err)
 

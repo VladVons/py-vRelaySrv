@@ -117,12 +117,18 @@ class TSoupScheme():
                     Param = [aObj]
                     if (len(Item) == 2):
                         Param += Item[1]
-                    aObj = Obj(*Param)
+                    try:
+                        aObj = Obj(*Param)
+                    except Exception as E:
+                        aObj = None
+                        aRes[2].append('%s->%s %s' % (aPath, Item, E))
                 else:
                     aObj = getattr(aObj, Item[0], None)
                     if (aObj):
                         if (len(Item) == 2):
                             aObj = aObj(*Item[1])
+                    else:
+                        aRes[2].append('%s->%s unknown' % (aPath, Item))
 
                 if (aObj is None):
                     if (not '?' in aPath):
@@ -156,4 +162,5 @@ class TSoupScheme():
 
     @staticmethod
     def ParseKeys(aSoup, aData: dict) -> dict:
-        return {Key: TSoupScheme.Parse(aSoup, Val) for Key, Val in aData.items() if (not Key.startswith('-'))}
+        Res = {Key: TSoupScheme.Parse(aSoup, Val) for Key, Val in aData.items() if (not Key.startswith('-'))}
+        return Res
