@@ -38,11 +38,7 @@ def CreateErroMiddleware(aOverrides):
             Override = aOverrides.get(E.status)
             if (Override):
                 return await Override(request)
-        except Exception as E:
-            Log.Print(1, 'x', 'ErroMiddleware()', aE = E)
-            Override = aOverrides.get('def')
-            if (Override):
-                return await Override(request)
+            raise E
     return ErroMiddleware
 
 
@@ -118,7 +114,7 @@ class TWebSrv():
             web.get('/download/{Name:.*}', self._rDownload)
         ])
 
-        App.router.add_static('/www', self.DirRoot + '/' + self.Dir3w, show_index=True, follow_symlinks=True)
+        App.router.add_static('/', self.DirRoot + '/' + self.Dir3w, show_index=True, follow_symlinks=True)
 
         Middleware = CreateErroMiddleware({
             404: rErr_404,
