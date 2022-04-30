@@ -12,10 +12,25 @@
                 if (Object.keys(aData).length == 0) {
                     alert('request error')
                 }else{
-                    document.getElementById('Script').value = aData['Data']['scheme'];
+                    document.getElementById('Script').value = aData['Data']['Data']['scheme'];
                 }
             },
-            {'id': aId}
+            {
+                'id': aId
+            }
+        );
+    };
+
+    function BtnTest_OnClick() {
+        HttpRequest(
+            '/api/get_scheme_test',
+            function(aData) {
+                console.log('aData', aData);
+                document.getElementById('Output').value = JSON.stringify(aData, null, ' ');
+            },
+            {
+                'scheme': document.getElementById('Script').value
+            }
         );
     };
 </script>
@@ -28,7 +43,7 @@
 {% block content %}
     <table style="width:100%">
         <tr>
-            <td style="width: 50%">
+            <td style="width: 30%">
                 <div class="tableFixHead">
                 <table style="width:100%">
                     <tr>
@@ -43,6 +58,7 @@
                         <td>
                             {% if Rec.GetField('has_scheme') %}
                             <button onclick="BtnGet_OnClick({{ Rec.GetField('id') }})">get</button>
+                            <button onclick="BtnTest_OnClick()">test</button>
                             {% endif %}
                         </td>
                     </tr>
@@ -50,8 +66,11 @@
                 </table>
                 </div>
             </td>
-            <td>
+            <td style="width: 30%">
                 <textarea readonly name="Script" id="Script" rows="40">{{ Data.Script }}</textarea>
+            </td>
+            <td style="width: 30%">
+                <textarea readonly name="Output" id="Output" rows="40">{{ Data.Output }}</textarea>
             </td>
         </tr>
     </table>

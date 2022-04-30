@@ -14,6 +14,7 @@ from IncP.Log import Log, TEchoDb
 from IncP.DB.Scraper_pg import TDbApp
 from Inc.DB.DbList import TDbList
 from IncP.DB.Db import TDbSql
+from IncP.ApiWeb import TApiBase
 
 
 class TApiTask():
@@ -51,7 +52,7 @@ class TApiTask():
                     return Res
 
 
-class TApi():
+class TApi(TApiBase):
     Url = {
         'get_task':             {'param': []},
         'get_config':           {'param': ['user']},
@@ -64,85 +65,36 @@ class TApi():
 
     def __init__(self):
         self.Db: TDbApp = None
-        self.Cnt: int = 0
-
         self.ApiTask = TApiTask(self)
 
-    @staticmethod
-    def GetMethodName(aPath: str) -> str:
-        return 'path_' + aPath.replace('/', '_')
-
-    @staticmethod
-    def CheckParam(aParam: dict, aPattern: list):
-        Diff = set(aPattern) - set(aParam)
-        if (Diff):
-            return 'param not set. %s' % Diff
-
-        Diff = set(aParam) - set(aPattern)
-        if (Diff):
-            return 'param unknown. %s' % Diff
-
-    async def Call(self, aPath: str, aParam: str) -> dict:
-        UrlInf = self.Url.get(aPath)
-        if (UrlInf):
-            MethodName = self.GetMethodName(aPath)
-            Method = getattr(self, MethodName, None)
-            if (Method):
-                ParamInf = UrlInf.get('param')
-                if (ParamInf):
-                    Param = json.loads(aParam)
-                else:
-                    Param = {}
-
-                if (ParamInf) and (ParamInf[0] == '*'):
-                    ParamInf = Param.keys()
-
-                ErrMsg = self.CheckParam(Param, ParamInf)
-                if (ErrMsg):
-                    Log.Print(1, 'e', ErrMsg)
-                    Res = {'Err': ErrMsg}
-                else:
-                    try:
-                        Data = await Method(Param)
-                        self.Cnt += 1
-                    except Exception as E:
-                        Data = None
-                        Log.Print(1, 'x', 'Call()', aE=E)
-                    Res = {'Data': Data}
-            else:
-                Res = {'Err': 'unknown method %s' % (MethodName)}
-        else:
-            Res = {'Err': 'unknown url %s' % (aPath)}
-        return Res
-
-    async def path_get_task(self, aData: dict) -> dict:
+    async def path_get_task(self, aPath: str, aData: dict) -> dict:
         return await self.ApiTask.Get(aData)
 
-    async def path_get_config(self, aData: dict) -> dict:
+    async def path_get_config(self, aPath: str, aData: dict) -> dict:
         DBL = await self.Db.GetConfig(aData.get('user'))
         return DBL.Rec.GetAsDict()
 
-    async def path_get_scheme_empty(self, aData: dict) -> dict:
+    async def path_get_scheme_empty(self, aPath: str, aData: dict) -> dict:
         Dbl = await self.Db.GetSchemeEmpty()
         if (not Dbl.IsEmpty()):
             Dbl.Shuffle()
             return Dbl.Rec.GetAsDict()
 
-    async def path_get_scheme_by_id(self, aData: dict) -> dict:
+    async def path_get_scheme_by_id(self, aPath: str, aData: dict) -> dict:
         Dbl = await self.Db.GetSiteById(aData.get('id'))
         return Dbl.Rec.GetAsDict()
 
-    async def path_get_sites(self, aData: dict) -> dict:
+    async def path_get_sites(self, aPath: str, aData: dict) -> dict:
         Dbl = await self.Db.GetSites()
         return Dbl.Export()
 
-    async def path_add_sites(self, aData: dict) -> dict:
+    async def path_add_sites(self, aPath: str, aData: dict) -> dict:
         Data = aData.get('dbl')
         Dbl = TDbSql(self.Db).Import(Data)
         await Dbl.Insert('site')
         return True
 
-    async def path_send_result(self, aData: dict) -> dict:
+    async def path_send_result(self, aPath: str, aData: dict) -> dict:
         return True
 
     async def DbInit(self, aAuth: dict):

@@ -25,7 +25,7 @@ class TForm(TFormBase):
                 Lines = self.Data.Sites.splitlines()
                 Lines = [x.strip() for x in Lines if (x)]
 
-                DataA = await Api._Send('web/get_sites')
+                DataA = await Api.WebClient.Send('web/get_sites')
                 Data = DataA.get('Data', {}).get('Data')
                 if (Data):
                     Dbl = TDbList().Import(Data)
@@ -40,7 +40,7 @@ class TForm(TFormBase):
                     #UrlOk = [x.get('Url') for x in Data if (x.get('Status') == 200)]
                     UrlOk = [x for x in Diff[1] if CheckHost(x)]
 
-                    Data = await Api._Send('web/set_sites')
+                    Data = await Api.WebClient.Send('web/set_sites')
                     Output.append('New:')
                     Output += UrlOk
                     Output.append('')
@@ -54,7 +54,7 @@ class TForm(TFormBase):
                     if (UrlOk):
                         Dbl = TDbSql(None)
                         Dbl.InitList(('url', str), UrlOk)
-                        await Api._Send('add_sites', {'dbl': Dbl.Export()})
+                        await Api.WebClient.Send('web/add_sites', {'dbl': Dbl.Export()})
                 else:
                     self.Data.Output = Log.Print(1, 'e', 'Cant get data from server')
         return self._Render()

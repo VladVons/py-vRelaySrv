@@ -17,11 +17,61 @@ from Inc.DB.DbList import TDbList
 from IncP.Log import Log
 
 
+class TApiBase():
+    Url = {}
+
+    @staticmethod
+    def GetMethodName(aPath: str) -> str:
+        return 'path_' + aPath.replace('/', '_')
+
+    @staticmethod
+    def CheckParam(aParam: dict, aPattern: list):
+        Diff = set(aPattern) - set(aParam)
+        if (Diff):
+            return 'param not set. %s' % Diff
+
+        Diff = set(aParam) - set(aPattern)
+        if (Diff):
+            return 'param unknown. %s' % Diff
+
+    async def Call(self, aPath: str, aParam: str) -> dict:
+        UrlInf = self.Url.get(aPath)
+        if (UrlInf):
+            MethodName = self.GetMethodName(aPath)
+            Method = getattr(self, MethodName, None)
+            if (Method):
+                ParamInf = UrlInf.get('param')
+                if (ParamInf):
+                    Param = json.loads(aParam)
+                else:
+                    Param = {}
+
+                if (ParamInf) and (ParamInf[0] == '*'):
+                    ParamInf = Param.keys()
+
+                ErrMsg = self.CheckParam(Param, ParamInf)
+                if (ErrMsg):
+                    Log.Print(1, 'e', ErrMsg)
+                    Res = {'Err': ErrMsg}
+                else:
+                    try:
+                        Data = await Method(aPath, Param)
+                    except Exception as E:
+                        Data = None
+                        Log.Print(1, 'x', 'Call()', aE=E)
+                    Res = {'Data': Data}
+            else:
+                Res = {'Err': 'unknown method %s' % (MethodName)}
+        else:
+            Res = {'Err': 'unknown url %s' % (aPath)}
+        return Res
+
+
 class TWebClient():
     def __init__(self, aAuth: dict = {}):
         self.Auth = aAuth
 
-    async def _Send(self, aPath: str, aPost: dict = {}):
+    async def Send(self, aPath: str, aPost: dict = {}):
         Auth = aiohttp.BasicAuth(self.Auth.get('User'), self.Auth.get('Password'))
         Url = 'http://%s:%s/%s' % (self.Auth.get('Server'), self.Auth.get('Port'), aPath)
         TimeAt = time.time()
@@ -31,7 +81,7 @@ class TWebClient():
                     Data = await Response.json()
                     Res = {'Data': Data, 'Status': Response.status, 'Time': time.time() - TimeAt}
         except (aiohttp.ContentTypeError, aiohttp.ClientConnectorError, aiohttp.InvalidURL) as E:
-            ErrMsg = Log.Print(1, 'x', '_Send(). %s' % (Url), aE = E)
+            ErrMsg = Log.Print(1, 'x', 'Send(). %s' % (Url), aE = E)
             Res = {'Err': E, 'Msg': ErrMsg, 'Time': time.time() - TimeAt}
         return Res
 

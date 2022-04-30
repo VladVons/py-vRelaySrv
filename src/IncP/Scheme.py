@@ -138,6 +138,7 @@ class TSoupScheme():
 
     @staticmethod
     def Parse(aSoup, aData: dict, aPath: str = '') -> tuple:
+        #KeyAndVal, Keys, Err
         Res = (dict(), list(), list())
         for Key, Val in aData.items():
             Path = aPath + '/' + Key
@@ -162,5 +163,4 @@ class TSoupScheme():
 
     @staticmethod
     def ParseKeys(aSoup, aData: dict) -> dict:
-        Res = {Key: TSoupScheme.Parse(aSoup, Val) for Key, Val in aData.items() if (not Key.startswith('-'))}
-        return Res
+        return {Key: TSoupScheme.Parse(aSoup, Val) for Key, Val in aData.items() if (not Key.startswith('-'))}

@@ -23,11 +23,12 @@ from .Routes import *
 
 @streamer
 async def FileSender(writer, aFile: str):
+    Len = 2 ** 16
     with open(aFile, 'rb') as F:
-        Chunk = F.read(2 ** 16)
-        while (Chunk):
-            await writer.write(Chunk)
-            Chunk = F.read(2 ** 16)
+        Buf = F.read(Len)
+        while (Buf):
+            await writer.write(Buf)
+            Buf = F.read(Len)
 
 def CreateErroMiddleware(aOverrides):
     @web.middleware
@@ -90,11 +91,12 @@ class TWebSrv():
     async def _rApi(self, aRequest) -> web.Response:
         Name = aRequest.match_info.get('Name')
         Post = await aRequest.text()
-        PostObj = json.loads(Post)
-        Res = await Api._Send('web/' + Name, PostObj)
-        Res = Res.get("Data", {})
-        if (Res.get("Err", {})):
+        Res = await Api.Call(Name, Post)
+        if (Res.get('Err')):
+            Log.Print(1, 'e', '_rApi() %s' % (Res.get('Err')))
             Res = {}
+        else:
+            Res = Res.get('Data')
         return web.json_response(Res)
 
     async def _rForm(self, aRequest) -> web.Response:
