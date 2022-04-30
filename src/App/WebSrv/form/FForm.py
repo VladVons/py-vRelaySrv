@@ -10,6 +10,7 @@ Description:
 import aiohttp_jinja2
 #
 from IncP.Utils import TDictStr
+from IncP import Info
 
 
 class TFormBase():
@@ -19,6 +20,7 @@ class TFormBase():
         self.Request = aRequest
         self.Tpl = aTpl
         self.Data = TDictStr()
+        self.Info = Info
 
     async def PostToForm(self):
         Post = await self.Request.post()

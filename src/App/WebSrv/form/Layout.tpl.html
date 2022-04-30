@@ -17,7 +17,7 @@
         </div>
         <div class="space"/>
         <div id="footer" class="app-footer">
-            <a href="http://oster.com.ua">oster 2022</a>
+            <a href="{{ Form.Info.get('HomePage') }}">{{ '%s, %s, %s' % (Form.Info.get('HomePage'), Form.Info.get('Version'), Form.Info.get('Date')) }}</a>
         </div>
     </body>
 </html>
