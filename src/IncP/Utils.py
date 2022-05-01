@@ -8,6 +8,7 @@ Description:
 
 import json
 import random
+from functools import reduce
 
 
 class TJsonEncoder(json.JSONEncoder):
@@ -60,3 +61,13 @@ def GetRandStr(aLen: int) -> str:
 
 def GetRandStrPattern(aLen: int, aPattern = 'YourPattern') -> str:
     return ''.join((random.choice(aPattern)) for x in range(aLen))
+
+def GetNestedKey(aData: dict, aKeys: str, aDef = None):
+    for Key in aKeys.split('.'):
+        if (isinstance(aData, dict)):
+            aData = aData.get(Key)
+            if (aData is None):
+                return aDef
+        else:
+            return aDef
+    return aData

@@ -199,6 +199,9 @@ class TDbList():
         self.Rec = TDbRec(self)
         self.Init(aFields, aData)
 
+    def __len__(self):
+        return self.GetSize()
+
     def __iter__(self):
         return self
 
@@ -390,8 +393,5 @@ if (__name__ == '__main__'):
     Data = [['User2', 22, True], ['User1', 11, False], ['User3', 33, True], ['User4', 44, True]]
     Db1.SetData(Data)
 
-    #print(dir(Db1.Rec))
-    print(Db1.Rec[1])
-    #print(Db1.Rec.Field('112'))
-    print('end')
+    print(len(Db1))
 '''

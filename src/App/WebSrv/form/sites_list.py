@@ -10,13 +10,14 @@ Description:
 from .FForm import TFormBase
 from ..Api import Api
 from Inc.DB.DbList import TDbList
+from IncP.Utils import GetNestedKey
 
 class TForm(TFormBase):
     Title = 'Site list'
 
     async def Render(self):
         DataA = await Api.WebClient.Send('web/get_sites')
-        Data = DataA.get('Data', {}).get('Data')
+        Data = GetNestedKey(DataA, 'Data.Data')
         if (Data):
             self.Data.Sites = TDbList().Import(Data)
         return self._Render()

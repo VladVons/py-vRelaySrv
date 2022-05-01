@@ -15,7 +15,7 @@
                     var Scheme = aData['Data']['Data']['scheme']
                     document.getElementById('Script').value = Scheme;
                     var SchemeObj = JSON.parse(Scheme)
-                    document.getElementById('Url').value = SchemeObj['Product']['-Url'];
+                    document.getElementById('Url').value = SchemeObj['Product']['-Info']['Url'];
                 }
             },
             {

@@ -84,4 +84,8 @@ print()
 #asyncio.run(Test_speed())
 #Test_2()
 
-reduce(1,2)
+
+from IncP.Utils import GetNestedKey
+q1 = {'one': {'two': {'three': 3}}}
+q2 = GetNestedKey(q1, 'one.two.three.four', 'pink')
+print(q2)

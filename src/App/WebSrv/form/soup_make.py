@@ -7,6 +7,7 @@ Description:
 '''
 
 import json
+import datetime
 from bs4 import BeautifulSoup
 #
 from .FForm import TFormBase
@@ -55,6 +56,10 @@ class TForm(TFormBase):
                             ]''' % (Key, Val))
         Script = {
             'Product': {
+                '-Info': {
+                    'Url': self.Data.Url,
+                    'Date': datetime.date.today().strftime('%Y-%m-%d')
+                },
                 '_Group1': {
                     '_Path': [Path],
                     '_Items': Items
@@ -65,6 +70,10 @@ class TForm(TFormBase):
         ScriptStr = '''
             {
                 "Product": {
+                    "-Info": {
+                        "Url": "%s",
+                        "Date": "%s"
+                    },
                     "_Group1": {
                         "_Path": [[%s]],
                         "_Items": {
@@ -73,8 +82,7 @@ class TForm(TFormBase):
                     }
                 }
             }
-
-        ''' % (self.Data.Path, ','.join(ItemsStr))
+        ''' % (self.Data.Url, datetime.date.today().strftime('%Y-%m-%d'), self.Data.Path, ','.join(ItemsStr))
 
         return (Script, FormatJsonStr(ScriptStr), Err)
 

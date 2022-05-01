@@ -13,7 +13,7 @@ from IncP.ApiWeb import TApiBase, TWebClient
 from IncP.Scheme import TSoupScheme
 from IncP.Download import TDownload
 from IncP.Utils import TJsonEncoder
-
+from IncP.Utils import GetNestedKey
 
 class TApi(TApiBase):
     Url = {
@@ -35,7 +35,7 @@ class TApi(TApiBase):
         Scheme = aData['scheme']
         if (Scheme):
             Scheme = json.loads(Scheme)
-            Url = Scheme['Product'].get('-Url')
+            Url = GetNestedKey(Scheme, 'Product.-Info.Url')
             if (Url):
                 Download = TDownload()
                 UrlDown = await Download.Get(Url)
