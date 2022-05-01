@@ -74,39 +74,14 @@ async def Test_speed():
     from IncP.DownloadSpeed import TDownloadSpeed
     #Url = 'http://212.183.159.230/20MB.zip'
     Url = 'https://speed.hetzner.de/100MB.bin'
-    await TDownloadSpeed(3).Test(Url)
+    await TDownloadSpeed(5).Test(Url)
 
 
-
+print()
 #asyncio.run(TestA_1())
 #asyncio.run(TestA_2())
 #asyncio.run(Test_pyppeteer())
 #asyncio.run(Test_speed())
 #Test_2()
 
-#speed_test(1)
-
-
-
-
-
-class MyDecorator():
-    def __init__(self, aFunc):
-        self.Func = aFunc
-
-    def __call__(self, *args):
-        print('-----1')
-        Res = self.Func(*args)
-        print('-----2')
-        return Res
-
- 
-@MyDecorator
-def Func1(aMsg, aId):
-    print("Func1()", aMsg, aId)
-    return 1
- 
-
-q1 = Func1('Hello', 100)
-print(q1)
-
+reduce(1,2)

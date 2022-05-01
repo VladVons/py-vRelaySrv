@@ -24,12 +24,18 @@
         );
     };
 
-    function BtnTest_OnClick() {
+    function BtnTest_OnClick(aThis) {
+        var StartAt = Date.now();
+        document.getElementById('Output').value = '';
+
         HttpRequest(
             '/api/get_scheme_test',
             function(aData) {
                 console.log('aData', aData);
                 document.getElementById('Output').value = JSON.stringify(aData, null, ' ');
+
+                var Duration = (Date.now() - StartAt) / 1000
+                aThis.textContent = Duration.toFixed(2);
             },
             {
                 'scheme': document.getElementById('Script').value
@@ -72,7 +78,7 @@
                         <td>
                             {% if Rec.GetField('has_scheme') %}
                             <button onclick="BtnGet_OnClick({{ Rec.GetField('id') }})">get</button>
-                            <button onclick="BtnTest_OnClick()">test</button>
+                            <button onclick="return BtnTest_OnClick(this)">test</button>
                             {% endif %}
                         </td>
                     </tr>
