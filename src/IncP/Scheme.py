@@ -50,6 +50,18 @@ class TApi():
         return aVal.strip()
 
     @staticmethod
+    def StripAll(aData: str) -> str:
+        def Search(aData: str, aIter: list) -> int:
+            for i in aIter:
+                if (aData[i].isdigit() or aData[i].isalpha()):
+                    return i
+            return -1
+
+        L = Search(aData, range(len(aData)))
+        R = Search(aData, range(len(aData) - 1, L, -1))
+        return aData[L:R+1]
+
+    @staticmethod
     def List(aVal: list, aIdx: int) -> object:
         if (aIdx < len(aVal)):
             return aVal[aIdx]
@@ -59,7 +71,7 @@ class TApi():
         return (aVal in aStr.split('|'))
 
     @staticmethod
-    def Split(aVal: str, aDelim: str = ' ', aIdx: int = 0) -> str:
+    def Split(aVal: str, aDelim: str, aIdx: int) -> str:
         Arr = aVal.split(aDelim)
         if (aIdx <= len(aVal)):
             return Arr[aIdx].strip()
