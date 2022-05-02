@@ -11,6 +11,7 @@ import random
 from functools import reduce
 
 
+#--- Json ---
 class TJsonEncoder(json.JSONEncoder):
     def default(self, aObj):
         Type = type(aObj).__name__
@@ -25,10 +26,6 @@ class TJsonEncoder(json.JSONEncoder):
     @staticmethod
     def Dumps(aObj):
         return json.dumps(aObj, cls=TJsonEncoder)
-
-class TDictStr(dict):
-    def __getattr__(self, aName: str) -> object:
-        return self.get(aName, '')
 
 def FormatJsonStr(aScript: str, aPad: int = 2, aChar: str = ' ') -> str:
     Res = []
@@ -48,6 +45,24 @@ def FormatJsonStr(aScript: str, aPad: int = 2, aChar: str = ' ') -> str:
             Res.append((aChar * Spaces) + Line)
     return '\n'.join(Res)
 
+
+#--- Dictionary ---
+class TDictStr(dict):
+    def __getattr__(self, aName: str) -> object:
+        return self.get(aName, '')
+
+def GetNestedKey(aData: dict, aKeys: str, aDef = None):
+    for Key in aKeys.split('.'):
+        if (isinstance(aData, dict)):
+            aData = aData.get(Key)
+            if (aData is None):
+                return aDef
+        else:
+            return aDef
+    return aData
+
+
+#--- String ---
 def GetLeadCharCnt(aValue: str, aChar: str) -> int:
     return len(aValue) - len(aValue.lstrip(aChar))
 
@@ -61,13 +76,3 @@ def GetRandStr(aLen: int) -> str:
 
 def GetRandStrPattern(aLen: int, aPattern = 'YourPattern') -> str:
     return ''.join((random.choice(aPattern)) for x in range(aLen))
-
-def GetNestedKey(aData: dict, aKeys: str, aDef = None):
-    for Key in aKeys.split('.'):
-        if (isinstance(aData, dict)):
-            aData = aData.get(Key)
-            if (aData is None):
-                return aDef
-        else:
-            return aDef
-    return aData

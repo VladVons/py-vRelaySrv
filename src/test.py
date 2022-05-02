@@ -83,23 +83,3 @@ print()
 #asyncio.run(Test_pyppeteer())
 #asyncio.run(Test_speed())
 #Test_2()
-
-
-def StripAll(aData: str) -> str:
-    def Search(aData: str, aIter: list) -> int:
-        for i in aIter:
-            if (aData[i].isdigit() or aData[i].isalpha()):
-                return i
-        return -1
-
-    L = Search(aData, range(len(aData)))
-    R = Search(aData, range(len(aData) - 1, 0, -1))
-    return aData[L:R+1]
-
-Data = '\n ✓\n                                        У магазинах Алло             '
-print(StripStr(Data))
-Data = '   123'
-print(StripStr(Data))
-Data = ''
-print(StripStr(Data))
-pass

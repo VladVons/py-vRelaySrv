@@ -14,22 +14,49 @@ from IncP.Scheme import TSoupScheme
 from IncP.Download import TDownload
 from IncP.Utils import TJsonEncoder
 from IncP.Utils import GetNestedKey
+from Inc.DB.DbList import TDbList
+
 
 class TApi(TApiBase):
     Url = {
-        'get_scheme_empty':     {'param': []},
+        'get_scheme_empty_one': {'param': []},
         'get_scheme_by_id':     {'param': ['id']},
+        'get_scheme_find':      {'param': ['url']},
         'get_scheme_test':      {'param': ['scheme']}
     }
 
     def __init__(self):
         self.WebClient = TWebClient()
 
-    async def path_get_scheme_empty(self, aPath: str, aData: dict) -> dict:
+    async def path_get_scheme_empty_one(self, aPath: str, aData: dict) -> dict:
         return await self.WebClient.Send('web/' + aPath, aData)
 
     async def path_get_scheme_by_id(self, aPath: str, aData: dict) -> dict:
         return await self.WebClient.Send('web/' + aPath, aData)
+
+    async def path_get_scheme_find(self, aPath: str, aData: dict) -> dict:
+        Data = await self.WebClient.Send('web/get_scheme_not_empty', aData)
+        DataDbL = GetNestedKey(Data, 'Data.Data')
+        if (DataDbL):
+            DbL = TDbList().Import(DataDbL)
+
+            Url = aData.get('url')
+            Download = TDownload()
+            UrlDown = await Download.Get(Url)
+            if (UrlDown.get('Err')):
+                Res = {'Err': 'Error loading %s, %s' % (Url, UrlDown.get('Msg'))}
+            else:
+                Arr = []
+                Soup = BeautifulSoup(UrlDown['Data'], 'lxml')
+                for Rec in DbL:
+                    Scheme = json.loads(Rec.GetField('scheme'))
+                    Parsed = TSoupScheme.ParseKeys(Soup, Scheme)
+                    if (Parsed['Product'][0]):
+                        Arr.append((Rec.GetField('url'), Parsed['Product'][0]))
+                Res = {'Data': Arr}
+        else:
+            Res = {'Err': 'Error getting scheme'}
+        return Res
 
     async def path_get_scheme_test(self, aPath: str, aData: dict) -> dict:
         Scheme = aData['scheme']

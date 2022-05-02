@@ -52,7 +52,12 @@ class TDbApp(TDbPg):
             '''
         return await TDbSql(self).Fetch(Query)
 
-    async def GetSchemeEmpty(self, aLimit: int = 10) -> TDbSql:
+    async def GetScheme(self, aEmpty: bool = False, aLimit: int = 10) -> TDbSql:
+        if (aEmpty):
+            CondEmpty = '(site.scheme is null)'
+        else:
+            CondEmpty = '(site.scheme is not null)'
+
         Query = f'''
            select
                 site.id,
@@ -61,7 +66,7 @@ class TDbApp(TDbPg):
             from
                 site
             where
-                (site.scheme is null)
+                {CondEmpty}
             limit
                 {aLimit}
             '''

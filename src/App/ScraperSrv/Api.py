@@ -56,7 +56,8 @@ class TApi(TApiBase):
     Url = {
         'get_task':             {'param': []},
         'get_config':           {'param': ['user']},
-        'get_scheme_empty':     {'param': []},
+        'get_scheme_empty_one': {'param': []},
+        'get_scheme_not_empty': {'param': []},
         'get_scheme_by_id':     {'param': ['id']},
         'get_sites':            {'param': ['*']},
         'add_sites':            {'param': ['dbl']},
@@ -74,11 +75,15 @@ class TApi(TApiBase):
         DBL = await self.Db.GetConfig(aData.get('user'))
         return DBL.Rec.GetAsDict()
 
-    async def path_get_scheme_empty(self, aPath: str, aData: dict) -> dict:
-        Dbl = await self.Db.GetSchemeEmpty()
+    async def path_get_scheme_empty_one(self, aPath: str, aData: dict) -> dict:
+        Dbl = await self.Db.GetScheme(True)
         if (not Dbl.IsEmpty()):
             Dbl.Shuffle()
             return Dbl.Rec.GetAsDict()
+
+    async def path_get_scheme_not_empty(self, aPath: str, aData: dict) -> dict:
+        Dbl = await self.Db.GetScheme(False, 100)
+        return Dbl.Export()
 
     async def path_get_scheme_by_id(self, aPath: str, aData: dict) -> dict:
         Dbl = await self.Db.GetSiteById(aData.get('id'))
