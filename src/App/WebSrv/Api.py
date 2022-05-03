@@ -19,23 +19,27 @@ from Inc.DB.DbList import TDbList
 
 class TApi(TApiBase):
     Url = {
-        'get_scheme_empty_one': {'param': []},
-        'get_scheme_by_id':     {'param': ['id']},
-        'get_scheme_find':      {'param': ['url']},
-        'get_scheme_test':      {'param': ['scheme']}
+        'get_scheme_empty':         {'param': ['cnt']},
+        'get_scheme_not_empty':     {'param': ['cnt']},
+        'get_scheme_by_id':         {'param': ['id']},
+        'get_scheme_find':          {'param': ['url']},
+        'get_scheme_test':          {'param': ['scheme']}
     }
 
     def __init__(self):
         self.WebClient = TWebClient()
 
-    async def path_get_scheme_empty_one(self, aPath: str, aData: dict) -> dict:
+    async def path_get_scheme_empty(self, aPath: str, aData: dict) -> dict:
+        return await self.WebClient.Send('web/' + aPath, aData)
+
+    async def path_get_scheme_not_empty(self, aPath: str, aData: dict) -> dict:
         return await self.WebClient.Send('web/' + aPath, aData)
 
     async def path_get_scheme_by_id(self, aPath: str, aData: dict) -> dict:
         return await self.WebClient.Send('web/' + aPath, aData)
 
     async def path_get_scheme_find(self, aPath: str, aData: dict) -> dict:
-        Data = await self.WebClient.Send('web/get_scheme_not_empty', aData)
+        Data = await self.WebClient.Send('web/get_scheme_not_empty', {'cnt': 100})
         DataDbL = GetNestedKey(Data, 'Data.Data')
         if (DataDbL):
             DbL = TDbList().Import(DataDbL)

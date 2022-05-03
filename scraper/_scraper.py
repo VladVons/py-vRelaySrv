@@ -7,7 +7,7 @@ sys.path.append('../src')
 
 import json
 from bs4 import BeautifulSoup
-from IncP.Scheme import TScheme
+from IncP.Scheme import TSoupScheme
 
 
 def Test(aMod: str, aExt: str = '.html'):
@@ -55,11 +55,21 @@ def Find(aMod: str, aExt: str = '.html'):
         print()
 
 
-os.system('clear')
+def Trace(aMod: str, aExt: str = '.html'):
+    with open(aMod + aExt) as hFile:
+        Data = hFile.read()
 
+    Soup = BeautifulSoup(Data, 'lxml')
+    q1 = Soup.find('div', {'class': 'productPage'})
+    q2 = q1.find('span', {'class': 'allPriceForProduct'})
+    print(q2)
+
+
+os.system('clear')
 #Test('empire-tech.prom.ua')
 #Test('oster.com.ua')
 #Test('bigmo.com.ua')
 #Test('artline.ua')
+#Find('bigmo.com.ua')
 
-Find('bigmo.com.ua')
+Trace('mta.ua')

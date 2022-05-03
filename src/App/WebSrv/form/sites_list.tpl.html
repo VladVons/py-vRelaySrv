@@ -3,20 +3,18 @@
 {% block head %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 <script src="/js/ajax.js"></script>
+<script src="/js/TDbList.js"></script>
 <script>
     function BtnGet_OnClick(aId) {
         HttpRequest(
             '/api/get_scheme_by_id',
             function(aData) {
                 console.log('aData', aData);
-                if (Object.keys(aData).length == 0) {
-                    alert('request error')
-                }else{
-                    var Scheme = aData['Data']['Data']['scheme']
-                    document.getElementById('Script').value = Scheme;
-                    var SchemeObj = JSON.parse(Scheme)
-                    document.getElementById('Url').value = SchemeObj['Product']['-Info']['Url'];
-                }
+                DbL = new TDbList(aData["Data"]["Data"])
+                Scheme = DbL.Rec.GetField('scheme')
+                document.getElementById('Script').value = Scheme
+                SchemeObj = JSON.parse(Scheme)
+                document.getElementById('Url').value = SchemeObj['Product']['-Info']['Url']
             },
             {
                 'id': aId
@@ -25,17 +23,17 @@
     };
 
     function BtnTest_OnClick(aThis) {
-        var StartAt = Date.now();
-        document.getElementById('Output').value = '';
+        StartAt = Date.now();
+        document.getElementById('Output').value = ''
 
         HttpRequest(
             '/api/get_scheme_test',
             function(aData) {
-                console.log('aData', aData);
-                document.getElementById('Output').value = JSON.stringify(aData, null, ' ');
+                console.log('aData', aData)
+                document.getElementById('Output').value = JSON.stringify(aData, null, ' ')
 
-                var Duration = (Date.now() - StartAt) / 1000
-                aThis.textContent = Duration.toFixed(2);
+                Duration = (Date.now() - StartAt) / 1000
+                aThis.textContent = Duration.toFixed(2)
             },
             {
                 'scheme': document.getElementById('Script').value
@@ -45,21 +43,22 @@
 
     function BtnFind_OnClick() {
         if (document.getElementById('Url').value == '') {
-            alert("Url is empty");
-            return;
+            alert("Url is empty")
+            return
         }
 
-        var ObjScript = document.getElementById('Script')
-        ObjScript.value = '';
-        document.getElementById('Output').value = '';
+        ObjScript = document.getElementById('Script')
+        ObjScript.value = ''
+        document.getElementById('Output').value = ''
 
         HttpRequest(
             '/api/get_scheme_find',
             function(aData) {
+                console.log('aData', aData)
                 aData['Data'].forEach((aItem) => {
                     ObjScript.value += JSON.stringify(aItem, null, ' ') + '\n'
                     ObjScript.value += '\n---\n\n'
-                });
+                })
             },
             {
                 'url': document.getElementById('Url').value
@@ -69,12 +68,12 @@
 
     function BtnGo_OnClick() {
         if (document.getElementById('Url').value == '') {
-            alert("Url is empty");
-            return;
+            alert("Url is empty")
+            return
         }
 
-        var Url = document.getElementById("Url").value;
-        window.open(Url, '_blank').focus();
+        var Url = document.getElementById("Url").value
+        window.open(Url, '_blank').focus()
     };
 </script>
 <style>

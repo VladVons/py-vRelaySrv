@@ -54,7 +54,7 @@ Description:
         (op.eq, Db1.Fields.GetNo('Male'), True, True)
     ]
     Db2 = Db1.Clone(aCond=Cond)
-    print(Db2.Data)
+    print(Db2)
 
     Db1.Save('Db2.json')
     Db1.Load('Db2.json')
@@ -213,6 +213,19 @@ class TDbList():
             self._RecNo += 1
             return self.Rec
 
+    def __repr__(self):
+        Res = []
+        Spaces = 12
+        Repr = '%' + str(Spaces) + 's '
+
+        Fields = ['No'] + self.Fields.GetList()
+        Format = ''.join([Repr for x in Fields])
+        Res.append(Format % tuple(Fields))
+        for Idx, Data in enumerate(self.Data):
+            DataTrim = [str(x)[:Spaces] for x in Data]
+            Res.append(Format % tuple([Idx] + DataTrim))
+        return '\n'.join(Res)
+
     def _DbExp(self, aData: list, aFields: list) -> 'TDbList':
         DbFields = TDbFields()
         for Name in aFields:
@@ -234,7 +247,7 @@ class TDbList():
 
     @RecNo.setter
     def RecNo(self, aNo: int):
-        if (self.GetSize() == 0):
+        if (self.IsEmpty()):
             self._RecNo = 0
         else:
             if (aNo < 0):
@@ -387,11 +400,9 @@ class TDbList():
             self.Import(Data)
 
 
-'''
 if (__name__ == '__main__'):
     Db1 = TDbList( [('User', str), ('Age', int), ('Male', bool, True)] )
     Data = [['User2', 22, True], ['User1', 11, False], ['User3', 33, True], ['User4', 44, True]]
     Db1.SetData(Data)
-
-    print(len(Db1))
-'''
+    Db1.Save('dbl.json')
+    

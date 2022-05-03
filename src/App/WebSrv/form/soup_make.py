@@ -43,7 +43,7 @@ class TForm(TFormBase):
         Items = {}
         ItemsStr = []
         for Key, Val in self.Data.items():
-            if (Key.startswith(_FieldPrefix)) and (Val):
+            if (Key.startswith(_FieldPrefix)) and (Val) and (not Val.startswith('-')):
                 Key = Key.replace(_FieldPrefix, '')
                 try:
                     Items[Key] = json.loads(f'[{Val}]')

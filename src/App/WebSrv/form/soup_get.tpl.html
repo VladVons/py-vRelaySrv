@@ -3,26 +3,24 @@
 {% block head %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 <script src="/js/ajax.js"></script>
+<script src="/js/TDbList.js"></script>
 <script>
     function BtnGet_OnClick() {
         HttpRequest(
-            '/api/get_scheme_empty_one',
+            '/api/get_scheme_empty',
             function(aData) {
-                console.log("aData", aData);
-                if (Object.keys(aData).length == 0) {
-                    alert("request error")
-                }else{
-                    document.getElementById("Url").value = aData["Data"]["Data"]["url"];
-                }
+                console.log("aData", aData)
+                DbL = new TDbList(aData["Data"]["Data"])
+                document.getElementById("Url").value = DbL.Shuffle().GetField('url')
             },
-            {}
-        );
-    };
+            {'cnt': 5}
+        )
+    }
 
     function BtnGo_OnClick() {
-        var Url = document.getElementById("Url").value;
-        //window.location.href = Url;
-        window.open(Url, '_blank').focus();
+        var Url = document.getElementById("Url").value
+        //window.location.href = Url
+        window.open(Url, '_blank').focus()
     }
 </script>
 {% endblock %}
