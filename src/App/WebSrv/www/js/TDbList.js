@@ -74,6 +74,14 @@ class TDbRec {
         const Idx = this.Parent.Fields.GetNo(aName);
         this.Data[Idx] = aValue;
     }
+
+    GetAsDict() {
+        let Res = {}
+        for (const [Key, Value] of Object.entries(this.Parent.Fields.Data)) {
+            Res[Key] = this.Data[Value[0]];
+        }
+        return Res;
+    }
 }
 
 
@@ -86,6 +94,13 @@ class TDbList {
 
         if (Object.keys(aData).length > 0) {
             this.Import(aData);
+        }
+    }
+
+    *Items() {
+        for (let i = 0; i < this.GetSize(); i++) {
+            this.RecGo(i);
+            yield this.Rec;
         }
     }
 
@@ -159,10 +174,13 @@ class TDbList {
 Data1 = '{"Data": [["User2", 22, true], ["User1", 11, false], ["User3", 33, true], ["User4", 44, true]], "Head": [["User", "str", ""], ["Age", "int", 0], ["Male", "bool", true]], "Tag": 1}'
 Data2 = JSON.parse(Data1)
 DbL = new TDbList(Data2)
+console.log('AsDict', DbL.Rec.GetAsDict())
 
-console.log('size', DbL.GetSize())
-DbL.RecGo(-1)
 console.log('Field', DbL.Rec.GetField('User'))
+for (let Rec of DbL.Items()) {
+    console.log(Rec.GetField('User'));
+}
+
 DbL.RecAdd(['User5', 33, false])
 DbL.RecAdd()
 DbL.Rec.SetField('User', 'Pink')
@@ -172,6 +190,4 @@ console.log('size', DbL.GetSize())
 DbL.Shuffle()
 Data = DbL.Export()
 console.log(Data)
-
-console.log('end')
 */
