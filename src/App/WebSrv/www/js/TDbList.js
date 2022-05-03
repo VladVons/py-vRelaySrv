@@ -13,9 +13,9 @@ class TDbFields {
     }
 
     Add(aName, aType, aDef) {
-        var Def = {'str': '', 'int': 0, 'float': 0.0, 'bool': false, 'tuple': [], 'list': [], 'dict': {}}
+        const Def = {'str': '', 'int': 0, 'float': 0.0, 'bool': false, 'tuple': [], 'list': [], 'dict': {}}
         aDef = Def[aType]
-        var Len = Object.keys(this.Data).length
+        const Len = Object.keys(this.Data).length
         this.Data[aName] = [Len, aType, aDef]
         this.IdxOrd[Len] = [aName, aType, aDef]
     }
@@ -28,6 +28,15 @@ class TDbFields {
 
     GetNo(aName) {
         return this.Data[aName][0]
+    }
+
+    Export() {
+        var Res = []
+        const Len = Object.keys(this.Data).length
+        for (let i = 0; i < Len; i++) {
+            Res.push(this.IdxOrd[i])
+        }
+        return Res
     }
 }
 
@@ -46,8 +55,8 @@ class TDbRec {
     }
 
     Init() {
-        var Fields = this.Parent.Fields
-        var Len = Object.keys(Fields.Data).length
+        const Fields = this.Parent.Fields
+        const Len = Object.keys(Fields.Data).length
         this.Data = new Array(Len)
         for (let i = 0; i < Len; i++) {
             this.Data[i] = Fields.IdxOrd[i][2]
@@ -55,12 +64,12 @@ class TDbRec {
     }
 
     GetField(aName) {
-        var Idx = this.Parent.Fields.GetNo(aName)
+        const Idx = this.Parent.Fields.GetNo(aName)
         return this.Data[Idx]
     }
 
     SetField(aName, aValue) {
-        var Idx = this.Parent.Fields.GetNo(aName)
+        const Idx = this.Parent.Fields.GetNo(aName)
         this.Data[Idx] = aValue
     }
 }
@@ -100,6 +109,10 @@ class TDbList {
         this.RecGo(0)
     }
 
+    Export() {
+        return {'Data': this.Data, 'Head': this.Fields.Export(), 'Tag': this.Tag}
+    }
+
     GetSize() {
         return this.Data.length
     }
@@ -132,7 +145,7 @@ class TDbList {
     Shuffle() {
         this.Data = this.Data.sort(() => {
             const Rand = Math.random() > 0.5
-            return Rand ? 1 : -1
+            return (Rand ? 1 : -1)
         })
         this.RecGo(0)
         return this.Rec
@@ -144,6 +157,7 @@ class TDbList {
 Data1 = '{"Data": [["User2", 22, true], ["User1", 11, false], ["User3", 33, true], ["User4", 44, true]], "Head": [["User", "str", ""], ["Age", "int", 0], ["Male", "bool", true]], "Tag": 1}'
 Data2 = JSON.parse(Data1)
 DbL = new TDbList(Data2)
+
 console.log('size', DbL.GetSize())
 DbL.RecGo(-1)
 console.log('Field', DbL.Rec.GetField('User'))
@@ -152,5 +166,10 @@ DbL.RecAdd()
 DbL.Rec.SetField('User', 'Pink')
 DbL.Rec.Flush()
 console.log('size', DbL.GetSize())
+
+DbL.Shuffle()
+Data = DbL.Export()
+console.log(Data)
+
 console.log('end')
 */
