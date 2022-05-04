@@ -71,13 +71,15 @@ class TDbApp(TDbPg):
 
         Query = f'''
            select
-                site.id,
-                site.url,
-                site.scheme
+                id,
+                url,
+                scheme
             from
                 site
             where
                 {CondEmpty}
+            order by
+                id
             limit
                 {aLimit}
             '''
@@ -86,13 +88,13 @@ class TDbApp(TDbPg):
     async def GetSiteById(self, aId: int) -> TDbSql:
         Query = f'''
            select
-                site.id,
-                site.url,
-                site.scheme
+                id,
+                url,
+                scheme
             from
                 site
             where
-                (site.id = {aId})
+                (id = {aId})
             '''
         return await TDbSql(self).Fetch(Query)
 

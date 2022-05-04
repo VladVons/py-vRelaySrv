@@ -36,8 +36,8 @@ def Test_2():
 
 
 DbAuth = {
-    'Server': 'localhost',
-    'Database': 'test1',
+    'Server': '192.168.2.115',
+    'Database': 'scraper1',
     'User': 'postgres',
     'Password': '19710819'
 }
@@ -56,6 +56,16 @@ async def TestA_1():
     Res = Db1.ExportPair('name', 'data')
     print(Res)
 
+
+async def SaveScheme():
+    from IncP.DB.Scraper_pg import TDbApp
+
+    DbApp = TDbApp(DbAuth)
+    await DbApp.Connect()
+    Db1 = await DbApp.GetScheme(False, 1000)
+    await DbApp.Close()
+    print('Schemes', Db1.GetSize())
+    Db1.Save('Schemes.json', True)
 
 async def Test_pyppeteer():
     from pyppeteer import launch
@@ -82,4 +92,5 @@ print()
 #asyncio.run(TestA_2())
 #asyncio.run(Test_pyppeteer())
 #asyncio.run(Test_speed())
+asyncio.run(SaveScheme())
 #Test_2()

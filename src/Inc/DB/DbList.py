@@ -389,9 +389,12 @@ class TDbList():
         Res.SetData(self.Data.pop(aRecNo))
         return Res
 
-    def Save(self, aFile: str):
+    def Save(self, aFile: str, aFormat: bool = False):
         with open(aFile, 'w') as F:
-            Data = json.dumps(self.Export())
+            if (aFormat):
+                Data = json.dumps(self.Export(), indent=2, sort_keys=True, ensure_ascii=False)
+            else:
+                Data = json.dumps(self.Export())
             F.write(Data)
 
     def Load(self, aFile: str):
