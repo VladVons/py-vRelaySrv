@@ -390,12 +390,11 @@ class TDbList():
         return Res
 
     def Save(self, aFile: str, aFormat: bool = False):
-        with open(aFile, 'w') as F:
+        with open(aFile, 'w') as hF:
             if (aFormat):
-                Data = json.dumps(self.Export(), indent=2, sort_keys=True, ensure_ascii=False)
+                json.dump(self.Export(), hF, indent=2, sort_keys=True, ensure_ascii=False)
             else:
-                Data = json.dumps(self.Export())
-            F.write(Data)
+                json.dump(self.Export(), hF)
 
     def Load(self, aFile: str):
         with open(aFile, 'r') as F:

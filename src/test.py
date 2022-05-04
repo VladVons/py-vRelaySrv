@@ -65,7 +65,7 @@ async def SaveScheme():
     Db1 = await DbApp.GetScheme(False, 1000)
     await DbApp.Close()
     print('Schemes', Db1.GetSize())
-    Db1.Save('Schemes.json', True)
+    Db1.Save('Schemes.json', not True)
 
 async def Test_pyppeteer():
     from pyppeteer import launch
