@@ -14,7 +14,7 @@ Routes = web.RouteTableDef()
 async def rTest(aRequest):
     #Data = await aRequest.post()
     Name = aRequest.match_info.get('name', '')
-    Page = aRequest.rel_url.query.get("page", '')
+    Page = aRequest.rel_url.query.get('page', '')
 
     Context = {'name': 'pink_' + Name + ' + ' + Page}
     Response  = aiohttp_jinja2.render_template('about.tpl.html', aRequest, Context)

@@ -9,25 +9,25 @@
         HttpRequest(
             '/api/get_scheme_not_empty',
             function(aData) {
-                console.log("aData", aData);
-                let DbL = new TDbList(aData["Data"]["Data"]);
+                console.log('aData', aData);
+                let DbL = new TDbList(aData['Data']['Data']);
                 let Rec = DbL.Shuffle();
-                document.getElementById("Url").value = Rec.GetField('url');
-                document.getElementById("Script").value = Rec.GetField('scheme');
+                document.getElementById('Url').value = Rec.GetField('url');
+                document.getElementById('Script').value = Rec.GetField('scheme');
               },
             {'cnt': 5}
-        )
+        );
     }
 
     function BtnGo_OnClick() {
-        let Url = document.getElementById("Url").value;
+        let Url = document.getElementById('Url').value;
         window.open(Url, '_blank').focus();
     }
 </script>
 {% endblock %}
 
 {% block content %}
-<form name="FormParse" method="post" action="/form/soup_make?action=go" enctype="multipart/form-data">
+<form name="Form" method="post" action="/form/soup_make?action=go" enctype="multipart/form-data">
     <table style="width:100%">
       <tr>
         <td>Url</td>
@@ -45,7 +45,7 @@
       </tr>
       <tr>
         <td>Section</td>
-        <td>Name</td>>
+        <td>Name</td>
         <td>Price</td>
         <td>Price old</td>
       </tr>

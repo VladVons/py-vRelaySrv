@@ -108,7 +108,7 @@ class TWebSrv():
     async def Run(self):
         App = web.Application()
         App.add_routes([
-            web.get("/", self._rIndex),
+            web.get('/', self._rIndex),
             web.post('/api/{Name}', self._rApi),
             web.get('/form/{Name}', self._rForm),
             web.post('/form/{Name}', self._rForm),

@@ -25,10 +25,10 @@ class TWebSock():
     async def Api(self, aWebSocket, aPath: str):
         print('Api', aWebSocket, aPath)
         recv_text = await aWebSocket.recv()
-        print("recv_text:", aWebSocket.pong, recv_text)
+        print('recv_text:', aWebSocket.pong, recv_text)
 
-        response_text = f"Server return: {recv_text}"
-        print("response_text:", response_text)
+        response_text = f'Server return: {recv_text}'
+        print('response_text:', response_text)
         await aWebSocket.send(response_text)
 
     async def Handler(self, aWebSocket, aPath: str):
@@ -39,10 +39,10 @@ class TWebSock():
             try:
                 await self.Api(aWebSocket, aPath)
             except (websockets.ConnectionClosed, websockets.InvalidState):
-                print("Connection closed", aPath)
+                print('Connection closed', aPath)
                 break
             except Exception as E:
-                print("Exception:", E)
+                print('Exception:', E)
                 await asyncio.sleep(1)
 
     async def Run(self):

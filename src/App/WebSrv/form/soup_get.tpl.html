@@ -9,16 +9,16 @@
         HttpRequest(
             '/api/get_scheme_empty',
             function(aData) {
-                console.log("aData", aData);
-                let DbL = new TDbList(aData["Data"]["Data"]);
-                document.getElementById("Url").value = DbL.Shuffle().GetField('url');
+                console.log('aData', aData);
+                let DbL = new TDbList(aData['Data']['Data']);
+                document.getElementById('Url').value = DbL.Shuffle().GetField('url');
             },
             {'cnt': 5}
         )
     }
 
     function BtnGo_OnClick() {
-        let Url = document.getElementById("Url").value;
+        let Url = document.getElementById('Url').value;
         //window.location.href = Url;
         window.open(Url, '_blank').focus();
     }
@@ -26,7 +26,7 @@
 {% endblock %}
 
 {% block content %}
-<form name="FormParse" method="post" action="/form/soup_get?action=go" enctype="multipart/form-data">
+<form name="Form" method="post" action="/form/soup_get?action=go" enctype="multipart/form-data">
     <table style="width:100%">
         <tr>
             <th></th>

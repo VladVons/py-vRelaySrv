@@ -35,7 +35,7 @@ class TKbdTerm():
 
 
     async def Input(self, aPrompt = '') -> str:
-        sys.stdout.write("%s%s   \r" % (aPrompt, ''))
+        sys.stdout.write('%s%s   \r' % (aPrompt, ''))
 
         R = ''
         while True:
@@ -50,5 +50,5 @@ class TKbdTerm():
                     R = R[:-1]
                 else:
                     R += K
-                sys.stdout.write("%s%s   \r" % (aPrompt, R))
+                sys.stdout.write('%s%s   \r' % (aPrompt, R))
             await asyncio.sleep(0.5)

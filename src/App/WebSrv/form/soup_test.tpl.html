@@ -6,7 +6,7 @@
     <script src="/js/jquery-linedtextarea.js"></script>
     <script>
         $(function() {
-            $(".lined").linedtextarea({
+            $('.lined').linedtextarea({
                 selectedLine: 0
             });
         });
@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% block content %}
-<form name="FormParse" method="post" action="/form/soup_test?action=go" enctype="multipart/form-data">
+<form name="Form" method="post" action="/form/soup_test?action=go" enctype="multipart/form-data">
     <table width="100%">
         <tr>
             <td>url</td>

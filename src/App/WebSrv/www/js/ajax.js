@@ -21,12 +21,12 @@ function HttpRequest(aUrl, aFunc, aPostJson = null) {
             let Data = JSON.parse(xhr.responseText);
             aFunc(Data);
         } else {
-            console.log("Server error " + xhr.status);
+            console.log('Server error ' + xhr.status);
         }
     }
 
     xhr.onerror = function() {
-        console.log("Connection error");
+        console.log('Connection error');
     }
 
     if (aPostJson) {

@@ -56,7 +56,7 @@ class TMulUpload():
                     if (Line == b'\r\n'):
                         InHead = False
                     else:
-                        Arr = Line.decode("utf-8").split(':')
+                        Arr = Line.decode('utf-8').split(':')
                         if (Arr[0].lower() == 'content-disposition'):
                             Rec = self.ParseRec(Arr[1])
                             FileN = Rec.get('filename')

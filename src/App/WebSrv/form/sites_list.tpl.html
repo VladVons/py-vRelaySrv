@@ -13,7 +13,7 @@
             function(aData) {
                 console.log('aData', aData);
 
-                let DbL = new TDbList(aData["Data"]["Data"]);
+                let DbL = new TDbList(aData['Data']['Data']);
                 let Scheme = DbL.Rec.GetField('scheme');
                 document.getElementById('Script').value = Scheme;
                 let SchemeObj = JSON.parse(Scheme);
@@ -71,7 +71,7 @@
 
     function BtnFind_OnClick() {
         if (document.getElementById('Url').value == '') {
-            alert("Url is empty");
+            alert('Url is empty');
             return;
         }
 
@@ -94,11 +94,11 @@
 
     function BtnGo_OnClick() {
         if (document.getElementById('Url').value == '') {
-            alert("Url is empty");
+            alert('Url is empty');
             return;
         }
 
-        let Url = document.getElementById("Url").value;
+        let Url = document.getElementById('Url').value;
         window.open(Url, '_blank').focus();
     };
 </script>

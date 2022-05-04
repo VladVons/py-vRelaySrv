@@ -40,7 +40,7 @@ class MQTTClient:
         self.lw_retain = False
 
     def _send_str(self, s):
-        self.sock.write(struct.pack("!H", len(s)))
+        self.sock.write(struct.pack('!H', len(s)))
         self.sock.write(s)
 
     def _recv_len(self):
@@ -147,7 +147,7 @@ class MQTTClient:
         if qos > 0:
             self.pid += 1
             pid = self.pid
-            struct.pack_into("!H", pkt, 0, pid)
+            struct.pack_into('!H', pkt, 0, pid)
             self.sock.write(pkt, 2)
         self.sock.write(msg)
 
@@ -169,7 +169,7 @@ class MQTTClient:
 
         pkt = bytearray(b"\x82\0\0\0")
         self.pid += 1
-        struct.pack_into("!BH", pkt, 1, 2 + 2 + len(topic) + 1, self.pid)
+        struct.pack_into('!BH', pkt, 1, 2 + 2 + len(topic) + 1, self.pid)
         #print(hex(len(pkt)), hexlify(pkt, ":"))
         self.sock.write(pkt)
         self._send_str(topic)
@@ -219,7 +219,7 @@ class MQTTClient:
         await self.cb(topic, msg)
         if op & 6 == 2:
             pkt = bytearray(b"\x40\x02\0\0")
-            struct.pack_into("!H", pkt, 2, pid)
+            struct.pack_into('!H', pkt, 2, pid)
             self.sock.write(pkt)
         elif op & 6 == 4:
             assert 0
