@@ -18,7 +18,9 @@ from IncP.Log import Log
 
 
 class TApiBase():
-    Url = {}
+    def __init__(self):
+        self.Url = {}
+        self.DefMethod = None
 
     @staticmethod
     def GetMethodName(aPath: str) -> str:
@@ -38,7 +40,7 @@ class TApiBase():
         UrlInf = self.Url.get(aPath)
         if (UrlInf):
             MethodName = self.GetMethodName(aPath)
-            Method = getattr(self, MethodName, None)
+            Method = getattr(self, MethodName, self.DefMethod)
             if (Method):
                 ParamInf = UrlInf.get('param')
                 if (ParamInf):

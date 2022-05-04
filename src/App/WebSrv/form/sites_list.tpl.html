@@ -6,76 +6,102 @@
 <script src="/js/TDbList.js"></script>
 <script>
     function BtnGet_OnClick(aId) {
+        document.getElementById('Output').value = '';
+
         HttpRequest(
-            '/api/get_scheme_by_id',
+            '/api/get_scheme',
             function(aData) {
                 console.log('aData', aData);
-                DbL = new TDbList(aData["Data"]["Data"])
-                Scheme = DbL.Rec.GetField('scheme')
-                document.getElementById('Script').value = Scheme
-                SchemeObj = JSON.parse(Scheme)
-                document.getElementById('Url').value = SchemeObj['Product']['-Info']['Url']
+                let DbL = new TDbList(aData["Data"]["Data"]);
+                let Scheme = DbL.Rec.GetField('scheme');
+                document.getElementById('Script').value = Scheme;
+                let SchemeObj = JSON.parse(Scheme);
+                document.getElementById('Url').value = SchemeObj['Product']['-Info']['Url'];
             },
-            {
-                'id': aId
-            }
+            {'id': aId}
         );
     };
 
-    function BtnTest_OnClick(aThis) {
+    function BtnTest_OnClick(aId, aThis) {
         StartAt = Date.now();
-        document.getElementById('Output').value = ''
+        document.getElementById('Output').value = '';
 
         HttpRequest(
             '/api/get_scheme_test',
             function(aData) {
-                console.log('aData', aData)
-                document.getElementById('Output').value = JSON.stringify(aData, null, ' ')
+                console.log('aData', aData);
+                document.getElementById('Output').value = JSON.stringify(aData, null, ' ');
 
-                Duration = (Date.now() - StartAt) / 1000
-                aThis.textContent = Duration.toFixed(2)
+                let Duration = (Date.now() - StartAt) / 1000;
+                aThis.textContent = Duration.toFixed(2);
             },
-            {
-                'scheme': document.getElementById('Script').value
-            }
+            {'scheme': document.getElementById('Script').value}
+        );
+    };
+
+    function BtnSet_OnClick(aId, aUrl) {
+        let Script = document.getElementById('Script').value;
+        if (Script.trim().length < 0) {
+            window.alert('Script is empty');
+            return;
+        }
+
+        let Scheme = JSON.parse(Script);
+        let Url = Scheme['Product']['-Info']['Url'];
+        if (! Url.startsWith(aUrl)) {
+            window.alert('Url mismatch');
+            return;
+        }
+
+        if (! window.confirm('Save ' + aUrl + ' to database ?')) {
+          return;
+        }
+
+        HttpRequest(
+            '/api/set_scheme',
+            function(aData) {
+                console.log('aData', aData);
+                let Msg = aData['Err'] ? aData['Err'] : 'Saved';
+                window.alert(Msg);
+            },
+            {'id': aId, 'scheme': Script}
         );
     };
 
     function BtnFind_OnClick() {
         if (document.getElementById('Url').value == '') {
-            alert("Url is empty")
-            return
+            alert("Url is empty");
+            return;
         }
 
-        ObjScript = document.getElementById('Script')
-        ObjScript.value = ''
-        document.getElementById('Output').value = ''
+        let ObjScript = document.getElementById('Script')
+        ObjScript.value = '';
+        document.getElementById('Output').value = '';
 
         HttpRequest(
             '/api/get_scheme_find',
             function(aData) {
-                console.log('aData', aData)
+                console.log('aData', aData);
                 aData['Data'].forEach((aItem) => {
-                    ObjScript.value += JSON.stringify(aItem, null, ' ') + '\n'
-                    ObjScript.value += '\n---\n\n'
+                    ObjScript.value += JSON.stringify(aItem, null, ' ') + '\n';
+                    ObjScript.value += '\n---\n\n';
                 })
             },
-            {
-                'url': document.getElementById('Url').value
-            }
+            {'url': document.getElementById('Url').value}
         );
     };
 
     function BtnGo_OnClick() {
         if (document.getElementById('Url').value == '') {
-            alert("Url is empty")
-            return
+            alert("Url is empty");
+            return;
         }
 
-        var Url = document.getElementById("Url").value
-        window.open(Url, '_blank').focus()
+        let Url = document.getElementById("Url").value;
+        window.open(Url, '_blank').focus();
     };
 </script>
+
 <style>
     tr:nth-child(even) {background-color: #00ccff;}
     .tableFixHead      { overflow: auto; height: 600px; }
@@ -98,8 +124,9 @@
                     <tr>
                         <th>No</th>
                         <th style="width: 70%">Url</th>
-                        <th>Scheme</th>
+                        <th>Get</th>
                         <th>Test</th>
+                        <th>Set</th>
                     </tr>
                     {% for Rec in Data.Sites %}
                     <tr>
@@ -112,8 +139,11 @@
                         </td>
                         <td>
                             {% if Rec.GetField('has_scheme') %}
-                            <button onclick="BtnTest_OnClick(this)">test</button>
+                            <button onclick="BtnTest_OnClick( {{ Rec.GetField('id') }}, this)">test</button>
                             {% endif %}
+                        </td>
+                        <td>
+                            <button onclick="BtnSet_OnClick( {{ Rec.GetField('id') }}, '{{ Rec.GetField('url') }}' )">set</button>
                         </td>
                     </tr>
                     {% endfor %}
@@ -121,7 +151,7 @@
                 </div>
             </td>
             <td style="width: 30%">
-                <textarea readonly name="Script" id="Script" rows="40">{{ Data.Script }}</textarea>
+                <textarea name="Script" id="Script" rows="40">{{ Data.Script }}</textarea>
             </td>
             <td style="width: 30%">
                 <textarea readonly name="Output" id="Output" rows="40">{{ Data.Output }}</textarea>

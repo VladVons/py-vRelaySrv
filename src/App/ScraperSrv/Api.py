@@ -53,18 +53,21 @@ class TApiTask():
 
 
 class TApi(TApiBase):
-    Url = {
-        'get_task':             {'param': []},
-        'get_config':           {'param': ['user']},
-        'get_scheme_empty':     {'param': ['cnt']},
-        'get_scheme_not_empty': {'param': ['cnt']},
-        'get_scheme_by_id':     {'param': ['id']},
-        'get_sites':            {'param': ['*']},
-        'add_sites':            {'param': ['dbl']},
-        'send_result':          {'param': ['*']}
-    }
-
     def __init__(self):
+        super().__init__()
+
+        self.Url = {
+            'get_task':             {'param': []},
+            'get_config':           {'param': ['user']},
+            'get_scheme_empty':     {'param': ['cnt']},
+            'get_scheme_not_empty': {'param': ['cnt']},
+            'get_scheme':           {'param': ['id']},
+            'get_sites':            {'param': ['*']},
+            'add_sites':            {'param': ['dbl']},
+            'send_result':          {'param': ['*']},
+            'set_scheme':           {'param': ['id', 'scheme']}
+        }
+
         self.Db: TDbApp = None
         self.ApiTask = TApiTask(self)
 
@@ -83,9 +86,12 @@ class TApi(TApiBase):
         Dbl = await self.Db.GetScheme(False, aData.get('cnt', 1))
         return Dbl.Export()
 
-    async def path_get_scheme_by_id(self, aPath: str, aData: dict) -> dict:
+    async def path_get_scheme(self, aPath: str, aData: dict) -> dict:
         Dbl = await self.Db.GetSiteById(aData.get('id'))
         return Dbl.Export()
+
+    async def path_set_scheme(self, aPath: str, aData: dict) -> dict:
+        return await self.Db.SetScheme(aData.get('id'), aData.get('scheme'))
 
     async def path_get_sites(self, aPath: str, aData: dict) -> dict:
         Dbl = await self.Db.GetSites()

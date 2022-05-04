@@ -16,7 +16,7 @@ import jinja2
 import aiohttp_jinja2
 import base64
 #
-from Inc.Log import Log
+from IncP.Log import Log
 from .Api import Api
 from .Routes import *
 
@@ -94,7 +94,6 @@ class TWebSrv():
         Res = await Api.Call(Name, Post)
         if (Res.get('Err')):
             Log.Print(1, 'e', '_rApi() %s' % (Res.get('Err')))
-            Res = {}
         else:
             Res = Res.get('Data')
         return web.json_response(Res)

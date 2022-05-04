@@ -38,6 +38,17 @@ class TDbApp(TDbPg):
             ''' % (aId)
         await self.Exec(Query)
 
+    async def SetScheme(self, aId: int, aScheme: str):
+        Query = f'''
+            update
+                site
+            set
+                scheme = '{aScheme}'
+            where
+                (id = {aId})
+            '''
+        await self.Exec(Query)
+
     async def GetDbVersion(self) -> TDbSql:
         Query = f'''
             select

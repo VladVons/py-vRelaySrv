@@ -9,19 +9,19 @@
         HttpRequest(
             '/api/get_scheme_not_empty',
             function(aData) {
-                console.log("aData", aData)
-                DbL = new TDbList(aData["Data"]["Data"])
-                Rec = DbL.Shuffle()
-                document.getElementById("Url").value = Rec.GetField('url')
-                document.getElementById("Script").value = Rec.GetField('scheme')
+                console.log("aData", aData);
+                let DbL = new TDbList(aData["Data"]["Data"]);
+                let Rec = DbL.Shuffle();
+                document.getElementById("Url").value = Rec.GetField('url');
+                document.getElementById("Script").value = Rec.GetField('scheme');
               },
             {'cnt': 5}
         )
     }
 
     function BtnGo_OnClick() {
-        var Url = document.getElementById("Url").value
-        window.open(Url, '_blank').focus()
+        let Url = document.getElementById("Url").value;
+        window.open(Url, '_blank').focus();
     }
 </script>
 {% endblock %}

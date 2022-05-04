@@ -6,12 +6,13 @@ Description:
 '''
 
 
-__version__ = '1.0.1'
+__version__ = '1.0.2'
+__date__ =  '2022.05.04'
 
 Info = {
     'Version' : __version__,
+    'Date': __date__,
     'Author':  'Vladimir Vons',
-    'Date': '2022.05.02',
     'eMail': 'VladVons@gmail.com',
     'HomePage': 'http://oster.com.ua'
 }

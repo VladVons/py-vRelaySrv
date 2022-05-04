@@ -18,24 +18,22 @@ from Inc.DB.DbList import TDbList
 
 
 class TApi(TApiBase):
-    Url = {
-        'get_scheme_empty':         {'param': ['cnt']},
-        'get_scheme_not_empty':     {'param': ['cnt']},
-        'get_scheme_by_id':         {'param': ['id']},
-        'get_scheme_find':          {'param': ['url']},
-        'get_scheme_test':          {'param': ['scheme']}
-    }
-
     def __init__(self):
+        super().__init__()
+
+        self.Url = {
+            'get_scheme_empty':         {'param': ['cnt']},
+            'get_scheme_not_empty':     {'param': ['cnt']},
+            'get_scheme':               {'param': ['id']},
+            'get_scheme_find':          {'param': ['url']},
+            'get_scheme_test':          {'param': ['scheme']},
+            'set_scheme':               {'param': ['id', 'scheme']}
+        }
+
+        self.DefMethod = self.DefHandler
         self.WebClient = TWebClient()
 
-    async def path_get_scheme_empty(self, aPath: str, aData: dict) -> dict:
-        return await self.WebClient.Send('web/' + aPath, aData)
-
-    async def path_get_scheme_not_empty(self, aPath: str, aData: dict) -> dict:
-        return await self.WebClient.Send('web/' + aPath, aData)
-
-    async def path_get_scheme_by_id(self, aPath: str, aData: dict) -> dict:
+    async def DefHandler(self, aPath: str, aData: dict) -> dict:
         return await self.WebClient.Send('web/' + aPath, aData)
 
     async def path_get_scheme_find(self, aPath: str, aData: dict) -> dict:

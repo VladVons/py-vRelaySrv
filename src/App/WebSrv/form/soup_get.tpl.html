@@ -9,18 +9,18 @@
         HttpRequest(
             '/api/get_scheme_empty',
             function(aData) {
-                console.log("aData", aData)
-                DbL = new TDbList(aData["Data"]["Data"])
-                document.getElementById("Url").value = DbL.Shuffle().GetField('url')
+                console.log("aData", aData);
+                let DbL = new TDbList(aData["Data"]["Data"]);
+                document.getElementById("Url").value = DbL.Shuffle().GetField('url');
             },
             {'cnt': 5}
         )
     }
 
     function BtnGo_OnClick() {
-        var Url = document.getElementById("Url").value
-        //window.location.href = Url
-        window.open(Url, '_blank').focus()
+        let Url = document.getElementById("Url").value;
+        //window.location.href = Url;
+        window.open(Url, '_blank').focus();
     }
 </script>
 {% endblock %}

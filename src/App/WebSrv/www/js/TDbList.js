@@ -97,17 +97,34 @@ class TDbList {
         }
     }
 
-    *Items() {
+    *[Symbol.iterator]() {
         for (let i = 0; i < this.GetSize(); i++) {
-            this.RecGo(i);
+            this.RecNo = i;
             yield this.Rec;
         }
     }
 
     _RecInit() {
         if (! this.IsEmpty()) {
-            this.Rec.SetData(this.Data[this.RecNo]);
+            this.Rec.SetData(this.Data[this._RecNo]);
         }
+    }
+
+    get RecNo() {
+        return this._RecNo;
+    }
+
+    set RecNo(aNo) {
+        if (this.IsEmpty()) {
+            this._RecNo = 0;
+        }else{
+            if (aNo < 0) {
+                aNo = this.GetSize() + aNo;
+                this._RecNo = Math.min(aNo, this.GetSize() - 1);
+            }
+        }
+        this._RecNo = aNo;
+        this._RecInit();
     }
 
     IsEmpty() {
@@ -116,14 +133,14 @@ class TDbList {
 
     Empty() {
         this.Data = [];
-        this.RecNo = 0;
+        this._RecNo = 0;
     }
 
     Import(aData) {
         this.Tag = aData['Tag'];
         this.Data = aData['Data'];
         this.Fields = new TDbFields(aData['Head']);
-        this.RecGo(0);
+        this.RecNo = 0;
     }
 
     Export() {
@@ -134,19 +151,6 @@ class TDbList {
         return this.Data.length;
     }
 
-    RecGo(aNo) {
-        if (this.IsEmpty()) {
-            this.RecNo = 0;
-        }else{
-            if (aNo < 0) {
-                aNo = this.GetSize() + aNo;
-                this.RecNo = Math.min(aNo, this.GetSize() - 1);
-            }
-        }
-        this.RecNo = aNo;
-        this._RecInit();
-    }
-
     RecAdd(aData = []) {
         if (aData.length > 0) {
             this.Rec.SetData(aData);
@@ -155,8 +159,22 @@ class TDbList {
         }
 
         this.Data.push(this.Rec);
-        this.RecNo = this.GetSize() - 1;
+        this._RecNo = this.GetSize() - 1;
         return this.Rec;
+    }
+
+    Sort(aField) {
+        const Idx = this.Fields.GetNo(aField);
+        this.Data = this.Data.sort(function(aA, aB) {
+            if (aA[Idx] < aB[Idx]) {
+                return -1;
+            }else if (aA[Idx] > aB[Idx]) {
+                return 1;
+            } else {
+                return 0;
+            }
+        });
+        this.RecNo = 0;
     }
 
     Shuffle() {
@@ -164,7 +182,7 @@ class TDbList {
             const Rand = Math.random() > 0.5;
             return (Rand ? 1 : -1);
         });
-        this.RecGo(0);
+        this.RecNo = 0;
         return this.Rec;
     }
 }
@@ -176,8 +194,8 @@ Data2 = JSON.parse(Data1)
 DbL = new TDbList(Data2)
 console.log('AsDict', DbL.Rec.GetAsDict())
 
-console.log('Field', DbL.Rec.GetField('User'))
-for (let Rec of DbL.Items()) {
+DbL.Sort('User')
+for (let Rec of DbL) {
     console.log(Rec.GetField('User'));
 }
 

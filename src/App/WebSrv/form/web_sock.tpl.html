@@ -4,7 +4,7 @@
 <script>
     class TMyClass {
         constructor() {
-            this.Init()
+            this.Init();
         }
 
         Init() {
@@ -25,16 +25,16 @@
         }
 
         SendMsg() {
-            var Msg = document.getElementById('User').value;
+            let Msg = document.getElementById('User').value;
             document.getElementById('TextA1').value += Msg + '\n\n';
 
-            var Data = JSON.stringify({'Msg': Msg});
+            let Data = JSON.stringify({'Msg': Msg});
             this.ws.send(Data);
         }
     }
 
     console.log('start script');
-    MyClass = new TMyClass()
+    MyClass = new TMyClass();
 </script>
 {% endblock %}
 
