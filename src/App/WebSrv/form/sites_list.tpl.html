@@ -12,6 +12,7 @@
             '/api/get_scheme',
             function(aData) {
                 console.log('aData', aData);
+
                 let DbL = new TDbList(aData["Data"]["Data"]);
                 let Scheme = DbL.Rec.GetField('scheme');
                 document.getElementById('Script').value = Scheme;
@@ -19,23 +20,6 @@
                 document.getElementById('Url').value = SchemeObj['Product']['-Info']['Url'];
             },
             {'id': aId}
-        );
-    };
-
-    function BtnTest_OnClick(aId, aThis) {
-        StartAt = Date.now();
-        document.getElementById('Output').value = '';
-
-        HttpRequest(
-            '/api/get_scheme_test',
-            function(aData) {
-                console.log('aData', aData);
-                document.getElementById('Output').value = JSON.stringify(aData, null, ' ');
-
-                let Duration = (Date.now() - StartAt) / 1000;
-                aThis.textContent = Duration.toFixed(2);
-            },
-            {'scheme': document.getElementById('Script').value}
         );
     };
 
@@ -62,9 +46,26 @@
             function(aData) {
                 console.log('aData', aData);
                 let Msg = aData['Err'] ? aData['Err'] : 'Saved';
-                window.alert(Msg);
+                window.alert(Msg + ' ' + aUrl);
             },
             {'id': aId, 'scheme': Script}
+        );
+    };
+
+    function BtnTest_OnClick(aId, aThis) {
+        StartAt = Date.now();
+        document.getElementById('Output').value = '';
+
+        HttpRequest(
+            '/api/get_scheme_test',
+            function(aData) {
+                console.log('aData', aData);
+                document.getElementById('Output').value = JSON.stringify(aData, null, ' ');
+
+                let Duration = (Date.now() - StartAt) / 1000;
+                aThis.textContent = Duration.toFixed(2);
+            },
+            {'scheme': document.getElementById('Script').value}
         );
     };
 

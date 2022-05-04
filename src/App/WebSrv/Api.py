@@ -36,6 +36,23 @@ class TApi(TApiBase):
     async def DefHandler(self, aPath: str, aData: dict) -> dict:
         return await self.WebClient.Send('web/' + aPath, aData)
 
+    async def path_set_scheme(self, aPath: str, aData: dict) -> dict:
+        Scheme = json.loads(aData.get('scheme'))
+        Url = GetNestedKey(Scheme, 'Product.-Info.Url', '')
+
+        Download = TDownload()
+        UrlDown = await Download.Get(Url)
+        if (UrlDown.get('Err')):
+            Res = {'Err': 'Error loading %s, %s' % (Url, UrlDown.get('Msg'))}
+        else:
+            Soup = BeautifulSoup(UrlDown['Data'], 'lxml')
+            Parsed = TSoupScheme.ParseKeys(Soup, Scheme)
+            if (Parsed['Product'][2][0]):
+                Res = {'Err': Parsed['Product'][2]}
+            else:
+                Res = await self.DefHandler(aPath, aData)
+        return Res
+
     async def path_get_scheme_find(self, aPath: str, aData: dict) -> dict:
         Data = await self.WebClient.Send('web/get_scheme_not_empty', {'cnt': 100})
         DataDbL = GetNestedKey(Data, 'Data.Data')
