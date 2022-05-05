@@ -1,6 +1,11 @@
 {% extends "Layout.tpl.html" %}
 
 {% block head %}
+<style>
+    .trEven:nth-child(even) {background-color: #00ccff;}
+    .tableFixHead { overflow: auto; height: 600px; }
+</style>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 <script src="/js/ajax.js"></script>
 <script src="/js/TDbList.js"></script>
@@ -73,9 +78,9 @@
         if (document.getElementById('Url').value == '') {
             alert('Url is empty');
             return;
-        }
+        };
 
-        let ObjScript = document.getElementById('Script')
+        let ObjScript = document.getElementById('Script');
         ObjScript.value = '';
         document.getElementById('Output').value = '';
 
@@ -102,26 +107,21 @@
         window.open(Url, '_blank').focus();
     };
 </script>
-
-<style>
-    tr:nth-child(even) {background-color: #00ccff;}
-    .tableFixHead      { overflow: auto; height: 600px; }
-</style>
 {% endblock %}
 
 {% block content %}
-    <table style="width:100%">
-        <tr>
-            <td style="width: 20%">
-                <div class="tableFixHead">
+<table style="width:100%">
+    <tr>
+        <td colspan="2">
+            <input type="text" name="Url" id="Url" style="width:90%">
+            <button onclick="BtnGo_OnClick()">go</button>
+            <button onclick="BtnFind_OnClick()">find</button>
+        </td>
+    </tr>
+    <tr>
+        <td style="width: 20%">
+            <div class="tableFixHead">
                 <table style="width:100%">
-                    <tr>
-                        <td colspan="4">
-                            <input type="text" name="Url" id="Url" style="width:80%">
-                            <button onclick="BtnGo_OnClick()">go</button>
-                            <button onclick="BtnFind_OnClick()">find</button>
-                        </td>
-                    </tr>
                     <tr>
                         <th>No</th>
                         <th style="width: 70%">Url</th>
@@ -130,7 +130,7 @@
                         <th>Set</th>
                     </tr>
                     {% for Rec in Data.Sites %}
-                    <tr>
+                    <tr class="trEven">
                         <td>{{loop.index}}</td>
                         <td><a href="{{ Rec.GetField('url') }}">{{ Rec.GetField('url') }}</a></td>
                         <td>
@@ -149,14 +149,14 @@
                     </tr>
                     {% endfor %}
                 </table>
-                </div>
-            </td>
-            <td style="width: 30%">
-                <textarea name="Script" id="Script" rows="40">{{ Data.Script }}</textarea>
-            </td>
-            <td style="width: 30%">
-                <textarea readonly name="Output" id="Output" rows="40">{{ Data.Output }}</textarea>
-            </td>
-        </tr>
-    </table>
+            </div>
+        </td>
+        <td style="width: 30%">
+            <textarea name="Script" id="Script" rows="40">{{ Data.Script }}</textarea>
+        </td>
+        <td style="width: 30%">
+            <textarea readonly name="Output" id="Output" rows="40">{{ Data.Output }}</textarea>
+        </td>
+    </tr>
+</table>>
 {% endblock %}

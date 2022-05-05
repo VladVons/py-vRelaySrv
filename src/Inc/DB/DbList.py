@@ -136,6 +136,13 @@ class TDbRec(list):
     def Flush(self):
         self.Parent.Data[self.Parent._RecNo] = self.copy()
 
+    def Init(self):
+        Fields = self.Parent.Fields
+        Rec = [None] * len(Fields)
+        for Idx in range(len(Fields)):
+            Rec[Idx] = Fields.IdxOrd[Idx][2]
+        super().__init__(Rec)
+
     def GetField(self, aName: str) -> object:
         Idx = self.Parent.Fields.GetNo(aName)
         return self[Idx]
@@ -180,13 +187,6 @@ class TDbRec(list):
     def SetAsTuple(self, aData: tuple):
         [self.SetField(Key, Val) for Key, Val in aData]
         self.Flush()
-
-    def Init(self):
-        Fields = self.Parent.Fields
-        Rec = [None] * len(Fields)
-        for Idx in range(len(Fields)):
-            Rec[Idx] = Fields.IdxOrd[Idx][2]
-        super().__init__(Rec)
 
 
 class TDbList():
@@ -390,11 +390,11 @@ class TDbList():
         return Res
 
     def Save(self, aFile: str, aFormat: bool = False):
-        with open(aFile, 'w') as hF:
+        with open(aFile, 'w') as F:
             if (aFormat):
-                json.dump(self.Export(), hF, indent=2, sort_keys=True, ensure_ascii=False)
+                json.dump(self.Export(), F, indent=2, sort_keys=True, ensure_ascii=False)
             else:
-                json.dump(self.Export(), hF)
+                json.dump(self.Export(), F)
 
     def Load(self, aFile: str):
         with open(aFile, 'r') as F:
@@ -409,4 +409,3 @@ if (__name__ == '__main__'):
     Db1.SetData(Data)
     Db1.Save('dbl.json')
 '''
-    

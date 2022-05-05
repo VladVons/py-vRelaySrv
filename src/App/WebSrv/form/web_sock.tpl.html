@@ -5,7 +5,7 @@
     class TMyClass {
         constructor() {
             this.Init();
-        }
+        };
 
         Init() {
             this.ws = new WebSocket('ws://localhost:8081/ws/test');
@@ -22,7 +22,7 @@
             this.ws.onclose = function() {
                 alert('close');
             };
-        }
+        };
 
         SendMsg() {
             let Msg = document.getElementById('User').value;
@@ -30,8 +30,8 @@
 
             let Data = JSON.stringify({'Msg': Msg});
             this.ws.send(Data);
-        }
-    }
+        };
+    };
 
     console.log('start script');
     MyClass = new TMyClass();
