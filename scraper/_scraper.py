@@ -10,35 +10,11 @@ from bs4 import BeautifulSoup
 from IncP.Scheme import TSoupScheme
 
 
-def Test(aMod: str, aExt: str = '.html'):
-    print(aMod, aExt)
-
-    with open(aMod + '.json') as hFile:
-        Data = hFile.read()
-    Schema = json.loads(Data)
-
-    with open(aMod + aExt) as hFile:
-        Data = hFile.read()
-
-    TimeStart = time.time()
-    for i in range(1):
-        Soup = BeautifulSoup(Data, 'lxml')
-        #Soup = BeautifulSoup(Data, 'html.parser')
-
-        Item = Schema['Product']
-        Res = TScheme.Parse(Soup, Item)
-        #Res = (dict(), set(), list())
-        #Res = json.dumps(Res)
-        print(Res)
-    print('Time', time.time() - TimeStart)
-
-
 def Find(aMod: str, aExt: str = '.html'):
     with open(aMod + aExt) as hFile:
         Data = hFile.read()
 
     Soup = BeautifulSoup(Data, 'lxml')
-    
 
     #Text = '626'
     #Text = '635'
@@ -55,21 +31,45 @@ def Find(aMod: str, aExt: str = '.html'):
         print()
 
 
-def Trace(aMod: str, aExt: str = '.html'):
+def TestJson(aMod: str, aExt: str = '.html'):
+    print(aMod, aExt)
+
+    with open(aMod + '.json') as hFile:
+        Data = hFile.read()
+    Schema = json.loads(Data)
+
+    with open(aMod + aExt) as hFile:
+        Data = hFile.read()
+
+    TimeStart = time.time()
+    for i in range(1):
+        Soup = BeautifulSoup(Data, 'lxml')
+
+        Item = Schema['Product']
+        Res = TSoupScheme.Parse(Soup, Item)
+        print(Res)
+    print('Time', round(time.time() - TimeStart, 2))
+
+
+def TestPy(aMod: str, aExt: str = '.html'):
     with open(aMod + aExt) as hFile:
         Data = hFile.read()
 
     Soup = BeautifulSoup(Data, 'lxml')
-    q1 = Soup.find('div', {'class': 'productPage'})
-    q2 = q1.find('span', {'class': 'allPriceForProduct'})
-    print(q2)
+
+    Soup = Soup.find('div', {'class': 'product-view'})
+    Soup = Soup.find('div', {'class': 'p-trade-price__old'})
+    Soup = Soup.find('span', {'class': 'sum'})
+    Soup = Soup.text
+    print(Soup)
 
 
 os.system('clear')
-#Test('empire-tech.prom.ua')
-#Test('oster.com.ua')
-#Test('bigmo.com.ua')
-#Test('artline.ua')
+#TestJson('empire-tech.prom.ua')
+#TestJson('oster.com.ua')
+#TestJson('bigmo.com.ua')
+#TestJson('artline.ua')
 #Find('bigmo.com.ua')
 
-Trace('mta.ua')
+#TestPy('allo.ua-a')
+TestJson('allo.ua-a')
