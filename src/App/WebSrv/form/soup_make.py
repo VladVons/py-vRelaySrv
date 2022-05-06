@@ -23,13 +23,14 @@ _FieldPrefix = 'Script_'
 class TForm(TFormBase):
     Title = 'Soup make'
 
-    def StripDataLines(self, aPrefix: str):
-        for Key, Val in self.Data.items():
-            if (Key.startswith(aPrefix)) and (Val):
-                Str = ''
+    def StripDataLines(self, aKeys: list):
+        for Key in aKeys:
+            Val = self.Data[Key]
+            if (Val):
+                Arr = []
                 for Line in Val.splitlines():
-                    Str += Line.strip() + '\n'
-                self.Data[Key] = Str
+                    Arr.append(Line.strip())
+                self.Data[Key] = '\n'.join(Arr)
 
     def Compile(self) -> tuple:
         Err = ''
@@ -61,7 +62,7 @@ class TForm(TFormBase):
                     'Date': datetime.date.today().strftime('%Y-%m-%d')
                 },
                 '_Group1': {
-                    '_Path': [Path],
+                    '_Path': Path,
                     '_Items': Items
                 }
             }
@@ -75,7 +76,9 @@ class TForm(TFormBase):
                         "Date": "%s"
                     },
                     "_Group1": {
-                        "_Path": [[%s]],
+                        "_Path": [
+                            %s
+                        ],
                         "_Items": {
                             %s
                         }
@@ -88,7 +91,9 @@ class TForm(TFormBase):
 
     async def Render(self):
         if (await self.PostToForm()):
-            self.StripDataLines(_FieldPrefix)
+            FieldsScript = [Key for Key in self.Data if Key.startswith(_FieldPrefix)] + ['Path']
+            self.StripDataLines(FieldsScript)
+
             Script, ScriptStr, Err = self.Compile()
             if (Err):
                 self.Data.Script = ''

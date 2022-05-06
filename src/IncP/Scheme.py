@@ -32,8 +32,8 @@ class _If(enum.IntEnum):
     Sign = 0
     Script = 1
     Compare = 2
-    ResTrue = 3
-    ResFalse = 4
+    ResFalse = 3
+    ResTrue = 4
 
 class _Res(enum.IntEnum):
     KeyVal = 0
@@ -206,7 +206,7 @@ class TSoupScheme():
             if (aScheme[i + _If.Sign][0] == '?'):
                 R1 = TSoupScheme.GetItems(aObj, aScheme[i + _If.Script], aRes, aPath)
                 R2 = TSoupScheme.GetItem(R1, aScheme[i + _If.Compare], aRes, aPath)
-                Scheme = aScheme[i + _If.ResTrue + int(R2)]
+                Scheme = aScheme[i + _If.ResFalse + int(R2)]
                 aObj = TSoupScheme.GetItems(aObj, Scheme, aRes, aPath)
                 i += len(_If)
             else:

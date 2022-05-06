@@ -38,82 +38,111 @@
 
 {% block content %}
 <form name="Form" method="post" action="/form/soup_make?action=go" enctype="multipart/form-data">
-    <table style="width:100%">
-      <tr>
-        <td>Url</td>
-        <td colspan="2">
-          <input type="text" name="Url" id="Url" placeholder="url" style="width:100%" value="{{ Data.Url }}" required>
-        </td>
-        <td>
-          <button onclick="BtnGet_OnClick()">get</button>
-          <button onclick="BtnGo_OnClick()">go</button>
-        </td>
-      </tr>
-      <tr>
-        <td>Path</td>
-        <td colspan="2">
-          <input type="text" name="Path" placeholder="path script" style="width:100%" value="{{ Data.Path }}" required>
-        </td>
-        <td>
-          <select style="width:100%" id="SelHelp" onclick="SelHelp_OnClick(this)">
-            <optgroup label="- native -"></optgroup>
-              <option>["get", ["src"]]</option>
-              <option>["find_all", ["li"]]</option>
-              <option>["find", ["div", {"class": "content"}]]</option>
-              <option>["find", ["h1"]]</option>
-              <option>["text"]</option>
+  <table style="width:100%">
+    <tr>
+      <td colspan="2">
+        <input type="text" name="Url" id="Url" placeholder="url" style="width:100%" value="{{ Data.Url }}" required>
+      </td>
+      <td>
+        <button onclick="BtnGet_OnClick()">get</button>
+        <button onclick="BtnGo_OnClick()">go</button>
+        <select id="SelHelp" onclick="SelHelp_OnClick(this)">
+          <optgroup label="- top -"></optgroup>
+            <option>["equal", ["в наявності"]]</option>
+            <option>["find", ["div", {"class": "content"}]]</option>
+            <option>["find", ["h1"]]</option>
+            <option>["get", ["src"]]</option>
+            <option>["left", [5]]</option>
+            <option>["price"]</option>
+            <option>["split", [":", 1]]</option>
+            <option>["strip"]</option>
+            <option>["text"]</option>
             </optgroup>
-            <optgroup label="- extends -"></optgroup>
-              <option>["compare", ["truth,eq,ne,lt,gt..."]]</option>
-              <option>["dig_lat"]</option>
-              <option>["equal", ["в наявності"]]</option>
-              <option>["gets", ["key1.key2.key3..."]]</option>
-              <option>["json"]</option>
-              <option>["left", [5]]</option>
-              <option>["list", [1]]</option>
-              <option>["lower"]</option>
-              <option>["price"]</option>
-              <option>["replace", ["strFind", "strRepl"]]</option>
-              <option>["split", [":", 1]]</option>
-              <option>["strip_all"]</option>
-              <option>["strip"]</option>
-              <option>["sub", [0, 5]]</option>
-            </optgroup>
-          </select>
-        </td>
-      </tr>
-      <tr>
-        <td>Section</td>
-        <td>Name</td>
-        <td>Price</td>
-        <td>Price old</td>
-      </tr>
-      <tr>
-        <td>Script</td>
-        <td><textarea name="Script_Name" id="Script_Name" rows="5" onblur="OnBlur(this)">{{ Data.Script_Name }}</textarea></td>
-        <td><textarea name="Script_Price" id="Script_Price" rows="5" onblur="OnBlur(this)">{{ Data.Script_Price }}</textarea></td>
-        <td><textarea name="Script_PriceOld" id="Script_PriceOld" rows="5" onblur="OnBlur(this)">{{ Data.Script_PriceOld }}</textarea></td>
-      </tr>
-      <tr>
-        <td>Section</td>
-        <td>Stock</td>
-        <td>Image</td>
-        <td>SKU</td>
-      </tr>
-      <tr>
-        <td>Script</td>
-        <td><textarea name="Script_Stock" id="Script_Stock" rows="5" onblur="OnBlur(this)">{{ Data.Script_Stock }}</textarea></td>
-        <td><textarea name="Script_Image" id="Script_Image" rows="5" onblur="OnBlur(this)">{{ Data.Script_Image }}</textarea></td>
-        <td><textarea name="Script_SKU" id="Script_SKU" rows="5" onblur="OnBlur(this)">{{ Data.Script_SKU }}</textarea></td>
-      </tr>
-      <tr>
-        <td>Output</td>
-        <td colspan="2"><textarea readonly name="Script" id="Script" rows="25">{{ Data.Script }}</textarea></td>
-        <td colspan="2"><textarea readonly name="Output" id="Output" rows="25">{{ Data.Output }}</textarea></td>
-      </tr>
-     <tr>
-        <td colspan="5" style="text-align:center"><input type="submit" name="btn" value="OK" class="btn"></td>
-     </tr>
-    </table>
+          <optgroup label="- native -"></optgroup>
+            <option>["get", ["src"]]</option>
+            <option>["find_all", ["li"]]</option>
+            <option>["find", ["div", {"class": "content"}]]</option>
+            <option>["find", ["h1"]]</option>
+            <option>["text"]</option>
+          </optgroup>
+          <optgroup label="- extends -"></optgroup>
+            <option>["compare", ["truth,eq,ne,lt,gt..."]]</option>
+            <option>["dig_lat"]</option>
+            <option>["equal", ["в наявності"]]</option>
+            <option>["gets", ["key1.key2.key3..."]]</option>
+            <option>["json"]</option>
+            <option>["left", [5]]</option>
+            <option>["list", [1]]</option>
+            <option>["lower"]</option>
+            <option>["price"]</option>
+            <option>["replace", ["strFind", "strRepl"]]</option>
+            <option>["split", [":", 1]]</option>
+            <option>["strip_all"]</option>
+            <option>["strip"]</option>
+            <option>["sub", [0, 5]]</option>
+          </optgroup>
+        </select>
+    </td>
+    </tr>
+    <tr>
+      <td colspan="2">path</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <textarea name="Path" id="Path" rows="3" onblur="OnBlur(this)" required>{{ Data.Path }}</textarea>
+      </td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>name</td>
+      <td>price</td>
+      <td>price old</td>
+    </tr>
+    <tr>
+      <td>
+        <textarea name="Script_Name" id="Script_Name" rows="4" onblur="OnBlur(this)">{{ Data.Script_Name }}</textarea>
+      </td>
+      <td>
+        <textarea name="Script_Price" id="Script_Price" rows="4" onblur="OnBlur(this)">{{ Data.Script_Price }}</textarea>
+      </td>
+      <td>
+        <textarea name="Script_PriceOld" id="Script_PriceOld" rows="4" onblur="OnBlur(this)">{{ Data.Script_PriceOld }}</textarea>
+      </td>
+    </tr>
+    <tr>
+      <td>stock</td>
+      <td>image</td>
+      <td>sku</td>
+    </tr>
+    <tr>
+      <td>
+        <textarea name="Script_Stock" id="Script_Stock" rows="4" onblur="OnBlur(this)">{{ Data.Script_Stock }}</textarea>
+      </td>
+      <td>
+        <textarea name="Script_Image" id="Script_Image" rows="4" onblur="OnBlur(this)">{{ Data.Script_Image }}</textarea>
+      </td>
+      <td>
+        <textarea name="Script_SKU" id="Script_SKU" rows="4" onblur="OnBlur(this)">{{ Data.Script_SKU }}</textarea>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">script</td>
+      <td>result</td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <textarea readonly name="Script" id="Script" rows="20">{{ Data.Script }}</textarea>
+      </td>
+      <td>
+        <textarea readonly name="Output" id="Output" rows="20">{{ Data.Output }}</textarea>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="3" style="text-align:center">
+        <input type="submit" name="btn" value="OK" class="btn">
+      </td>
+    </tr>
+  </table>
 </form>
 {% endblock %}
