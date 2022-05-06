@@ -145,6 +145,10 @@ GitToServ()
   # add all new files
   git add -A -v
   GitSyncToServ "$aComment"
+
+  echo
+  echo "Size"
+  { find ./ -type f -name "*.py" -printf "%s+"; echo 0; } | bc
 }
 
 
