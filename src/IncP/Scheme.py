@@ -9,9 +9,11 @@ https://github.com/pythontoday/scrap_tutorial
 
 
 import re
+import json
 import operator
 import enum
 from Inc.Util.UObj import GetTree
+from IncP.Utils import GetNestedKey
 
 
 _Invisible = [' ', '\t', '\n', '\r', '\xA0']
@@ -114,6 +116,14 @@ class TApi():
             if ('0' <= x <= '9') or ('a' <= x <= 'z') or ('A' <= x <= 'Z') or (x in '.-/'):
                 Res += x
         return Res
+
+    @staticmethod
+    def json(aVal: str) -> dict:
+        return json.loads(aVal)
+
+    @staticmethod
+    def gets(aData: dict, aKeys: str):
+        return GetNestedKey(aData, aKeys)
 
 
 class TSoupScheme():

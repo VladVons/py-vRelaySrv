@@ -51,7 +51,7 @@ class TDictStr(dict):
     def __getattr__(self, aName: str) -> object:
         return self.get(aName, '')
 
-def GetNestedKey(aData: dict, aKeys: str, aDef = None):
+def GetNestedKey(aData: dict, aKeys: str, aDef = None) -> object:
     for Key in aKeys.split('.'):
         if (isinstance(aData, dict)):
             aData = aData.get(Key)

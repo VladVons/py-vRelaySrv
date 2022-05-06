@@ -1,13 +1,16 @@
 #!/usr/bin/python3 -B
 
-
-import os, sys, time, json
+import os, sys
 print(os.getcwd())
 sys.path.append('../src')
 
-import json
+import time, json
 from bs4 import BeautifulSoup
 from IncP.Scheme import TSoupScheme
+
+def WriteFile(aFile: str, aData: str):
+    with open(aFile, 'w') as F:
+        Data = F.write(aData)
 
 
 def Find(aMod: str, aExt: str = '.html'):
@@ -57,11 +60,23 @@ def TestPy(aMod: str, aExt: str = '.html'):
 
     Soup = BeautifulSoup(Data, 'lxml')
 
-    Soup = Soup.find('div', {'class': 'product-view'})
-    Soup = Soup.find('div', {'class': 'p-trade-price__old'})
-    Soup = Soup.find('span', {'class': 'sum'})
-    Soup = Soup.text
-    print(Soup)
+    Soup1 = Soup.find('div', {'class': 'product-page'})
+    print('--x1', bool(Soup1))
+    #WriteFile(aMod + '.txt', str(Soup1))
+
+    #Soup2 = Soup.find_all('div', {'class': 'product-page'})
+    #print('--x2', len(Soup2))
+
+    #Soup3 = Soup.find('script', {'type': 'application/ld+jso'})
+    Soup3 = Soup1.find('script', type='application/ld+json').text
+    Data1 = json.loads(Soup3)
+    #Data2 = json.dumps(Data1, indent=2, sort_keys=True, ensure_ascii=False)
+    #print('--x3', bool(Soup3), Data2)
+    #WriteFile(aMod + '.txt.json', Data2)
+
+
+    #Soup4 = Soup1.find('div', {'class': 'price'})
+    #print('--x4', bool(Soup4))
 
 
 os.system('clear')
@@ -72,4 +87,7 @@ os.system('clear')
 #Find('bigmo.com.ua')
 
 #TestPy('allo.ua-a')
-TestJson('allo.ua-a')
+#TestJson('allo.ua-a')
+
+#TestPy('can.ua')
+TestJson('can.ua')

@@ -1,0 +1,985 @@
+<div class="product-page">
+<div class="breadcrumbs">
+<div class="wrap clearfix">
+<span class="mob" itemscope="" itemtype="http://schema.org/BreadcrumbList">
+<span itemprop="itemListElement" itemscope="" itemtype="http://schema.org/ListItem">
+<a href="https://can.ua/" itemprop="item">
+<span class="hidden" itemprop="name">CAN.ua</span>
+<span><i class="icon2 icon2-108-home"></i></span>
+<meta content="1" itemprop="position"/>
+</a>
+</span>
+<span itemprop="itemListElement" itemscope="" itemtype="http://schema.org/ListItem">
+<a href="https://can.ua/pc-parts/c1451/" itemprop="item">
+<span itemprop="name">Комплектуючі для ПК</span>
+<meta content="2" itemprop="position"/>
+</a>
+</span>
+<span itemprop="itemListElement" itemscope="" itemtype="http://schema.org/ListItem">
+<a href="https://can.ua/ssd/c1475/" itemprop="item">
+<span itemprop="name">SSD диски</span>
+<meta content="3" itemprop="position"/>
+</a>
+</span>
+<span itemprop="itemListElement" itemscope="" itemtype="http://schema.org/ListItem">
+<a href="https://can.ua/ssd/adata-xpg/c1475/v10516/" itemprop="item">
+<span itemprop="name">ADATA XPG</span>
+<meta content="4" itemprop="position"/>
+</a>
+</span>
+<span itemprop="itemListElement" itemscope="" itemtype="http://schema.org/ListItem">
+<a href="https://can.ua/ssd/adata-xpg/adata-xpg-spectrix-s20g-ssd/c1475/v10516/s12400/" itemprop="item">
+<span itemprop="name">Spectrix S20G</span>
+<meta content="5" itemprop="position"/>
+</a>
+</span>
+<span itemprop="itemListElement" itemscope="" itemtype="http://schema.org/ListItem">
+<a href="https://can.ua/adata-xpg-spectrix-s20g-1tb-aspectrixs20g-1t-c/p253348/" itemprop="item">
+<span itemprop="name">SSD ADATA XPG Spectrix S20G 1TB M.2 NVMe (ASPECTRIXS20G-1T-C)</span>
+<meta content="6" itemprop="position"/>
+</a>
+</span>
+</span>
+</div>
+</div>
+<script type="application/ld+json">
+{"@context":"http:\/\/schema.org\/","@type":"Product","name":"SSD ADATA XPG Spectrix S20G 1TB M.2 NVMe (ASPECTRIXS20G-1T-C)","description":"\u0422\u0438\u043f \u043a\u043e\u043c\u0456\u0440\u043e\u043a \u043f\u0430\u043c'\u044f\u0442\u0456: 3D NAND\u0404\u043c\u043d\u0456\u0441\u0442\u044c: 1 \u0422\u0411\u0424\u043e\u0440\u043c-\u0444\u0430\u043a\u0442\u043e\u0440: M.2 2280\u0406\u043d\u0442\u0435\u0440\u0444\u0435\u0439\u0441: NVMe PCIe\u0428\u0432\u0438\u0434\u043a\u0456\u0441\u0442\u044c \u0447\u0438\u0442\u0430\u043d\u043d\u044f: \u0434\u043e 2500 \u041c\u0411\/\u0441","image":["https:\/\/i.can.ua\/goods\/7839\/7839094.jpg","https:\/\/i.can.ua\/goods\/7839\/7839104.jpg","https:\/\/i.can.ua\/goods\/7839\/7839114.jpg","https:\/\/i.can.ua\/goods\/7839\/7839124.jpg","https:\/\/i.can.ua\/goods\/7839\/7839134.jpg"],"url":"https:\/\/can.ua\/pc-parts\/ssd\/adata-xpg-spectrix-s20g-1tb-aspectrixs20g-1t-c.html","id":"https:\/\/can.ua\/pc-parts\/ssd\/adata-xpg-spectrix-s20g-1tb-aspectrixs20g-1t-c.html","sku":253348,"brand":{"@type":"Thing","name":"ADATA XPG"},"mpn":"ASPECTRIXS20G-1T-C","offers":{"url":"https:\/\/can.ua\/pc-parts\/ssd\/adata-xpg-spectrix-s20g-1tb-aspectrixs20g-1t-c.html","@type":"Offer","priceCurrency":"UAH","price":4109,"itemCondition":"http:\/\/schema.org\/NewCondition","availability":"http:\/\/schema.org\/InStock","priceValidUntil":"2022-05-07","seller":{"@type":"Organization","name":"https:\/\/can.ua\/"}},"aggregateRating":{"@type":"AggregateRating","ratingValue":5,"reviewCount":1,"bestRating":5},"review":{"@type":"Review","datePublished":"2021-06-03","description":"\u041e\u0442\u0437\u044b\u0432\u043e\u0432 \u043f\u0440\u043e \u044d\u0442\u043e\u0442 \u043d\u0430\u043a\u043e\u043f\u0438\u0442\u0435\u043b\u044c \u0432 \u0441\u0435\u0442\u0438 \u043f\u0440\u0430\u043a\u0442\u0438\u0447\u0435\u0441\u043a\u0438 \u043d\u0435\u0442, \u0440\u0435\u0448\u0438\u043b \u043d\u0430\u043f\u0438\u0441\u0430\u0442\u044c \u043a\u0440\u0430\u0442\u043a\u043e \u0441\u0432\u043e\u0439. \u0412 \u0438\u0441\u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u043d\u0438\u0438 \u0443\u0436\u0435 3 \u043c\u0435\u0441\u044f\u0446\u0430, \u0443\u0441\u0442\u0430\u043d\u043e\u0432\u043b\u0435\u043d \u0432 \u043d\u0430 \u043c\u0430\u0442\u0435\u0440\u0438\u043d\u0441\u043a\u0443\u044e \u043f\u043b\u0430\u0442\u0443 Asus Prime B550-Plus, \u0432 \u0441\u043b\u043e\u0442 \u0441 \u043f\u043e\u0434\u0434\u0435\u0440\u0436\u043a\u043e\u0439 pcie 3.0 x4. \u0417\u0430\u044f\u0432\u043b\u0435\u043d\u043d\u0443\u044e \u0441\u043a\u043e\u0440\u043e\u0441\u0442\u044c \u043e\u043d \u0434\u0435\u0440\u0436\u0438\u0442, \u043f\u0440\u0438 \u043f\u0440\u043e\u0433\u043e\u043d\u0435 \u043a\u0440\u0438\u0441\u0442\u0430\u043b \u0434\u0438\u0441\u043a \u043c\u0430\u0440\u043a \u0447\u0442\u0435\u043d\u0438\u0435 2432 \u041c\u0411, \u0437\u0430\u043f\u0438\u0441\u044c 1943 \u041c\u0411. \u041f\u0440\u0438 \u0437\u0430\u043f\u0438\u0441\u0438 \u043f\u0430\u0447\u043a\u0438 \u043c\u0435\u043b\u043a\u0438\u0445 \u0444\u0430\u0439\u043b\u043e\u0432 \u0431\u043e\u043b\u044c\u0448\u043e\u0433\u043e \u043e\u0431\u044a\u0435\u043c\u0430 \u0435\u0441\u0442\u044c \u043f\u0440\u043e\u0441\u0430\u0434\u043a\u0438, \u043d\u043e \u043d\u0435 \u043a\u0440\u0438\u0442\u0438\u0447\u043d\u044b\u0435. \u041a\u0440\u0430\u0441\u0438\u0432\u0430\u044f \u043f\u043e\u0434\u0441\u0432\u0435\u0442\u043a\u0430, \u043f\u043e\u0434\u0434\u0435\u0440\u0436\u0438\u0432\u0430\u0435\u0442\u0441\u044f Aura Sync. \u0415\u0441\u043b\u0438 \u0433\u043e\u0432\u043e\u0440\u0438\u0442\u044c \u0432 \u043e\u0431\u0449\u0435\u043c - \u043f\u043e\u043a\u0443\u043f\u043a\u043e\u0439 \u0434\u043e\u0432\u043e\u043b\u0435\u043d, \u0445\u043e\u0440\u043e\u0448\u043e \u0447\u0442\u043e \u0443\u0441\u043f\u0435\u043b \u0434\u043e \u0432\u0437\u043b\u0435\u0442\u0430 \u0446\u0435\u043d \u043d\u0430 SSD. \u041e\u0442\u0434\u0435\u043b\u044c\u043d\u044b\u0439 \u0440\u0435\u0441\u043f\u0435\u043a\u0442 \u043c\u0430\u0433\u0430\u0437\u0438\u043d\u0443, \u043d\u0430 \u043c\u043e\u043c\u0435\u043d\u0442 \u0437\u0430\u043a\u0430\u0437\u0430 \u0431\u044b\u043b \u0432 \u043d\u0430\u043b\u0438\u0447\u0438\u0438 \u0438 \u043e\u0442\u043f\u0440\u0430\u0432\u0438\u043b\u0438 \u0431\u0443\u043a\u0432\u0430\u043b\u044c\u043d\u043e \u0432 \u044d\u0442\u043e\u0442 \u0436\u0435 \u0434\u0435\u043d\u044c.","author":{"@type":"Thing","name":"\u041e\u043b\u0435\u0433 \u0417\u0430\u0434\u043e\u0440\u043e\u0436\u043d\u044b\u0439"},"reviewRating":{"@type":"Rating","bestRating":5,"worstRating":0,"ratingValue":"5"}}}
+</script>
+<div class="wrap clearfix" id="top-page-wrapper">
+<div name="msg"></div>
+<div class="title-wrap">
+<h1 id="goods_title">SSD ADATA XPG Spectrix S20G 1TB M.2 NVMe (ASPECTRIXS20G-1T-C)</h1>
+</div>
+<div class="product-page-wrap">
+<div class="big-photo-wrap" id="lightbox">
+<div class="tag tag-recommended level0">
+                Вибiр
+                <span class="title-label logo">
+<img src="https://i.can.ua/logo-white.svg"/>
+</span>
+</div>
+<a class="brand-logo" href="https://can.ua/producers/A/adata-xpg/"><img alt="ADATA XPG" class="brand-logo__image" src="https://i.can.ua/images/120x50/producers/22/22120.png"/></a>
+<div class="slider-wrapper" data-margin="5">
+<div class="slider-photo">
+<ul class="slider__list">
+<li class="slider__item">
+<img class="slider__image" onerror="this.src='https://i.can.ua/no_image.png';" src="https://i.can.ua/images/650x650/goods/7839/7839094.jpg"/>
+</li>
+<li class="slider__item">
+<img class="slider__image" onerror="this.src='https://i.can.ua/no_image.png';" src="https://i.can.ua/images/650x650/goods/7839/7839104.jpg"/>
+</li>
+<li class="slider__item">
+<img class="slider__image" onerror="this.src='https://i.can.ua/no_image.png';" src="https://i.can.ua/images/650x650/goods/7839/7839114.jpg"/>
+</li>
+<li class="slider__item">
+<img class="slider__image" onerror="this.src='https://i.can.ua/no_image.png';" src="https://i.can.ua/images/650x650/goods/7839/7839124.jpg"/>
+</li>
+<li class="slider__item">
+<img class="slider__image" onerror="this.src='https://i.can.ua/no_image.png';" src="https://i.can.ua/images/650x650/goods/7839/7839134.jpg"/>
+</li>
+</ul>
+</div>
+<div class="preview" data-item-size="80" data-max-items="6">
+<ul class="preview__list">
+<li class="preview__item preview__item-active">
+<img alt="SSD ADATA XPG Spectrix S20G 1TB M.2 NVMe (ASPECTRIXS20G-1T-C)" class="preview__image" height="60" onerror="this.src='https://i.can.ua/no_image.png';" src="https://i.can.ua/images/60x60/goods/7839/7839094.jpg" width="60"/>
+</li>
+<li class="preview__item">
+<img alt="SSD ADATA XPG Spectrix S20G 1TB M.2 NVMe (ASPECTRIXS20G-1T-C)" class="preview__image" height="60" onerror="this.src='https://i.can.ua/no_image.png';" src="https://i.can.ua/images/60x60/goods/7839/7839104.jpg" width="60"/>
+</li>
+<li class="preview__item">
+<img alt="SSD ADATA XPG Spectrix S20G 1TB M.2 NVMe (ASPECTRIXS20G-1T-C)" class="preview__image" height="60" onerror="this.src='https://i.can.ua/no_image.png';" src="https://i.can.ua/images/60x60/goods/7839/7839114.jpg" width="60"/>
+</li>
+<li class="preview__item">
+<img alt="SSD ADATA XPG Spectrix S20G 1TB M.2 NVMe (ASPECTRIXS20G-1T-C)" class="preview__image" height="60" onerror="this.src='https://i.can.ua/no_image.png';" src="https://i.can.ua/images/60x60/goods/7839/7839124.jpg" width="60"/>
+</li>
+<li class="preview__item">
+<img alt="SSD ADATA XPG Spectrix S20G 1TB M.2 NVMe (ASPECTRIXS20G-1T-C)" class="preview__image" height="60" onerror="this.src='https://i.can.ua/no_image.png';" src="https://i.can.ua/images/60x60/goods/7839/7839134.jpg" width="60"/>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="slider-popup">
+<div class="slider-popup__content">
+<h1 class="slider-popup__header">SSD ADATA XPG Spectrix S20G 1TB M.2 NVMe (ASPECTRIXS20G-1T-C)</h1>
+<button class="slider-popup__close"></button>
+<a class="slider__button slider__prev control-hide" href="#"></a>
+<a class="slider__button slider__next" href="#"></a>
+<div class="slider-photo-in-popup">
+<ul class="slider__list slider__list-in-popup">
+<li class="slider__item slider__item-in-popup">
+<div class="slider__zoom">
+<img alt="SSD ADATA XPG Spectrix S20G 1TB M.2 NVMe (ASPECTRIXS20G-1T-C)" class="slider__image slider__image-zoomerable" data-size="1310" data-src="https://i.can.ua/goods/7839/7839094.jpg" onerror="this.src='https://i.can.ua/no_image.png';" src="https://i.can.ua/images/700x700/goods/7839/7839094.jpg"/>
+</div>
+<a class="slider__link" hidden="" href="https://i.can.ua/goods/7839/7839094.jpg" target="_blank">
+										Открыть большое фото в новом окне (1310x1310)
+									</a>
+</li>
+<li class="slider__item slider__item-in-popup">
+<div class="slider__zoom">
+<img alt="SSD ADATA XPG Spectrix S20G 1TB M.2 NVMe (ASPECTRIXS20G-1T-C)" class="slider__image slider__image-zoomerable" data-size="1340" data-src="https://i.can.ua/goods/7839/7839104.jpg" onerror="this.src='https://i.can.ua/no_image.png';" src="https://i.can.ua/images/700x700/goods/7839/7839104.jpg"/>
+</div>
+<a class="slider__link" hidden="" href="https://i.can.ua/goods/7839/7839104.jpg" target="_blank">
+										Открыть большое фото в новом окне (1340x1340)
+									</a>
+</li>
+<li class="slider__item slider__item-in-popup">
+<div class="slider__zoom">
+<img alt="SSD ADATA XPG Spectrix S20G 1TB M.2 NVMe (ASPECTRIXS20G-1T-C)" class="slider__image slider__image-zoomerable" data-size="1300" data-src="https://i.can.ua/goods/7839/7839114.jpg" onerror="this.src='https://i.can.ua/no_image.png';" src="https://i.can.ua/images/700x700/goods/7839/7839114.jpg"/>
+</div>
+<a class="slider__link" hidden="" href="https://i.can.ua/goods/7839/7839114.jpg" target="_blank">
+										Открыть большое фото в новом окне (1300x1300)
+									</a>
+</li>
+<li class="slider__item slider__item-in-popup">
+<div class="slider__zoom">
+<img alt="SSD ADATA XPG Spectrix S20G 1TB M.2 NVMe (ASPECTRIXS20G-1T-C)" class="slider__image slider__image-zoomerable" data-size="1500" data-src="https://i.can.ua/goods/7839/7839124.jpg" onerror="this.src='https://i.can.ua/no_image.png';" src="https://i.can.ua/images/700x700/goods/7839/7839124.jpg"/>
+</div>
+<a class="slider__link" hidden="" href="https://i.can.ua/goods/7839/7839124.jpg" target="_blank">
+										Открыть большое фото в новом окне (1500x1500)
+									</a>
+</li>
+<li class="slider__item slider__item-in-popup">
+<div class="slider__zoom">
+<img alt="SSD ADATA XPG Spectrix S20G 1TB M.2 NVMe (ASPECTRIXS20G-1T-C)" class="slider__image slider__image-zoomerable" data-size="1360" data-src="https://i.can.ua/goods/7839/7839134.jpg" onerror="this.src='https://i.can.ua/no_image.png';" src="https://i.can.ua/images/700x700/goods/7839/7839134.jpg"/>
+</div>
+<a class="slider__link" hidden="" href="https://i.can.ua/goods/7839/7839134.jpg" target="_blank">
+										Открыть большое фото в новом окне (1360x1360)
+									</a>
+</li>
+</ul>
+</div>
+<div class="preview preview-popup" data-item-size="80" data-margin="5" data-max-items="6">
+<ul class="preview__list">
+<li class="preview__item preview__item-active">
+<img class="preview__image" height="60" onerror="this.src='https://i.can.ua/no_image.png';" src="https://i.can.ua/images/60x60/goods/7839/7839094.jpg" width="60"/>
+</li>
+<li class="preview__item">
+<img class="preview__image" height="60" onerror="this.src='https://i.can.ua/no_image.png';" src="https://i.can.ua/images/60x60/goods/7839/7839104.jpg" width="60"/>
+</li>
+<li class="preview__item">
+<img class="preview__image" height="60" onerror="this.src='https://i.can.ua/no_image.png';" src="https://i.can.ua/images/60x60/goods/7839/7839114.jpg" width="60"/>
+</li>
+<li class="preview__item">
+<img class="preview__image" height="60" onerror="this.src='https://i.can.ua/no_image.png';" src="https://i.can.ua/images/60x60/goods/7839/7839124.jpg" width="60"/>
+</li>
+<li class="preview__item">
+<img class="preview__image" height="60" onerror="this.src='https://i.can.ua/no_image.png';" src="https://i.can.ua/images/60x60/goods/7839/7839134.jpg" width="60"/>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="option-product-wrap" id="goods253348">
+<div class="id-wrap">
+<span>Код: </span>
+<em id="ext_id_block">332365</em>
+<div class="reviews-wrap mobile">
+<div class="rating">
+<i class="icon-19_star active"></i>
+<i class="icon-19_star active"></i>
+<i class="icon-19_star active"></i>
+<i class="icon-19_star active"></i>
+<i class="icon-19_star active"></i>
+</div>
+<div class="rating-result">
+<a href="https://can.ua/adata-xpg-spectrix-s20g-1tb-aspectrixs20g-1t-c/p253348/#tab=comments" name="switch_to_comments">
+                1
+                відгук
+            </a>
+</div>
+</div>
+</div>
+<div class="price-wrap-product clearfix loadable">
+<div class="col-l" name="buy_details">
+<div class="return" name="return_block"></div>
+<div class="status"><i class="icon-37_sklad hidden"></i></div>
+<input id="one-click-toggle" type="checkbox"/>
+<label class="one-click-shadow" for="one-click-toggle"></label>
+<div class="order-click one-click-mobile" id="one-click-purchase"></div>
+</div>
+<div class="col-r">
+<div class="item" name="wishlists_details"></div>
+<div class="item" id="price-inspector"></div>
+<div class="item" name="watchprice_details"></div>
+<div class="item" name="compare_details"></div>
+</div>
+</div>
+<div class="reviews-wrap">
+<div class="col-r">
+<div itemprop="aggregateRating" itemscope="" itemtype="http://schema.org/AggregateRating">
+<meta content="5" itemprop="ratingValue"/>
+<meta content="5" itemprop="bestRating"/>
+<meta content="1" itemprop="reviewCount"/>
+</div>
+<div class="rating">
+<i class="icon-19_star active"></i>
+<i class="icon-19_star active"></i>
+<i class="icon-19_star active"></i>
+<i class="icon-19_star active"></i>
+<i class="icon-19_star active"></i>
+</div>
+<div class="rating-result">
+<a href="https://can.ua/adata-xpg-spectrix-s20g-1tb-aspectrixs20g-1t-c/p253348/#tab=comments" name="switch_to_comments">
+                1
+                відгук
+            </a>
+</div>
+</div>
+</div>
+</div>
+<div class="info-delivery-wrap" name="delivery_information">
+<div class="delivery-wrap">
+<div class="delivery-title">Доставка в</div>
+<div class="city-popup">
+<div class="select">
+<a>
+<span class="selected">Інший</span>
+</a>
+</div>
+</div>
+</div>
+<div class="box-item-delivery hidden" data-city="1976" data-payment_method_ids="2,3,7,8,9,10" name="delivery_block">
+<div class="col-l clearfix">
+<div class="icon"><i class="icon2-pickup-icon"></i></div>
+<div class="info">
+                                    Самовивіз
+                                    <span class="sub">Самовивіз у м. Київ</span>
+</div>
+<div class="price-info">
+
+                                                                    
+                                                                                безкоштовно
+                                                                                                                                            </div>
+</div>
+<div class="col-r">
+<div class="info">                                                                                                            Можна забрати
+                                                                                                                                     за <strong>1-3 дні</strong></div>
+</div>
+<div class="info-icon" style="cursor: pointer;">
+<i class="icon2-info-icon" id="ttd599b455_tooltip"></i>
+</div>
+<div id="ttd599b455_content" style="display: none;">
+<div style="background-color: #fff; text-align: left; padding: 20px;">
+<h2>Самовивіз у м. Київ</h2>
+<p> Ви можете самостійно забрати товар в нашій точці видачі розташованої на Подолі в зручний для Вас час.
+</p><p> Будемо раді бачити Вас за адресою: м Київ, вул. Братська, 4 (вхід з вул. Андріївська).
+</p><p> Поряд метро Поштова площа (490 метрів), Контрактова площа (780 метрів).
+</p><p> Час роботи: Пн-Сб: 10:00 — 17:00, Нд: вихідний.
+                                </p></div>
+</div>
+</div>
+<div class="box-item-delivery hidden" data-city="1896" data-payment_method_ids="2,3,7,8,9,10" name="delivery_block">
+<div class="col-l clearfix">
+<div class="icon"><i class="icon2-pickup-icon"></i></div>
+<div class="info">
+                                    Самовивіз
+                                    <span class="sub">Самовивіз у м. Дніпро</span>
+</div>
+<div class="price-info">
+
+                                                                    
+                                                                                безкоштовно
+                                                                                                                                            </div>
+</div>
+<div class="col-r">
+<div class="info">                                                                                                            Можна забрати
+                                                                                                                                     <strong>сьогодні</strong></div>
+</div>
+<div class="info-icon" style="cursor: pointer;">
+<i class="icon2-info-icon" id="ttaf6cbdc9_tooltip"></i>
+</div>
+<div id="ttaf6cbdc9_content" style="display: none;">
+<div style="background-color: #fff; text-align: left; padding: 20px;">
+<h2>Самовивіз у м. Дніпро</h2>
+<p>Ви можете самостійно забрати товар в нашій точці видачі розташованої в центрі міста.
+</p><p>Будемо раді Вас бачити за адресою: м Дніпро, вул. Троїцька, 3-Б.
+</p><p>Час роботи: Пн-Сб: 10:00 — 17:00<br/>Вихідний: неділя.
+                                </p></div>
+</div>
+</div>
+<div class="box-item-delivery hidden" data-city="1896" data-payment_method_ids="2,4,7,8,9,10" name="delivery_block">
+<div class="col-l clearfix">
+<div class="icon"><i class="icon2-NP-icon"></i></div>
+<div class="info">
+                                    Нова Пошта
+                                    <span class="sub">«Новою поштою» до відділення</span>
+</div>
+<div class="price-info">
+
+                                                                                                            за тарифами служби доставки
+                                                                                                    </div>
+</div>
+<div class="col-r">
+<div class="info">                                                                                                            Відправлення
+                                                                                                                                     <strong>сьогодні</strong></div>
+</div>
+<div class="info-icon" style="cursor: pointer;">
+<i class="icon2-info-icon" id="tt41f2da62_tooltip"></i>
+</div>
+<div id="tt41f2da62_content" style="display: none;">
+<div style="background-color: #fff; text-align: left; padding: 20px;">
+<h2>«Новою поштою» до відділення</h2>
+                                    Зазвичай товар досягає місця призначення протягом 24 годин після відправки, за винятком доставок в районні центри та села. Одержувач може забрати покупку після отримання sms-повідомлення від «Нової пошти». Доставлений товар зберігається в їхньому відділенні в місті прибуття - 5 днів. Якщо ви не отримали своє замовлення протягом цього терміну, він повертається назад в магазин і ми несемо збитки.
+                                </div>
+</div>
+</div>
+<div class="box-item-delivery hidden" data-city="1976" data-payment_method_ids="2,4,7,8,9,10" name="delivery_block">
+<div class="col-l clearfix">
+<div class="icon"><i class="icon2-NP-icon"></i></div>
+<div class="info">
+                                    Нова Пошта
+                                    <span class="sub">«Новою поштою» до відділення</span>
+</div>
+<div class="price-info">
+
+                                                                                                            за тарифами служби доставки
+                                                                                                    </div>
+</div>
+<div class="col-r">
+<div class="info">                                                                                                            Відправлення
+                                                                                                                                     <strong>сьогодні</strong></div>
+</div>
+<div class="info-icon" style="cursor: pointer;">
+<i class="icon2-info-icon" id="tt68100b9e_tooltip"></i>
+</div>
+<div id="tt68100b9e_content" style="display: none;">
+<div style="background-color: #fff; text-align: left; padding: 20px;">
+<h2>«Новою поштою» до відділення</h2>
+                                    Зазвичай товар досягає місця призначення протягом 24 годин після відправки, за винятком доставок в районні центри та села. Одержувач може забрати покупку після отримання sms-повідомлення від «Нової пошти». Доставлений товар зберігається в їхньому відділенні в місті прибуття - 5 днів. Якщо ви не отримали своє замовлення протягом цього терміну, він повертається назад в магазин і ми несемо збитки.
+                                </div>
+</div>
+</div>
+<div class="box-item-delivery hidden" data-city="0" data-payment_method_ids="2,4,7,8,9,10" name="delivery_block">
+<div class="col-l clearfix">
+<div class="icon"><i class="icon2-NP-icon"></i></div>
+<div class="info">
+                                    Нова Пошта
+                                    <span class="sub">«Новою поштою» до відділення</span>
+</div>
+<div class="price-info">
+
+                                                                                                            за тарифами служби доставки
+                                                                                                    </div>
+</div>
+<div class="col-r">
+<div class="info">                                                                                                            Відправлення
+                                                                                                                                     <strong>сьогодні</strong></div>
+</div>
+<div class="info-icon" style="cursor: pointer;">
+<i class="icon2-info-icon" id="ttc48e3b99_tooltip"></i>
+</div>
+<div id="ttc48e3b99_content" style="display: none;">
+<div style="background-color: #fff; text-align: left; padding: 20px;">
+<h2>«Новою поштою» до відділення</h2>
+                                    Зазвичай товар досягає місця призначення протягом 24 годин після відправки, за винятком доставок в районні центри та села. Одержувач може забрати покупку після отримання sms-повідомлення від «Нової пошти». Доставлений товар зберігається в їхньому відділенні в місті прибуття - 5 днів. Якщо ви не отримали своє замовлення протягом цього терміну, він повертається назад в магазин і ми несемо збитки.
+                                </div>
+</div>
+</div>
+<div class="box-item-delivery hidden" data-city="1976" data-payment_method_ids="2,3,7,8,9,10" name="delivery_block">
+<div class="col-l clearfix">
+<div class="icon"><i class="icon2-delivery-icon"></i></div>
+<div class="info">
+                                    Кур'єрська доставка
+                                    <span class="sub">Кур'єром у м. Київ</span>
+</div>
+<div class="price-info">
+
+                                                                                                            149
+                                                                        грн.
+                                                                </div>
+</div>
+<div class="col-r">
+<div class="info">                                                                                                            Доставка
+                                                                                                 <strong>1-3 дні</strong></div>
+</div>
+<div class="info-icon" style="cursor: pointer;">
+<i class="icon2-info-icon" id="tt274227a3_tooltip"></i>
+</div>
+<div id="tt274227a3_content" style="display: none;">
+<div style="background-color: #fff; text-align: left; padding: 20px;">
+<h2>Кур'єром у м. Київ</h2>
+                                    Кур'єри доставляють товар з понеділка по суботу з 11:00 до 17:00. Вартість доставки дрібногабаритного товару по м Київ - 149 гривень, вартість доставки великогабаритного товару - погоджується з нашим менеджером при підтвердженні замовлення. Замовлення з повним наявністю товарів ми зазвичай доставляємо на наступний день після їх оформлення. Менеджери магазину узгодять з Вами детальну інформацію про терміни і часу доставки. Зверніть увагу, ми не оформляємо доставку на строго певний час. Мінімальний діапазон часу доставки складає 3 години. Час перебування кур'єра у покупця - 15 хвилин.
+                                </div>
+</div>
+</div>
+<div class="box-item-delivery hidden" data-city="1896" data-payment_method_ids="2,3,7,8,9,10" name="delivery_block">
+<div class="col-l clearfix">
+<div class="icon"><i class="icon2-delivery-icon"></i></div>
+<div class="info">
+                                    Кур'єрська доставка
+                                    <span class="sub">Кур'єром у м. Дніпро</span>
+</div>
+<div class="price-info">
+
+                                                                                                            99
+                                                                        грн.
+                                                                </div>
+</div>
+<div class="col-r">
+<div class="info">                                                                                                            Доставка
+                                                                                                 <strong>3 дні</strong></div>
+</div>
+<div class="info-icon" style="cursor: pointer;">
+<i class="icon2-info-icon" id="ttc438cff4_tooltip"></i>
+</div>
+<div id="ttc438cff4_content" style="display: none;">
+<div style="background-color: #fff; text-align: left; padding: 20px;">
+<h2>Кур'єром у м. Дніпро</h2>
+                                    Кур'єри доставляють товар в будні дні з 12:00 до 18:00. Вартість доставки дрібногабаритного товару по м Дніпро - 100 гривень, вартість доставки великогабаритного товару - узгоджується з менеджером при підтвердженні замовлення. Замовлення з повним наявністю товарів ми зазвичай доставляємо на наступний день після їх оформлення. Менеджери магазину узгодять з вами детальну інформацію про терміни і часу доставки. Зверніть увагу, ми не оформляємо доставку на строго певний час. Мінімальний діапазон часу доставки складає 4 години. Час перебування кур'єра у покупця - 10 хвилин. <br/> <br/> Зверніть увагу, що кур'єри доставляють товар <strong> тільки до під'їзду </strong>. З метою особистої безпеки їм заборонено заходити безпосередньо в будівлю, офіс, квартиру. Дякуємо за розуміння!
+                                </div>
+</div>
+</div>
+<div class="box-item-delivery hidden" data-city="1896" data-payment_method_ids="2,4,7,8,9,10" name="delivery_block">
+<div class="col-l clearfix">
+<div class="icon"><i class="icon2-NP-icon"></i></div>
+<div class="info">
+                                    Нова Пошта
+                                    <span class="sub">Кур'єром «Нової пошти» до дверей</span>
+</div>
+<div class="price-info">
+
+                                                                                                            за тарифами служби доставки
+                                                                                                    </div>
+</div>
+<div class="col-r">
+<div class="info">                                                                                                            Відправлення
+                                                                                                 <strong>сьогодні</strong></div>
+</div>
+<div class="info-icon" style="cursor: pointer;">
+<i class="icon2-info-icon" id="ttfb903d73_tooltip"></i>
+</div>
+<div id="ttfb903d73_content" style="display: none;">
+<div style="background-color: #fff; text-align: left; padding: 20px;">
+<h2>Кур'єром «Нової пошти» до дверей</h2>
+                                    Зазвичай адресна доставка при повному наявності товару на складі займає 2-3 дні, при підтвердженні замовлення наші менеджери узгодять з вами дату відправки товару.
+Якщо ви оплачуєте замовлення за безготівковим розрахунком, то термін доставки може відрізнятися від вказаних на сайті. Вартість доставки розраховується згідно тарифів сервісу доставки «Нова Пошта».
+Адресна доставка «Нова Пошта», за умови оплати замовлення готівкою, на суму понад 50 000 грн не здійснюється.
+При отриманні замовлення при собі необхідно мати паспорт або водійське посвідчення. Передплачений товар може отримати тільки та людина, на кого оформлена доставка.
+В обов'язковому порядку при отриманні перевіряйте комплектність і цілісність товару!
+                                </div>
+</div>
+</div>
+<div class="box-item-delivery hidden" data-city="1976" data-payment_method_ids="2,4,7,8,9,10" name="delivery_block">
+<div class="col-l clearfix">
+<div class="icon"><i class="icon2-NP-icon"></i></div>
+<div class="info">
+                                    Нова Пошта
+                                    <span class="sub">Кур'єром «Нової пошти» до дверей</span>
+</div>
+<div class="price-info">
+
+                                                                                                            за тарифами служби доставки
+                                                                                                    </div>
+</div>
+<div class="col-r">
+<div class="info">                                                                                                            Відправлення
+                                                                                                 <strong>сьогодні</strong></div>
+</div>
+<div class="info-icon" style="cursor: pointer;">
+<i class="icon2-info-icon" id="tt34eae708_tooltip"></i>
+</div>
+<div id="tt34eae708_content" style="display: none;">
+<div style="background-color: #fff; text-align: left; padding: 20px;">
+<h2>Кур'єром «Нової пошти» до дверей</h2>
+                                    Зазвичай адресна доставка при повному наявності товару на складі займає 2-3 дні, при підтвердженні замовлення наші менеджери узгодять з вами дату відправки товару.
+Якщо ви оплачуєте замовлення за безготівковим розрахунком, то термін доставки може відрізнятися від вказаних на сайті. Вартість доставки розраховується згідно тарифів сервісу доставки «Нова Пошта».
+Адресна доставка «Нова Пошта», за умови оплати замовлення готівкою, на суму понад 50 000 грн не здійснюється.
+При отриманні замовлення при собі необхідно мати паспорт або водійське посвідчення. Передплачений товар може отримати тільки та людина, на кого оформлена доставка.
+В обов'язковому порядку при отриманні перевіряйте комплектність і цілісність товару!
+                                </div>
+</div>
+</div>
+<div class="box-item-delivery hidden" data-city="0" data-payment_method_ids="2,4,7,8,9,10" name="delivery_block">
+<div class="col-l clearfix">
+<div class="icon"><i class="icon2-NP-icon"></i></div>
+<div class="info">
+                                    Нова Пошта
+                                    <span class="sub">Кур'єром «Нової пошти» до дверей</span>
+</div>
+<div class="price-info">
+
+                                                                                                            за тарифами служби доставки
+                                                                                                    </div>
+</div>
+<div class="col-r">
+<div class="info">                                                                                                            Відправлення
+                                                                                                 <strong>сьогодні</strong></div>
+</div>
+<div class="info-icon" style="cursor: pointer;">
+<i class="icon2-info-icon" id="tte9975f35_tooltip"></i>
+</div>
+<div id="tte9975f35_content" style="display: none;">
+<div style="background-color: #fff; text-align: left; padding: 20px;">
+<h2>Кур'єром «Нової пошти» до дверей</h2>
+                                    Зазвичай адресна доставка при повному наявності товару на складі займає 2-3 дні, при підтвердженні замовлення наші менеджери узгодять з вами дату відправки товару.
+Якщо ви оплачуєте замовлення за безготівковим розрахунком, то термін доставки може відрізнятися від вказаних на сайті. Вартість доставки розраховується згідно тарифів сервісу доставки «Нова Пошта».
+Адресна доставка «Нова Пошта», за умови оплати замовлення готівкою, на суму понад 50 000 грн не здійснюється.
+При отриманні замовлення при собі необхідно мати паспорт або водійське посвідчення. Передплачений товар може отримати тільки та людина, на кого оформлена доставка.
+В обов'язковому порядку при отриманні перевіряйте комплектність і цілісність товару!
+                                </div>
+</div>
+</div>
+<div class="box-item-delivery clearfix payment-info hidden" name="payment_info">
+<p>
+<strong>Оплата</strong>
+</p>
+<p>
+</p><ul class="desc" name="payment_list">
+<li class="hidden" data-payment_id="3">Готівкою при отриманні замовлення</li>
+<li class="hidden" data-payment_id="8">Оплата за реквізитами на наш рахунок з вашого рахунку або карти</li>
+<li class="hidden" data-payment_id="4">Післяплатою через «Нову пошту»</li>
+<li class="hidden" data-payment_id="2">Безготівковий розрахунок (тільки для юр. осіб)</li>
+<li class="hidden" data-payment_id="7">Оплата онлайн</li>
+</ul>
+<div class="info-icon"><i class="icon2-info-icon"></i></div>
+</div>
+<div class="box-item-delivery clearfix footer-box">
+<div class="col-l clearfix">
+<div class="icon"><img src="https://i.can.ua/change_icon.svg"/></div>
+<div class="info">
+                        Обмін/повернення напротязі 14 днів з дня покупки
+
+                        <span class="sub">
+                            Без лишних вопросов. Прочитайте
+                            <a href="https://can.ua/warranty/" target="_blank">умови повернення</a>
+</span>
+</div>
+</div>
+</div>
+<div class="box-item-delivery clearfix surety">
+<div class="col-l clearfix">
+<div class="icon"><img src="https://i.can.ua/guarantee_icon.svg"/></div>
+<div class="info">
+<div class="months">
+                            60
+                            
+                            місяців
+            
+                            офіційної гарантії
+                        </div>
+</div>
+</div>
+</div>
+</div>
+<div class="info-delivery-wrap mobile" name="delivery_information">
+<div class="name-delivery" onclick="$(this).toggleClass('active')">
+<div class="icon"><i class="icon2-delivery-icon"></i></div>
+<div class="delivery-title">Доставка в</div>
+<div class="city-popup">
+<div class="select">
+<a>
+<span class="selected">Інший</span>
+<i class="icon-03_show"></i>
+</a>
+</div>
+</div>
+</div>
+<div class="content-delivery">
+<div class="box-item-delivery hidden" data-city="1976" data-payment_method_ids="2,3,7,8,9,10" name="delivery_block">
+<div class="col-l clearfix">
+<div class="icon"><i class="icon2-pickup-icon"></i></div>
+<div class="info">
+                                    Самовивіз
+                                    <span class="sub">Самовивіз у м. Київ</span>
+</div>
+<div class="price-info">
+
+                                                                    
+                                                                                безкоштовно
+                                                                                                                                            </div>
+</div>
+<div class="col-r">
+<div class="info">                                                                                                            Можна забрати
+                                                                                                                                     за <strong>1-3 дні</strong></div>
+</div>
+<div class="info-icon" style="cursor: pointer;">
+<i class="icon2-info-icon" id="tt8a3681dc_tooltip"></i>
+</div>
+<div id="tt8a3681dc_content" style="display: none;">
+<div style="background-color: #fff; text-align: left; padding: 20px;">
+<h2>Самовивіз у м. Київ</h2>
+<p> Ви можете самостійно забрати товар в нашій точці видачі розташованої на Подолі в зручний для Вас час.
+</p><p> Будемо раді бачити Вас за адресою: м Київ, вул. Братська, 4 (вхід з вул. Андріївська).
+</p><p> Поряд метро Поштова площа (490 метрів), Контрактова площа (780 метрів).
+</p><p> Час роботи: Пн-Сб: 10:00 — 17:00, Нд: вихідний.
+                                </p></div>
+</div>
+</div>
+<div class="box-item-delivery hidden" data-city="1896" data-payment_method_ids="2,3,7,8,9,10" name="delivery_block">
+<div class="col-l clearfix">
+<div class="icon"><i class="icon2-pickup-icon"></i></div>
+<div class="info">
+                                    Самовивіз
+                                    <span class="sub">Самовивіз у м. Дніпро</span>
+</div>
+<div class="price-info">
+
+                                                                    
+                                                                                безкоштовно
+                                                                                                                                            </div>
+</div>
+<div class="col-r">
+<div class="info">                                                                                                            Можна забрати
+                                                                                                                                     <strong>сьогодні</strong></div>
+</div>
+<div class="info-icon" style="cursor: pointer;">
+<i class="icon2-info-icon" id="tta2a75341_tooltip"></i>
+</div>
+<div id="tta2a75341_content" style="display: none;">
+<div style="background-color: #fff; text-align: left; padding: 20px;">
+<h2>Самовивіз у м. Дніпро</h2>
+<p>Ви можете самостійно забрати товар в нашій точці видачі розташованої в центрі міста.
+</p><p>Будемо раді Вас бачити за адресою: м Дніпро, вул. Троїцька, 3-Б.
+</p><p>Час роботи: Пн-Сб: 10:00 — 17:00<br/>Вихідний: неділя.
+                                </p></div>
+</div>
+</div>
+<div class="box-item-delivery hidden" data-city="1896" data-payment_method_ids="2,4,7,8,9,10" name="delivery_block">
+<div class="col-l clearfix">
+<div class="icon"><i class="icon2-NP-icon"></i></div>
+<div class="info">
+                                    Нова Пошта
+                                    <span class="sub">«Новою поштою» до відділення</span>
+</div>
+<div class="price-info">
+
+                                                                                                            за тарифами служби доставки
+                                                                                                    </div>
+</div>
+<div class="col-r">
+<div class="info">                                                                                                            Відправлення
+                                                                                                                                     <strong>сьогодні</strong></div>
+</div>
+<div class="info-icon" style="cursor: pointer;">
+<i class="icon2-info-icon" id="tt550df082_tooltip"></i>
+</div>
+<div id="tt550df082_content" style="display: none;">
+<div style="background-color: #fff; text-align: left; padding: 20px;">
+<h2>«Новою поштою» до відділення</h2>
+                                    Зазвичай товар досягає місця призначення протягом 24 годин після відправки, за винятком доставок в районні центри та села. Одержувач може забрати покупку після отримання sms-повідомлення від «Нової пошти». Доставлений товар зберігається в їхньому відділенні в місті прибуття - 5 днів. Якщо ви не отримали своє замовлення протягом цього терміну, він повертається назад в магазин і ми несемо збитки.
+                                </div>
+</div>
+</div>
+<div class="box-item-delivery hidden" data-city="1976" data-payment_method_ids="2,4,7,8,9,10" name="delivery_block">
+<div class="col-l clearfix">
+<div class="icon"><i class="icon2-NP-icon"></i></div>
+<div class="info">
+                                    Нова Пошта
+                                    <span class="sub">«Новою поштою» до відділення</span>
+</div>
+<div class="price-info">
+
+                                                                                                            за тарифами служби доставки
+                                                                                                    </div>
+</div>
+<div class="col-r">
+<div class="info">                                                                                                            Відправлення
+                                                                                                                                     <strong>сьогодні</strong></div>
+</div>
+<div class="info-icon" style="cursor: pointer;">
+<i class="icon2-info-icon" id="ttbd8d5a45_tooltip"></i>
+</div>
+<div id="ttbd8d5a45_content" style="display: none;">
+<div style="background-color: #fff; text-align: left; padding: 20px;">
+<h2>«Новою поштою» до відділення</h2>
+                                    Зазвичай товар досягає місця призначення протягом 24 годин після відправки, за винятком доставок в районні центри та села. Одержувач може забрати покупку після отримання sms-повідомлення від «Нової пошти». Доставлений товар зберігається в їхньому відділенні в місті прибуття - 5 днів. Якщо ви не отримали своє замовлення протягом цього терміну, він повертається назад в магазин і ми несемо збитки.
+                                </div>
+</div>
+</div>
+<div class="box-item-delivery hidden" data-city="0" data-payment_method_ids="2,4,7,8,9,10" name="delivery_block">
+<div class="col-l clearfix">
+<div class="icon"><i class="icon2-NP-icon"></i></div>
+<div class="info">
+                                    Нова Пошта
+                                    <span class="sub">«Новою поштою» до відділення</span>
+</div>
+<div class="price-info">
+
+                                                                                                            за тарифами служби доставки
+                                                                                                    </div>
+</div>
+<div class="col-r">
+<div class="info">                                                                                                            Відправлення
+                                                                                                                                     <strong>сьогодні</strong></div>
+</div>
+<div class="info-icon" style="cursor: pointer;">
+<i class="icon2-info-icon" id="ttee7e4994_tooltip"></i>
+</div>
+<div id="ttee7e4994_content" style="display: none;">
+<div style="background-color: #fff; text-align: left; padding: 20px;">
+<h2>«Новою поштою» до відділення</h2>
+                                    Зазвичай товар досягає місця призначення протягом 24 годин після відправки, за винятком доставок в районні центри та села. Одержувач може забрати покупку після отримання sms-повідомлення від «Нової пошти». Доставлений товар зберігається в їхньому відділенні в місті прибуття - 5 днів. Якщо ви не отримали своє замовлення протягом цього терміну, він повертається назад в магазин і ми несемо збитки.
+                                </div>
+</div>
+</div>
+<div class="box-item-delivery hidden" data-city="1976" data-payment_method_ids="2,3,7,8,9,10" name="delivery_block">
+<div class="col-l clearfix">
+<div class="icon"><i class="icon2-delivery-icon"></i></div>
+<div class="info">
+                                    Кур'єрська доставка
+                                    <span class="sub">Кур'єром у м. Київ</span>
+</div>
+<div class="price-info">
+
+                                                                                                            149
+                                                                        грн.
+                                                                </div>
+</div>
+<div class="col-r">
+<div class="info">                                                                                                            Доставка
+                                                                                                 <strong>1-3 дні</strong></div>
+</div>
+<div class="info-icon" style="cursor: pointer;">
+<i class="icon2-info-icon" id="tta0c5392d_tooltip"></i>
+</div>
+<div id="tta0c5392d_content" style="display: none;">
+<div style="background-color: #fff; text-align: left; padding: 20px;">
+<h2>Кур'єром у м. Київ</h2>
+                                    Кур'єри доставляють товар з понеділка по суботу з 11:00 до 17:00. Вартість доставки дрібногабаритного товару по м Київ - 149 гривень, вартість доставки великогабаритного товару - погоджується з нашим менеджером при підтвердженні замовлення. Замовлення з повним наявністю товарів ми зазвичай доставляємо на наступний день після їх оформлення. Менеджери магазину узгодять з Вами детальну інформацію про терміни і часу доставки. Зверніть увагу, ми не оформляємо доставку на строго певний час. Мінімальний діапазон часу доставки складає 3 години. Час перебування кур'єра у покупця - 15 хвилин.
+                                </div>
+</div>
+</div>
+<div class="box-item-delivery hidden" data-city="1896" data-payment_method_ids="2,3,7,8,9,10" name="delivery_block">
+<div class="col-l clearfix">
+<div class="icon"><i class="icon2-delivery-icon"></i></div>
+<div class="info">
+                                    Кур'єрська доставка
+                                    <span class="sub">Кур'єром у м. Дніпро</span>
+</div>
+<div class="price-info">
+
+                                                                                                            99
+                                                                        грн.
+                                                                </div>
+</div>
+<div class="col-r">
+<div class="info">                                                                                                            Доставка
+                                                                                                 <strong>3 дні</strong></div>
+</div>
+<div class="info-icon" style="cursor: pointer;">
+<i class="icon2-info-icon" id="ttef8e821c_tooltip"></i>
+</div>
+<div id="ttef8e821c_content" style="display: none;">
+<div style="background-color: #fff; text-align: left; padding: 20px;">
+<h2>Кур'єром у м. Дніпро</h2>
+                                    Кур'єри доставляють товар в будні дні з 12:00 до 18:00. Вартість доставки дрібногабаритного товару по м Дніпро - 100 гривень, вартість доставки великогабаритного товару - узгоджується з менеджером при підтвердженні замовлення. Замовлення з повним наявністю товарів ми зазвичай доставляємо на наступний день після їх оформлення. Менеджери магазину узгодять з вами детальну інформацію про терміни і часу доставки. Зверніть увагу, ми не оформляємо доставку на строго певний час. Мінімальний діапазон часу доставки складає 4 години. Час перебування кур'єра у покупця - 10 хвилин. <br/> <br/> Зверніть увагу, що кур'єри доставляють товар <strong> тільки до під'їзду </strong>. З метою особистої безпеки їм заборонено заходити безпосередньо в будівлю, офіс, квартиру. Дякуємо за розуміння!
+                                </div>
+</div>
+</div>
+<div class="box-item-delivery hidden" data-city="1896" data-payment_method_ids="2,4,7,8,9,10" name="delivery_block">
+<div class="col-l clearfix">
+<div class="icon"><i class="icon2-NP-icon"></i></div>
+<div class="info">
+                                    Нова Пошта
+                                    <span class="sub">Кур'єром «Нової пошти» до дверей</span>
+</div>
+<div class="price-info">
+
+                                                                                                            за тарифами служби доставки
+                                                                                                    </div>
+</div>
+<div class="col-r">
+<div class="info">                                                                                                            Відправлення
+                                                                                                 <strong>сьогодні</strong></div>
+</div>
+<div class="info-icon" style="cursor: pointer;">
+<i class="icon2-info-icon" id="ttc0625030_tooltip"></i>
+</div>
+<div id="ttc0625030_content" style="display: none;">
+<div style="background-color: #fff; text-align: left; padding: 20px;">
+<h2>Кур'єром «Нової пошти» до дверей</h2>
+                                    Зазвичай адресна доставка при повному наявності товару на складі займає 2-3 дні, при підтвердженні замовлення наші менеджери узгодять з вами дату відправки товару.
+Якщо ви оплачуєте замовлення за безготівковим розрахунком, то термін доставки може відрізнятися від вказаних на сайті. Вартість доставки розраховується згідно тарифів сервісу доставки «Нова Пошта».
+Адресна доставка «Нова Пошта», за умови оплати замовлення готівкою, на суму понад 50 000 грн не здійснюється.
+При отриманні замовлення при собі необхідно мати паспорт або водійське посвідчення. Передплачений товар може отримати тільки та людина, на кого оформлена доставка.
+В обов'язковому порядку при отриманні перевіряйте комплектність і цілісність товару!
+                                </div>
+</div>
+</div>
+<div class="box-item-delivery hidden" data-city="1976" data-payment_method_ids="2,4,7,8,9,10" name="delivery_block">
+<div class="col-l clearfix">
+<div class="icon"><i class="icon2-NP-icon"></i></div>
+<div class="info">
+                                    Нова Пошта
+                                    <span class="sub">Кур'єром «Нової пошти» до дверей</span>
+</div>
+<div class="price-info">
+
+                                                                                                            за тарифами служби доставки
+                                                                                                    </div>
+</div>
+<div class="col-r">
+<div class="info">                                                                                                            Відправлення
+                                                                                                 <strong>сьогодні</strong></div>
+</div>
+<div class="info-icon" style="cursor: pointer;">
+<i class="icon2-info-icon" id="tt84826c99_tooltip"></i>
+</div>
+<div id="tt84826c99_content" style="display: none;">
+<div style="background-color: #fff; text-align: left; padding: 20px;">
+<h2>Кур'єром «Нової пошти» до дверей</h2>
+                                    Зазвичай адресна доставка при повному наявності товару на складі займає 2-3 дні, при підтвердженні замовлення наші менеджери узгодять з вами дату відправки товару.
+Якщо ви оплачуєте замовлення за безготівковим розрахунком, то термін доставки може відрізнятися від вказаних на сайті. Вартість доставки розраховується згідно тарифів сервісу доставки «Нова Пошта».
+Адресна доставка «Нова Пошта», за умови оплати замовлення готівкою, на суму понад 50 000 грн не здійснюється.
+При отриманні замовлення при собі необхідно мати паспорт або водійське посвідчення. Передплачений товар може отримати тільки та людина, на кого оформлена доставка.
+В обов'язковому порядку при отриманні перевіряйте комплектність і цілісність товару!
+                                </div>
+</div>
+</div>
+<div class="box-item-delivery hidden" data-city="0" data-payment_method_ids="2,4,7,8,9,10" name="delivery_block">
+<div class="col-l clearfix">
+<div class="icon"><i class="icon2-NP-icon"></i></div>
+<div class="info">
+                                    Нова Пошта
+                                    <span class="sub">Кур'єром «Нової пошти» до дверей</span>
+</div>
+<div class="price-info">
+
+                                                                                                            за тарифами служби доставки
+                                                                                                    </div>
+</div>
+<div class="col-r">
+<div class="info">                                                                                                            Відправлення
+                                                                                                 <strong>сьогодні</strong></div>
+</div>
+<div class="info-icon" style="cursor: pointer;">
+<i class="icon2-info-icon" id="ttf3ea61bf_tooltip"></i>
+</div>
+<div id="ttf3ea61bf_content" style="display: none;">
+<div style="background-color: #fff; text-align: left; padding: 20px;">
+<h2>Кур'єром «Нової пошти» до дверей</h2>
+                                    Зазвичай адресна доставка при повному наявності товару на складі займає 2-3 дні, при підтвердженні замовлення наші менеджери узгодять з вами дату відправки товару.
+Якщо ви оплачуєте замовлення за безготівковим розрахунком, то термін доставки може відрізнятися від вказаних на сайті. Вартість доставки розраховується згідно тарифів сервісу доставки «Нова Пошта».
+Адресна доставка «Нова Пошта», за умови оплати замовлення готівкою, на суму понад 50 000 грн не здійснюється.
+При отриманні замовлення при собі необхідно мати паспорт або водійське посвідчення. Передплачений товар може отримати тільки та людина, на кого оформлена доставка.
+В обов'язковому порядку при отриманні перевіряйте комплектність і цілісність товару!
+                                </div>
+</div>
+</div>
+</div>
+<div class="name-delivery" onclick="$(this).toggleClass('active')">
+<div class="icon"><i class="icon2-cash-payment-icon"></i></div>
+                Оплата
+            </div>
+<div class="content-delivery">
+<div class="inner-content">
+<div class="payment-item cash">
+<div class="sub">
+<ul class="desc" name="payment_list">
+<li class="hidden" data-payment_id="3">Готівкою при отриманні замовлення</li>
+<li class="hidden" data-payment_id="8">Оплата за реквізитами на наш рахунок з вашого рахунку або карти</li>
+<li class="hidden" data-payment_id="4">Післяплатою через «Нову пошту»</li>
+<li class="hidden" data-payment_id="2">Безготівковий розрахунок (тільки для юр. осіб)</li>
+<li class="hidden" data-payment_id="7">Оплата онлайн</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="name-delivery" onclick="$(this).toggleClass('active')">
+<div class="icon change"><img src="https://i.can.ua/change_icon.svg"/></div>
+                Обмін/повернення напротязі 14 днів з дня покупки
+            </div>
+<div class="content-delivery">
+<div class="inner-content">
+<div class="payment-item">
+<span class="sub">
+                            Без лишних вопросов. Прочитайте
+                            <a href="https://can.ua/warranty/" target="_blank">умови повернення</a>
+</span>
+</div>
+</div>
+</div>
+<div class="name-delivery name-delivery-waranty">
+<div class="icon change"><img src="https://i.can.ua/guarantee_icon.svg"/></div>
+<span>60
+                            
+                            місяців
+            
+                            офіційної гарантії</span>
+</div>
+</div>
+<script>
+</script>
+<div class="clear"></div>
+</div>
+</div>
+<div class="tabs-b container">
+<div class="wrap">
+<div class="tabs tabs-in-pp before">
+<div class="m-tabs before">
+<ul class="m-tabs-l after" id="details-tabs-menu" name="details-tabs-menu">
+<li class="m-tabs-i active all-tab" name="all">
+<a class="btn-grey m-tabs-link black" href="https://can.ua/adata-xpg-spectrix-s20g-1tb-aspectrixs20g-1t-c/p253348/" itemprop="url"><span class="m-tabs-name">Все про товар</span></a>
+</li>
+<li class="m-tabs-i characteristics-tab" name="characteristics">
+<a class="btn-grey m-tabs-link black" href="https://can.ua/adata-xpg-spectrix-s20g-1tb-aspectrixs20g-1t-c/p253348/characteristics/" itemprop="url"><span class="m-tabs-name">Характеристики</span></a>
+</li>
+<li class="m-tabs-i photo-tab" name="photo">
+<a class="btn-grey m-tabs-link black" href="https://can.ua/adata-xpg-spectrix-s20g-1tb-aspectrixs20g-1t-c/p253348/photo/" itemprop="url"><span class="m-tabs-name">Фото</span></a>
+</li>
+<li class="m-tabs-i comments-tab" name="comments">
+<a class="btn-grey m-tabs-link black" href="https://can.ua/adata-xpg-spectrix-s20g-1tb-aspectrixs20g-1t-c/p253348/comments/" itemprop="url"><span class="m-tabs-name">Відгуки <sup>1</sup></span></a>
+</li>
+<li class="m-tabs-i qa-tab" name="qa">
+<a class="btn-grey m-tabs-link black" href="https://can.ua/adata-xpg-spectrix-s20g-1tb-aspectrixs20g-1t-c/p253348/qa/" itemprop="url"><span class="m-tabs-name">Питання</span></a>
+</li>
+</ul>
+</div>
+</div>
+<div class="container-padd tabs-content clearfix" id="details-tabs-content"></div>
+</div>
+</div>
+<div class="tabs-mobile" id="goods_tabs_mobile">
+<div class="title-tab all-tab" data-tab-name="all" name="tab_title">
+<span>
+                Все про товар
+                            </span>
+</div>
+<div class="content-tab" id="mobile-tab-all">
+<img alt="Отправка данных" class="process" height="11" src="https://i.can.ua/ajax.gif" width="16"/>
+</div>
+<div class="title-tab characteristics-tab" data-tab-name="characteristics" name="tab_title">
+<span>
+                Характеристики
+                            </span>
+</div>
+<div class="content-tab" id="mobile-tab-characteristics">
+<img alt="Отправка данных" class="process" height="11" src="https://i.can.ua/ajax.gif" width="16"/>
+</div>
+<div class="title-tab photo-tab" data-tab-name="photo" name="tab_title">
+<span>
+                Фото
+                            </span>
+</div>
+<div class="content-tab" id="mobile-tab-photo">
+<img alt="Отправка данных" class="process" height="11" src="https://i.can.ua/ajax.gif" width="16"/>
+</div>
+<div class="title-tab comments-tab" data-tab-name="comments" name="tab_title">
+<span>
+                Відгуки
+                                     <sup>1</sup>
+</span>
+</div>
+<div class="content-tab" id="mobile-tab-comments">
+<img alt="Отправка данных" class="process" height="11" src="https://i.can.ua/ajax.gif" width="16"/>
+</div>
+<div class="title-tab qa-tab" data-tab-name="qa" name="tab_title">
+<span>
+                Питання
+                            </span>
+</div>
+<div class="content-tab" id="mobile-tab-qa">
+<img alt="Отправка данных" class="process" height="11" src="https://i.can.ua/ajax.gif" width="16"/>
+</div>
+</div>
+<script>
+</script>
+<div class="hidden wrap" id="video-block">
+</div>
+<div class="wrap">
+<div id="recent_goods"></div>
+</div>
+</div>
