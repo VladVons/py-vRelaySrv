@@ -98,10 +98,11 @@ class TApi():
                 return Func(aVal, aValue)
 
     @staticmethod
-    def split(aVal: str, aDelim: str, aIdx: int) -> str:
-        Arr = aVal.split(aDelim)
-        if (aIdx <= len(aVal)):
-            return Arr[aIdx].strip()
+    def split(aVal: str, aDelim: str, aIdx: int = None) -> str:
+        Res = aVal.split(aDelim)
+        if (aIdx is not None):
+            Res = Res[aIdx].strip()
+        return Res
 
     @staticmethod
     def price(aVal: str) -> tuple:
