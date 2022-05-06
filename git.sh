@@ -148,7 +148,7 @@ GitToServ()
 
   echo
   echo "Size"
-  { find ./ -type f -name "*.py" -printf "%s+"; echo 0; } | bc
+  { find ./src -type f -name "*.py" -printf "%s+"; echo 0; } | bc
 }
 
 
