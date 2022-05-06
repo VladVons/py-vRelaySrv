@@ -67,16 +67,16 @@ class TApi():
         return aVal.strip()
 
     @staticmethod
-    def strip_all(aData: str) -> str:
+    def strip_all(aVal: str) -> str:
         def Search(aData: str, aIter: list) -> int:
             for i in aIter:
                 if (aData[i].isdigit() or aData[i].isalpha()):
                     return i
             return -1
 
-        L = Search(aData, range(len(aData)))
-        R = Search(aData, range(len(aData) - 1, L, -1))
-        return aData[L:R+1]
+        L = Search(aVal, range(len(aVal)))
+        R = Search(aVal, range(len(aVal) - 1, L, -1))
+        return aVal[L:R+1]
 
     @staticmethod
     def list(aVal: list, aIdx: int) -> object:
@@ -84,17 +84,18 @@ class TApi():
             return aVal[aIdx]
 
     @staticmethod
-    def equal(aVal: str, aStr: str) -> bool:
-        return (aVal in aStr.split('|'))
+    def equal(aVal: str, aStr: str, aDelim: str = '|') -> bool:
+        Arr = aStr.split(aDelim)
+        return (aVal in Arr)
 
     @staticmethod
-    def compare(aObj: object, aOp: str, aValue = None) -> bool:
+    def compare(aVal: object, aOp: str, aValue = None) -> bool:
         Func = getattr(operator, aOp, None)
         if (Func):
             if (aValue is None):
-                return Func(aObj)
+                return Func(aVal)
             else:
-                return Func(aObj, aValue)
+                return Func(aVal, aValue)
 
     @staticmethod
     def split(aVal: str, aDelim: str, aIdx: int) -> str:
@@ -122,8 +123,24 @@ class TApi():
         return json.loads(aVal)
 
     @staticmethod
-    def gets(aData: dict, aKeys: str):
-        return GetNestedKey(aData, aKeys)
+    def gets(aVal: dict, aKeys: str) -> dict:
+        return GetNestedKey(aVal, aKeys)
+
+    @staticmethod
+    def lower(aVal: str) -> str:
+        return aVal.lower()
+
+    @staticmethod
+    def replace(aVal: str, aFind: str, aRepl: str) -> str:
+        return aVal.replace(aFind, aRepl)
+
+    @staticmethod
+    def left(aVal: str, aIdx: int) -> str:
+        return aVal[:aIdx]
+
+    @staticmethod
+    def sub(aVal: str, aIdx: int, aEnd: int) -> str:
+        return aVal[aIdx:aEnd]
 
 
 class TSoupScheme():
@@ -164,18 +181,18 @@ class TSoupScheme():
                 aObj = Obj(*Param)
             except Exception as E:
                 aObj = None
-                aRes[2].append('%s->%s %s' % (aPath, aItem, E))
+                aRes[_Res.Err].append('%s->%s %s' % (aPath, aItem, E))
         else:
             aObj = getattr(aObj, aItem[0], None)
             if (aObj):
                 if (len(aItem) == 2):
                     aObj = aObj(*aItem[1])
             else:
-                aRes[2].append('%s->%s unknown' % (aPath, aItem))
+                aRes[_Res.Err].append('%s->%s unknown' % (aPath, aItem))
 
         if (aObj is None):
             if (not '?' in aPath):
-                aRes[2].append('%s->%s' % (aPath, aItem))
+                aRes[_Res.Err].append('%s->%s' % (aPath, aItem))
         return aObj
 
     @staticmethod
@@ -183,7 +200,7 @@ class TSoupScheme():
         i = 0
         while (i < len(aScheme)):
             if (type(aScheme[i]) != list):
-                aRes[2].append('%s->%s not a list' % (aPath, aScheme[i]))
+                aRes[_Res.Err].append('%s->%s not a list' % (aPath, aScheme[i]))
                 return
 
             if (aScheme[i + _If.Sign][0] == '?'):

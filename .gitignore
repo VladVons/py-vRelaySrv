@@ -10,4 +10,5 @@ __pycache__
 test/
 local/
 src_arch/
+scraper/
 .secret.txt
