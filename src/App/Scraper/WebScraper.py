@@ -28,7 +28,6 @@ from bs4 import BeautifulSoup
 #
 from IncP.Log import Log
 from IncP.Download import TDownload
-from IncP.Scheme import TSoupScheme
 from Inc.DB.DbList import TDbList
 from .Api import Api
 
@@ -45,7 +44,7 @@ class TSender():
             ('PriceOld', float),
             ('Image', str),
             ('Stock', bool),
-            ('SKU', str)
+            ('MPN', str)
         ])
 
     async def Add(self, aData: dict):
@@ -175,7 +174,7 @@ class TWebScraperFull(TWebScraper):
             aStatus, len(self.Url), self.TotalUrl, self.TotalData / 1000000, aUrl)
         Log.Print(1, 'i', Msg)
 
-        Res = TSoupScheme.Parse(aSoup, self.Scheme)
+        Res = self.Scheme.Parse(aSoup)
         if (Res):
             self.UrlScheme += 1
             #print('---x1', Res)
@@ -218,7 +217,7 @@ class TWebScraperSitemap(TWebScraper):
 
     async def _DoWorkerUrl(self, aUrl: str, aData: str, aStatus: int):
         Soup = BeautifulSoup(aData, 'lxml')
-        Data = TSoupScheme.ParseKeys(Soup, self.Scheme)
+        Data = self.Scheme.Parse(Soup)
 
         Info = Data.get('Product')
         if (Info):

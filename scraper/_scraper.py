@@ -6,7 +6,8 @@ sys.path.append('../src')
 
 import time, json
 from bs4 import BeautifulSoup
-from IncP.Scheme import TSoupScheme
+from IncP.Scheme import TSoupScheme, TApi
+
 
 def WriteFile(aFile: str, aData: str):
     with open(aFile, 'w') as F:
@@ -33,7 +34,6 @@ def Find(aMod: str, aExt: str = '.html'):
             print(json.dumps(x,ensure_ascii=False))
         print()
 
-
 def TestJson(aMod: str, aExt: str = '.html'):
     print(aMod, aExt)
 
@@ -44,15 +44,24 @@ def TestJson(aMod: str, aExt: str = '.html'):
     with open(aMod + aExt) as hFile:
         Data = hFile.read()
 
-    TimeStart = time.time()
-    for i in range(1):
-        Soup = BeautifulSoup(Data, 'lxml')
+    Soup = BeautifulSoup(Data, 'lxml')
 
-        Item = Schema['Product']
-        Res = TSoupScheme.Parse(Soup, Item)
-        print(Res)
-    print('Time', round(time.time() - TimeStart, 2))
+    Item = Schema['Product']
+    Res = TSoupScheme.Parse(Soup, Item)
+    print(Res)
 
+def TestPyScript(aMod: str, aExt: str = '.html'):
+    print(aMod, aExt)
+
+    with open(aMod + '.txt.py') as hFile:
+        PyScript = hFile.read()
+
+    with open(aMod + aExt) as hFile:
+        Data = hFile.read()
+
+    Soup = BeautifulSoup(Data, 'lxml')
+    Res = TApi.script(Soup, PyScript)
+    print(Res)
 
 def TestPy(aMod: str, aExt: str = '.html'):
     with open(aMod + aExt) as hFile:
@@ -90,4 +99,5 @@ os.system('clear')
 #TestJson('allo.ua-a')
 
 #TestPy('can.ua')
-TestJson('can.ua')
+#TestJson('can.ua')
+TestPyScript('can.ua')

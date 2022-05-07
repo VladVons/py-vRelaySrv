@@ -35,6 +35,18 @@ def Test_2():
     #print('done')
 
 
+def Test_3():
+    from IncP.Scheme import TApi
+    Param = {'Town': 'Ternopil'}
+    Script = f'''
+print('Hello1')
+print('Hello2', Param.get('Town'))
+Res = Api.split('1,2,3,4', ',')
+    '''
+    Res = TApi.script(Script, Param)
+    print(Res)
+
+
 DbAuth = {
     'Server': '192.168.2.115',
     'Database': 'scraper1',
@@ -92,5 +104,6 @@ print()
 #asyncio.run(TestA_2())
 #asyncio.run(Test_pyppeteer())
 #asyncio.run(Test_speed())
-asyncio.run(SaveScheme())
+#asyncio.run(SaveScheme())
 #Test_2()
+Test_3()

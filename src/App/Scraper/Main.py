@@ -12,10 +12,11 @@ import random
 from collections import deque
 #
 from IncP.Log import Log
+from IncP.Scheme import TScheme
 from IncP.ApiWeb import TWebSockClient
-from .WebScraper import TWebScraperFull, TWebScraperUpdate, TWebScraperSitemap
 from IncP.DownloadSpeed import TDownloadSpeed
 #from .Selenium import TStarter
+from .WebScraper import TWebScraperFull, TWebScraperUpdate, TWebScraperSitemap
 from .Api import Api
 
 
@@ -45,14 +46,15 @@ class TMain():
             DataA = await Api.GetTask()
             Data = DataA.get('Data', {}).get('Data')
             if (Data):
+                Scheme = TScheme(Data['scheme'])
                 Type = Data.get('Type')
                 if (Type == 'Full'):
                     if (Data['sitemap']):
-                        Scraper = TWebScraperSitemap(self, Data['scheme'], Data['url'], Data['sleep'])
+                        Scraper = TWebScraperSitemap(self, Scheme, Data['url'], Data['sleep'])
                     else:
-                        Scraper = TWebScraperFull(self, Data['scheme'], Data['url'], Data['sleep'])
+                        Scraper = TWebScraperFull(self, Scheme, Data['url'], Data['sleep'])
                 elif (Type == 'Update'):
-                    Scraper = TWebScraperUpdate(self, Data['scheme'], Data['Urls'], Data['sleep'])
+                    Scraper = TWebScraperUpdate(self, Scheme, Data['Urls'], Data['sleep'])
                 elif (Type == 'UpdateSelenium'):
                     #await TStarter().ThreadCreate(Data['Urls'])
                     continue

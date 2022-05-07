@@ -7,7 +7,6 @@ Description:
 Based on aioodbc, aiomysql, aiopg
 '''
 
-import re
 import asyncio
 #import psycopg2.extras
 #

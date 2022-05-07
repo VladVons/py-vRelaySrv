@@ -12,7 +12,7 @@ from bs4 import BeautifulSoup
 #
 from .FForm import TFormBase
 from IncP.Download import TDownload
-from IncP.Scheme import TSoupScheme
+from IncP.Scheme import TScheme
 from IncP.Log import Log
 from IncP.Utils import TJsonEncoder, FormatJsonStr
 
@@ -41,13 +41,12 @@ class TForm(TFormBase):
             Path = []
             Err += '_Path: %s\n' % E.args
 
-        Items = {}
         ItemsStr = []
         for Key, Val in self.Data.items():
             if (Key.startswith(_FieldPrefix)) and (Val) and (not Val.startswith('-')):
                 Key = Key.replace(_FieldPrefix, '')
                 try:
-                    Items[Key] = json.loads(f'[{Val}]')
+                    json.loads(f'[{Val}]')
                 except ValueError as E:
                     Err += '%s: %s\n' % (Key, E.args)
 
@@ -55,19 +54,6 @@ class TForm(TFormBase):
                             "%s": [
                                 %s
                             ]''' % (Key, Val))
-        Script = {
-            'Product': {
-                '-Info': {
-                    'Url': self.Data.Url,
-                    'Date': datetime.date.today().strftime('%Y-%m-%d')
-                },
-                '_Group1': {
-                    '_Path': Path,
-                    '_Items': Items
-                }
-            }
-        }
-
         ScriptStr = '''
             {
                 "Product": {
@@ -87,14 +73,14 @@ class TForm(TFormBase):
             }
         ''' % (self.Data.Url, datetime.date.today().strftime('%Y-%m-%d'), self.Data.Path, ','.join(ItemsStr))
 
-        return (Script, FormatJsonStr(ScriptStr), Err)
+        return (FormatJsonStr(ScriptStr), Err)
 
     async def Render(self):
         if (await self.PostToForm()):
             FieldsScript = [Key for Key in self.Data if Key.startswith(_FieldPrefix)] + ['Path']
             self.StripDataLines(FieldsScript)
 
-            Script, ScriptStr, Err = self.Compile()
+            Script, Err = self.Compile()
             if (Err):
                 self.Data.Script = ''
                 self.Data.Output = Err
@@ -107,10 +93,11 @@ class TForm(TFormBase):
                     Data = UrlDown['Data']
                     Status = UrlDown['Status']
                     if (Status == 200):
-                        self.Data.Script = ScriptStr
                         Soup = BeautifulSoup(Data, 'lxml')
-                        Scheme = TSoupScheme.ParseKeys(Soup, Script)
-                        self.Data.Output = json.dumps(Scheme, indent=2, sort_keys=True, ensure_ascii=False, cls=TJsonEncoder)
+                        self.Data.Script = Script
+                        Scheme = TScheme(Script)
+                        Output = Scheme.Parse(Soup)
+                        self.Data.Output = json.dumps(Output, indent=2, sort_keys=True, ensure_ascii=False, cls=TJsonEncoder)
                     else:
                         self.Data.Output = 'Error loading %s' % (self.Data.Url)
         return self._Render()

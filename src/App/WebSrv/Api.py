@@ -10,9 +10,8 @@ import json
 from bs4 import BeautifulSoup
 #
 from IncP.ApiWeb import TApiBase, TWebClient
-from IncP.Scheme import TSoupScheme
+from IncP.Scheme import TScheme
 from IncP.Download import TDownload
-from IncP.Utils import TJsonEncoder
 from IncP.Utils import GetNestedKey
 from Inc.DB.DbList import TDbList
 
@@ -45,11 +44,11 @@ class TApi(TApiBase):
         return await self.WebClient.Send('web/' + aPath, aData)
 
     async def path_set_scheme(self, aPath: str, aData: dict) -> dict:
-        Scheme = json.loads(aData.get('scheme'))
-        Url = GetNestedKey(Scheme, 'Product.-Info.Url', '')
+        Scheme = TScheme(aData.get('scheme'))
+        Url = Scheme.GetUrl()
         Soup = await self.GetSoup(Url)
         if (Soup):
-            Parsed = TSoupScheme.ParseKeys(Soup, Scheme)
+            Parsed = Scheme.Parse(Soup)
             if (Parsed['Product'][2][0]):
                 Res = {'Err': Parsed['Product'][2]}
             else:
@@ -73,30 +72,29 @@ class TApi(TApiBase):
 
         Arr = []
         for Rec in DbL:
-            Scheme = json.loads(Rec.GetField('scheme'))
-            Parsed = TSoupScheme.ParseKeys(Soup, Scheme)
+            Scheme = TScheme(Rec.GetField('scheme'))
+            Parsed = Scheme.Parse(Soup)
             if (Parsed['Product'][0]):
                 Arr.append((Rec.GetField('url'), Parsed['Product'][0]))
         Res = {'Data': Arr}
         return Res
 
     async def path_get_scheme_test(self, aPath: str, aData: dict) -> dict:
-        Scheme = aData['scheme']
-        if (not Scheme):
+        if (not aData['scheme']):
             return {'Err': 'No scheme'}
 
         try:
-            Scheme = json.loads(Scheme)
+            Scheme = TScheme(aData['scheme'])
         except ValueError as E:
             return {'Err': str(E)}
 
-        Url = GetNestedKey(Scheme, 'Product.-Info.Url')
+        Url = Scheme.GetUrl()
         if (not Url):
             return {'Err': 'No Product.-Info.Url %s' % (Url)}
 
         Soup = await self.GetSoup(Url)
         if (Soup):
-            Res = TSoupScheme.ParseKeys(Soup, Scheme)
+            Res = Scheme.Parse(Soup)
         else:
             Res = {'Err': 'Error loading %s' % (Url)}
         return Res

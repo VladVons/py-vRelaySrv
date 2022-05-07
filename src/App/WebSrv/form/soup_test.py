@@ -11,7 +11,7 @@ from bs4 import BeautifulSoup
 #
 from .FForm import TFormBase
 from IncP.Download import TDownload
-from IncP.Scheme import TSoupScheme
+from IncP.Scheme import TScheme
 from IncP.Log import Log
 from IncP.Utils import TJsonEncoder
 
@@ -31,9 +31,9 @@ class TForm(TFormBase):
                 if (Status == 200):
                     Soup = BeautifulSoup(Data, 'lxml')
                     try:
-                        Script = json.loads(self.Data.Script)
-                        ResScheme = TSoupScheme.ParseKeys(Soup, Script)
-                        self.Data.Output = json.dumps(ResScheme,  indent=2, sort_keys=True, ensure_ascii=False, cls=TJsonEncoder)
+                        Scheme = TScheme(self.Data.Script)
+                        Output = Scheme.Parse(Soup)
+                        self.Data.Output = json.dumps(Output,  indent=2, sort_keys=True, ensure_ascii=False, cls=TJsonEncoder)
                     except (json.decoder.JSONDecodeError, AttributeError) as E:
                         self.Data.Output = str(E.args)
                         Log.Print(1, 'x', self.Data.Output, aE=E)

@@ -12,8 +12,11 @@ import re
 import json
 import operator
 import enum
+import urllib
+#
 from Inc.Util.UObj import GetTree
-from IncP.Utils import GetNestedKey
+from IncP.Utils import GetNestedKey, ExecScript
+from IncP.Log import Log, _GetStack
 
 
 _Invisible = [' ', '\t', '\n', '\r', '\xA0']
@@ -28,17 +31,17 @@ _reSpace.split(aValue.strip())
         return Res
 '''
 
-class _If(enum.IntEnum):
+class TEnIf(enum.IntEnum):
     Sign = 0
-    Script = 1
-    Compare = 2
-    ResFalse = 3
-    ResTrue = 4
+    Script = enum.auto()
+    Compare = enum.auto()
+    ResFalse = enum.auto()
+    ResTrue = enum.auto()
 
-class _Res(enum.IntEnum):
-    KeyVal = 0
-    Keys = 1
-    Err = 2
+class TEnRes(enum.IntEnum):
+    Val = 0
+    Keys = enum.auto()
+    Err = enum.auto()
 
 
 def DigSplit(aVal: str) -> tuple:
@@ -60,8 +63,26 @@ def XlatReplace(aVal: str, aXlat: list) -> str:
         aVal = aVal.replace(Find, Replace)
     return aVal
 
+class TRes():
+    def __init__(self):
+        self.Data = (dict(), list(), list())
+
+    def Add(self, aKey: str, aVal: object, aErr: str = ''):
+        self.Data[TEnRes.Keys].append(aKey)
+        if (aErr):
+            self.Data[TEnRes.Err].append(aErr)
+        else:
+            self.Data[TEnRes.Val][aKey] = aVal
+
 
 class TApi():
+    @staticmethod
+    def script(aVal: object, aPy: str, aParam: dict = {}) -> dict:
+        aParam['aVal'] = aVal
+        aParam['aApi'] = TApi()
+        aParam['aRes'] = TRes()
+        return ExecScript(aPy, aParam)
+
     @staticmethod
     def strip(aVal: str) -> str:
         return aVal.strip()
@@ -182,18 +203,18 @@ class TSoupScheme():
                 aObj = Obj(*Param)
             except Exception as E:
                 aObj = None
-                aRes[_Res.Err].append('%s->%s %s' % (aPath, aItem, E))
+                aRes[TEnRes.Err].append('%s->%s %s' % (aPath, aItem, E))
         else:
             aObj = getattr(aObj, aItem[0], None)
             if (aObj):
                 if (len(aItem) == 2):
                     aObj = aObj(*aItem[1])
             else:
-                aRes[_Res.Err].append('%s->%s unknown' % (aPath, aItem))
+                aRes[TEnRes.Err].append('%s->%s unknown' % (aPath, aItem))
 
         if (aObj is None):
             if (not '?' in aPath):
-                aRes[_Res.Err].append('%s->%s' % (aPath, aItem))
+                aRes[TEnRes.Err].append('%s->%s' % (aPath, aItem))
         return aObj
 
     @staticmethod
@@ -201,15 +222,15 @@ class TSoupScheme():
         i = 0
         while (i < len(aScheme)):
             if (type(aScheme[i]) != list):
-                aRes[_Res.Err].append('%s->%s not a list' % (aPath, aScheme[i]))
+                aRes[TEnRes.Err].append('%s->%s not a list' % (aPath, aScheme[i]))
                 return
 
-            if (aScheme[i + _If.Sign][0] == '?'):
-                R1 = TSoupScheme.GetItems(aObj, aScheme[i + _If.Script], aRes, aPath)
-                R2 = TSoupScheme.GetItem(R1, aScheme[i + _If.Compare], aRes, aPath)
-                Scheme = aScheme[i + _If.ResFalse + int(R2)]
+            if (aScheme[i + TEnIf.Sign][0] == '?'):
+                R1 = TSoupScheme.GetItems(aObj, aScheme[i + TEnIf.Script], aRes, aPath)
+                R2 = TSoupScheme.GetItem(R1, aScheme[i + TEnIf.Compare], aRes, aPath)
+                Scheme = aScheme[i + TEnIf.ResFalse + int(R2)]
                 aObj = TSoupScheme.GetItems(aObj, Scheme, aRes, aPath)
-                i += len(_If)
+                i += len(TEnIf)
             else:
                 aObj = TSoupScheme.GetItem(aObj, aScheme[i], aRes, aPath)
                 if (aObj is None):
@@ -220,10 +241,10 @@ class TSoupScheme():
     @staticmethod
     def ParseItems(aSoup, aScheme: list, aRes: tuple, aPath: str, aKey: str) -> object:
         KeyPure = XlatReplace(aKey, _XlatKey)
-        aRes[_Res.Keys].append(KeyPure)
+        aRes[TEnRes.Keys].append(KeyPure)
         R = TSoupScheme.GetItems(aSoup, aScheme, aRes, aPath)
         if (R is not None):
-            aRes[_Res.KeyVal][KeyPure] = R
+            aRes[TEnRes.Val][KeyPure] = R
         return R
 
     @staticmethod
@@ -242,9 +263,9 @@ class TSoupScheme():
                     R = TSoupScheme.GetItems(aSoup, Data, Res, Path)
                     if (R):
                         R = TSoupScheme.Parse(R, ValG.get('_Items', {}), Path)
-                        Res[_Res.KeyVal].update(R[_Res.KeyVal])
-                        Res[_Res.Keys].append(R[_Res.Keys])
-                        Res[_Res.Err].append(R[_Res.Err])
+                        Res[TEnRes.Val].update(R[TEnRes.Val])
+                        Res[TEnRes.Keys].append(R[TEnRes.Keys])
+                        Res[TEnRes.Err].append(R[TEnRes.Err])
             else:
                 TSoupScheme.ParseItems(aSoup, Val, Res, Path, Key)
         return Res
@@ -252,3 +273,27 @@ class TSoupScheme():
     @staticmethod
     def ParseKeys(aSoup, aData: dict) -> dict:
         return {Key: TSoupScheme.Parse(aSoup, Val) for Key, Val in aData.items() if (not Key.startswith('-'))}
+
+
+class TScheme():
+    def __init__(self, aScheme: str):
+        self.IsPy = ('aApi.' in aScheme)
+        if (self.IsPy):
+            self.Scheme = aScheme
+        else:
+            self.Scheme = json.loads(aScheme)
+
+    def Parse(self, aSoup) -> dict:
+        if (self.IsPy):
+            return TApi.script(aSoup, self.Scheme)
+        else:
+            return TSoupScheme.ParseKeys(aSoup, self.Scheme)
+
+    def GetUrl(self) -> str:
+        if (self.IsPy):
+            #Match = re.search('Url\s*=\s*(.*?)$', self.Scheme, re.DOTALL)
+            Match = re.search("(?P<url>http[s]?://[^\s]+)", self.Scheme, re.DOTALL)
+            if (Match):
+                return Match.group('url')
+        else:
+            return GetNestedKey(self.Scheme, 'Product.-Info.Url', '')
