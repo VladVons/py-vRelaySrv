@@ -275,25 +275,30 @@ class TSoupScheme():
         return {Key: TSoupScheme.Parse(aSoup, Val) for Key, Val in aData.items() if (not Key.startswith('-'))}
 
 
-class TScheme():
-    def __init__(self, aScheme: str):
-        self.IsPy = ('aApi.' in aScheme)
-        if (self.IsPy):
-            self.Scheme = aScheme
-        else:
-            self.Scheme = json.loads(aScheme)
+class TSchemeBase():
+    def __init__(self, aScheme: object):
+        self.Scheme = aScheme
 
+class TSchemePy(TSchemeBase):
     def Parse(self, aSoup) -> dict:
-        if (self.IsPy):
-            return TApi.script(aSoup, self.Scheme)
-        else:
-            return TSoupScheme.ParseKeys(aSoup, self.Scheme)
+       return TApi.script(aSoup, self.Scheme)
 
     def GetUrl(self) -> str:
-        if (self.IsPy):
-            #Match = re.search('Url\s*=\s*(.*?)$', self.Scheme, re.DOTALL)
-            Match = re.search("(?P<url>http[s]?://[^\s]+)", self.Scheme, re.DOTALL)
-            if (Match):
-                return Match.group('url')
-        else:
-            return GetNestedKey(self.Scheme, 'Product.-Info.Url', '')
+        #Match = re.search('Url\s*=\s*(.*?)$', self.Scheme, re.DOTALL)
+        Match = re.search("(?P<url>http[s]?://[^\s]+)", self.Scheme, re.DOTALL)
+        if (Match):
+            return Match.group('url')
+
+class TSchemeJson(TSchemeBase):
+    def Parse(self, aSoup) -> dict:
+        return TSoupScheme.ParseKeys(aSoup, self.Scheme)
+
+    def GetUrl(self) -> str:
+        return GetNestedKey(self.Scheme, 'Product.-Info.Url', '')
+
+
+def TScheme(aScheme: str) -> object:
+    if ('aApi.' in aScheme):
+        return TSchemePy(aScheme)
+    else:
+        return TSchemePy(json.loads(aScheme))
