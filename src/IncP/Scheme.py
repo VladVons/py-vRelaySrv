@@ -275,11 +275,7 @@ class TSoupScheme():
         return {Key: TSoupScheme.Parse(aSoup, Val) for Key, Val in aData.items() if (not Key.startswith('-'))}
 
 
-class TSchemeBase():
-    def __init__(self, aScheme: object):
-        self.Scheme = aScheme
-
-class TSchemePy(TSchemeBase):
+class TSchemePy():
     def Parse(self, aSoup) -> dict:
        return TApi.script(aSoup, self.Scheme)
 
@@ -289,7 +285,7 @@ class TSchemePy(TSchemeBase):
         if (Match):
             return Match.group('url')
 
-class TSchemeJson(TSchemeBase):
+class TSchemeJson():
     def Parse(self, aSoup) -> dict:
         return TSoupScheme.ParseKeys(aSoup, self.Scheme)
 
@@ -297,8 +293,15 @@ class TSchemeJson(TSchemeBase):
         return GetNestedKey(self.Scheme, 'Product.-Info.Url', '')
 
 
-def TScheme(aScheme: str) -> object:
+def TScheme(aScheme: str):
     if ('aApi.' in aScheme):
-        return TSchemePy(aScheme)
+        Class = TSchemePy
     else:
-        return TSchemePy(json.loads(aScheme))
+        Class = TSchemeJson
+        aScheme = json.loads(aScheme)
+
+    class TClass(Class):
+        def __init__(self, aScheme: object):
+            self.Scheme = aScheme
+
+    return TClass(aScheme)
