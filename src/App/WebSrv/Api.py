@@ -10,7 +10,7 @@ import json
 from bs4 import BeautifulSoup
 #
 from IncP.ApiWeb import TApiBase, TWebClient
-from IncP.Scheme import TScheme
+from IncP.Scheme import TScheme, TEnRes
 from IncP.Download import TDownload
 from IncP.Utils import GetNestedKey
 from Inc.DB.DbList import TDbList
@@ -26,7 +26,7 @@ class TApi(TApiBase):
             'get_scheme':               {'param': ['id']},
             'get_scheme_find':          {'param': ['url']},
             'get_scheme_test':          {'param': ['scheme']},
-            'set_scheme':               {'param': ['id', 'scheme']}
+            'set_scheme':               {'param': ['id', 'scheme', 'url']}
         }
 
         self.DefMethod = self.DefHandler
@@ -46,15 +46,18 @@ class TApi(TApiBase):
     async def path_set_scheme(self, aPath: str, aData: dict) -> dict:
         Scheme = TScheme(aData.get('scheme'))
         Url = Scheme.GetUrl()
+        if (not Url.startswith(aData.get('url'))):
+            return {'Err': 'Url mismatch'}
+
         Soup = await self.GetSoup(Url)
-        if (Soup):
-            Parsed = Scheme.Parse(Soup)
-            if (Parsed['Product'][2][0]):
-                Res = {'Err': Parsed['Product'][2]}
-            else:
-                Res = await self.DefHandler(aPath, aData)
+        if (not Soup):
+            return {'Err': 'Error loading %s' % (Url)}
+
+        Parsed = Scheme.Parse(Soup)
+        if (Parsed['Product'][TEnRes.Err][0]):
+            Res = {'Err': Parsed['Product'][2]}
         else:
-            Res = {'Err': 'Error loading %s' % (Url)}
+            Res = await self.DefHandler(aPath, aData)
         return Res
 
     async def path_get_scheme_find(self, aPath: str, aData: dict) -> dict:
@@ -74,7 +77,7 @@ class TApi(TApiBase):
         for Rec in DbL:
             Scheme = TScheme(Rec.GetField('scheme'))
             Parsed = Scheme.Parse(Soup)
-            if (Parsed['Product'][0]):
+            if (Parsed['Product'][TEnRes.Val]):
                 Arr.append((Rec.GetField('url'), Parsed['Product'][0]))
         Res = {'Data': Arr}
         return Res

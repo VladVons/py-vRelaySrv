@@ -12,10 +12,10 @@ import re
 import json
 import operator
 import enum
-import urllib
 #
 from Inc.Util.UObj import GetTree
-from IncP.Utils import GetNestedKey, ExecScript
+from IncP.Utils import GetNestedKey
+from IncP.Python import TPython
 from IncP.Log import Log, _GetStack
 
 
@@ -64,8 +64,31 @@ def XlatReplace(aVal: str, aXlat: list) -> str:
     return aVal
 
 class TRes():
-    def __init__(self):
+    def __init__(self, aScheme):
+        self.Scheme = aScheme
         self.Data = (dict(), list(), list())
+
+    def Exec(self, aPrefix: str = 'Key_'):
+        Name = 'Path' + aPrefix
+        Obj = getattr(self, Name, None)
+        if (Obj is None):
+            self.Data[TEnRes.Err].append('No method %s' % Name)
+            return
+
+        PathData = Obj(self.Scheme)
+        if (PathData is None):
+            self.Data[TEnRes.Err].append('Empty data returned %s' % Name)
+            return
+
+        Keys = [Key for Key in dir(self) if (Key.startswith(aPrefix))]
+        for Key in Keys:
+            Obj = getattr(self, Key, None)
+            if callable(Obj):
+                Data = Obj(PathData)
+                if (Data is not None):
+                    Name = Key.replace(aPrefix, '')
+                    self.Add(Name, Data)
+
 
     def Add(self, aKey: str, aVal: object, aErr: str = ''):
         self.Data[TEnRes.Keys].append(aKey)
@@ -76,13 +99,6 @@ class TRes():
 
 
 class TApi():
-    @staticmethod
-    def script(aVal: object, aPy: str, aParam: dict = {}) -> dict:
-        aParam['aVal'] = aVal
-        aParam['aApi'] = TApi()
-        aParam['aRes'] = TRes()
-        return ExecScript(aPy, aParam)
-
     @staticmethod
     def strip(aVal: str) -> str:
         return aVal.strip()
@@ -276,16 +292,24 @@ class TSoupScheme():
 
 
 class TSchemePy():
+    def __init__(self, aScheme: str):
+        self.Python = TPython(aScheme)
+        self.Python.Compile()
+
     def Parse(self, aSoup) -> dict:
-       return TApi.script(aSoup, self.Scheme)
+        Param = {'aVal': aSoup, 'aApi': TApi(), 'aRes': TRes}
+        return self.Python.Exec(Param)
 
     def GetUrl(self) -> str:
         #Match = re.search('Url\s*=\s*(.*?)$', self.Scheme, re.DOTALL)
-        Match = re.search("(?P<url>http[s]?://[^\s]+)", self.Scheme, re.DOTALL)
+        Match = re.search("(?P<url>http[s]?://[^\s]+)", self.Python.Script, re.DOTALL)
         if (Match):
             return Match.group('url')
 
 class TSchemeJson():
+    def __init__(self, aScheme: str):
+        self.Scheme = json.loads(aScheme)
+
     def Parse(self, aSoup) -> dict:
         return TSoupScheme.ParseKeys(aSoup, self.Scheme)
 
@@ -298,10 +322,9 @@ def TScheme(aScheme: str):
         Class = TSchemePy
     else:
         Class = TSchemeJson
-        aScheme = json.loads(aScheme)
 
     class TClass(Class):
-        def __init__(self, aScheme: object):
-            self.Scheme = aScheme
+        def Test(self):
+            print('Hello')
 
     return TClass(aScheme)

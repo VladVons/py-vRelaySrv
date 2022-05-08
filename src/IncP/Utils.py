@@ -6,10 +6,8 @@ Description:
 '''
 
 
-import sys
 import json
 import random
-import traceback
 
 
 #--- Json ---
@@ -78,18 +76,3 @@ def GetRandStr(aLen: int) -> str:
 def GetRandStrPattern(aLen: int, aPattern = 'YourPattern') -> str:
     return ''.join((random.choice(aPattern)) for x in range(aLen))
 
-def ExecScript(aPy: str, aParam: dict = {}) -> object:
-    try:
-        Out = {}
-        exec(aPy, aParam, Out)
-        Res = {'Data': Out.get('Res')}
-    except IndentationError as E:
-        LineNo = E.lineno
-        Line = E.text
-        Res = {'Err': E.args[0], 'LineNo': LineNo, 'Line': Line}
-    except Exception as E:
-        _a, _b, tb = sys.exc_info()
-        LineNo = traceback.extract_tb(tb)[-1][1]
-        Line = aPy.splitlines()[LineNo]
-        Res = {'Err': E.args[0], 'LineNo': LineNo, 'Line': Line}
-    return Res

@@ -35,13 +35,6 @@
             return;
         }
 
-        let Scheme = JSON.parse(Script);
-        let Url = Scheme['Product']['-Info']['Url'];
-        if (! Url.startsWith(aUrl)) {
-            window.alert('Url mismatch');
-            return;
-        }
-
         if (! window.confirm('Save ' + aUrl + ' to database ?')) {
           return;
         }
@@ -53,7 +46,7 @@
                 let Msg = aData['Err'] ? aData['Err'] : 'Saved';
                 window.alert(Msg + ' ' + aUrl);
             },
-            {'id': aId, 'scheme': Script}
+            {'id': aId, 'scheme': Script, 'url': aUrl}
         );
     };
 

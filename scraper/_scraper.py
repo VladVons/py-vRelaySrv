@@ -6,12 +6,16 @@ sys.path.append('../src')
 
 import time, json
 from bs4 import BeautifulSoup
-from IncP.Scheme import TSoupScheme, TApi
+from IncP.Scheme import TSoupScheme, TApi, TScheme
 
 
 def WriteFile(aFile: str, aData: str):
     with open(aFile, 'w') as F:
         Data = F.write(aData)
+
+def ReadFile(aFile: str):
+    with open(aFile, 'r') as hFile:
+        return hFile.read()
 
 
 def Find(aMod: str, aExt: str = '.html'):
@@ -87,6 +91,14 @@ def TestPy(aMod: str, aExt: str = '.html'):
     #Soup4 = Soup1.find('div', {'class': 'price'})
     #print('--x4', bool(Soup4))
 
+def TestBoth(aMod: str, aExt: str = '.html'):
+    Script = ReadFile(aMod + '.txt.py')
+    Scheme = TScheme(Script)
+
+    Html = ReadFile(aMod + aExt)
+    Soup = BeautifulSoup(Html, 'lxml')
+    Res = Scheme.Parse(Soup)
+    print(Res)
 
 os.system('clear')
 #TestJson('empire-tech.prom.ua')
@@ -100,4 +112,6 @@ os.system('clear')
 
 #TestPy('can.ua')
 #TestJson('can.ua')
-TestPyScript('can.ua')
+#TestPyScript('can.ua')
+
+TestBoth('can.ua')
