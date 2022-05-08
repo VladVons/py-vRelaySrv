@@ -106,4 +106,9 @@ print()
 #asyncio.run(Test_speed())
 #asyncio.run(SaveScheme())
 #Test_2()
-Test_3()
+#Test_3()
+
+from IncP.Scheme import TApi
+q1 = TApi.unbracket('123 789')
+q2 = TApi.unbracket('123 (456) 789() (')
+print(q1, q2)

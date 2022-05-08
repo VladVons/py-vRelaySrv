@@ -14,22 +14,31 @@ class TPython():
     def __init__(self, aScript: str):
         self.Script = aScript
         self.ByteCode = None
-        self.LineNoErr = 0
+
+    def ErrMsg(self, aE: Exception, aInfo: tuple = None) -> dict:
+        EName = type(aE).__name__
+        if (aInfo):
+            tb = traceback.extract_tb(aInfo[2])[-1]
+            if (tb.filename):
+                Res = {'Err': EName, 'LineNo': tb.lineno, 'Line': tb.line, 'File': tb.filename}
+            else:
+                Res = {'Err': EName, 'LineNo': tb.lineno, 'Line': self.GetLine(tb.lineno - 1)}
+        else:
+            Res = {'Err': EName, 'LineNo': aE.lineno, 'Line': self.GetLine(aE.lineno - 1)}
+        return Res
 
     def GetLine(self, aIdx: int) -> str:
         Lines = self.Script.splitlines()
-        return Lines[aIdx]
+        return Lines[aIdx].strip()
 
     def Compile(self) -> bool:
         try:
-            self.ByteCode = compile(self.Script, '', 'exec')
-            self.LineNoErr = 0
-        except (IndentationError, SyntaxError) as E:
             self.ByteCode = None
-            self.LineNoErr = E.lineno
+            self.ByteCode = compile(self.Script, '', 'exec')
+        except (IndentationError, SyntaxError) as E:
+            return self.ErrMsg(E)
         except Exception as E:
-            raise E
-        return bool(self.ByteCode)
+            return self.ErrMsg(E, sys.exc_info())
 
     def Exec(self, aParam: dict = {}) -> object:
         try:
@@ -37,15 +46,8 @@ class TPython():
             Script = self.ByteCode if (self.ByteCode) else self.Script
             exec(Script, aParam, Out)
             Res = {'Data': Out.get('Res')}
-            self.LineNoErr = 0
         except (IndentationError, SyntaxError) as E:
-            self.LineNoErr = E.lineno
-            ErrMsg = E.args[0]
+            Res = self.ErrMsg(E)
         except Exception as E:
-            _a, _b, tb = sys.exc_info()
-            self.LineNoErr = traceback.extract_tb(tb)[-1][1]
-            ErrMsg = E.args[0]
-
-        if (self.LineNoErr):
-            Res = {'Err': ErrMsg, 'LineNo': self.LineNoErr, 'Text': self.GetLine(self.LineNoErr-1)}
+            Res = self.ErrMsg(E, sys.exc_info())
         return Res

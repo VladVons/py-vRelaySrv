@@ -6,8 +6,8 @@ Description:
 '''
 
 
-__version__ = '1.0.4'
-__date__ =  '2022.05.07'
+__version__ = '1.0.5'
+__date__ =  '2022.05.08'
 
 Info = {
     'Version' : __version__,

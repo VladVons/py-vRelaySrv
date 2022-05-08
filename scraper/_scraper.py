@@ -74,7 +74,7 @@ def TestPy(aMod: str, aExt: str = '.html'):
     Soup = BeautifulSoup(Data, 'lxml')
 
     Soup1 = Soup.find('div', {'class': 'product-page'})
-    print('--x1', bool(Soup1))
+    print('--x1', bool(Soup))
     #WriteFile(aMod + '.txt', str(Soup1))
 
     #Soup2 = Soup.find_all('div', {'class': 'product-page'})

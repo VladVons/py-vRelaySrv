@@ -7,7 +7,7 @@ Description:
 https://github.com/pythontoday/scrap_tutorial
 '''
 
-
+import sys
 import re
 import json
 import operator
@@ -68,32 +68,34 @@ class TRes():
         self.Scheme = aScheme
         self.Data = (dict(), list(), list())
 
-    def Exec(self, aPrefix: str = 'Key_'):
-        Name = 'Path' + aPrefix
-        Obj = getattr(self, Name, None)
+    def Exec(self, aPrefix: str, aPy: TPython):
+        Obj = getattr(self, aPrefix, None)
         if (Obj is None):
-            self.Data[TEnRes.Err].append('No method %s' % Name)
+            self.Data[TEnRes.Err].append('No method %s' % aPrefix)
             return
 
-        PathData = Obj(self.Scheme)
-        if (PathData is None):
+        PrefixData = Obj(self.Scheme)
+        if (PrefixData is None):
             self.Data[TEnRes.Err].append('Empty data returned %s' % Name)
             return
 
-        Keys = [Key for Key in dir(self) if (Key.startswith(aPrefix))]
+        Keys = [Key for Key in dir(self) if (Key.startswith(aPrefix)) and Key != aPrefix]
         for Key in Keys:
             Obj = getattr(self, Key, None)
+            Name = Key.replace(aPrefix, '')
             if callable(Obj):
-                Data = Obj(PathData)
-                if (Data is not None):
-                    Name = Key.replace(aPrefix, '')
-                    self.Add(Name, Data)
-
+                try:
+                    Res = Obj(PrefixData)
+                    if (Res is not None):
+                        self.Add(Name, Res)
+                except Exception as E:
+                    Err = aPy.ErrMsg(E, sys.exc_info())
+                    self.Add(Name, None, Err)
 
     def Add(self, aKey: str, aVal: object, aErr: str = ''):
         self.Data[TEnRes.Keys].append(aKey)
         if (aErr):
-            self.Data[TEnRes.Err].append(aErr)
+            self.Data[TEnRes.Err].append({aKey: aErr})
         else:
             self.Data[TEnRes.Val][aKey] = aVal
 
@@ -179,6 +181,13 @@ class TApi():
     @staticmethod
     def sub(aVal: str, aIdx: int, aEnd: int) -> str:
         return aVal[aIdx:aEnd]
+
+    @staticmethod
+    def unbracket(aVal: str, aPair: str = '()') -> list:
+        Pattern = '\%s(.*?)\%s' % (aPair[0], aPair[1])
+        Match = re.findall(Pattern, aVal)
+        if (Match):
+            return Match
 
 
 class TSoupScheme():
@@ -297,7 +306,7 @@ class TSchemePy():
         self.Python.Compile()
 
     def Parse(self, aSoup) -> dict:
-        Param = {'aVal': aSoup, 'aApi': TApi(), 'aRes': TRes}
+        Param = {'aVal': aSoup, 'aApi': TApi(), 'aRes': TRes, 'aPy': self.Python}
         return self.Python.Exec(Param)
 
     def GetUrl(self) -> str:
