@@ -137,7 +137,7 @@ class TApi():
                 return Func(aVal, aValue)
 
     @staticmethod
-    def split(aVal: str, aDelim: str, aIdx: int = None) -> str:
+    def split(aVal: str, aDelim: str, aIdx: int = None) -> list|str:
         Res = aVal.split(aDelim)
         if (aIdx is not None):
             Res = Res[aIdx].strip()
@@ -183,11 +183,13 @@ class TApi():
         return aVal[aIdx:aEnd]
 
     @staticmethod
-    def unbracket(aVal: str, aPair: str = '()') -> list:
+    def unbracket(aVal: str, aPair: str = '()', aIdx: int = None) -> list|str:
         Pattern = '\%s(.*?)\%s' % (aPair[0], aPair[1])
-        Match = re.findall(Pattern, aVal)
-        if (Match):
-            return Match
+        Res = re.findall(Pattern, aVal)
+        if (Res):
+            if (aIdx is not None):
+                Res = Res[aIdx].strip()
+            return Res
 
 
 class TSoupScheme():
