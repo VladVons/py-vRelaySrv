@@ -43,6 +43,16 @@ class TApi(TApiBase):
     async def DefHandler(self, aPath: str, aData: dict) -> dict:
         return await self.WebClient.Send('web/' + aPath, aData)
 
+    async def path_get_scheme(self, aPath: str, aData: dict) -> dict:
+        Data = await self.DefHandler(aPath, aData)
+        DataDbL = GetNestedKey(Data, 'Data.Data')
+        if (DataDbL):
+            Dbl = TDbList().Import(DataDbL)
+            Scheme = TScheme(Dbl.Rec.GetField('scheme'))
+            Data['IsJson'] = Scheme.IsJson()
+            Data['Url'] = Scheme.GetUrl()
+        return Data
+
     async def path_set_scheme(self, aPath: str, aData: dict) -> dict:
         Scheme = TScheme(aData.get('scheme'))
         Url = Scheme.GetUrl()
@@ -57,6 +67,7 @@ class TApi(TApiBase):
         if (Parsed['Product'][TEnRes.Err][0]):
             Res = {'Err': Parsed['Product'][2]}
         else:
+            aData.pop('url', None)
             Res = await self.DefHandler(aPath, aData)
         return Res
 

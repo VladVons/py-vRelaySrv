@@ -21,8 +21,7 @@
                 let DbL = new TDbList(aData['Data']['Data']);
                 let Scheme = DbL.Rec.GetField('scheme');
                 document.getElementById('Script').value = Scheme;
-                let SchemeObj = JSON.parse(Scheme);
-                document.getElementById('Url').value = SchemeObj['Product']['-Info']['Url'];
+                document.getElementById('Url').value = aData['Url'];
             },
             {'id': aId}
         );
@@ -43,7 +42,8 @@
             '/api/set_scheme',
             function(aData) {
                 console.log('aData', aData);
-                let Msg = aData['Err'] ? aData['Err'] : 'Saved';
+                let Err = aData['Data']['Err']
+                let Msg = Err ? Err : 'Saved';
                 window.alert(Msg + ' ' + aUrl);
             },
             {'id': aId, 'scheme': Script, 'url': aUrl}

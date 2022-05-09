@@ -335,7 +335,8 @@ def TScheme(aScheme: str):
         Class = TSchemeJson
 
     class TClass(Class):
-        def Test(self):
-            print('Hello')
-
+        def IsJson(self):
+            #Name = self.__class__.__bases__[0].__name__
+            return self.__class__.__bases__[0] == TSchemeJson
+ 
     return TClass(aScheme)

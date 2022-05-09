@@ -6,7 +6,7 @@ Description:
 '''
 
 
-import os
+import os, sys
 #
 from App import ConfApp
 from Inc.Plugin import Plugin
@@ -33,7 +33,14 @@ class TApp():
         self.InitLog()
 
         UName = os.uname()
-        Log.Print(1, 'i', 'Run()', [UName.sysname, UName.nodename, os.environ.get('USER'), Info.get('Version'), Info.get('Date')])
+        About = {
+            'OS': UName.sysname,
+            'Host': UName.nodename,
+            'User': os.environ.get('USER'),
+            'PyVer': (sys.version_info.major, sys.version_info.minor),
+            'AppVer': (Info.get('Version'), Info.get('Date'))
+        }
+        Log.Print(1, 'i', 'Run() %s' % About)
 
         Plugin.LoadList(ConfApp.get('Plugins'))
         try:

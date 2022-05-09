@@ -16,18 +16,18 @@ asyncio
 aiohttp-socks
 aiohttp_jinja2
 jinja2
-gmqtt
-websockets
+#gmqtt
+#websockets
 
 #--- random user agent 
-fake_useragent
+#fake_useragent
 
 #--- web browser emulator
-selenium
-webdriver_manager
+#selenium
+#webdriver_manager
 
 #--- python test application
-pytest
+#pytest
 
 #--- google map tools 
 #folium
