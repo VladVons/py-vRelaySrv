@@ -6,11 +6,9 @@ License:     GNU, see LICENSE for more details
 Description:
 '''
 
-import json
-#
 from .FForm import TFormBase
 from IncP.Download import TDownload, CheckHost
-from Inc.DB.DbList import TDbList
+from Inc.DB.DbList import TDbList, TDbCond
 from IncP.DB.Db import TDbSql
 from ..Api import Api
 from IncP.Log import Log
@@ -31,7 +29,14 @@ class TForm(TFormBase):
                     Dbl = TDbList().Import(Data)
                     Diff = Dbl.GetDiff('url', Lines)
 
+                    Cond = TDbCond().AddFields([ ['eq', (Dbl, 'has_scheme'), True, True]])
+                    DblScheme = Dbl.Clone(aCond=Cond)
+
                     Output = []
+                    Output.append('Count:')
+                    Output.append('%s / %s (scheme)' % (Dbl.GetSize(), DblScheme.GetSize()))
+                    Output.append('')
+
                     Output.append('Exists:')
                     Output += list(set(Lines) - Diff[1])
                     Output.append('')

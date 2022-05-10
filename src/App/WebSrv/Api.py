@@ -11,7 +11,7 @@ from bs4 import BeautifulSoup
 #
 from IncP.ApiWeb import TApiBase, TWebClient
 from IncP.Scheme import TScheme, TEnRes
-from IncP.Download import TDownload
+from IncP.Download import TDownload, THeaders
 from IncP.Utils import GetNestedKey
 from Inc.DB.DbList import TDbList
 
@@ -34,7 +34,7 @@ class TApi(TApiBase):
 
     @staticmethod
     async def GetSoup(aUrl: str) -> BeautifulSoup:
-        Download = TDownload()
+        Download = TDownload(aHeaders = THeaders())
         UrlDown = await Download.Get(aUrl, True)
         if (not UrlDown.get('Err')):
             Data = UrlDown['Data']

@@ -49,10 +49,10 @@ Description:
     print('Db3.Rec', Db3.Rec)
 
     print()
-    Cond = [
-        (op.lt, Db1.Fields.GetNo('Age'), 40, True),
-        (op.eq, Db1.Fields.GetNo('Male'), True, True)
-    ]
+    Cond = TDbCond().AddFields([
+        ['lt', (Db1, 'Age'), 40, True],
+        ['eq', (Db1, 'Male'), True, True]
+    ])
     Db2 = Db1.Clone(aCond=Cond)
     print(Db2)
 
@@ -63,18 +63,32 @@ Description:
 
 import json
 import random
-import operator as op
+import operator
 
 
 class TDbListException(Exception): ...
 
 
-# aCond is [ (operator.lt, Db1.Fields.GetNo('Age'), 40, True), (...) ]
-def _FindInList(aData: list, aCond: list) -> bool:
-    for Func, FieldNo, Val, CmpRes in aCond:
-        if (not Func(aData[FieldNo], Val) == CmpRes):
-            return False
-    return True
+class TDbCond(list):
+    # aCond is [ (operator.lt, Db1.Fields.GetNo('Age'), 40, True), (...) ]
+    def Add(self, aOp: operator, aFieldNo: int, aVal, aRes: bool):
+        self.append([aOp, aFieldNo, aVal, aRes])
+
+    def AddField(self, aOp: str, aField: tuple, aVal, aRes: bool):
+        Dbl, Name = aField
+        Func = getattr(operator, aOp, None)
+        self.Add(Func, Dbl.Fields.GetNo(Name), aVal, aRes)
+
+    def AddFields(self, aConds: list):
+        for x in aConds:
+            self.AddField(*x)
+        return self
+
+    def Find(self, aData: list) -> bool:
+        for Func, FieldNo, Val, CmpRes in self:
+            if (not Func(aData[FieldNo], Val) == CmpRes):
+                return False
+        return True
 
 
 class TDbFields(dict):
@@ -130,8 +144,8 @@ class TDbRec(list):
         super().__init__()
         self.Parent = aParent
 
-    def Find(self, aCond: list) -> bool:
-        return _FindInList(self, aCond)
+    def Find(self, aCond: TDbCond) -> bool:
+        return aCond.Find(self)
 
     def Flush(self):
         self.Parent.Data[self.Parent._RecNo] = self.copy()
@@ -330,9 +344,9 @@ class TDbList():
         Set2 = set(aList)
         return (Set1 - Set2, Set2 - Set1)
 
-    def Find(self, aCond: list) -> int:
+    def Find(self, aCond: TDbCond) -> int:
         for i in range(self._RecNo, self.GetSize()):
-            if (_FindInList(self.Data[i], aCond)):
+            if (aCond.Find(self.Data[i])):
                 return i
 
     def FindField(self, aName: str, aValue) -> int:
@@ -341,7 +355,7 @@ class TDbList():
             if (self.Data[i][FieldNo] == aValue):
                 return i
 
-    def Clone(self, aFields: list = [], aCond: list = [], aRecNo: tuple = (0, -1)) -> 'TDbList':
+    def Clone(self, aFields: list = [], aCond: TDbCond = None, aRecNo: tuple = (0, -1)) -> 'TDbList':
         Start, Finish = aRecNo
         if (Finish == -1):
             Finish = self.GetSize()
@@ -353,7 +367,7 @@ class TDbList():
             FieldsNo = list(range(len(self.Fields)))
 
         if (aCond):
-            Data = [[Val[i] for i in FieldsNo] for Val in self.Data[Start:Finish] if _FindInList(Val, aCond)]
+            Data = [[Val[i] for i in FieldsNo] for Val in self.Data[Start:Finish] if aCond.Find(Val)]
         else:
             #return [list(map(i.__getitem__, FieldsNo)) for i in self.Data[Start:Finish]]
             Data = [[Val[i] for i in FieldsNo] for Val in self.Data[Start:Finish]]
@@ -407,5 +421,4 @@ if (__name__ == '__main__'):
     Db1 = TDbList( [('User', str), ('Age', int), ('Male', bool, True)] )
     Data = [['User2', 22, True], ['User1', 11, False], ['User3', 33, True], ['User4', 44, True]]
     Db1.SetData(Data)
-    Db1.Save('dbl.json')
 '''
