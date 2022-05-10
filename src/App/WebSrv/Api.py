@@ -35,7 +35,7 @@ class TApi(TApiBase):
     @staticmethod
     async def GetSoup(aUrl: str) -> BeautifulSoup:
         Download = TDownload()
-        UrlDown = await Download.Get(aUrl)
+        UrlDown = await Download.Get(aUrl, True)
         if (not UrlDown.get('Err')):
             Data = UrlDown['Data']
             return BeautifulSoup(Data, 'lxml')

@@ -162,6 +162,9 @@ class TApi():
     def json(aVal: str) -> dict:
         return json.loads(aVal)
 
+    def json_txt(aVal: dict) -> str:
+        return json.dumps(aVal, indent=2, sort_keys=True, ensure_ascii=False)
+
     @staticmethod
     def gets(aVal: dict, aKeys: str) -> dict:
         return GetNestedKey(aVal, aKeys)
@@ -190,6 +193,15 @@ class TApi():
             if (aIdx is not None):
                 Res = Res[aIdx].strip()
             return Res
+
+    @staticmethod
+    def concat(aVal: str, aStrings: list, aDelim: str = '') -> str:
+        return aVal + aDelim + aDelim.join(aStrings)
+
+    @staticmethod
+    def print(aVal: object) -> object:
+        print(aVal)
+        return aVal
 
 
 class TSoupScheme():
@@ -308,8 +320,12 @@ class TSchemePy():
         self.Python.Compile()
 
     def Parse(self, aSoup) -> dict:
-        Param = {'aVal': aSoup, 'aApi': TApi(), 'aRes': TRes, 'aPy': self.Python}
-        return self.Python.Exec(Param)
+        if (aSoup):
+            Param = {'aVal': aSoup, 'aApi': TApi(), 'aRes': TRes, 'aPy': self.Python}
+            Res = self.Python.Exec(Param)
+        else:
+            Res = TRes(None).Add('Empty', None, 'Empty data')
+        return Res
 
     def GetUrl(self) -> str:
         #Match = re.search('Url\s*=\s*(.*?)$', self.Scheme, re.DOTALL)
@@ -322,7 +338,11 @@ class TSchemeJson():
         self.Scheme = json.loads(aScheme)
 
     def Parse(self, aSoup) -> dict:
-        return TSoupScheme.ParseKeys(aSoup, self.Scheme)
+        if (aSoup):
+            Res = TSoupScheme.ParseKeys(aSoup, self.Scheme)
+        else:
+            Res = TRes(None).Add('Empty', None, 'Empty data')
+        return Res
 
     def GetUrl(self) -> str:
         return GetNestedKey(self.Scheme, 'Product.-Info.Url', '')
@@ -338,5 +358,5 @@ def TScheme(aScheme: str):
         def IsJson(self):
             #Name = self.__class__.__bases__[0].__name__
             return self.__class__.__bases__[0] == TSchemeJson
- 
+
     return TClass(aScheme)

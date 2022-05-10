@@ -21,7 +21,7 @@ class TForm(TFormBase):
     async def Render(self):
         if (await self.PostToForm()):
             Download = TDownload()
-            UrlDown = await Download.Get(self.Data.Url)
+            UrlDown = await Download.Get(self.Data.Url, True)
             if (UrlDown.get('Err')):
                 self.Data.Output = 'Error loading %s, %s' % (self.Data.Url, UrlDown.get('Msg'))
             else:
@@ -45,5 +45,5 @@ class TForm(TFormBase):
                     except (json.decoder.JSONDecodeError, AttributeError) as E:
                         self.Data.Output = str(E.args)
                 else:
-                    self.Data.Output = 'Error loading %s' % (self.Data.Url)
+                    self.Data.Output = 'Error loading %s. Status %s' % (self.Data.Url, Status)
         return self._Render()

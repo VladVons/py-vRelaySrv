@@ -86,7 +86,7 @@ class TForm(TFormBase):
                 self.Data.Output = Err
             else:
                 Download = TDownload()
-                UrlDown = await Download.Get(self.Data.Url)
+                UrlDown = await Download.Get(self.Data.Url, True)
                 if (UrlDown.get('Err')):
                     self.Data.Output = 'Error loading %s, %s' % (self.Data.Url, UrlDown.get('Msg'))
                 else:

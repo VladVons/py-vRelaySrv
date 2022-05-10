@@ -58,12 +58,14 @@ class TDownload():
             Res['Url'] = aUrl
             return Res
 
-    async def Get(self, aUrl: str) -> dict:
+    async def Get(self, aUrl: str, aDecode: bool = False) -> dict:
         TimeAt = time.time()
         try:
             async with aiohttp.ClientSession(connector=self._GetConnector(), auth=self._GetAuth()) as Session:
                 async with Session.get(aUrl, headers=self._GetHeaders()) as Response:
                     Data = await Response.read()
+                    if (Data) and (aDecode):
+                        Data = Data.decode(errors='ignore')
                     Res = {'Data': Data, 'Status': Response.status, 'Time': time.time() - TimeAt}
         except (aiohttp.ClientConnectorError, aiohttp.ClientError, aiohttp.InvalidURL) as E:
                     ErrMsg = Log.Print(1, 'x', 'Download.Get(). %s' % (aUrl), aE = E)

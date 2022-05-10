@@ -16,7 +16,7 @@ class TPython():
         self.ByteCode = None
 
     def ErrMsg(self, aE: Exception, aInfo: tuple = None) -> dict:
-        EName = type(aE).__name__
+        EName = '%s, %s' % (type(aE).__name__, str(aE))
         if (aInfo):
             tb = traceback.extract_tb(aInfo[2])[-1]
             if (tb.filename):

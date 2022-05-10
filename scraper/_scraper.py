@@ -14,7 +14,7 @@ def WriteFile(aFile: str, aData: str):
         Data = F.write(aData)
 
 def ReadFile(aFile: str):
-    with open(aFile, 'r') as hFile:
+    with open(aFile, 'r', encoding="utf-8") as hFile:
         return hFile.read()
 
 
@@ -68,12 +68,10 @@ def TestPyScript(aMod: str, aExt: str = '.html'):
     print(Res)
 
 def TestPy(aMod: str, aExt: str = '.html'):
-    with open(aMod + aExt) as hFile:
-        Data = hFile.read()
-
+    Data = ReadFile(aMod + aExt)
     Soup = BeautifulSoup(Data, 'lxml')
 
-    Soup1 = Soup.find('div', {'class': 'product-page'})
+    Soup1 = Soup.find('div', {'id': 'main_content'})
     print('--x1', bool(Soup))
     #WriteFile(aMod + '.txt', str(Soup1))
 
@@ -83,9 +81,9 @@ def TestPy(aMod: str, aExt: str = '.html'):
     #Soup3 = Soup.find('script', {'type': 'application/ld+jso'})
     Soup3 = Soup1.find('script', type='application/ld+json').text
     Data1 = json.loads(Soup3)
-    #Data2 = json.dumps(Data1, indent=2, sort_keys=True, ensure_ascii=False)
-    #print('--x3', bool(Soup3), Data2)
-    #WriteFile(aMod + '.txt.json', Data2)
+    Data2 = json.dumps(Data1, indent=2, sort_keys=True, ensure_ascii=False)
+    print('--x3', bool(Soup3), Data2)
+    WriteFile(aMod + '.txt.json', Data2)
 
 
     #Soup4 = Soup1.find('div', {'class': 'price'})
@@ -99,6 +97,14 @@ def TestBoth(aMod: str, aExt: str = '.html'):
     Soup = BeautifulSoup(Html, 'lxml')
     Res = Scheme.Parse(Soup)
     print(Res)
+
+def TestApi():
+    Data = ReadFile('Test.json')
+    Scheme = TScheme(Data)
+    Res = Scheme.Parse('One, Two, Three, Four, Five')
+    print(Res)
+
+
 
 os.system('clear')
 #TestJson('empire-tech.prom.ua')
@@ -114,4 +120,10 @@ os.system('clear')
 #TestJson('can.ua')
 #TestPyScript('can.ua')
 
-TestBoth('can.ua')
+TestPy('40ka.com.ua')
+#TestBoth('40ka.com.ua')
+
+#TestApi()
+
+
+

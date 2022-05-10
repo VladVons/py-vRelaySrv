@@ -107,7 +107,7 @@ class TWebScraper():
 
             Rec = self.DblQueue.RecPop()
             Url = Rec.GetField('Url')
-            UrlDown = await self.Download.Get(Url)
+            UrlDown = await self.Download.Get(Url, True)
             if (UrlDown.get('Err')):
                 await self._DoWorkerException(Url, UrlDown.get('Err'))
             else:
@@ -190,7 +190,7 @@ class TWebScraperSitemap(TWebScraper):
     async def LoadSiteMap(self, aUrl: str) -> list:
         Res = []
 
-        UrlDown = await self.Download.Get(aUrl)
+        UrlDown = await self.Download.Get(aUrl, True)
         if (not UrlDown.get('Err')):
             Data = UrlDown['Data']
             Status = UrlDown['Status']
