@@ -128,6 +128,13 @@ class TApi():
         return (aVal in Arr)
 
     @staticmethod
+    def search(aVal: object, aStr: str, aDelim: str = '|') -> bool:
+        for x in aStr.split(aDelim):
+            if (aVal.find(x) >= 0):
+                return True
+        return False
+
+    @staticmethod
     def compare(aVal: object, aOp: str, aValue = None) -> bool:
         Func = getattr(operator, aOp, None)
         if (Func):
@@ -195,8 +202,12 @@ class TApi():
             return Res
 
     @staticmethod
-    def concat(aVal: str, aStrings: list, aDelim: str = '') -> str:
-        return aVal + aDelim + aDelim.join(aStrings)
+    def concat(aVal: str, aStr: str, aRight: bool =  True) -> str:
+        if (aRight):
+            Res = aVal + aStr
+        else:
+            Res = aStr + aVal
+        return Res
 
     @staticmethod
     def print(aVal: object) -> object:
