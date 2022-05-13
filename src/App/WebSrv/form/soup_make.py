@@ -8,13 +8,12 @@ Description:
 
 import json
 import datetime
-from bs4 import BeautifulSoup
 #
-from .FForm import TFormBase
-from IncP.Download import TDownload
-from IncP.Scheme import TScheme
 from IncP.Log import Log
+from IncP.Scheme import TScheme
 from IncP.Utils import TJsonEncoder, FormatJsonStr
+from IncP.Download import GetUrlSoup
+from .FForm import TFormBase
 
 
 _FieldPrefix = 'Script_'
@@ -83,19 +82,12 @@ class TForm(TFormBase):
                 self.Data.Script = ''
                 self.Data.Output = Err
             else:
-                Download = TDownload()
-                UrlDown = await Download.Get(self.Data.Url, True)
-                if (UrlDown.get('Err')):
-                    self.Data.Output = 'Error loading %s, %s' % (self.Data.Url, UrlDown.get('Msg'))
+                Soup = await GetUrlSoup(self.Data.Url)
+                if (Soup):
+                    self.Data.Script = Script
+                    Scheme = TScheme(Script)
+                    Output = Scheme.Parse(Soup)
+                    self.Data.Output = json.dumps(Output, indent=2, sort_keys=True, ensure_ascii=False, cls=TJsonEncoder)
                 else:
-                    Data = UrlDown['Data']
-                    Status = UrlDown['Status']
-                    if (Status == 200):
-                        Soup = BeautifulSoup(Data, 'lxml')
-                        self.Data.Script = Script
-                        Scheme = TScheme(Script)
-                        Output = Scheme.Parse(Soup)
-                        self.Data.Output = json.dumps(Output, indent=2, sort_keys=True, ensure_ascii=False, cls=TJsonEncoder)
-                    else:
-                        self.Data.Output = 'Error loading %s' % (self.Data.Url)
+                    self.Data.Output = 'Error loading %s' % (self.Data.Url)
         return self._Render()

@@ -7,11 +7,10 @@ Description:
 '''
 
 import json
-from bs4 import BeautifulSoup
 #
 from IncP.ApiWeb import TApiBase, TWebClient
 from IncP.Scheme import TScheme
-from IncP.Download import TDownload, THeaders
+from IncP.Download import GetUrlSoup
 from IncP.Utils import GetNestedKey
 from Inc.DB.DbList import TDbList
 
@@ -32,14 +31,6 @@ class TApi(TApiBase):
         self.DefMethod = self.DefHandler
         self.WebClient = TWebClient()
 
-    @staticmethod
-    async def GetSoup(aUrl: str) -> BeautifulSoup:
-        Download = TDownload(aHeaders = THeaders())
-        UrlDown = await Download.Get(aUrl, True)
-        if (not UrlDown.get('Err')):
-            Data = UrlDown['Data']
-            return BeautifulSoup(Data, 'lxml')
-
     async def DefHandler(self, aPath: str, aData: dict) -> dict:
         return await self.WebClient.Send('web/' + aPath, aData)
 
@@ -59,7 +50,7 @@ class TApi(TApiBase):
         if (not Url.startswith(aData.get('url'))):
             return {'Err': 'Url mismatch'}
 
-        Soup = await self.GetSoup(Url)
+        Soup = await GetUrlSoup(Url)
         if (not Soup):
             return {'Err': 'Error loading %s' % (Url)}
 
@@ -80,7 +71,7 @@ class TApi(TApiBase):
         DbL = TDbList().Import(DataDbL)
 
         Url = aData.get('url')
-        Soup = await self.GetSoup(Url)
+        Soup = await GetUrlSoup(Url)
         if (not Soup):
             return {'Err': 'Error loading %s' % (Url)}
 
@@ -107,7 +98,7 @@ class TApi(TApiBase):
         if (not Url):
             return {'Err': 'No Product.Info.Url %s' % (Url)}
 
-        Soup = await self.GetSoup(Url)
+        Soup = await GetUrlSoup(Url)
         if (Soup):
             Res = Scheme.Parse(Soup)
         else:

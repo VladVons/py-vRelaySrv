@@ -12,6 +12,8 @@ import aiohttp
 import socket
 from urllib.parse import urlparse
 from aiohttp_socks import ProxyConnector
+from bs4 import BeautifulSoup
+
 #
 from IncP.Log import Log
 
@@ -23,6 +25,13 @@ from IncP.Log import Log
 def CheckHost(aUrl: str) -> bool:
     Host = urlparse(aUrl).hostname
     return socket.gethostbyname(Host)
+
+async def GetUrlSoup(aUrl: str) -> BeautifulSoup:
+    Download = TDownload(aHeaders = THeaders())
+    UrlDown = await Download.Get(aUrl, True)
+    if (UrlDown['Status'] == 200) and (not UrlDown.get('Err')):
+        Data = UrlDown['Data']
+        return BeautifulSoup(Data, 'lxml')
 
 
 class THeaders():
