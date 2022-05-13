@@ -10,7 +10,7 @@ import json
 from bs4 import BeautifulSoup
 #
 from IncP.ApiWeb import TApiBase, TWebClient
-from IncP.Scheme import TScheme, TEnRes
+from IncP.Scheme import TScheme
 from IncP.Download import TDownload, THeaders
 from IncP.Utils import GetNestedKey
 from Inc.DB.DbList import TDbList
@@ -64,8 +64,8 @@ class TApi(TApiBase):
             return {'Err': 'Error loading %s' % (Url)}
 
         Parsed = Scheme.Parse(Soup)
-        if (Parsed['Product'][TEnRes.Err][0]):
-            Res = {'Err': Parsed['Product'][2]}
+        if (Parsed['Err']):
+            Res = {'Err': Parsed['Err']}
         else:
             aData.pop('url', None)
             Res = await self.DefHandler(aPath, aData)
@@ -88,8 +88,9 @@ class TApi(TApiBase):
         for Rec in DbL:
             Scheme = TScheme(Rec.GetField('scheme'))
             Parsed = Scheme.Parse(Soup)
-            if (Parsed['Product'][TEnRes.Val]):
-                Arr.append((Rec.GetField('url'), Parsed['Product'][0]))
+            Pipe = GetNestedKey(Parsed, 'Data.Product.Pipe')
+            if (Pipe):
+                Arr.append([Rec.GetField('url'), Pipe])
         Res = {'Data': Arr}
         return Res
 
@@ -104,7 +105,7 @@ class TApi(TApiBase):
 
         Url = Scheme.GetUrl()
         if (not Url):
-            return {'Err': 'No Product.-Info.Url %s' % (Url)}
+            return {'Err': 'No Product.Info.Url %s' % (Url)}
 
         Soup = await self.GetSoup(Url)
         if (Soup):

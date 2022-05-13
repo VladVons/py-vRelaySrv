@@ -11,7 +11,8 @@ import sys
 import re
 import json
 import operator
-import enum
+import datetime
+import random
 #
 from Inc.Util.UObj import GetTree
 from IncP.Utils import GetNestedKey
@@ -30,18 +31,6 @@ _ReSpace = re.compile('\s+|\xA0')
 _reSpace.split(aValue.strip())
         return Res
 '''
-
-class TEnIf(enum.IntEnum):
-    Sign = 0
-    Script = enum.auto()
-    Compare = enum.auto()
-    ResFalse = enum.auto()
-    ResTrue = enum.auto()
-
-class TEnRes(enum.IntEnum):
-    Val = 0
-    Keys = enum.auto()
-    Err = enum.auto()
 
 
 def DigSplit(aVal: str) -> tuple:
@@ -66,17 +55,23 @@ def XlatReplace(aVal: str, aXlat: list) -> str:
 class TRes():
     def __init__(self, aScheme):
         self.Scheme = aScheme
-        self.Data = (dict(), list(), list())
+        self.Clear()
+
+    def Clear(self):
+        self.Data = {}
+        self.Err = []
 
     def Exec(self, aPrefix: str, aPy: TPython):
+        self.Clear()
+
         Obj = getattr(self, aPrefix, None)
         if (Obj is None):
-            self.Data[TEnRes.Err].append('No method %s' % aPrefix)
+            self.Err.append('No method %s' % aPrefix)
             return
 
         PrefixData = Obj(self.Scheme)
         if (PrefixData is None):
-            self.Data[TEnRes.Err].append('Empty data returned %s' % Name)
+            self.Err.append('Empty data returned %s' % Name)
             return
 
         Keys = [Key for Key in dir(self) if (Key.startswith(aPrefix)) and Key != aPrefix]
@@ -86,18 +81,33 @@ class TRes():
             if callable(Obj):
                 try:
                     Res = Obj(PrefixData)
-                    if (Res is not None):
+                    if (Res is None):
+                        self.Add(Name, Res, '(none)')
+                    else:
                         self.Add(Name, Res)
                 except Exception as E:
                     Err = aPy.ErrMsg(E, sys.exc_info())
                     self.Add(Name, None, Err)
 
-    def Add(self, aKey: str, aVal: object, aErr: str = ''):
-        self.Data[TEnRes.Keys].append(aKey)
+    def Add(self, aKey: str, aVal: object, aErr: str = None):
+        self.Data[aKey] = aVal
         if (aErr):
-            self.Data[TEnRes.Err].append({aKey: aErr})
-        else:
-            self.Data[TEnRes.Val][aKey] = aVal
+            self.Err.append('%s %s' % (aKey, aErr))
+
+class TApiMacro():
+    @staticmethod
+    def date() -> str:
+        return datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')
+
+    @staticmethod
+    def rand(aStart: int, aEnd: int) -> int:
+        return random.randint(aStart, aEnd)
+
+    @staticmethod
+    def prop(aMod: str, aProp: str, aDef = None) -> object:
+        __import__(aMod)
+        Mod = sys.modules.get(aMod)
+        return getattr(Mod, aProp, aDef)
 
 
 class TApi():
@@ -166,10 +176,14 @@ class TApi():
         return Res
 
     @staticmethod
-    def json(aVal: str) -> dict:
+    def txt2json(aVal: str) -> dict:
         return json.loads(aVal)
 
-    def json_txt(aVal: dict) -> str:
+    @staticmethod
+    def txt2float(aVal: str) -> float:
+        return float(aVal.replace(',', ''))
+
+    def json2xt(aVal: dict) -> str:
         return json.dumps(aVal, indent=2, sort_keys=True, ensure_ascii=False)
 
     @staticmethod
@@ -210,8 +224,8 @@ class TApi():
         return Res
 
     @staticmethod
-    def print(aVal: object) -> object:
-        print(aVal)
+    def print(aVal: object, aMsg: str = '') -> object:
+        print(aVal, aMsg)
         return aVal
 
 
@@ -239,11 +253,24 @@ class TSoupScheme():
             ResAll.append(Res)
         return ResAll
 
-    @staticmethod
-    def GetItem(aObj, aItem: list, aRes: tuple, aPath: str = '') -> object:
-        if (aItem[0].startswith('-')):
-            return aObj
+    # Syntax ["$date"], ["$rand", [1, 10]], ["$prop", ["IncP", "__version__"]]
+    def ParseMacro(self, aItem: list, aPath: str) -> object:
+        Func = getattr(TApiMacro, aItem[0][1:], None)
+        if (Func):
+            try:
+                if (len(aItem) > 1):
+                    Res = Func(*aItem[1])
+                else:
+                    Res = Func()
+            except Exception as E:
+                Res = aItem
+                self.Err.append('%s->%s %s (exception)' % (aPath, aItem[0], E))
+        else:
+            Res = aItem
+            self.Err.append('%s->%s (unknown)' % (aPath, aItem))
+        return Res
 
+    def ParsePipe(self, aObj, aItem: list, aPath: str) -> object:
         Obj = getattr(TApi, aItem[0], None)
         if (Obj):
             Param = [aObj]
@@ -252,91 +279,98 @@ class TSoupScheme():
             try:
                 aObj = Obj(*Param)
             except Exception as E:
-                aObj = None
-                aRes[TEnRes.Err].append('%s->%s %s' % (aPath, aItem, E))
+                self.Err.append('%s->%s %s (exception)' % (aPath, aItem, E))
+                return
         else:
             aObj = getattr(aObj, aItem[0], None)
             if (aObj):
                 if (len(aItem) == 2):
-                    aObj = aObj(*aItem[1])
+                    try:
+                        aObj = aObj(*aItem[1])
+                    except Exception as E:
+                        self.Err.append('%s->%s %s (exception)' % (aPath, aItem, E))
+                        return
             else:
-                aRes[TEnRes.Err].append('%s->%s unknown' % (aPath, aItem))
-
-        if (aObj is None):
-            if (not '?' in aPath):
-                aRes[TEnRes.Err].append('%s->%s' % (aPath, aItem))
-        return aObj
-
-    @staticmethod
-    def GetItems(aObj, aScheme: list, aRes: tuple, aPath: str) -> object:
-        i = 0
-        while (i < len(aScheme)):
-            if (type(aScheme[i]) != list):
-                aRes[TEnRes.Err].append('%s->%s not a list' % (aPath, aScheme[i]))
+                self.Err.append('%s->%s (unknown)' % (aPath, aItem))
                 return
 
-            if (aScheme[i + TEnIf.Sign][0] == '?'):
-                R1 = TSoupScheme.GetItems(aObj, aScheme[i + TEnIf.Script], aRes, aPath)
-                R2 = TSoupScheme.GetItem(R1, aScheme[i + TEnIf.Compare], aRes, aPath)
-                Scheme = aScheme[i + TEnIf.ResFalse + int(R2)]
-                aObj = TSoupScheme.GetItems(aObj, Scheme, aRes, aPath)
-                i += len(TEnIf)
-            else:
-                aObj = TSoupScheme.GetItem(aObj, aScheme[i], aRes, aPath)
-                if (aObj is None):
-                    return
+        if (aObj is None):
+            self.Err.append('%s->%s (none)' % (aPath, aItem))
+        return aObj
+
+    def ParsePipes(self, aObj, aScheme: list, aPath: str) -> object:
+        i = 0
+        while (aObj) and (i < len(aScheme)):
+            Scheme = aScheme[i]
+            if (type(Scheme) != list):
+                self.Err.append('%s->%s (not a list)' % (aPath, Scheme))
+                return
+
+            q1 = Scheme[0]
+            if (not Scheme[0].startswith('-')):
+                aPath += '/' + Scheme[0]
+                if (Scheme[0] == 'as_if'):
+                    R = self.ParsePipes(aObj, Scheme[1].get('cond', []), aPath)
+                    Cond = str(R is not None).lower()
+                    aObj = self.ParsePipes(aObj, Scheme[1].get(Cond), aPath)
+                elif (Scheme[0] == 'as_list'):
+                    aObj = [self.ParsePipes(aObj, x, aPath) for x in Scheme[1]]
+                elif (Scheme[0] == 'as_dict'):
+                    aObj = {
+                        Key: self.ParsePipes(aObj, Val, aPath)
+                        for Key, Val in Scheme[1].items()
+                        if (not Key.startswith('-') and (Val))
+                    }
+                else:
+                    aObj = self.ParsePipe(aObj, Scheme, aPath)
             i += 1
         return aObj
 
-    @staticmethod
-    def ParseItems(aSoup, aScheme: list, aRes: tuple, aPath: str, aKey: str) -> object:
-        KeyPure = XlatReplace(aKey, _XlatKey)
-        aRes[TEnRes.Keys].append(KeyPure)
-        R = TSoupScheme.GetItems(aSoup, aScheme, aRes, aPath)
-        if (R is not None):
-            aRes[TEnRes.Val][KeyPure] = R
-        return R
-
-    @staticmethod
-    def Parse(aSoup, aData: dict, aPath: str = '') -> tuple:
-        #KeyAndVal, Keys, Err
-        Res = (dict(), list(), list())
-        for Key, Val in aData.items():
-            if (Key.startswith('-')):
-                continue
-
-            Path = aPath + '/' + Key
-            if (Key.startswith('_Group')):
-                ValG = aData.get(Key, {})
-                Data = ValG.get('_Path')
-                if (any(Data)):
-                    R = TSoupScheme.GetItems(aSoup, Data, Res, Path)
-                    if (R):
-                        R = TSoupScheme.Parse(R, ValG.get('_Items', {}), Path)
-                        Res[TEnRes.Val].update(R[TEnRes.Val])
-                        Res[TEnRes.Keys].append(R[TEnRes.Keys])
-                        Res[TEnRes.Err].append(R[TEnRes.Err])
+    def _ParseRecurs(self, aSoup, aData: dict, aPath: str) -> dict:
+        Type = type(aData)
+        if (Type == dict):
+            Res = {}
+            for Key, Val in aData.items():
+                if (not Key.startswith('-')):
+                    Path = aPath + '/' + Key
+                    if Key.startswith('Pipe'):
+                        R = self.ParsePipes(aSoup, Val, Path)
+                    else:
+                        R = self._ParseRecurs(aSoup, Val, Path)
+                    Res[Key] = R
+        elif (Type == list):
+            if (aData[0].startswith('$')):
+                Res = self.ParseMacro(aData, aPath)
             else:
-                TSoupScheme.ParseItems(aSoup, Val, Res, Path, Key)
+                Res = [self._ParseRecurs(aSoup, Val, aPath) for Val in aData]
+        else:
+            Res = aData
         return Res
 
-    @staticmethod
-    def ParseKeys(aSoup, aData: dict) -> dict:
-        return {Key: TSoupScheme.Parse(aSoup, Val) for Key, Val in aData.items() if (not Key.startswith('-'))}
+    def Parse(self, aSoup, aData: dict) -> dict:
+        self.Err = []
+        return self._ParseRecurs(aSoup, aData, '')
 
 
 class TSchemePy():
     def __init__(self, aScheme: str):
         self.Python = TPython(aScheme)
         self.Python.Compile()
+        self.Clear()
 
-    def Parse(self, aSoup) -> dict:
+    def Parse(self, aSoup):
+        self.Clear()
+
         if (aSoup):
             Param = {'aVal': aSoup, 'aApi': TApi(), 'aRes': TRes, 'aPy': self.Python}
             Res = self.Python.Exec(Param)
-        else:
-            Res = TRes(None).Add('Empty', None, 'Empty data')
-        return Res
+            if (Res.get('Err')):
+                self.Err = Res.get('Err')
+            else:
+                Data = Res.get('Data')
+                self.Data = Data.get('Data', {})
+                self.Err = Data.get('Err', [])
+        return {'Data': self.Data, 'Err': self.Err}
 
     def GetUrl(self) -> str:
         #Match = re.search('Url\s*=\s*(.*?)$', self.Scheme, re.DOTALL)
@@ -344,19 +378,22 @@ class TSchemePy():
         if (Match):
             return Match.group('url')
 
+
 class TSchemeJson():
     def __init__(self, aScheme: str):
         self.Scheme = json.loads(aScheme)
+        self.Clear()
 
-    def Parse(self, aSoup) -> dict:
+    def Parse(self, aSoup):
+        self.Clear()
         if (aSoup):
-            Res = TSoupScheme.ParseKeys(aSoup, self.Scheme)
-        else:
-            Res = TRes(None).Add('Empty', None, 'Empty data')
-        return Res
+            SoupScheme = TSoupScheme()
+            self.Data = SoupScheme.Parse(aSoup, self.Scheme)
+            self.Err = SoupScheme.Err
+        return {'Data': self.Data, 'Err': self.Err}
 
     def GetUrl(self) -> str:
-        return GetNestedKey(self.Scheme, 'Product.-Info.Url', '')
+        return GetNestedKey(self.Scheme, 'Product.Info.Url', '')
 
 
 def TScheme(aScheme: str):
@@ -369,5 +406,9 @@ def TScheme(aScheme: str):
         def IsJson(self):
             #Name = self.__class__.__bases__[0].__name__
             return self.__class__.__bases__[0] == TSchemeJson
+
+        def Clear(self):
+            self.Data = {}
+            self.Err = []
 
     return TClass(aScheme)

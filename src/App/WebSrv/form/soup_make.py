@@ -57,18 +57,16 @@ class TForm(TFormBase):
         ScriptStr = '''
             {
                 "Product": {
-                    "-Info": {
+                    "Info": {
                         "Url": "%s",
                         "Date": "%s"
                     },
-                    "_Group1": {
-                        "_Path": [
+                    "Pipe": [
+                        %s,
+                        ["as_dict", {
                             %s
-                        ],
-                        "_Items": {
-                            %s
-                        }
-                    }
+                        }]
+                    ]
                 }
             }
         ''' % (self.Data.Url, datetime.date.today().strftime('%Y-%m-%d'), self.Data.Path, ','.join(ItemsStr))
