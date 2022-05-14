@@ -26,10 +26,8 @@ class TForm(TFormBase):
         for Key in aKeys:
             Val = self.Data[Key]
             if (Val):
-                Arr = []
-                for Line in Val.splitlines():
-                    Arr.append(Line.strip().rstrip(','))
-                self.Data[Key] = ',\n'.join(Arr)
+                Arr = [Line.strip() for Line in Val.splitlines()]
+                self.Data[Key] = '\n'.join(Arr).rstrip(',')
 
     def Compile(self) -> tuple:
         Err = ''
