@@ -10,7 +10,7 @@ import time
 from bs4 import BeautifulSoup
 #
 from .FForm import TFormBase
-from IncP.Download import TDownload
+from IncP.Download import TDownload, THeaders
 from IncP.Scheme import TScheme
 from IncP.Log import Log
 
@@ -20,7 +20,7 @@ class TForm(TFormBase):
 
     async def Render(self):
         if (await self.PostToForm()):
-            Download = TDownload()
+            Download = TDownload(aHeaders = THeaders())
             UrlDown = await Download.Get(self.Data.Url, True)
             if (UrlDown.get('Err')):
                 self.Data.Output = 'Error loading %s, %s' % (self.Data.Url, UrlDown.get('Msg'))
@@ -39,8 +39,8 @@ class TForm(TFormBase):
                             }
                         ''' % (self.Data.Path)
                         try:
-                            Scheme = TScheme(Script)
-                            self.Data.Output = Scheme.Parse(Soup)
+                            self.Data.Output = TScheme(Script).Parse(Soup).GetData()
+                            self.Data.Output.pop('Data')
                         except Exception as E:
                             self.Data.Output = E
                     else:

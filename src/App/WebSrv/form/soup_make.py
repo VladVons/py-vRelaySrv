@@ -84,10 +84,9 @@ class TForm(TFormBase):
             else:
                 Soup = await GetUrlSoup(self.Data.Url)
                 if (Soup):
-                    self.Data.Script = Script
-                    Scheme = TScheme(Script)
-                    Output = Scheme.Parse(Soup)
+                    Output = TScheme(Script).Parse(Soup).GetData(['Err', 'Pipe'])
                     self.Data.Output = json.dumps(Output, indent=2, sort_keys=True, ensure_ascii=False, cls=TJsonEncoder)
+                    self.Data.Script = Script
                 else:
                     self.Data.Output = 'Error loading %s' % (self.Data.Url)
         return self._Render()

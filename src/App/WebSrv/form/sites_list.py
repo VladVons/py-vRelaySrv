@@ -9,7 +9,7 @@ Description:
 
 from .FForm import TFormBase
 from ..Api import Api
-from Inc.DB.DbList import TDbList
+from Inc.DB.DbList import TDbList, TDbCond
 from IncP.Utils import GetNestedKey
 
 class TForm(TFormBase):
@@ -19,5 +19,9 @@ class TForm(TFormBase):
         DataA = await Api.WebClient.Send('web/get_sites')
         Data = GetNestedKey(DataA, 'Data.Data')
         if (Data):
-            self.Data.Sites = TDbList().Import(Data)
+            DbL = TDbList().Import(Data)
+            self.Data.Sites = DbL
+
+            Cond = TDbCond().AddFields([ ['eq', (DbL, 'has_scheme'), True, True]])
+            self.Data.CntScheme = DbL.Clone(aCond=Cond).GetSize()
         return self._Render()

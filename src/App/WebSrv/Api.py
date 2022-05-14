@@ -54,9 +54,9 @@ class TApi(TApiBase):
         if (not Soup):
             return {'Err': 'Error loading %s' % (Url)}
 
-        Parsed = Scheme.Parse(Soup)
-        if (Parsed['Err']):
-            Res = {'Err': Parsed['Err']}
+        Scheme.Parse(Soup)
+        if (Scheme.Err):
+            Res = {'Err': Scheme.Err}
         else:
             aData.pop('url', None)
             Res = await self.DefHandler(aPath, aData)
@@ -78,10 +78,9 @@ class TApi(TApiBase):
         Arr = []
         for Rec in DbL:
             Scheme = TScheme(Rec.GetField('scheme'))
-            Parsed = Scheme.Parse(Soup)
-            Pipe = GetNestedKey(Parsed, 'Data.Product.Pipe')
-            if (Pipe):
-                Arr.append([Rec.GetField('url'), Pipe])
+            Scheme.Parse(Soup)
+            if (Scheme.Pipe):
+                Arr.append([Rec.GetField('url'), Scheme.Pipe])
         Res = {'Data': Arr}
         return Res
 
@@ -100,7 +99,7 @@ class TApi(TApiBase):
 
         Soup = await GetUrlSoup(Url)
         if (Soup):
-            Res = Scheme.Parse(Soup)
+            Res = Scheme.Parse(Soup).GetData(['Err', 'Pipe'])
         else:
             Res = {'Err': 'Error loading %s' % (Url)}
         return Res

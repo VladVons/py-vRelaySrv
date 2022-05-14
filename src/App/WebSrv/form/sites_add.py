@@ -6,11 +6,13 @@ License:     GNU, see LICENSE for more details
 Description:
 '''
 
+from urllib.parse import urlparse
+#
+from ..Api import Api
 from .FForm import TFormBase
 from IncP.Download import TDownload, CheckHost
 from Inc.DB.DbList import TDbList, TDbCond
 from IncP.DB.Db import TDbSql
-from ..Api import Api
 from IncP.Log import Log
 
 
@@ -20,14 +22,17 @@ class TForm(TFormBase):
     async def Render(self):
         if (await self.PostToForm()):
             if (self.Data.Sites):
+                Sites = []
                 Lines = self.Data.Sites.splitlines()
-                Lines = [x.strip() for x in Lines if (x)]
+                for Line in Lines:
+                    Data = urlparse(Line)
+                    Sites.append(Data.scheme + '://' + Data.hostname)
 
                 DataA = await Api.WebClient.Send('web/get_sites')
                 Data = DataA.get('Data', {}).get('Data')
                 if (Data):
                     Dbl = TDbList().Import(Data)
-                    Diff = Dbl.GetDiff('url', Lines)
+                    Diff = Dbl.GetDiff('url', Sites)
 
                     Cond = TDbCond().AddFields([ ['eq', (Dbl, 'has_scheme'), True, True]])
                     DblScheme = Dbl.Clone(aCond=Cond)
@@ -38,7 +43,7 @@ class TForm(TFormBase):
                     Output.append('')
 
                     Output.append('Exists:')
-                    Output += list(set(Lines) - Diff[1])
+                    Output += list(set(Sites) - Diff[1])
                     Output.append('')
 
                     #Data = await TDownload().Gets(Diff[1])

@@ -12,6 +12,13 @@ from IncP.Scheme import TSoupScheme, TApi, TScheme
 from IncP.DB.Scraper_pg import TDbApp
 
 
+def DictHoriz(aData: object, aKeys: list, aRes: dict):
+    if (type(aData) == dict):
+        for Key, Val in aData.items():
+            DictHoriz(Val, aKeys, aRes)
+            if (Key in aKeys):
+                aRes[Key] = Val
+
 def WriteFile(aFile: str, aData: str):
     with open(aFile, 'w') as F:
         Data = F.write(aData)
@@ -41,16 +48,19 @@ def TestJson(aMod: str, aExt: str = '.html'):
 
     with open(aMod + '.json') as hFile:
         Data = hFile.read()
-    Schema = json.loads(Data)
+    Scheme = json.loads(Data)
 
     with open(aMod + aExt) as hFile:
         Data = hFile.read()
 
     Soup = BeautifulSoup(Data, 'lxml')
-
-    Item = Schema['Product']
-    Res = TSoupScheme.Parse(Soup, Item)
+    SoupScheme = TSoupScheme()
+    Res = SoupScheme.Parse(Soup, Scheme)
     print(Res)
+    print()
+    Arr = {}
+    Res = DictHoriz(Res, ['Image', 'Price', 'Name', 'Stock', 'MPN'], Arr)
+    print(Arr)
 
 def TestPy(aMod: str, aExt: str = '.html'):
     Data = ReadFile(aMod + aExt)
@@ -110,7 +120,7 @@ os.system('clear')
 #TestJson('empire-tech.prom.ua')
 #TestJson('oster.com.ua')
 #TestJson('bigmo.com.ua')
-#TestJson('artline.ua')
+TestJson('artline.ua')
 #Find('bigmo.com.ua')
 
 #TestPy('allo.ua-a')
@@ -119,7 +129,7 @@ os.system('clear')
 #TestPy('can.ua')
 #TestJson('can.ua')
 #TestPyScript('can.ua')
-TestBoth('can.ua')
+#TestBoth('can.ua')
 
 
 #TestPy('40ka.com.ua')

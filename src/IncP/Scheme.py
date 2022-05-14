@@ -370,7 +370,11 @@ class TSchemePy():
                 Data = Res.get('Data')
                 self.Data = Data.get('Data', {})
                 self.Err = Data.get('Err', [])
-        return {'Data': self.Data, 'Err': self.Err}
+
+                Keys = ['Image', 'Price', 'PriceOld', 'Name', 'Stock', 'MPN']
+                self._FilterRecurs(self.Data, Keys, self.Pipe) 
+        return self
+
 
     def GetUrl(self) -> str:
         #Match = re.search('Url\s*=\s*(.*?)$', self.Scheme, re.DOTALL)
@@ -390,7 +394,10 @@ class TSchemeJson():
             SoupScheme = TSoupScheme()
             self.Data = SoupScheme.Parse(aSoup, self.Scheme)
             self.Err = SoupScheme.Err
-        return {'Data': self.Data, 'Err': self.Err}
+
+            Keys = ['Image', 'Price', 'PriceOld', 'Name', 'Stock', 'MPN']
+            self._FilterRecurs(self.Data, Keys, self.Pipe)
+        return self
 
     def GetUrl(self) -> str:
         return GetNestedKey(self.Scheme, 'Product.Info.Url', '')
@@ -403,6 +410,13 @@ def TScheme(aScheme: str):
         Class = TSchemeJson
 
     class TClass(Class):
+        def _FilterRecurs(self, aData: object, aKeys: list, aRes: dict):
+            if (type(aData) == dict):
+                for Key, Val in aData.items():
+                    self._FilterRecurs(Val, aKeys, aRes)
+                    if (Key in aKeys):
+                        aRes[Key] = Val
+
         def IsJson(self):
             #Name = self.__class__.__bases__[0].__name__
             return self.__class__.__bases__[0] == TSchemeJson
@@ -410,5 +424,12 @@ def TScheme(aScheme: str):
         def Clear(self):
             self.Data = {}
             self.Err = []
+            self.Pipe = {}
+
+        def GetData(self, aKeys: list = []):
+            Res = {'Data': self.Data, 'Err': self.Err, 'Pipe': self.Pipe}
+            if (aKeys):
+                Res = {Key: Res.get(Key) for Key in aKeys}
+            return Res
 
     return TClass(aScheme)

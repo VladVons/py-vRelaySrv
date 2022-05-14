@@ -174,8 +174,8 @@ class TWebScraperFull(TWebScraper):
             aStatus, len(self.Url), self.TotalUrl, self.TotalData / 1000000, aUrl)
         Log.Print(1, 'i', Msg)
 
-        Res = self.Scheme.Parse(aSoup)
-        if (Res):
+        self.Scheme.Parse(aSoup)
+        if (not self.Scheme.Err):
             self.UrlScheme += 1
             #print('---x1', Res)
             #await self.Parent.Db.InsertUrl(aUrl, Res.get('Name', ''), Res.get('Price', 0), Res.get('PriceOld', 0), Res.get('OnStock', 1), Res.get('Image', ''))
@@ -217,18 +217,13 @@ class TWebScraperSitemap(TWebScraper):
 
     async def _DoWorkerUrl(self, aUrl: str, aData: str, aStatus: int):
         Soup = BeautifulSoup(aData, 'lxml')
-        Data = self.Scheme.Parse(Soup)
-
-        Info = Data.get('Product')
-        if (Info):
-            Value, Keys, Err = Info
-            Dif = set(Keys) - set(Value.keys())
-            Log.Print(1, 'i', ' %s' % aUrl, Dif)
+        self.Scheme.Parse(Soup)
+        if (not self.Scheme.Err):
+            #Dif = set(Keys) - set(Value.keys())
+            #Log.Print(1, 'i', ' %s' % aUrl, Dif)
             if (not Err):
                 self.UrlScheme += 1
-                Price = Value['Price']
-                Value['Price'] = Price[0]
-                Value['Currency'] = Price[1]
+                self.Scheme.Pipe['Price'], self.Scheme.Pipe['Currency'] = self.Scheme.Pipe.get('Price', (0, ''))
                 await self.Sender.Add(Value)
 
 class TWebScraperUpdate(TWebScraper):
