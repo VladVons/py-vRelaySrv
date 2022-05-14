@@ -19,6 +19,9 @@ jinja2
 #gmqtt
 #websockets
 
+#--- telegram bot
+aiogram
+
 #--- random user agent 
 #fake_useragent
 
