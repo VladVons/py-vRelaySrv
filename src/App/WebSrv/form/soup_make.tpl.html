@@ -4,18 +4,22 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 <script src="/js/ajax.js"></script>
 <script src="/js/TDbList.js"></script>
+<script src="/js/Forms.js"></script>
 <script>
-    function BtnGet_OnClick() {
+    function BtnTest_OnClick(aId, aThis) {
+        StartAt = Date.now();
+        document.getElementById('Output').value = '';
+
         HttpRequest(
-            '/api/get_scheme_not_empty',
+            '/api/get_scheme_test',
             function(aData) {
                 console.log('aData', aData);
-                let DbL = new TDbList(aData['Data']['Data']);
-                let Rec = DbL.Shuffle();
-                document.getElementById('Url').value = Rec.GetField('url');
-                document.getElementById('Script').value = Rec.GetField('scheme');
-              },
-            {'cnt': 5}
+                document.getElementById('Output').value = JSON.stringify(aData, null, ' ');
+
+                let Duration = (Date.now() - StartAt) / 1000;
+                aThis.textContent = Duration.toFixed(2);
+            },
+            {'scheme': document.getElementById('Script').value}
         );
     };
 
@@ -46,9 +50,11 @@
         <input type="text" name="Url" id="Url" placeholder="url" style="width:100%" value="{{ Data.Url }}" required>
       </td>
       <td>
-        <input type="submit" name="BtnOk" value="make">
-        <button onclick="BtnGet_OnClick()">get</button>
+        <button onclick="BtnGetSchemeEmpty_OnClick()">get empty</button>
+        <button onclick="BtnGetSchemeDone_OnClick()">get done</button>
         <button onclick="BtnGo_OnClick()">go</button>
+        <input type="submit" name="BtnOk" value="make">
+        <button onclick="BtnTest_OnClick()">test</button>
         <select id="SelHelp" onclick="SelHelp_OnClick(this)">
           <optgroup label="- top -"></optgroup>
             <option>["find_all", ["li"]]</option>
@@ -96,7 +102,7 @@
         <textarea name="Path" id="Path" rows="3" onblur="OnBlur(this)" required>{{ Data.Path }}</textarea>
       </td>
       <td rowspan="7">
-        <textarea readonly name="Script" id="Script" rows="20">{{ Data.Script }}</textarea>
+        <textarea name="Script" id="Script" rows="20">{{ Data.Script }}</textarea>
         <textarea readonly name="Output" id="Output" rows="20">{{ Data.Output }}</textarea>
       </td>
     </tr>
@@ -141,7 +147,11 @@
       <td>
       </td>
       <td>
+        <button onclick="BtnSchemeGetEmpty_OnClick()">get empty</button>
+        <button onclick="BtnSchemeGetDone_OnClick()">get done</button>
+        <button onclick="BtnGo_OnClick()">go</button>
         <input type="submit" name="BtnOk" value="make">
+        <button onclick="BtnTest_OnClick()">test</button>
       </td>
     </tr>
   </tbody>
