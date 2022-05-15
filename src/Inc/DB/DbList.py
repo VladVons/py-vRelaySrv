@@ -228,15 +228,25 @@ class TDbList():
             return self.Rec
 
     def __repr__(self):
-        Res = []
-        Spaces = 12
-        Repr = '%' + str(Spaces) + 's '
+        return self._Repr()
 
+    def _GetMaxLen(self) -> list:
+        Res = [len(self.Fields.IdxOrd[i][0]) for i in range(len(self.Fields))]
+        for Data in self.Data:
+            for Idx, Val in enumerate(Data):
+                Res[Idx] = max(Res[Idx], len(str(Val)))
+        return Res
+
+    def _Repr(self, aSpaces: int = 20):
+        FieldsLen = [3] + self._GetMaxLen()
         Fields = ['No'] + self.Fields.GetList()
-        Format = ''.join([Repr for x in Fields])
+        Format = ['%' + str(FieldsLen[Idx]) + 's ' for Idx, Value in enumerate(Fields)]
+        Format = ''.join(Format)
+
+        Res = []
         Res.append(Format % tuple(Fields))
         for Idx, Data in enumerate(self.Data):
-            DataTrim = [str(x)[:Spaces] for x in Data]
+            DataTrim = [str(x)[:aSpaces] for x in Data]
             Res.append(Format % tuple([Idx] + DataTrim))
         return '\n'.join(Res)
 
@@ -415,10 +425,10 @@ class TDbList():
             Data = json.load(F)
             self.Import(Data)
 
-
 '''
 if (__name__ == '__main__'):
-    Db1 = TDbList( [('User', str), ('Age', int), ('Male', bool, True)] )
+    DbL1 = TDbList( [('User', str), ('Age', int), ('Male', bool, True)] )
     Data = [['User2', 22, True], ['User1', 11, False], ['User3', 33, True], ['User4', 44, True]]
-    Db1.SetData(Data)
+    DbL1.SetData(Data)
+    print(DbL1)
 '''
