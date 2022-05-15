@@ -76,3 +76,8 @@ def GetRandStr(aLen: int) -> str:
 def GetRandStrPattern(aLen: int, aPattern = 'YourPattern') -> str:
     return ''.join((random.choice(aPattern)) for x in range(aLen))
 
+def GetMethodInfo(aObj) -> tuple:
+    Name = aObj.__code__.co_name
+    Args = aObj.__code__.co_varnames[:aObj.__code__.co_argcount]
+    Repr = '%s(%s)' % (Name, ', '.join(Args))
+    return (Name, Args, Repr)

@@ -13,17 +13,37 @@ import json
 import operator
 import datetime
 import random
+
 #
 from Inc.Util.UObj import GetTree
-from IncP.Utils import GetNestedKey
+from IncP.Utils import GetNestedKey, GetMethodInfo
 from IncP.Python import TPython
 from IncP.Log import Log, _GetStack
 
 
+_InStock = [
+    'http://schema.org/instock',
+    'https://schema.org/instock',
+
+    'в наявності',
+    'в наявності на складі',
+    'є в наявності',
+    'купити',
+    'на складі',
+    'товар в наявності',
+
+    'в наличии на складе',
+    'в наличии',
+    'добавить в корзину',
+    'есть в наличии',
+    'есть',
+    'купить',
+    'на складе',
+]
+
 _Invisible = [' ', '\t', '\n', '\r', '\xA0']
 _Digits = '0123456789.'
 #_XlatEntitles = [('&nbsp;', ' '), ('&lt;', '<'), ('&amp;', '&'), ('&quot;', '"'), ('&apos;', "'")]
-_XlatKey = [('?', '')]
 
 
 '''
@@ -46,11 +66,6 @@ def DigSplit(aVal: str) -> tuple:
             else:
                 Before += x
     return (Before, Digit, After)
-
-def XlatReplace(aVal: str, aXlat: list) -> str:
-    for Find, Replace in aXlat:
-        aVal = aVal.replace(Find, Replace)
-    return aVal
 
 class TRes():
     def __init__(self, aScheme):
@@ -168,6 +183,16 @@ class TApi():
         return (float(Dig), After)
 
     @staticmethod
+    def stock(aVal: str, aWords: list = _InStock) -> bool:
+        return aVal.strip().lower() in aWords
+
+    @staticmethod
+    def image(aVal: object) -> str:
+        Obj = aVal.find('img')
+        if (Obj):
+            return Obj.get('src')
+
+    @staticmethod
     def dig_lat(aVal: str) -> str:
         Res = ''
         for x in aVal:
@@ -199,6 +224,10 @@ class TApi():
         return aVal.replace(aFind, aRepl)
 
     @staticmethod
+    def translate(aVal: str, aFind: str, aRepl: str, aDel: str = None) -> str:
+        return aVal.translate(aFind, aRepl, aDel)
+
+    @staticmethod
     def left(aVal: str, aIdx: int) -> str:
         return aVal[:aIdx]
 
@@ -227,6 +256,14 @@ class TApi():
     def print(aVal: object, aMsg: str = '') -> object:
         print(aVal, aMsg)
         return aVal
+
+    def help(aVal: object) -> list:
+        Res = [
+            GetMethodInfo(getattr(TApi, x))[2]
+            for x in dir(TApi)
+            if (not x.startswith('__'))
+        ]
+        return Res
 
 
 class TSoupScheme():

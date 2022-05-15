@@ -51,21 +51,13 @@
         <button onclick="BtnGo_OnClick()">go</button>
         <select id="SelHelp" onclick="SelHelp_OnClick(this)">
           <optgroup label="- top -"></optgroup>
-            <option>["equal", ["в наявності"]]</option>
-            <option>["find", ["div", {"class": "content"}]]</option>
-            <option>["find", ["h1"]]</option>
-            <option>["get", ["src"]]</option>
-            <option>["left", [5]]</option>
-            <option>["price"]</option>
-            <option>["split", [":", 1]]</option>
-            <option>["strip"]</option>
-            <option>["text"]</option>
-            </optgroup>
-          <optgroup label="- native -"></optgroup>
-            <option>["get", ["src"]]</option>
             <option>["find_all", ["li"]]</option>
             <option>["find", ["div", {"class": "content"}]]</option>
-            <option>["find", ["h1"]]</option>
+            <option>["image"]</option>
+            <option>["price"]</option>
+            <option>["split", [":", 1]]</option>
+            <option>["stock"]</option>
+            <option>["strip"]</option>
             <option>["text"]</option>
           </optgroup>
           <optgroup label="- extends -"></optgroup>
@@ -77,6 +69,7 @@
             <option>["dig_lat"]</option>
             <option>["equal", ["str1|str2"]]</option>
             <option>["gets", ["key1.key2.key3..."]]</option>
+            <option>["image"]</option>
             <option>["json2txt"]</option>
             <option>["left", [5]]</option>
             <option>["list", [1]]</option>
@@ -85,11 +78,13 @@
             <option>["replace", ["strFind", "strRepl"]]</option>
             <option>["search", ["str1|str2"]]</option>
             <option>["split", [":", 1]]</option>
+            <option>["stock"]</option>
             <option>["strip_all"]</option>
             <option>["strip"]</option>
             <option>["sub", [0, 5]]</option>
-            <option>["txt2json"]</option>
+            <option>["translate", ["charsFind", "charsRepl", "charsDel"]]</option>
             <option>["txt2float"]</option>
+            <option>["txt2json"]</option>
             <option>["unbracket", ["()", -1]]</option>
           </optgroup>
         </select>

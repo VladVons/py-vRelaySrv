@@ -107,4 +107,25 @@ print()
 #asyncio.run(SaveScheme())
 #Test_2()
 #Test_3()
-y
+
+
+def a1(b, c, d, e, f=1, g=3, h=None, *i, j=2, k=3, **L):
+    pass
+
+def a(aFind: str, aRepl: str, aDef: str = 'Pink'):
+    Arr = []
+    print('123', Arr)
+    return aFind.split()
+
+q1 = a.__code__
+print(1, a.__code__.co_argcount)
+print(2, a.__defaults__)
+print(3, a.__kwdefaults__)
+print(4, a.__code__.co_kwonlyargcount)
+print(5, a.__code__.co_varnames)
+
+from IncP.Utils import GetMethodInfo
+print(GetMethodInfo(a))
+
+pass
+
