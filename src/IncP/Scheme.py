@@ -58,7 +58,7 @@ _reSpace.split(aValue.strip())
 
 def DigSplit(aVal: str) -> tuple:
     Digit = Before = After = ''
-    for x in aVal:
+    for x in aVal.rstrip('.'):
         if (x in _Invisible):
             continue
         elif (x in _DigitsComma):
@@ -185,7 +185,7 @@ class TApi():
         Before, Dig, After = DigSplit(aVal)
         if (not Dig):
             Dig = '0'
-        return (float(Dig), After)
+        return (float(Dig), After.lower())
 
     @staticmethod
     def stock(aVal: str, aWords: list = _InStock) -> bool:
