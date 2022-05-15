@@ -27,11 +27,13 @@ _InStock = [
 
     'в наявності',
     'в наявності на складі',
+    'до кошика',
     'є в наявності',
     'купити',
     'на складі',
     'товар в наявності',
 
+    'в корзину',
     'в наличии на складе',
     'в наличии',
     'добавить в корзину',
@@ -43,6 +45,7 @@ _InStock = [
 
 _Invisible = [' ', '\t', '\n', '\r', '\xA0']
 _Digits = '0123456789.'
+_DigitsComma = _Digits + ','
 #_XlatEntitles = [('&nbsp;', ' '), ('&lt;', '<'), ('&amp;', '&'), ('&quot;', '"'), ('&apos;', "'")]
 
 
@@ -58,7 +61,9 @@ def DigSplit(aVal: str) -> tuple:
     for x in aVal:
         if (x in _Invisible):
             continue
-        elif (x in _Digits):
+        elif (x in _DigitsComma):
+            if (x == ','):
+                x = '.'
             Digit += x
         else:
             if (Digit):
