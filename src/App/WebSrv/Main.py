@@ -40,6 +40,8 @@ def CreateErroMiddleware(aOverrides):
             if (Override):
                 return await Override(request)
             raise E
+        #except Exception as E:
+        #    pass
     return ErroMiddleware
 
 

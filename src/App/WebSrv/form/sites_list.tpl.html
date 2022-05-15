@@ -10,8 +10,15 @@
 <script src="/js/ajax.js"></script>
 <script src="/js/TDbList.js"></script>
 <script>
-    function BtnGet_OnClick(aId) {
+    function BtnGet_OnClick(aId, aThis) {
         document.getElementById('Output').value = '';
+
+        Color = aThis.style.background;
+        let Items = document.getElementsByName('BtnGet');
+        for (let i = 0; i < Items.length; i++) {
+            Items[i].style.background = Color;
+        }
+        aThis.style.background = '#3498DB'
 
         HttpRequest(
             '/api/get_scheme',
@@ -128,7 +135,7 @@
                         <td><a href="{{ Rec.GetField('url') }}">{{ Rec.GetField('url') }}</a></td>
                         <td>
                             {% if Rec.GetField('has_scheme') %}
-                            <button onclick="BtnGet_OnClick({{ Rec.GetField('id') }})">get</button>
+                            <button name="BtnGet" onclick="BtnGet_OnClick({{ Rec.GetField('id') }}, this)">get</button>
                             {% endif %}
                         </td>
                         <td>

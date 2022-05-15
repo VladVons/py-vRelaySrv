@@ -55,6 +55,12 @@ _reSpace.split(aValue.strip())
         return Res
 '''
 
+def DigDelDecor(aVal: str) -> str:
+# remove thousands decoration
+    Pos = aVal.rfind('.')
+    if (len(aVal) - Pos - 1 == 3):
+       aVal = aVal.replace('.', '')
+    return aVal
 
 def DigSplit(aVal: str) -> tuple:
     Digit = Before = After = ''
@@ -70,7 +76,7 @@ def DigSplit(aVal: str) -> tuple:
                 After += x
             else:
                 Before += x
-    return (Before, Digit, After)
+    return (Before, DigDelDecor(Digit), After)
 
 class TRes():
     def __init__(self, aScheme):
@@ -189,7 +195,9 @@ class TApi():
 
     @staticmethod
     def stock(aVal: str, aWords: list = _InStock) -> bool:
-        return aVal.strip().lower() in aWords
+        Trans = str.maketrans('', '', _Digits)
+        Val = aVal.translate(Trans).strip().lower()
+        return Val in aWords
 
     @staticmethod
     def image(aVal: object) -> str:
@@ -213,6 +221,7 @@ class TApi():
     def txt2float(aVal: str) -> float:
         return float(aVal.replace(',', ''))
 
+    @staticmethod
     def json2xt(aVal: dict) -> str:
         return json.dumps(aVal, indent=2, sort_keys=True, ensure_ascii=False)
 

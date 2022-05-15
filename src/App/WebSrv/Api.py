@@ -100,6 +100,10 @@ class TApi(TApiBase):
         Soup = await GetUrlSoup(Url)
         if (Soup):
             Res = Scheme.Parse(Soup).GetData(['Err', 'Pipe'])
+            try:
+               json.dumps(Res)
+            except Exception as E:
+                Res = {'Err': str(E)}
         else:
             Res = {'Err': 'Error loading %s' % (Url)}
         return Res
