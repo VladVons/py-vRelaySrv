@@ -231,22 +231,30 @@ class TDbList():
         return self._Repr()
 
     def _GetMaxLen(self) -> list:
-        Res = [len(self.Fields.IdxOrd[i][0]) for i in range(len(self.Fields))]
+        Res = [
+            len(self.Fields.IdxOrd[i][0])
+            for i in range(len(self.Fields))
+        ]
+
         for Data in self.Data:
             for Idx, Val in enumerate(Data):
                 Res[Idx] = max(Res[Idx], len(str(Val)))
         return Res
 
-    def _Repr(self, aSpaces: int = 20):
+    def _Repr(self, aMaxLen: int = 20):
         FieldsLen = [3] + self._GetMaxLen()
         Fields = ['No'] + self.Fields.GetList()
-        Format = ['%' + str(FieldsLen[Idx]) + 's ' for Idx, Value in enumerate(Fields)]
+
+        Format = [
+            '%' + str(FieldsLen[Idx]) + 's '
+            for Idx, Value in enumerate(Fields)
+        ]
         Format = ''.join(Format)
 
         Res = []
         Res.append(Format % tuple(Fields))
         for Idx, Data in enumerate(self.Data):
-            DataTrim = [str(x)[:aSpaces] for x in Data]
+            DataTrim = [str(x)[:aMaxLen] for x in Data]
             Res.append(Format % tuple([Idx] + DataTrim))
         return '\n'.join(Res)
 
