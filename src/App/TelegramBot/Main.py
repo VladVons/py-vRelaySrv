@@ -16,8 +16,8 @@ from aiogram.dispatcher.webhook import SendMessage
 
 #
 from Inc.DB.DbList import TDbList, TDbCond
-from IncP.Log import Log
 from IncP.Utils import GetNestedKey
+from IncP.Log import Log
 from App.WebSrv import Api
 
 
@@ -43,6 +43,9 @@ class TMain():
 
 
     async def Run(self):
+        asyncio.sleep(1)
+        Log.Print(1, 'i', 'TelegramBot')
+
         Token = self.Conf.get('Token')
         bot = Bot(token=Token)
         dp = Dispatcher(bot)
