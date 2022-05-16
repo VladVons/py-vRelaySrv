@@ -15,7 +15,7 @@
               ClearObj('textarea');
 
               let DbL = new TDbList(aData['Data']['Data']);
-              //DbL.Shuffle();
+              DbL.Shuffle();
               DbL.RecNo = 1;
               let Scheme = DbL.Rec.GetField('scheme');
               let SchemeJ = JSON.parse(Scheme);
