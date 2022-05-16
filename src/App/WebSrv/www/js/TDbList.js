@@ -141,6 +141,7 @@ class TDbList {
         this.Data = aData['Data'];
         this.Fields = new TDbFields(aData['Head']);
         this.RecNo = 0;
+        return this;
     }
 
     Export() {

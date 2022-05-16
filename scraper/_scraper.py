@@ -1,15 +1,24 @@
 #!/usr/bin/python3 -B
 
 import os, sys
-import asyncio
-#
 print(os.getcwd())
 sys.path.append('../src')
 
 import time, json
+import asyncio
 from bs4 import BeautifulSoup
-from IncP.Scheme import TSoupScheme, TApi, TScheme
+#
 from IncP.DB.Scraper_pg import TDbApp
+from IncP.Scheme import TSoupScheme, TApi, TScheme
+from IncP.Utils import FormatJsonStr
+
+
+DbAuth = {
+    'Server': '192.168.2.115',
+    'Database': 'scraper1',
+    'User': 'postgres',
+    'Password': '19710819'
+}
 
 
 def DictHoriz(aData: object, aKeys: list, aRes: dict):
@@ -27,21 +36,24 @@ def ReadFile(aFile: str):
     with open(aFile, 'r', encoding="utf-8") as hFile:
         return hFile.read()
 
-async def SaveScheme():
-    DbAuth = {
-        'Server': '192.168.2.115',
-        'Database': 'scraper1',
-        'User': 'postgres',
-        'Password': '19710819'
-    }
-    File = 'Schemes.json'
-
+async def SaveScheme(aFile: str):
     DbApp = TDbApp(DbAuth)
     await DbApp.Connect()
     Db1 = await DbApp.GetScheme(False, 1000)
     await DbApp.Close()
-    print(File, Db1.GetSize())
-    Db1.Save(File, True)
+
+    print(aFile, Db1.GetSize())
+    if (aFile.endswith('json')):
+        Db1.Save(aFile, True)
+    else:
+        Arr = []
+        for Rec in Db1:
+            Scheme = Rec.GetField('scheme')
+            if (not 'aApi.' in Scheme):
+                Scheme = FormatJsonStr(Scheme)
+            Arr.append('\n--- %s, %s' % (Rec.GetField('id'), Rec.GetField('url')))
+            Arr.append(Scheme)
+        WriteFile(aFile, '\n'.join(Arr))
 
 def TestJson(aMod: str, aExt: str = '.html'):
     print(aMod, aExt)
@@ -115,24 +127,8 @@ def TestApi():
 
 
 os.system('clear')
-#asyncio.run(SaveScheme())
-
-#TestJson('empire-tech.prom.ua')
-#TestJson('oster.com.ua')
-#TestJson('bigmo.com.ua')
-TestJson('artline.ua')
-#Find('bigmo.com.ua')
-
+asyncio.run(SaveScheme('Schemes.txt'))
+#
 #TestPy('allo.ua-a')
 #TestJson('allo.ua-a')
-
-#TestPy('can.ua')
-#TestJson('can.ua')
-#TestPyScript('can.ua')
-#TestBoth('can.ua')
-
-
-#TestPy('40ka.com.ua')
-#TestBoth('40ka.com.ua')
-
 #TestApi()

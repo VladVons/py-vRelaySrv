@@ -41,12 +41,12 @@ class TApi(TApiBase):
             Dbl = TDbList().Import(DataDbL)
             Scheme = TScheme(Dbl.Rec.GetField('scheme'))
             Data['IsJson'] = Scheme.IsJson()
-            Data['Url'] = Scheme.GetUrl()
+            Data['Url'] = Scheme.GetUrl()[0]
         return Data
 
     async def path_set_scheme(self, aPath: str, aData: dict) -> dict:
         Scheme = TScheme(aData.get('scheme'))
-        Url = Scheme.GetUrl()
+        Url = Scheme.GetUrl()[0]
         if (not Url.startswith(aData.get('url'))):
             return {'Err': 'Url mismatch'}
 
@@ -93,15 +93,16 @@ class TApi(TApiBase):
         except ValueError as E:
             return {'Err': str(E)}
 
-        Url = Scheme.GetUrl()
-        if (not Url):
-            return {'Err': 'No Product.Info.Url %s' % (Url)}
+        Urls = Scheme.GetUrl()
+        if (not Urls):
+            return {'Err': 'No product url'}
 
+        Url = Urls[0]
         Soup = await GetUrlSoup(Url)
         if (Soup):
             Res = Scheme.Parse(Soup).GetData(['Err', 'Pipe'])
             try:
-               json.dumps(Res)
+                json.dumps(Res)
             except Exception as E:
                 Res = {'Err': str(E)}
         else:

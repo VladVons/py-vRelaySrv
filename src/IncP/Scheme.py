@@ -21,39 +21,49 @@ from IncP.Python import TPython
 from IncP.Log import Log, _GetStack
 
 
-_InStock = [
-    'http://schema.org/instock',
-    'https://schema.org/instock',
-
-    'в наявності',
-    'в наявності на складі',
-    'до кошика',
-    'є в наявності',
-    'купити',
-    'на складі',
-    'товар в наявності',
-
-    'в корзину',
-    'в наличии на складе',
-    'в наличии',
-    'добавить в корзину',
-    'есть в наличии',
-    'есть',
-    'купить',
-    'на складе',
-]
-
 _Invisible = [' ', '\t', '\n', '\r', '\xA0']
 _Digits = '0123456789.'
 _DigitsComma = _Digits + ','
 #_XlatEntitles = [('&nbsp;', ' '), ('&lt;', '<'), ('&amp;', '&'), ('&quot;', '"'), ('&apos;', "'")]
 
+class TInStock():
+    _Match = [
+        'http://schema.org/instock',
+        'https://schema.org/instock',
 
-'''
-_ReSpace = re.compile('\s+|\xA0')
-_reSpace.split(aValue.strip())
-        return Res
-'''
+        'в наявності',
+        'в наявності на складі',
+        'до кошика',
+        'є в наявності',
+        'купити',
+        'на складі',
+        'товар в наявності',
+
+        'в корзину',
+        'в наличии на складе',
+        'в наличии',
+        'добавить в корзину',
+        'есть в наличии',
+        'есть',
+        'купить',
+        'на складе',
+    ]
+
+    _Del = [
+        ' шт.'
+    ]
+
+    def __init__(self):
+        self.Trans = str.maketrans('', '', _Digits)
+
+    def Check(self, aVal: str) -> bool:
+        aVal = aVal.translate(self.Trans).strip().lower()
+        for Item in self._Del:
+            aVal = aVal.replace(Item, '')
+        return aVal in self._Match
+
+InStock = TInStock()
+
 
 def DigDelDecor(aVal: str) -> str:
 # remove thousands decoration
@@ -137,11 +147,12 @@ class TApiMacro():
 
 
 class TApi():
-    @staticmethod
+    def __new__(cls):
+        raise TypeError('Cant instantiate static class')
+
     def strip(aVal: str) -> str:
         return aVal.strip()
 
-    @staticmethod
     def strip_all(aVal: str) -> str:
         def Search(aData: str, aIter: list) -> int:
             for i in aIter:
@@ -153,24 +164,40 @@ class TApi():
         R = Search(aVal, range(len(aVal) - 1, L, -1))
         return aVal[L:R+1]
 
-    @staticmethod
     def list(aVal: list, aIdx: int) -> object:
         if (aIdx < len(aVal)):
             return aVal[aIdx]
 
-    @staticmethod
+    def split(aVal: str, aDelim: str, aIdx: int = None) -> str:
+        Res = aVal.split(aDelim)
+        if (aIdx is not None):
+            Res = Res[aIdx].strip()
+        return Res
+
+    def price(aVal: str) -> tuple:
+        Before, Dig, After = DigSplit(aVal)
+        if (not Dig):
+            Dig = '0'
+        return (float(Dig), After.lower())
+
+    def stock(aVal: str) -> bool:
+        return InStock.Check(aVal)
+
+    def image(aVal: object) -> str:
+        Obj = aVal.find('img')
+        if (Obj):
+            return Obj.get('src')
+
     def equal(aVal: str, aStr: str, aDelim: str = '|') -> bool:
         Arr = aStr.split(aDelim)
         return (aVal in Arr)
 
-    @staticmethod
     def search(aVal: object, aStr: str, aDelim: str = '|') -> bool:
         for x in aStr.split(aDelim):
             if (aVal.find(x) >= 0):
                 return True
         return False
 
-    @staticmethod
     def compare(aVal: object, aOp: str, aValue = None) -> bool:
         Func = getattr(operator, aOp, None)
         if (Func):
@@ -179,33 +206,6 @@ class TApi():
             else:
                 return Func(aVal, aValue)
 
-    @staticmethod
-    def split(aVal: str, aDelim: str, aIdx: int = None) -> str:
-        Res = aVal.split(aDelim)
-        if (aIdx is not None):
-            Res = Res[aIdx].strip()
-        return Res
-
-    @staticmethod
-    def price(aVal: str) -> tuple:
-        Before, Dig, After = DigSplit(aVal)
-        if (not Dig):
-            Dig = '0'
-        return (float(Dig), After.lower())
-
-    @staticmethod
-    def stock(aVal: str, aWords: list = _InStock) -> bool:
-        Trans = str.maketrans('', '', _Digits)
-        Val = aVal.translate(Trans).strip().lower()
-        return Val in aWords
-
-    @staticmethod
-    def image(aVal: object) -> str:
-        Obj = aVal.find('img')
-        if (Obj):
-            return Obj.get('src')
-
-    @staticmethod
     def dig_lat(aVal: str) -> str:
         Res = ''
         for x in aVal:
@@ -213,43 +213,33 @@ class TApi():
                 Res += x
         return Res
 
-    @staticmethod
     def txt2json(aVal: str) -> dict:
         return json.loads(aVal)
 
-    @staticmethod
     def txt2float(aVal: str) -> float:
         return float(aVal.replace(',', ''))
 
-    @staticmethod
     def json2xt(aVal: dict) -> str:
         return json.dumps(aVal, indent=2, sort_keys=True, ensure_ascii=False)
 
-    @staticmethod
     def gets(aVal: dict, aKeys: str) -> dict:
         return GetNestedKey(aVal, aKeys)
 
-    @staticmethod
     def lower(aVal: str) -> str:
         return aVal.lower()
 
-    @staticmethod
     def replace(aVal: str, aFind: str, aRepl: str) -> str:
         return aVal.replace(aFind, aRepl)
 
-    @staticmethod
     def translate(aVal: str, aFind: str, aRepl: str, aDel: str = None) -> str:
         return aVal.translate(aFind, aRepl, aDel)
 
-    @staticmethod
     def left(aVal: str, aIdx: int) -> str:
         return aVal[:aIdx]
 
-    @staticmethod
     def sub(aVal: str, aIdx: int, aEnd: int) -> str:
         return aVal[aIdx:aEnd]
 
-    @staticmethod
     def unbracket(aVal: str, aPair: str = '()', aIdx: int = None) -> str:
         Pattern = '\%s(.*?)\%s' % (aPair[0], aPair[1])
         Res = re.findall(Pattern, aVal)
@@ -258,7 +248,6 @@ class TApi():
                 Res = Res[aIdx].strip()
             return Res
 
-    @staticmethod
     def concat(aVal: str, aStr: str, aRight: bool =  True) -> str:
         if (aRight):
             Res = aVal + aStr
@@ -266,7 +255,6 @@ class TApi():
             Res = aStr + aVal
         return Res
 
-    @staticmethod
     def print(aVal: object, aMsg: str = '') -> object:
         print(aVal, aMsg)
         return aVal
@@ -357,7 +345,6 @@ class TSoupScheme():
                 self.Err.append('%s->%s (not a list)' % (aPath, Scheme))
                 return
 
-            q1 = Scheme[0]
             if (not Scheme[0].startswith('-')):
                 aPath += '/' + Scheme[0]
                 if (Scheme[0] == 'as_if'):
@@ -427,7 +414,7 @@ class TSchemePy():
         return self
 
 
-    def GetUrl(self) -> str:
+    def GetUrl(self) -> list:
         #Match = re.search('Url\s*=\s*(.*?)$', self.Scheme, re.DOTALL)
         Match = re.search("(?P<url>http[s]?://[^\s]+)", self.Python.Script, re.DOTALL)
         if (Match):
@@ -450,9 +437,8 @@ class TSchemeJson():
             self._FilterRecurs(self.Data, Keys, self.Pipe)
         return self
 
-    def GetUrl(self) -> str:
-        return GetNestedKey(self.Scheme, 'Product.Info.Url', '')
-
+    def GetUrl(self) -> list:
+        return GetNestedKey(self.Scheme, 'Product.Info.Url')
 
 def TScheme(aScheme: str):
     if ('aApi.' in aScheme):

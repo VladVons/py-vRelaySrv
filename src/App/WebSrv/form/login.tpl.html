@@ -1,0 +1,25 @@
+{% extends "VLayout.html" %}
+
+{% block content %}
+<!--TFLogin.html begin-->
+<form action="/login" method="POST">
+    <div class="login">
+        <div class="login-screen">
+            <div class="app-title">
+                 <h1>{{ Form.Title }}</h1>
+            </div>
+            <div class="login-form">
+                <div class="control-group">
+                {{ Form.UserName(class='login-field', placeholder='user') }}
+                </div>
+                <div class="control-group">
+                {{ Form.Password(class='login-field', placeholder='password') }}
+                </div>
+                {{ Form.Submit(class="btn btn-primary btn-large btn-block") }}
+                <br>
+            </div>
+        </div>
+    </div>
+</form>
+<!--TFLogin.html end-->
+{% endblock %}

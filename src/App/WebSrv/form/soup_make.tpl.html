@@ -6,6 +6,54 @@
 <script src="/js/TDbList.js"></script>
 <script src="/js/Forms.js"></script>
 <script>
+    function BtnGetSchemeDone_OnClick() {
+      HttpRequest(
+          '/api/get_scheme_not_empty',
+          function(aData) {
+              console.log('aData', aData);
+              ClearObj('input');
+              ClearObj('textarea');
+
+              let DbL = new TDbList(aData['Data']['Data']);
+              //DbL.Shuffle();
+              DbL.RecNo = 1;
+              let Scheme = DbL.Rec.GetField('scheme');
+              let SchemeJ = JSON.parse(Scheme);
+
+              let Urls = SchemeJ['Product']['Info']['Url'];
+              for (let i = 0; i < Urls.length; i++) {
+                  document.getElementById('Url' + i).value = Urls[i];
+              };
+
+              let Pipe = '';
+              let PipeJ = SchemeJ['Product']['Pipe'];
+              for (let i = 0; i < PipeJ.length; i++) {
+                if (PipeJ[i][0] == 'as_dict') {
+                  Object.entries(PipeJ[i][1]).forEach(([Key, Val]) => {
+                    let Script_Key = '';
+                    Object.entries(Val).forEach(([Idx, Macro]) => {
+                      Script_Key += JSON.stringify(Macro) + ',\n';
+                    });
+                    document.getElementById('Script_' + Key).value = Script_Key;
+                  })
+                } else {
+                  Pipe += JSON.stringify(PipeJ[i]) + ',\n';
+                };
+              };
+
+              document.getElementById('Pipe').value = Pipe;
+              document.getElementById('Script').value = Scheme;
+            },
+          {'cnt': 10}
+      );
+    };
+
+    function BtnGetSchemeEmpty2_OnClick(aId, aThis) {
+        ClearObj('input');
+        ClearObj('textarea');
+        BtnGetSchemeEmpty_OnClick();
+    }
+
     function BtnTest_OnClick(aId, aThis) {
         StartAt = Date.now();
         document.getElementById('Output').value = '';
@@ -29,8 +77,13 @@
     }
 
     function BtnGo_OnClick() {
-      let Url = document.getElementById('Url').value;
-      window.open(Url, '_blank').focus();
+      let Items = document.getElementsByTagName('input');
+      for (let i = 0; i < Items.length; i++) {
+        if (Items[i].name.startsWith('Url')) {
+          let Url = Items[i].value;
+          window.open(Url, '_blank').focus();
+        };
+      };
     };
 
     function OnBlur(aThis) {
@@ -47,51 +100,36 @@
     <tr>
       <td style="width :5%">Url</td>
       <td style="width :40%">
-        <input type="text" name="Url" id="Url" placeholder="url" style="width:100%" value="{{ Data.Url }}" required>
+        <input type="text" name="Url0" id="Url0" placeholder="url 1" style="width:100%" value="{{ Data.Url0 }}" required>
+        <input type="text" name="Url1" id="Url1" placeholder="url 2" style="width:100%" value="{{ Data.Url1 }}">
       </td>
       <td>
-        <button onclick="BtnGetSchemeEmpty_OnClick()">get empty</button>
+        <button onclick="BtnGetSchemeEmpty2_OnClick()">get empty</button>
         <button onclick="BtnGetSchemeDone_OnClick()">get done</button>
         <button onclick="BtnGo_OnClick()">go</button>
         <input type="submit" name="BtnOk" value="make">
         <button onclick="BtnTest_OnClick()">test</button>
+        <br>
         <select id="SelHelp" onclick="SelHelp_OnClick(this)">
           <optgroup label="- top -"></optgroup>
+            <option>["equal", ["str1|str2"]]</option>
             <option>["find_all", ["li"]]</option>
             <option>["find", ["div", {"class": "content"}]]</option>
             <option>["image"]</option>
+            <option>["list", [1]]</option>
             <option>["price"]</option>
             <option>["split", [":", 1]]</option>
             <option>["stock"]</option>
             <option>["strip"]</option>
             <option>["text"]</option>
+            <option>["txt2json"]</option>
+            <option>["unbracket", ["()", -1]]</option>
           </optgroup>
-          <optgroup label="- extends -"></optgroup>
+          <optgroup label="- misc -"></optgroup>
             <option>["as_dict", {"key1": [macros1], "key2": [macros2]}</option>
             <option>["as_if", {"cond": [...], "true": [...], "false:[...]"}</option>
             <option>["as_list", [[macros1],[macros2]]</option>
-            <option>["compare", ["truth,eq,ne,lt,gt..."]]</option>
-            <option>["concat", ["str1", true]]</option>
-            <option>["dig_lat"]</option>
-            <option>["equal", ["str1|str2"]]</option>
-            <option>["gets", ["key1.key2.key3..."]]</option>
-            <option>["image"]</option>
-            <option>["json2txt"]</option>
-            <option>["left", [5]]</option>
-            <option>["list", [1]]</option>
-            <option>["lower"]</option>
-            <option>["price"]</option>
-            <option>["replace", ["strFind", "strRepl"]]</option>
-            <option>["search", ["str1|str2"]]</option>
-            <option>["split", [":", 1]]</option>
-            <option>["stock"]</option>
-            <option>["strip_all"]</option>
-            <option>["strip"]</option>
-            <option>["sub", [0, 5]]</option>
-            <option>["translate", ["charsFind", "charsRepl", "charsDel"]]</option>
-            <option>["txt2float"]</option>
-            <option>["txt2json"]</option>
-            <option>["unbracket", ["()", -1]]</option>
+            <option>["help"]</option>
           </optgroup>
         </select>
       </td>
@@ -99,7 +137,7 @@
     <tr>
       <td>Pipe</td>
       <td>
-        <textarea name="Path" id="Path" rows="3" onblur="OnBlur(this)" required>{{ Data.Path }}</textarea>
+        <textarea name="Pipe" id="Pipe" rows="3" onblur="OnBlur(this)" required>{{ Data.Pipe }}</textarea>
       </td>
       <td rowspan="7">
         <textarea name="Script" id="Script" rows="20">{{ Data.Script }}</textarea>
@@ -147,7 +185,7 @@
       <td>
       </td>
       <td>
-        <button onclick="BtnSchemeGetEmpty_OnClick()">get empty</button>
+        <button onclick="BtnSchemeGetEmpty2_OnClick()">get empty</button>
         <button onclick="BtnSchemeGetDone_OnClick()">get done</button>
         <button onclick="BtnGo_OnClick()">go</button>
         <input type="submit" name="BtnOk" value="make">

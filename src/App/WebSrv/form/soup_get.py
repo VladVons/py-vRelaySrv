@@ -20,7 +20,7 @@ class TForm(TFormBase):
 
     async def Render(self):
         if (await self.PostToForm()):
-            Soup = await GetUrlSoup(self.Data.Url)
+            Soup = await GetUrlSoup(self.Data.Url0)
             if (Soup):
                 try:
                     self.Data.Output = ''
@@ -38,5 +38,5 @@ class TForm(TFormBase):
                 except (json.decoder.JSONDecodeError, AttributeError) as E:
                     self.Data.Output = str(E.args)
             else:
-                self.Data.Output = 'Error loading %s' % (self.Data.Url)
+                self.Data.Output = 'Error loading %s' % (self.Data.Url0)
         return self._Render()

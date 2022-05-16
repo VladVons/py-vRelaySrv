@@ -28,7 +28,7 @@
                 let DbL = new TDbList(aData['Data']['Data']);
                 let Scheme = DbL.Rec.GetField('scheme');
                 document.getElementById('Script').value = Scheme;
-                document.getElementById('Url').value = aData['Url'];
+                document.getElementById('Url0').value = aData['Url'];
             },
             {'id': aId}
         );
@@ -49,8 +49,7 @@
             '/api/set_scheme',
             function(aData) {
                 console.log('aData', aData);
-                let Err = aData['Data']['Err']
-                let Msg = Err ? Err : 'Saved';
+                let Msg = aData['Err'] ? 'Err: ' + aData['Err'] : 'Saved';
                 window.alert(Msg + ' ' + aUrl);
             },
             {'id': aId, 'scheme': Script, 'url': aUrl}
@@ -75,7 +74,7 @@
     };
 
     function BtnFind_OnClick() {
-        if (document.getElementById('Url').value == '') {
+        if (document.getElementById('Url0').value == '') {
             alert('Url is empty');
             return;
         };
@@ -93,17 +92,17 @@
                     ObjScript.value += '\n---\n\n';
                 })
             },
-            {'url': document.getElementById('Url').value}
+            {'url': document.getElementById('Url0').value}
         );
     };
 
     function BtnGo_OnClick() {
-        if (document.getElementById('Url').value == '') {
+        if (document.getElementById('Url0').value == '') {
             alert('Url is empty');
             return;
         }
 
-        let Url = document.getElementById('Url').value;
+        let Url = document.getElementById('Url0').value;
         window.open(Url, '_blank').focus();
     };
 </script>
@@ -113,7 +112,7 @@
 <table style="width:100%">
     <tr>
         <td colspan="2">
-            <input type="text" name="Url" id="Url" style="width:90%">
+            <input type="text" name="Url0" id="Url0" style="width:90%">
             <button onclick="BtnGo_OnClick()">go</button>
             <button onclick="BtnFind_OnClick()">find</button>
         </td>

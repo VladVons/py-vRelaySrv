@@ -1,7 +1,7 @@
 /*
 opyright:    Vladimir Vons, UA
 Author:      Vladimir Vons <VladVons@gmail.com>
-Created:     2022.05.15
+Created:     2022.05.15-2
 */
 
 
@@ -12,23 +12,18 @@ function BtnGetSchemeEmpty_OnClick() {
             console.log('aData', aData);
             let DbL = new TDbList(aData['Data']['Data']);
             let Rec = DbL.Shuffle();
-            document.getElementById('Url').value = Rec.GetField('url');
+            document.getElementById('Url0').value = Rec.GetField('url');
             document.getElementById('Script').value = '';
           },
         {'cnt': 10}
     );
 };
 
-function BtnGetSchemeDone_OnClick() {
-    HttpRequest(
-        '/api/get_scheme_not_empty',
-        function(aData) {
-            console.log('aData', aData);
-            let DbL = new TDbList(aData['Data']['Data']);
-            let Rec = DbL.Shuffle();
-            document.getElementById('Url').value = Rec.GetField('url');
-            document.getElementById('Script').value = Rec.GetField('scheme');
-          },
-        {'cnt': 10}
-    );
-};
+function ClearObj(aTagName) {
+    let Items = document.getElementsByTagName(aTagName);
+    for (let i = 0; i < Items.length; i++) {
+        if (Items[i].type.startsWith('text')) {
+            Items[i].value = '';
+        }
+    }
+}

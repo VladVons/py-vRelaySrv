@@ -7,7 +7,7 @@
 <script src="/js/Forms.js"></script>
 <script>
     function BtnGo_OnClick() {
-        let Url = document.getElementById('Url').value;
+        let Url = document.getElementById('Url0').value;
         //window.location.href = Url;
         window.open(Url, '_blank').focus();
     };
@@ -23,7 +23,7 @@
         <tr>
             <td>Url</td>
             <td>
-                <input type="text" name="Url" id="Url" placeholder="url" style="width:90%" required value="{{ Data.Url }}">
+                <input type="text" name="Url0" id="Url0" placeholder="url" style="width:90%" required value="{{ Data.Url0 }}">
                 <button style="width:4%" onclick="BtnGetSchemeEmpty_OnClick()">get</button>
                 <button style="width:4%" onclick="BtnGo_OnClick()">go</button>
             </td>
