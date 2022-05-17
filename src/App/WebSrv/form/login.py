@@ -23,7 +23,7 @@ class TForm(TFormBase):
     Submit = SubmitField("ok")
 
     async def _Render(self):
-        self.Message = ''
+        self.Message = self.Session.get('UserName')
         self.Query = self.Request.query_string
         if (self.validate()):
             Post = {'login': self.UserName.data, 'passw': self.Password.data}
@@ -31,6 +31,7 @@ class TForm(TFormBase):
             Id = GetNestedKey(Data, 'Data.Data')
             if (Id):
                 self.Session['UserId'] = Id
+                self.Session['UserName'] = self.UserName.data
                 Redirect = self.Request.query.get('url')
                 raise web.HTTPFound(location = Redirect)
             else:
