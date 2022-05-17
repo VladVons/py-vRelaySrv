@@ -1,39 +1,43 @@
 # https://hugovk.github.io/top-pypi-packages
-# sudo apt install python3-pip python3-dev libpq-dev libffi-dev --no-install-recommends
 
-### postgres
-# apt install pgbouncer
+#sudo apt install python3-pip python3-dev gcc libpq-dev libffi-dev --no-install-recommends
+#pip3 install setuptools wheel
+#pip3 install --upgrade pip
+#pip3 install -r requires.txt
 
-# pip3 install -r requires.txt
 
-# apt install
-python3-aiohttp
-python3-aiopg
-python3-cryptography
-
-# --- html parser
-bs4
-lxml
-
-#
+#--- WebSrv
+aiohttp
+cryptography
 asyncio
 aiohttp-socks
 aiohttp_session
 aiohttp_jinja2
 jinja2
 wtforms
-#gmqtt
-#websockets
+bs4
+lxml
 
-#--- telegram bot
-aiogram
-
-#--- random user agent 
-#fake_useragent
-
-#--- web browser emulator
+#--- Scraper
+aiohttp
+bs4
+lxml
+#
 #selenium
 #webdriver_manager
+
+# --- ScraperSrv
+#apt install pgbouncer
+aiohttp
+aiopg
+
+#--- TelegramBot
+aiogram
+
+#--- Misc
+#gmqtt
+#websockets
+#fake_useragent
 
 #--- python test application
 #pytest
