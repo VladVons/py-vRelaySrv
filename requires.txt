@@ -5,7 +5,6 @@
 
 # apt install python3-
 aiohttp
-aiohttp_session
 aiopg
 
 # --- html parser
@@ -15,13 +14,12 @@ lxml
 #
 asyncio
 aiohttp-socks
+aiohttp_session
 aiohttp_jinja2
 jinja2
+wtforms
 #gmqtt
 #websockets
-
-#--- template form fields
-wtforms
 
 #--- telegram bot
 aiogram
