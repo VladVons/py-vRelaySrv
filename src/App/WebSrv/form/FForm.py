@@ -6,17 +6,21 @@ License:     GNU, see LICENSE for more details
 Description:
 '''
 
-
-import aiohttp_jinja2
+import aiohttp_session
+from aiohttp import web
+from aiohttp_jinja2 import render_template
+from wtforms import Form
 #
 from IncP.Utils import TDictStr
 from IncP import Info
 
 
-class TFormBase():
+class TFormBase(Form):
     Title = 'TFormBase'
 
-    def __init__(self, aRequest, aTpl: str):
+    def __init__(self, aRequest: web.Request, aTpl: str):
+        super().__init__()
+
         self.Request = aRequest
         self.Tpl = aTpl
         self.Data = TDictStr()
@@ -28,8 +32,15 @@ class TFormBase():
             self.Data[Key] = Val.strip()
         return bool(Post)
 
-    def _Render(self):
-        return aiohttp_jinja2.render_template(self.Tpl, self.Request, {'Data': self.Data, 'Form': self})
-
     async def Render(self):
-        return self._Render()
+        self.Session = await aiohttp_session.get_session(self.Request)
+        self.process(await self.Request.post())
+
+        Res = await self._Render()
+        if (not Res):
+            Res = render_template(self.Tpl, self.Request, {'Data': self.Data, 'Form': self})
+        return Res
+
+    async def _Render(self):
+        print('_Render() not implemented')
+        pass

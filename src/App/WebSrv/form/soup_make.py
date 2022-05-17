@@ -72,7 +72,7 @@ class TForm(TFormBase):
 
         return (FormatJsonStr(ScriptStr), '\n'.join(Err))
 
-    async def Render(self):
+    async def _Render(self):
         if (await self.PostToForm()):
             Urls = [
                 Val
@@ -100,4 +100,3 @@ class TForm(TFormBase):
                         self.Data.Output = 'Error loading %s' % (Url)
                         break
                     await asyncio.sleep(0.1)
-        return self._Render()

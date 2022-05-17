@@ -54,4 +54,3 @@ class TForm(TFormBase):
                     self.Data.Info = '\n'.join(Arr)
                 else:
                     self.Data.Output = 'Error loading %s. Status %s' % (self.Data.Url, Status)
-        return self._Render()

@@ -19,52 +19,55 @@ from IncP.Log import Log
 class TForm(TFormBase):
     Title = 'Sites add'
 
-    async def Render(self):
-        if (await self.PostToForm()):
-            if (self.Data.Sites):
-                Sites = []
-                Lines = self.Data.Sites.splitlines()
-                for Line in Lines:
-                    Data = urlparse(Line)
-                    Sites.append(Data.scheme + '://' + Data.hostname)
+    async def _Render(self):
+        if (not await self.PostToForm()):
+            return
 
-                DataA = await Api.WebClient.Send('web/get_sites')
-                Data = DataA.get('Data', {}).get('Data')
-                if (Data):
-                    Dbl = TDbList().Import(Data)
-                    Diff = Dbl.GetDiff('url', Sites)
+        if (self.Data.Sites):
+            return
 
-                    Cond = TDbCond().AddFields([ ['eq', (Dbl, 'has_scheme'), True, True]])
-                    DblScheme = Dbl.Clone(aCond=Cond)
+        Sites = []
+        Lines = self.Data.Sites.splitlines()
+        for Line in Lines:
+            Data = urlparse(Line)
+            Sites.append(Data.scheme + '://' + Data.hostname)
 
-                    Output = []
-                    Output.append('Count:')
-                    Output.append('%s / %s (scheme)' % (Dbl.GetSize(), DblScheme.GetSize()))
-                    Output.append('')
+        DataA = await Api.WebClient.Send('web/get_sites')
+        Data = DataA.get('Data', {}).get('Data')
+        if (Data):
+            Dbl = TDbList().Import(Data)
+            Diff = Dbl.GetDiff('url', Sites)
 
-                    Output.append('Exists:')
-                    Output += list(set(Sites) - Diff[1])
-                    Output.append('')
+            Cond = TDbCond().AddFields([ ['eq', (Dbl, 'has_scheme'), True, True]])
+            DblScheme = Dbl.Clone(aCond=Cond)
 
-                    #Data = await TDownload().Gets(Diff[1])
-                    #UrlOk = [x.get('Url') for x in Data if (x.get('Status') == 200)]
-                    UrlOk = [x for x in Diff[1] if CheckHost(x)]
+            Output = []
+            Output.append('Count:')
+            Output.append('%s / %s (scheme)' % (Dbl.GetSize(), DblScheme.GetSize()))
+            Output.append('')
 
-                    Data = await Api.WebClient.Send('web/set_sites')
-                    Output.append('New:')
-                    Output += UrlOk
-                    Output.append('')
+            Output.append('Exists:')
+            Output += list(set(Sites) - Diff[1])
+            Output.append('')
 
-                    Output.append('Bad:')
-                    Output += list(Diff[1] - set(UrlOk))
-                    Output.append('')
+            #Data = await TDownload().Gets(Diff[1])
+            #UrlOk = [x.get('Url') for x in Data if (x.get('Status') == 200)]
+            UrlOk = [x for x in Diff[1] if CheckHost(x)]
 
-                    self.Data.Output = '\n'.join(Output)
+            Data = await Api.WebClient.Send('web/set_sites')
+            Output.append('New:')
+            Output += UrlOk
+            Output.append('')
 
-                    if (UrlOk):
-                        Dbl = TDbSql(None)
-                        Dbl.InitList(('url', str), UrlOk)
-                        await Api.WebClient.Send('web/add_sites', {'dbl': Dbl.Export()})
-                else:
-                    self.Data.Output = Log.Print(1, 'e', 'Cant get data from server')
-        return self._Render()
+            Output.append('Bad:')
+            Output += list(Diff[1] - set(UrlOk))
+            Output.append('')
+
+            self.Data.Output = '\n'.join(Output)
+
+            if (UrlOk):
+                Dbl = TDbSql(None)
+                Dbl.InitList(('url', str), UrlOk)
+                await Api.WebClient.Send('web/add_sites', {'dbl': Dbl.Export()})
+        else:
+            self.Data.Output = Log.Print(1, 'e', 'Cant get data from server')

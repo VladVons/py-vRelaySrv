@@ -1,8 +1,11 @@
-{% extends "VLayout.html" %}
+{% extends "Layout.tpl.html" %}
+
+{% block head %}
+<link rel="stylesheet" href="/css/login.css?q=3.2" type="text/css">
+{% endblock %}
 
 {% block content %}
-<!--TFLogin.html begin-->
-<form action="/login" method="POST">
+<form method="post" action="/form/login?{{Form.Query}}">
     <div class="login">
         <div class="login-screen">
             <div class="app-title">
@@ -10,16 +13,18 @@
             </div>
             <div class="login-form">
                 <div class="control-group">
-                {{ Form.UserName(class='login-field', placeholder='user') }}
+                {{ Form.UserName(class='login-field') }}
                 </div>
                 <div class="control-group">
-                {{ Form.Password(class='login-field', placeholder='password') }}
+                {{ Form.Password(class='login-field') }}
                 </div>
-                {{ Form.Submit(class="btn btn-primary btn-large btn-block") }}
+                <div class="control-group">
+                    {{ Form.Message }}
+                </div>
+                {{ Form.Submit(class="btn") }}
                 <br>
             </div>
         </div>
     </div>
 </form>
-<!--TFLogin.html end-->
 {% endblock %}

@@ -63,6 +63,7 @@ class TApi(TApiBase):
             'get_scheme_not_empty': {'param': ['cnt']},
             'get_scheme':           {'param': ['id']},
             'get_sites':            {'param': ['*']},
+            'get_user_id':          {'param': ['login', 'passw']},
             'add_sites':            {'param': ['dbl']},
             'send_result':          {'param': ['*']},
             'set_scheme':           {'param': ['id', 'scheme']}
@@ -75,32 +76,37 @@ class TApi(TApiBase):
         return await self.ApiTask.Get(aData)
 
     async def path_get_config(self, aPath: str, aData: dict) -> dict:
-        DBL = await self.Db.GetConfig(aData.get('user'))
-        return DBL.Rec.GetAsDict()
+        DbL = await self.Db.GetConfig(aData.get('user'))
+        return DbL.Rec.GetAsDict()
 
     async def path_get_scheme_empty(self, aPath: str, aData: dict) -> dict:
-        Dbl = await self.Db.GetScheme(True, aData.get('cnt', 1))
-        return Dbl.Export()
+        DbL = await self.Db.GetScheme(True, aData.get('cnt', 1))
+        return DbL.Export()
 
     async def path_get_scheme_not_empty(self, aPath: str, aData: dict) -> dict:
-        Dbl = await self.Db.GetScheme(False, aData.get('cnt', 1))
-        return Dbl.Export()
+        DbL = await self.Db.GetScheme(False, aData.get('cnt', 1))
+        return DbL.Export()
 
     async def path_get_scheme(self, aPath: str, aData: dict) -> dict:
-        Dbl = await self.Db.GetSiteById(aData.get('id'))
-        return Dbl.Export()
+        DbL = await self.Db.GetSiteById(aData.get('id'))
+        return DbL.Export()
 
     async def path_set_scheme(self, aPath: str, aData: dict) -> dict:
         return await self.Db.SetScheme(aData.get('id'), aData.get('scheme'))
 
     async def path_get_sites(self, aPath: str, aData: dict) -> dict:
-        Dbl = await self.Db.GetSites()
-        return Dbl.Export()
+        DbL = await self.Db.GetSites()
+        return DbL.Export()
+
+    async def path_get_user_id(self, aPath: str, aData: dict) -> dict:
+        DbL = await self.Db.AuthUser(aData.get('login'), aData.get('passw'))
+        if (not DbL.IsEmpty()):
+            return DbL.Rec.GetField('id')
 
     async def path_add_sites(self, aPath: str, aData: dict) -> dict:
         Data = aData.get('dbl')
-        Dbl = TDbSql(self.Db).Import(Data)
-        await Dbl.Insert('site')
+        DbL = TDbSql(self.Db).Import(Data)
+        await DbL.Insert('site')
         return True
 
     async def path_send_result(self, aPath: str, aData: dict) -> dict:
@@ -111,8 +117,8 @@ class TApi(TApiBase):
         await self.Db.Connect()
         # await self.Db.ExecFile('IncP/DB/Scraper_pg.sql')
 
-        Dbl = await self.Db.GetDbVersion()
-        Rec = Dbl.Rec
+        DbL = await self.Db.GetDbVersion()
+        Rec = DbL.Rec
         Version = Rec.GetField('version').split()[:2]
         Uptime = Rec.GetField('uptime')
         Log.Print(1, 'i', 'Server: %s, Uptime: %sd%sh, DbName: %s, DbSize: %sM, Tables %s' %

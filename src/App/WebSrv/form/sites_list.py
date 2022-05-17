@@ -15,7 +15,7 @@ from IncP.Utils import GetNestedKey
 class TForm(TFormBase):
     Title = 'Site list'
 
-    async def Render(self):
+    async def _Render(self):
         DataA = await Api.WebClient.Send('web/get_sites')
         Data = GetNestedKey(DataA, 'Data.Data')
         if (Data):
@@ -24,4 +24,3 @@ class TForm(TFormBase):
 
             Cond = TDbCond().AddFields([ ['eq', (DbL, 'has_scheme'), True, True]])
             self.Data.CntScheme = DbL.Clone(aCond=Cond).GetSize()
-        return self._Render()
