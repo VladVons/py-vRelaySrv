@@ -3,9 +3,10 @@
 # apt install pgbouncer
 # pip3 install -r requires.txt
 
-# apt install python3-
-aiohttp
-aiopg
+# apt install
+python3-aiohttp
+python3-aiopg
+python3-cryptography
 
 # --- html parser
 bs4

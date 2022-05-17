@@ -73,30 +73,32 @@ class TForm(TFormBase):
         return (FormatJsonStr(ScriptStr), '\n'.join(Err))
 
     async def _Render(self):
-        if (await self.PostToForm()):
-            Urls = [
-                Val
-                for Key, Val in self.Data.items()
-                if (Val and Key.startswith('Url'))
-            ]
+        if (not await self.PostToForm()):
+            return
 
-            FieldsScript = [Key for Key in self.Data if Key.startswith(_FieldPrefix)] + ['Pipe']
-            self.StripDataLines(FieldsScript)
+        Urls = [
+            Val
+            for Key, Val in self.Data.items()
+            if (Val and Key.startswith('Url'))
+        ]
 
-            self.Data.Script = ''
-            Script, Err = self.Compile(Urls)
-            if (Err):
-                self.Data.Output = Err
-            else:
-                self.Data.Output = ''
+        FieldsScript = [Key for Key in self.Data if Key.startswith(_FieldPrefix)] + ['Pipe']
+        self.StripDataLines(FieldsScript)
 
-                for Url in Urls:
-                    Soup = await GetUrlSoup(Url)
-                    if (Soup):
-                        Output = TScheme(Script).Parse(Soup).GetData(['Err', 'Pipe'])
-                        self.Data.Output += json.dumps(Output, indent=2, sort_keys=True, ensure_ascii=False, cls=TJsonEncoder) + '\n'
-                        self.Data.Script = Script
-                    else:
-                        self.Data.Output = 'Error loading %s' % (Url)
-                        break
-                    await asyncio.sleep(0.1)
+        self.Data.Script = ''
+        Script, Err = self.Compile(Urls)
+        if (Err):
+            self.Data.Output = Err
+        else:
+            self.Data.Output = ''
+
+            for Url in Urls:
+                Soup = await GetUrlSoup(Url)
+                if (Soup):
+                    Output = TScheme(Script).Parse(Soup).GetData(['Err', 'Pipe'])
+                    self.Data.Output += json.dumps(Output, indent=2, sort_keys=True, ensure_ascii=False, cls=TJsonEncoder) + '\n'
+                    self.Data.Script = Script
+                else:
+                    self.Data.Output = 'Error loading %s' % (Url)
+                    break
+                await asyncio.sleep(0.1)
