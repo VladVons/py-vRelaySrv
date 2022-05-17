@@ -10,8 +10,8 @@ function BtnGetSchemeEmpty_OnClick() {
         '/api/get_scheme_empty',
         function(aData) {
             console.log('aData', aData);
-            let DbL = new TDbList(aData['Data']['Data']);
-            let Rec = DbL.Shuffle();
+            let Dbl = new TDbList(aData['Data']['Data']);
+            let Rec = Dbl.Shuffle();
             document.getElementById('Url0').value = Rec.GetField('url');
             document.getElementById('Script').value = '';
           },

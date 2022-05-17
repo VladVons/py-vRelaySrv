@@ -25,8 +25,8 @@
             function(aData) {
                 console.log('aData', aData);
 
-                let DbL = new TDbList(aData['Data']['Data']);
-                let Scheme = DbL.Rec.GetField('scheme');
+                let Dbl = new TDbList(aData['Data']['Data']);
+                let Scheme = Dbl.Rec.GetField('scheme');
                 document.getElementById('Script').value = Scheme;
                 document.getElementById('Url0').value = aData['Url'];
             },

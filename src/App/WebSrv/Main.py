@@ -92,8 +92,8 @@ class TWebSrv():
             Auth = aRequest.headers.get('Authorization')
             if (Auth):
                 User, Passw = base64.b64decode(Auth.split()[1]).decode().split(':')
-                DBL = await self.Api.Db.AuthUser(User, Passw)
-                return DBL.GetSize() > 0
+                Dbl = await self.Api.Db.AuthUser(User, Passw)
+                return (not Dbl.IsEmpty())
         else:
             return True
 

@@ -192,21 +192,21 @@ class TDbList {
 /*
 Data1 = '{"Data": [["User2", 22, true], ["User1", 11, false], ["User3", 33, true], ["User4", 44, true]], "Head": [["User", "str", ""], ["Age", "int", 0], ["Male", "bool", true]], "Tag": 1}'
 Data2 = JSON.parse(Data1)
-DbL = new TDbList(Data2)
-console.log('AsDict', DbL.Rec.GetAsDict())
+Dbl = new TDbList(Data2)
+console.log('AsDict', Dbl.Rec.GetAsDict())
 
-DbL.Sort('User')
-for (let Rec of DbL) {
+Dbl.Sort('User')
+for (let Rec of Dbl) {
     console.log(Rec.GetField('User'));
 }
 
-DbL.RecAdd(['User5', 33, false])
-DbL.RecAdd()
-DbL.Rec.SetField('User', 'Pink')
-DbL.Rec.Flush()
-console.log('size', DbL.GetSize())
+Dbl.RecAdd(['User5', 33, false])
+Dbl.RecAdd()
+Dbl.Rec.SetField('User', 'Pink')
+Dbl.Rec.Flush()
+console.log('size', Dbl.GetSize())
 
-DbL.Shuffle()
-Data = DbL.Export()
+Dbl.Shuffle()
+Data = Dbl.Export()
 console.log(Data)
 */

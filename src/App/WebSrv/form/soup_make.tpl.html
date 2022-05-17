@@ -14,10 +14,10 @@
               ClearObj('input');
               ClearObj('textarea');
 
-              let DbL = new TDbList(aData['Data']['Data']);
-              DbL.Shuffle();
-              DbL.RecNo = 1;
-              let Scheme = DbL.Rec.GetField('scheme');
+              let Dbl = new TDbList(aData['Data']['Data']);
+              Dbl.Shuffle();
+              Dbl.RecNo = 1;
+              let Scheme = Dbl.Rec.GetField('scheme');
               let SchemeJ = JSON.parse(Scheme);
 
               let Urls = SchemeJ['Product']['Info']['Url'];

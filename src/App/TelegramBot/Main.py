@@ -32,14 +32,14 @@ class TMain():
         DataA = await Api.WebClient.Send('web/get_sites')
         Data = GetNestedKey(DataA, 'Data.Data')
         if (Data):
-            DbL = TDbList().Import(Data)
-            Cond = TDbCond().AddFields([ ['eq', (DbL, 'has_scheme'), True, True]])
-            DbL = DbL.Clone(aFields=['url'], aCond=Cond)
-            DbLRepr = DbL._Repr(35)
+            Dbl = TDbList().Import(Data)
+            Cond = TDbCond().AddFields([ ['eq', (Dbl, 'has_scheme'), True, True]])
+            Dbl = Dbl.Clone(aFields=['url'], aCond=Cond)
+            DblRepr = Dbl._Repr(35)
 
             #return SendMessage(chat_id=message.chat.id, text='Hi from webhook!', reply_to_message_id=message.message_id)
             await message.reply('Hello from WebScraper bot!')
-            await message.reply(DbLRepr)
+            await message.reply(DblRepr)
 
 
     async def Run(self):

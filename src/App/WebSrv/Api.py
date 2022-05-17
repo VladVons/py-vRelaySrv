@@ -36,9 +36,9 @@ class TApi(TApiBase):
 
     async def path_get_scheme(self, aPath: str, aData: dict) -> dict:
         Data = await self.DefHandler(aPath, aData)
-        DataDbL = GetNestedKey(Data, 'Data.Data')
-        if (DataDbL):
-            Dbl = TDbList().Import(DataDbL)
+        DataDbl = GetNestedKey(Data, 'Data.Data')
+        if (DataDbl):
+            Dbl = TDbList().Import(DataDbl)
             Scheme = TScheme(Dbl.Rec.GetField('scheme'))
             Data['IsJson'] = Scheme.IsJson()
             Data['Url'] = Scheme.GetUrl()[0]
@@ -65,10 +65,10 @@ class TApi(TApiBase):
     async def path_get_scheme_find(self, aPath: str, aData: dict) -> dict:
         Data = await self.WebClient.Send('web/get_scheme_not_empty', {'cnt': 100})
 
-        DataDbL = GetNestedKey(Data, 'Data.Data')
-        if (not DataDbL):
+        DblJ = GetNestedKey(Data, 'Data.Data')
+        if (not DblJ):
             return {'Err': 'Error getting scheme'}
-        DbL = TDbList().Import(DataDbL)
+        Dbl = TDbList().Import(DblJ)
 
         Url = aData.get('url')
         Soup = await GetUrlSoup(Url)
@@ -76,7 +76,7 @@ class TApi(TApiBase):
             return {'Err': 'Error loading %s' % (Url)}
 
         Arr = []
-        for Rec in DbL:
+        for Rec in Dbl:
             Scheme = TScheme(Rec.GetField('scheme'))
             Scheme.Parse(Soup)
             if (Scheme.Pipe):

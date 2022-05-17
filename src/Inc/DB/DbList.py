@@ -4,7 +4,7 @@ Created:     2022.03.24
 License:     GNU, see LICENSE for more details
 Description:
 
-    Db1 = TDbList( [('User', str), ('Age', int), ('Male', bool, True)] )
+    Dbl1 = TDbList( [('User', str), ('Age', int), ('Male', bool, True)] )
     Data = [['User2', 22, True], ['User1', 11, False], ['User3', 33, True]]
     Db1.Safe = True
     Db1.SetData(Data)
@@ -435,8 +435,8 @@ class TDbList():
 
 '''
 if (__name__ == '__main__'):
-    DbL1 = TDbList( [('User', str), ('Age', int), ('Male', bool, True)] )
+    Dbl1 = TDbList( [('User', str), ('Age', int), ('Male', bool, True)] )
     Data = [['User2', 22, True], ['User1', 11, False], ['User3', 33, True], ['User4', 44, True]]
-    DbL1.SetData(Data)
-    print(DbL1)
+    Dbl1.SetData(Data)
+    print(Dbl1)
 '''

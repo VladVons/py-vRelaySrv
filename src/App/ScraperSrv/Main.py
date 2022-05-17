@@ -44,8 +44,8 @@ class TScraperSrv():
             Auth = aRequest.headers.get('Authorization')
             if (Auth):
                 User, Passw = base64.b64decode(Auth.split()[1]).decode().split(':')
-                DBL = await self.Api.Db.AuthUser(User, Passw)
-                return (not DBL.IsEmpty())
+                Dbl = await self.Api.Db.AuthUser(User, Passw)
+                return (not Dbl.IsEmpty())
         else:
             return True
 

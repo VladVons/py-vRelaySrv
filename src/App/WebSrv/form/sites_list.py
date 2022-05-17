@@ -19,8 +19,8 @@ class TForm(TFormBase):
         DataA = await Api.WebClient.Send('web/get_sites')
         Data = GetNestedKey(DataA, 'Data.Data')
         if (Data):
-            DbL = TDbList().Import(Data)
-            self.Data.Sites = DbL
+            Dbl = TDbList().Import(Data)
+            self.Data.Sites = Dbl
 
-            Cond = TDbCond().AddFields([ ['eq', (DbL, 'has_scheme'), True, True]])
-            self.Data.CntScheme = DbL.Clone(aCond=Cond).GetSize()
+            Cond = TDbCond().AddFields([ ['eq', (Dbl, 'has_scheme'), True, True]])
+            self.Data.CntScheme = Dbl.Clone(aCond=Cond).GetSize()
