@@ -1,6 +1,9 @@
 # https://hugovk.github.io/top-pypi-packages
-# apt install libpq-dev python3-dev libffi-dev --no-install-recommends
+# sudo apt install python3-pip python3-dev libpq-dev libffi-dev --no-install-recommends
+
+### postgres
 # apt install pgbouncer
+
 # pip3 install -r requires.txt
 
 # apt install
