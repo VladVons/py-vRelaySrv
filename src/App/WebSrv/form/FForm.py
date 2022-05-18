@@ -43,4 +43,3 @@ class TFormBase(Form):
 
     async def _Render(self):
         print('_Render() not implemented for %s' % (self.Tpl))
-        pass

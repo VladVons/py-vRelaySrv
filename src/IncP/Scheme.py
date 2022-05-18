@@ -13,15 +13,13 @@ import json
 import operator
 import datetime
 import random
-
+import string
 #
-from Inc.Util.UObj import GetTree
 from IncP.Utils import GetNestedKey, GetMethodInfo
 from IncP.Python import TPython
-from IncP.Log import Log, _GetStack
+from IncP.Log import Log
 
-
-_Invisible = [' ', '\t', '\n', '\r', '\xA0']
+_Whitespace = ' \t\n\r\v\f\xA0'
 _Digits = '0123456789.'
 _DigitsComma = _Digits + ','
 #_XlatEntitles = [('&nbsp;', ' '), ('&lt;', '<'), ('&amp;', '&'), ('&quot;', '"'), ('&apos;', "'")]
@@ -75,7 +73,7 @@ def DigDelDecor(aVal: str) -> str:
 def DigSplit(aVal: str) -> tuple:
     Digit = Before = After = ''
     for x in aVal.rstrip('.'):
-        if (x in _Invisible):
+        if (x in _Whitespace):
             continue
         elif (x in _DigitsComma):
             if (x == ','):
@@ -87,6 +85,7 @@ def DigSplit(aVal: str) -> tuple:
             else:
                 Before += x
     return (Before, DigDelDecor(Digit), After)
+
 
 class TRes():
     def __init__(self, aScheme):
@@ -130,6 +129,7 @@ class TRes():
         if (aErr):
             self.Err.append('%s %s' % (aKey, aErr))
 
+
 class TApiMacro():
     @staticmethod
     def date() -> str:
@@ -163,6 +163,9 @@ class TApi():
         L = Search(aVal, range(len(aVal)))
         R = Search(aVal, range(len(aVal) - 1, L, -1))
         return aVal[L:R+1]
+
+    def length(aVal: object) -> int:
+        return len(aVal)
 
     def list(aVal: list, aIdx: int) -> object:
         if (aIdx < len(aVal)):
@@ -400,7 +403,7 @@ class TSchemePy():
         self.Clear()
 
         if (aSoup):
-            Param = {'aVal': aSoup, 'aApi': TApi(), 'aRes': TRes, 'aPy': self.Python}
+            Param = {'aVal': aSoup, 'aApi': TApi, 'aRes': TRes, 'aPy': self.Python}
             Res = self.Python.Exec(Param)
             if (Res.get('Err')):
                 self.Err = Res.get('Err')
@@ -410,7 +413,7 @@ class TSchemePy():
                 self.Err = Data.get('Err', [])
 
                 Keys = ['Image', 'Price', 'PriceOld', 'Name', 'Stock', 'MPN']
-                self._FilterRecurs(self.Data, Keys, self.Pipe) 
+                self._FilterRecurs(self.Data, Keys, self.Pipe)
         return self
 
 
@@ -418,7 +421,7 @@ class TSchemePy():
         #Match = re.search('Url\s*=\s*(.*?)$', self.Scheme, re.DOTALL)
         Match = re.search("(?P<url>http[s]?://[^\s]+)", self.Python.Script, re.DOTALL)
         if (Match):
-            return Match.group('url')
+            return [Match.group('url')]
 
 
 class TSchemeJson():
@@ -439,6 +442,7 @@ class TSchemeJson():
 
     def GetUrl(self) -> list:
         return GetNestedKey(self.Scheme, 'Product.Info.Url')
+
 
 def TScheme(aScheme: str):
     if ('aApi.' in aScheme):

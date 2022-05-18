@@ -58,18 +58,33 @@
 
     function BtnTest_OnClick(aId, aThis) {
         StartAt = Date.now();
-        document.getElementById('Output').value = '';
+        let Output = document.getElementById('Output')
+        Output.value = '';
 
         HttpRequest(
             '/api/get_scheme_test',
             function(aData) {
                 console.log('aData', aData);
-                document.getElementById('Output').value = JSON.stringify(aData, null, ' ');
+                Output.value = JSON.stringify(aData, null, ' ');
 
                 let Duration = (Date.now() - StartAt) / 1000;
                 aThis.textContent = Duration.toFixed(2);
             },
             {'scheme': document.getElementById('Script').value}
+        );
+    };
+
+    function BtnTestAll_OnClick() {
+        let Output = document.getElementById('Output')
+        Output.value = '';
+
+        HttpRequest(
+            '/api/get_scheme_test_all',
+            function(aData) {
+                console.log('aData', aData);
+                Output.value = JSON.stringify(aData, null, ' ');
+            },
+            {'cnt': 1000}
         );
     };
 
@@ -125,7 +140,10 @@
                         <th>{{Data.CntScheme}}<br>{{Data.Sites.GetSize()}}</th>
                         <th style="width: 70%">Url</th>
                         <th>Get</th>
-                        <th>Test</th>
+                        <th>
+                            Test
+                            <button onclick="BtnTestAll_OnClick()">test</button>
+                        </th>
                         <th>Set</th>
                     </tr>
                     {% for Rec in Data.Sites %}

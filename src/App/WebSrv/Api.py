@@ -7,10 +7,11 @@ Description:
 '''
 
 import json
+from bs4 import BeautifulSoup
 #
 from IncP.ApiWeb import TApiBase, TWebClient
 from IncP.Scheme import TScheme
-from IncP.Download import GetUrlSoup
+from IncP.Download import TDownload, THeaders, GetUrlSoup
 from IncP.Utils import GetNestedKey
 from Inc.DB.DbList import TDbList
 
@@ -25,6 +26,7 @@ class TApi(TApiBase):
             'get_scheme':               {'param': ['id']},
             'get_scheme_find':          {'param': ['url']},
             'get_scheme_test':          {'param': ['scheme']},
+            'get_scheme_test_all':      {'param': ['cnt']},
             'set_scheme':               {'param': ['id', 'scheme', 'url']}
         }
 
@@ -108,6 +110,40 @@ class TApi(TApiBase):
         else:
             Res = {'Err': 'Error loading %s' % (Url)}
         return Res
+
+    async def path_get_scheme_test_all(self, aPath: str, aData: dict) -> dict:
+        async def OnGet(aUrl: str, aData: str):
+            nonlocal nlHash, nlRes
+
+            if (aData.get('Err')):
+                nlRes.append([aUrl, aData['Err']])
+            else:
+                print(aUrl)
+                Soup = BeautifulSoup(aData['Data'], 'lxml')
+                Scheme = nlHash[aUrl]
+                Scheme.Parse(Soup)
+                if (Scheme.Err):
+                    nlRes.append([aUrl, Scheme.Err])
+
+        Data = await self.WebClient.Send('web/get_scheme_not_empty', aData)
+        DblJ = GetNestedKey(Data, 'Data.Data')
+        if (not DblJ):
+            return {'Err': 'Error getting scheme'}
+
+        nlRes = []
+        nlHash = {}
+        Dbl = TDbList().Import(DblJ)
+        for Rec in Dbl:
+            SchemeStr = Rec.GetField('scheme')
+            Scheme = TScheme(SchemeStr)
+            Urls = Scheme.GetUrl()
+            for Url in Urls:
+                nlHash[Url] = Scheme
+
+        Download = TDownload(aHeaders = THeaders())
+        Download.OnGet = OnGet
+        await Download.Gets(nlHash.keys())
+        return {'Data': nlRes}
 
 
 Api = TApi()

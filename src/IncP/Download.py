@@ -62,6 +62,7 @@ class TDownload():
         self.Headers = aHeaders
         self.Auth = aAuth
         self.Timeout = 10
+        self.OnGet = None
 
     async def _GetWithSem(self, aUrl: str, aSem: asyncio.Semaphore) -> dict:
         async with aSem:
@@ -78,9 +79,14 @@ class TDownload():
                     if (Data) and (aDecode):
                         Data = Data.decode(errors='ignore')
                     Res = {'Data': Data, 'Status': Response.status, 'Time': time.time() - TimeAt}
-        except (aiohttp.ClientConnectorError, aiohttp.ClientError, aiohttp.InvalidURL) as E:
+        except (aiohttp.ClientConnectorError, aiohttp.ClientError, aiohttp.InvalidURL, asyncio.TimeoutError) as E:
                     ErrMsg = Log.Print(1, 'x', 'Download.Get(). %s' % (aUrl), aE = E)
                     Res = {'Err': E, 'Msg': ErrMsg, 'Status': -1}
+
+        if (self.OnGet):
+            await self.OnGet(aUrl, Res)
+            await asyncio.sleep(0.1)
+
         return Res
 
     async def Gets(self, aUrls: list, aMaxConn: int = 5) -> list:
