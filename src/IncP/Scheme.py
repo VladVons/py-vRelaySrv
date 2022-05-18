@@ -359,7 +359,7 @@ class TSoupScheme():
                     aObj = [self.ParsePipes(aObj, x, aPath) for x in Scheme[1]]
                 elif (Scheme[0] == 'as_dict'):
                     aObj = {
-                        Key: self.ParsePipes(aObj, Val, aPath)
+                        Key: self.ParsePipes(aObj, Val, aPath + '/' + Key)
                         for Key, Val in Scheme[1].items()
                         if (not Key.startswith('-') and (Val))
                     }

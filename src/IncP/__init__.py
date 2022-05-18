@@ -6,7 +6,7 @@ License:     GNU, see LICENSE for more details
 
 
 __version__ = '1.0.12'
-__date__ =  '2022.05.18'
+__date__ =  '2022.05.19'
 
 Info = {
     'Version' : __version__,

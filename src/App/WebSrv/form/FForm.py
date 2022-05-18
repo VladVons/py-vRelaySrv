@@ -50,4 +50,5 @@ class TFormBase(Form):
         return render_template('info.tpl.html', self.Request, {'Data': Data, 'Form': self})
 
     async def _Render(self):
-        print('_Render() not implemented for %s' % (self.Tpl))
+        #print('_Render() not implemented for %s' % (self.Tpl))
+        pass
