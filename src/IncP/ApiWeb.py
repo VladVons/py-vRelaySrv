@@ -133,7 +133,7 @@ class TWebSockServer():
         self.DblWS = TDbList([('WS', web.WebSocketResponse), ('Path', str), ('Query', dict)])
         self.OnReplay = None
 
-    async def AddHandler(self, aRequest, aWS):
+    async def AddHandler(self, aRequest: web.Request, aWS):
         await aWS.prepare(aRequest)
         try:
             self.DblWS.RecAdd([aWS, aRequest.path, dict(aRequest.query)])
