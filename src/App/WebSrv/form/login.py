@@ -35,7 +35,7 @@ class TForm(TFormBase):
             if (Id):
                 self.Session['UserId'] = Id
                 self.Session['UserName'] = self.UserName.data
-                Redirect = self.Request.query.get('url')
+                Redirect = self.Request.query.get('url', '/')
                 raise web.HTTPFound(location = Redirect)
             else:
                 self.Message = 'Wrong authorization'
