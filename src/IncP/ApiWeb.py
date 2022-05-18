@@ -20,6 +20,7 @@ class TApiBase():
     def __init__(self):
         self.Url = {}
         self.DefMethod = None
+        self.Plugin = {}
 
     @staticmethod
     def GetMethodName(aPath: str) -> str:
@@ -35,36 +36,48 @@ class TApiBase():
         if (Diff):
             return 'param unknown. %s' % Diff
 
+    def AddPlugin(self, aCls: object, aArgs: dict = {}):
+        Name = aCls.__name__
+        if (not self.Url.get('Name')):
+            Class = aCls()
+            Class.Args = aArgs
+            self.Url[Name] = aCls.Param
+            self.Url[Name]['Class'] = Class
+
     async def Call(self, aPath: str, aParam: str) -> dict:
         UrlInf = self.Url.get(aPath)
-        if (UrlInf):
-            MethodName = self.GetMethodName(aPath)
-            Method = getattr(self, MethodName, self.DefMethod)
-            if (Method):
-                ParamInf = UrlInf.get('param')
-                if (ParamInf):
-                    Param = json.loads(aParam)
-                else:
-                    Param = {}
+        if (not UrlInf):
+            return {'Err': 'unknown url %s' % (aPath)}
 
-                if (ParamInf) and (ParamInf[0] == '*'):
-                    ParamInf = Param.keys()
+        MethodName = self.GetMethodName(aPath)
+        Method = getattr(self, MethodName, None)
+        if (not Method):
+            Class = UrlInf.get('Class')
+            if (Class):
+                Method = getattr(Class, 'Exec', self.DefMethod)
+                if (not Method):
+                    return {'Err': 'unknown method %s' % (MethodName)}
 
-                ErrMsg = self.CheckParam(Param, ParamInf)
-                if (ErrMsg):
-                    Log.Print(1, 'e', ErrMsg)
-                    Res = {'Err': ErrMsg}
-                else:
-                    try:
-                        Data = await Method(aPath, Param)
-                    except Exception as E:
-                        Data = None
-                        Log.Print(1, 'x', 'Call()', aE=E)
-                    Res = {'Data': Data}
-            else:
-                Res = {'Err': 'unknown method %s' % (MethodName)}
+        ParamInf = UrlInf.get('param')
+        if (ParamInf):
+            Param = json.loads(aParam)
         else:
-            Res = {'Err': 'unknown url %s' % (aPath)}
+            Param = {}
+
+        if (ParamInf) and (ParamInf[0] == '*'):
+            ParamInf = Param.keys()
+
+        ErrMsg = self.CheckParam(Param, ParamInf)
+        if (ErrMsg):
+            Log.Print(1, 'e', ErrMsg)
+            Res = {'Err': ErrMsg}
+        else:
+            try:
+                Data = await Method(aPath, Param)
+            except Exception as E:
+                Data = None
+                Log.Print(1, 'x', 'Call()', aE = E)
+            Res = {'Data': Data}
         return Res
 
 

@@ -16,56 +16,50 @@ from IncP.Utils import GetNestedKey
 from Inc.DB.DbList import TDbList
 
 
-class TApi(TApiBase):
+class get_scheme_test_all():
+    Param = {'param': ['cnt']}
+
     def __init__(self):
-        super().__init__()
+        self.Hash = {}
+        self.Res = []
 
-        self.Url = {
-            'get_scheme_empty':         {'param': ['cnt']},
-            'get_scheme_not_empty':     {'param': ['cnt']},
-            'get_scheme':               {'param': ['id']},
-            'get_scheme_find':          {'param': ['url']},
-            'get_scheme_test':          {'param': ['scheme']},
-            'get_scheme_test_all':      {'param': ['cnt']},
-            'set_scheme':               {'param': ['id', 'scheme', 'url']}
-        }
-
-        self.DefMethod = self.DefHandler
-        self.WebClient = TWebClient()
-
-    async def DefHandler(self, aPath: str, aData: dict) -> dict:
-        return await self.WebClient.Send('web/' + aPath, aData)
-
-    async def path_get_scheme(self, aPath: str, aData: dict) -> dict:
-        Data = await self.DefHandler(aPath, aData)
-        DataDbl = GetNestedKey(Data, 'Data.Data')
-        if (DataDbl):
-            Dbl = TDbList().Import(DataDbl)
-            Scheme = TScheme(Dbl.Rec.GetField('scheme'))
-            Data['IsJson'] = Scheme.IsJson()
-            Data['Url'] = Scheme.GetUrl()[0]
-        return Data
-
-    async def path_set_scheme(self, aPath: str, aData: dict) -> dict:
-        Scheme = TScheme(aData.get('scheme'))
-        Url = Scheme.GetUrl()[0]
-        if (not Url.startswith(aData.get('url'))):
-            return {'Err': 'Url mismatch'}
-
-        Soup = await GetUrlSoup(Url)
-        if (not Soup):
-            return {'Err': 'Error loading %s' % (Url)}
-
-        Scheme.Parse(Soup)
-        if (Scheme.Err):
-            Res = {'Err': Scheme.Err}
+    async def cbOnGet(self, aUrl: str, aData: str):
+        if (aData.get('Err')):
+            self.Res.append([aUrl, aData['Err']])
         else:
-            aData.pop('url', None)
-            Res = await self.DefHandler(aPath, aData)
-        return Res
+            print(aUrl)
+            Soup = BeautifulSoup(aData['Data'], 'lxml')
+            Scheme = self.Hash[aUrl]
+            Scheme.Parse(Soup)
+            if (Scheme.Err):
+                self.Res.append([aUrl, Scheme.Err])
 
-    async def path_get_scheme_find(self, aPath: str, aData: dict) -> dict:
-        Data = await self.WebClient.Send('web/get_scheme_not_empty', {'cnt': 100})
+    async def Exec(self, aPath: str, aData: dict) -> dict:
+        Data = await self.Args['WebClient'].Send('web/get_scheme_not_empty', aData)
+        DblJ = GetNestedKey(Data, 'Data.Data')
+        if (not DblJ):
+            return {'Err': 'Error getting scheme'}
+
+        Dbl = TDbList().Import(DblJ)
+        for Rec in Dbl:
+            SchemeStr = Rec.GetField('scheme')
+            Scheme = TScheme(SchemeStr)
+            Urls = Scheme.GetUrl()
+            for Url in Urls:
+                self.Hash[Url] = Scheme
+
+        Download = TDownload(aHeaders = THeaders())
+        Download.OnGet = self.cbOnGet
+        await Download.Gets(self.Hash.keys())
+        print('Done')
+        return {'Data': self.Res}
+
+
+class get_scheme_find():
+    Param = {'param': ['url']}
+
+    async def Exec(self, aPath: str, aData: dict) -> dict:
+        Data = await self.Args['WebClient'].Send('web/get_scheme_not_empty', {'cnt': 100})
 
         DblJ = GetNestedKey(Data, 'Data.Data')
         if (not DblJ):
@@ -86,7 +80,11 @@ class TApi(TApiBase):
         Res = {'Data': Arr}
         return Res
 
-    async def path_get_scheme_test(self, aPath: str, aData: dict) -> dict:
+
+class get_scheme_test():
+    Param = {'param': ['scheme']}
+
+    async def Exec(self, aPath: str, aData: dict) -> dict:
         if (not aData['scheme']):
             return {'Err': 'No scheme'}
 
@@ -111,39 +109,62 @@ class TApi(TApiBase):
             Res = {'Err': 'Error loading %s' % (Url)}
         return Res
 
-    async def path_get_scheme_test_all(self, aPath: str, aData: dict) -> dict:
-        async def OnGet(aUrl: str, aData: str):
-            nonlocal nlHash, nlRes
 
-            if (aData.get('Err')):
-                nlRes.append([aUrl, aData['Err']])
-            else:
-                print(aUrl)
-                Soup = BeautifulSoup(aData['Data'], 'lxml')
-                Scheme = nlHash[aUrl]
-                Scheme.Parse(Soup)
-                if (Scheme.Err):
-                    nlRes.append([aUrl, Scheme.Err])
+class set_scheme():
+    Param = {'param': ['id', 'scheme', 'url']}
 
-        Data = await self.WebClient.Send('web/get_scheme_not_empty', aData)
-        DblJ = GetNestedKey(Data, 'Data.Data')
-        if (not DblJ):
-            return {'Err': 'Error getting scheme'}
+    async def Exec(self, aPath: str, aData: dict) -> dict:
+        Scheme = TScheme(aData.get('scheme'))
+        Url = Scheme.GetUrl()[0]
+        if (not Url.startswith(aData.get('url'))):
+            return {'Err': 'Url mismatch'}
 
-        nlRes = []
-        nlHash = {}
-        Dbl = TDbList().Import(DblJ)
-        for Rec in Dbl:
-            SchemeStr = Rec.GetField('scheme')
-            Scheme = TScheme(SchemeStr)
-            Urls = Scheme.GetUrl()
-            for Url in Urls:
-                nlHash[Url] = Scheme
+        Soup = await GetUrlSoup(Url)
+        if (not Soup):
+            return {'Err': 'Error loading %s' % (Url)}
 
-        Download = TDownload(aHeaders = THeaders())
-        Download.OnGet = OnGet
-        await Download.Gets(nlHash.keys())
-        return {'Data': nlRes}
+        Scheme.Parse(Soup)
+        if (Scheme.Err):
+            Res = {'Err': Scheme.Err}
+        else:
+            aData.pop('url', None)
+            Res = await self.DefHandler(aPath, aData)
+        return Res
 
+
+class get_scheme():
+    Param = {'param': ['id']}
+
+    async def Exec(self, aPath: str, aData: dict) -> dict:
+        Data = await self.Args['WebClient'].Send('web/get_scheme', aData)
+        DataDbl = GetNestedKey(Data, 'Data.Data')
+        if (DataDbl):
+            Dbl = TDbList().Import(DataDbl)
+            Scheme = TScheme(Dbl.Rec.GetField('scheme'))
+            Data['IsJson'] = Scheme.IsJson()
+            Data['Url'] = Scheme.GetUrl()[0]
+        return Data
+
+
+class TApi(TApiBase):
+    def __init__(self):
+        super().__init__()
+
+        self.Url = {
+            'get_scheme_empty':         {'param': ['cnt']},
+            'get_scheme_not_empty':     {'param': ['cnt']}
+        }
+
+        self.DefMethod = self.DefHandler
+        self.WebClient = TWebClient()
+
+        self.AddPlugin(get_scheme_find, {'WebClient': self.WebClient})
+        self.AddPlugin(get_scheme_test_all, {'WebClient': self.WebClient})
+        self.AddPlugin(get_scheme_test)
+        self.AddPlugin(get_scheme, {'WebClient': self.WebClient})
+        self.AddPlugin(set_scheme)
+
+    async def DefHandler(self, aPath: str, aData: dict) -> dict:
+        return await self.WebClient.Send('web/' + aPath, aData)
 
 Api = TApi()
