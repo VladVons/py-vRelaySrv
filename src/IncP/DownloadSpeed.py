@@ -1,8 +1,7 @@
 '''
-Author:      Vladimir Vons, Oster Inc.
+Author:      Vladimir Vons <VladVons@gmail.com>
 Created:     2022.04.29
 License:     GNU, see LICENSE for more details
-Description:
 
 Url = 'https://speed.hetzner.de/100MB.bin'
 Url = 'http://212.183.159.230/20MB.zip'

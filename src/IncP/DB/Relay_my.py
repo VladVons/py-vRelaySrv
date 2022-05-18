@@ -1,8 +1,7 @@
 '''
-Author:      Vladimir Vons, Oster Inc.
+Author:      Vladimir Vons <VladVons@gmail.com>
 Created:     2021.03.08
 License:     GNU, see LICENSE for more details
-Description:
 
 apt install python3-mysqldb
 pip3 install aiomysql

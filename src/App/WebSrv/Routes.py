@@ -4,7 +4,7 @@
 import aiohttp_jinja2
 from aiohttp import web
 #
-from .form.err_404 import TForm
+from .form.info import TForm
 
 
 Routes = web.RouteTableDef()
@@ -21,7 +21,8 @@ async def rTest(aRequest):
     return Response
 
 async def rErr_404(aRequest):
-    Form = TForm(aRequest, 'err_404.tpl.html')
+    Form = TForm(aRequest, 'info.tpl.html')
+    Form.Data['Info'] = 'Page not found'
     return await Form.Render()
 
 async def rErr_Def(aRequest):

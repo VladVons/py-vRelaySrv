@@ -1,8 +1,7 @@
 '''
-Author:      Vladimir Vons, Oster Inc.
+Author:      Vladimir Vons <VladVons@gmail.com>
 Created:     2020.03.03
 License:     GNU, see LICENSE for more details
-Description:
 
 import os, time, struct
 from Inc.DB.Dbl import TDbl, TDblFields

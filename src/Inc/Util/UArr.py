@@ -1,8 +1,7 @@
 '''
-Author:      Vladimir Vons, Oster Inc.
+Author:      Vladimir Vons <VladVons@gmail.com>
 Created:     2020.03.08
 License:     GNU, see LICENSE for more details
-Description:
 
 https://blog.finxter.com/list-to-dict-convert-a-list-into-a-dictionary-in-python
 '''

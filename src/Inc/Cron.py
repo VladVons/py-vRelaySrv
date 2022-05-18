@@ -1,8 +1,7 @@
 '''
-Author:      Vladimir Vons, Oster Inc.
+Author:      Vladimir Vons <VladVons@gmail.com>
 Created:     2021.02.15
 License:     GNU, see LICENSE for more details
-Description:
 
 https://github.com/kipe/pycron
 https://crontab.guru/examples.html

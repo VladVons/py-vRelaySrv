@@ -1,8 +1,7 @@
 '''
-Author:      Vladimir Vons, Oster Inc.
+Author:      Vladimir Vons <VladVons@gmail.com>
 Created:     2021.02.26
 License:     GNU, see LICENSE for more details
-Description:
 
 https://github.com/aio-libs/aiohttp
 https://docs.aiohttp.org/en/stable/web_advanced.html#aiohttp-web-app-runners
@@ -18,6 +17,7 @@ import aiohttp_jinja2
 import base64
 #
 from IncP.Log import Log
+from IncP.ApiWeb import TWebSockServer
 from .Api import Api
 from .Routes import *
 
@@ -87,6 +87,13 @@ class TWebSrv():
 
         self.Form = TForm(self)
 
+        self.WebSockSrv = TWebSockServer()
+        self.WebSockSrv.OnReplay = self.cbWebSockReplay
+
+    async def cbWebSockReplay(self, aWS, aData: dict):
+        print('cbWebSockServer', aData)
+        await aWS.send_json(aData)
+
     async def AuthUser(self, aRequest: web.Request) -> bool:
         if (self.Conf.get('Auth')):
             Auth = aRequest.headers.get('Authorization')
@@ -124,6 +131,14 @@ class TWebSrv():
         Form = await self.Form.Create(aRequest, 'index')
         return await Form.Render()
 
+    async def _rWebSock(self, aRequest: web.Request) -> web.WebSocketResponse:
+        WS = web.WebSocketResponse()
+        if (not await self.AuthUser(aRequest)):
+            return WS
+
+        await self.WebSockSrv.AddHandler(aRequest, WS)
+        return WS
+
     async def Run(self):
         App = web.Application()
         App.add_routes([
@@ -131,7 +146,8 @@ class TWebSrv():
             web.post('/api/{Name}', self._rApi),
             web.get('/form/{Name}', self._rForm),
             web.post('/form/{Name}', self._rForm),
-            web.get('/download/{Name:.*}', self._rDownload)
+            web.get('/download/{Name:.*}', self._rDownload),
+            web.get('/ws/{Name:.*}', self._rWebSock)
         ])
 
         App.router.add_static('/', self.DirRoot + '/' + self.Dir3w, show_index=True, follow_symlinks=True)

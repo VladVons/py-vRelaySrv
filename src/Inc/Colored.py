@@ -1,8 +1,7 @@
 '''
-Author:      Vladimir Vons, Oster Inc.
+Author:      Vladimir Vons <VladVons@gmail.com>
 Created:     2022.04.20
 License:     GNU, see LICENSE for more details
-Description:
 
 import Inc.Colored as Cl
 Cl.Print('Hello World colored example', Cl.cYellow)

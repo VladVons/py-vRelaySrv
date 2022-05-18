@@ -1,9 +1,7 @@
 '''
-Copyright:   Vladimir Vons, UA
 Author:      Vladimir Vons <VladVons@gmail.com>
 Created:     2021.02.28
 License:     GNU, see LICENSE for more details
-Description:
 '''
 
 
@@ -36,13 +34,14 @@ class TApiBase():
         if (Diff):
             return 'param unknown. %s' % Diff
 
-    def AddPlugin(self, aCls: object, aArgs: dict = {}):
+    def AddPlugin(self, aCls: object, aArgs: dict = {}) -> object:
         Name = aCls.__name__
-        if (not self.Url.get('Name')):
-            Class = aCls()
-            Class.Args = aArgs
+        if (not self.Url.get(Name)):
+            Res = aCls()
+            Res.Args = aArgs
             self.Url[Name] = aCls.Param
-            self.Url[Name]['Class'] = Class
+            self.Url[Name]['Class'] = Res
+            return Res
 
     async def Call(self, aPath: str, aParam: str) -> dict:
         UrlInf = self.Url.get(aPath)

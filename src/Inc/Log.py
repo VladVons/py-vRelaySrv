@@ -1,8 +1,7 @@
 '''
-Author:      Vladimir Vons, Oster Inc.
+Author:      Vladimir Vons <VladVons@gmail.com>
 Created:     2017.02.01
 License:     GNU, see LICENSE for more details
-Description:
 '''
 
 

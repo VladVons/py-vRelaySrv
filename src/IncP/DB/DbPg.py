@@ -1,8 +1,7 @@
 '''
-Author:      Vladimir Vons, Oster Inc.
+Author:      Vladimir Vons <VladVons@gmail.com>
 Created:     2022.02.25
 License:     GNU, see LICENSE for more details
-Description:
 
 pip3 install aiopg
 '''

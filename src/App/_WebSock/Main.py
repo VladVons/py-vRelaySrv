@@ -1,8 +1,8 @@
 '''
-Author:      Vladimir Vons, Oster Inc.
+Author:      Vladimir Vons <VladVons@gmail.com>
 Created:     2022.04.17
 License:     GNU, see LICENSE for more details
-Description:
+
 see ScraperSrv/Main/TScraperSrv/_rWebSock()
 '''
 

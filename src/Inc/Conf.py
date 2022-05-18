@@ -1,13 +1,7 @@
 '''
-Author:      Vladimir Vons, Oster Inc.
+Author:      Vladimir Vons <VladVons@gmail.com>
 Created:     2018.06.10
 License:     GNU, see LICENSE for more details
-Description:
-
-abrevation for RAM saving
-R - Result
-K - Key
-V - Value
 '''
 
 

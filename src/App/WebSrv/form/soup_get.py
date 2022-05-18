@@ -1,9 +1,7 @@
 '''
-Copyright:   Vladimir Vons, UA
 Author:      Vladimir Vons <VladVons@gmail.com>
 Created:     2022.04.10
 License:     GNU, see LICENSE for more details
-Description:
 '''
 
 import json

@@ -4,4 +4,5 @@ class TForm(TFormBase):
     Title = 'About'
 
     async def _Render(self):
-        self.Info = {'AppVer': '0.0.1'}
+        Arr = ['%s: %s' % (Key, Val) for Key, Val in self.Info.items()]
+        self.Data.Info = '<br>\n'.join(Arr)

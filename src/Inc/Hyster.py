@@ -2,7 +2,6 @@
 Author:      Vladimir Vons <VladVons@gmail.com>
 Created:     2021.02.18
 License:     GNU, see LICENSE for more details
-Description:
 
 THyster(+1.2/-0.5)
 Th.Check(10, 11.1)

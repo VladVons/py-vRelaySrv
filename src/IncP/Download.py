@@ -1,9 +1,8 @@
-"""
+'''
 Author:      Vladimir Vons <VladVons@gmail.com>
 Created:     2022.02.10
 License:     GNU, see LICENSE for more details
-Description:
-"""
+'''
 
 import time
 import random

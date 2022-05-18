@@ -1,8 +1,7 @@
 '''
-Author:      Vladimir Vons, Oster Inc.
+Author:      Vladimir Vons <VladVons@gmail.com>
 Created:     2022.03.24
 License:     GNU, see LICENSE for more details
-Description:
 
     Dbl1 = TDbList( [('User', str), ('Age', int), ('Male', bool, True)] )
     Data = [['User2', 22, True], ['User1', 11, False], ['User3', 33, True]]
@@ -309,6 +308,9 @@ class TDbList():
         self._RecNo = 0
 
     def ExportPair(self, aFieldKey: str, aFieldVal: str) -> dict:
+        '''
+        Returns two binded fields as key:val
+        '''
         KeyNo = self.Fields.GetNo(aFieldKey)
         ValNo = self.Fields.GetNo(aFieldVal)
         return {x[KeyNo]: x[ValNo] for x in self.Data}
@@ -317,6 +319,9 @@ class TDbList():
         return [Rec.GetAsDict() for Rec in self]
 
     def ExportList(self, aField: str, aUniq = False) -> list:
+        '''
+        Returns one field as list
+        '''
         FieldNo = self.Fields.GetNo(aField)
         Res = [D[FieldNo] for D in self.Data]
         if (aUniq):
@@ -324,6 +329,9 @@ class TDbList():
         return Res
 
     def Export(self) -> dict:
+        '''
+        Returns all data in a simple dict for future import
+        '''
         return {'Data': self.Data, 'Head': self.Fields.Export(), 'Tag': self.Tag}
 
     def ImportList(self, aField: str, aData: list):
@@ -438,5 +446,4 @@ if (__name__ == '__main__'):
     Dbl1 = TDbList( [('User', str), ('Age', int), ('Male', bool, True)] )
     Data = [['User2', 22, True], ['User1', 11, False], ['User3', 33, True], ['User4', 44, True]]
     Dbl1.SetData(Data)
-    print(Dbl1)
 '''

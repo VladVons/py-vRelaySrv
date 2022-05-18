@@ -1,9 +1,7 @@
 '''
-Copyright:   Vladimir Vons, UA
 Author:      Vladimir Vons <VladVons@gmail.com>
 Created:     2022.05.16
 License:     GNU, see LICENSE for more details
-Description:
 '''
 
 from wtforms.fields import StringField, SubmitField, PasswordField

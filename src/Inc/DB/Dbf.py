@@ -1,8 +1,7 @@
 '''
-Author:      Vladimir Vons, Oster Inc.
+Author:      Vladimir Vons <VladVons@gmail.com>
 Created:     2020.02.29
 License:     GNU, see LICENSE for more details
-Description:
 
 import os, time
 from Inc.DB.Dbf import TDbf, TDbfFields

@@ -2,7 +2,6 @@
 Author:      Vladimir Vons <VladVons@gmail.com>
 Created:     2021.01.30
 License:     GNU, see LICENSE for more details
-Description:
 '''
 
 

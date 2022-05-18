@@ -1,9 +1,7 @@
 '''
-Copyright:   Vladimir Vons, UA
 Author:      Vladimir Vons <VladVons@gmail.com>
 Created:     2022.04.14
 License:     GNU, see LICENSE for more details
-Description:
 '''
 
 
