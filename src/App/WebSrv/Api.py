@@ -126,7 +126,7 @@ class set_scheme():
             Res = {'Err': Scheme.Err}
         else:
             aData.pop('url', None)
-            Res = await self.DefHandler(aPath, aData)
+            Res = await self.Args['WebClient'].Send('web/set_scheme', aData)
         return Res
 
 
@@ -160,7 +160,7 @@ class TApi(TApiBase):
         self.AddPlugin(get_scheme_test_all, {'WebClient': self.WebClient})
         self.AddPlugin(get_scheme_test)
         self.AddPlugin(get_scheme, {'WebClient': self.WebClient})
-        self.AddPlugin(set_scheme)
+        self.AddPlugin(set_scheme, {'WebClient': self.WebClient})
 
     async def DefHandler(self, aPath: str, aData: dict) -> dict:
         return await self.WebClient.Send('web/' + aPath, aData)

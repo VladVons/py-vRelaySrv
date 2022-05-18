@@ -31,21 +31,23 @@ class TFormBase(Form):
             self.Data[Key] = Val.strip()
         return bool(Post)
 
-    async def Render(self):
+    async def Render(self) -> web.Response:
         self.Session = await aiohttp_session.get_session(self.Request)
         self.process(await self.Request.post())
 
         Res = await self._Render()
-        if (not Res):
+        if (Res is None):
             try :
                 Res = render_template(self.Tpl, self.Request, {'Data': self.Data, 'Form': self})
             except Exception as E:
                 Msg = 'Render(), %s %s' % (self.Tpl, E)
                 Log.Print(1, 'x', Msg, aE = E)
-
-                Data = TDictStr({'Info': Msg})
-                Res = render_template('info.tpl.html', self.Request, {'Data': Data, 'Form': self})
+                Res = self.RenderInfo(Msg)
         return Res
+
+    def RenderInfo(self, aMsg: str) -> web.Response:
+        Data = TDictStr({'Info': aMsg})
+        return render_template('info.tpl.html', self.Request, {'Data': Data, 'Form': self})
 
     async def _Render(self):
         print('_Render() not implemented for %s' % (self.Tpl))

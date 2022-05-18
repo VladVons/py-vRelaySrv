@@ -109,5 +109,13 @@ print()
 #Test_3()
 
 
-a ,b, *c = [1, 2]
+Arr1 = [1, 2, 3, 4, 5, 6, 7, 1, 2, 3]
+a ,b, *c = Arr1
 print(a, b, c)
+
+Arr2 = [1, 2]
+a ,b, *c = Arr2
+print(a, b, c)
+
+c = max(set(Arr1), key=Arr1.count)
+print(c)
