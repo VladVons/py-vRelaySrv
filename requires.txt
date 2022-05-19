@@ -15,15 +15,18 @@ aiohttp_session
 aiohttp_jinja2
 jinja2
 wtforms
+
 bs4
 lxml
 html.parser
-
+html5lib
 #--- Scraper
 aiohttp
+
 bs4
 lxml
 html.parser
+#html5lib
 #
 #selenium
 #webdriver_manager
