@@ -14,18 +14,27 @@ from IncP.Utils import GetNestedKey
 from Inc.DB.DbList import TDbList
 
 
-class get_scheme_test_all():
+class TApiPlugin():
+    def __init__(self, aArgs: dict = {}):
+        self.Args = aArgs
+
+    async def Exec(self, aPath: str, aData: dict) -> dict:
+        raise NotImplementedError()
+
+
+class get_scheme_test_all(TApiPlugin):
     Param = {'param': ['cnt']}
 
-    def __init__(self):
-        self.Hash = {}
-        self.Res = []
+    async def WebSocketSend(self, aData):
+        WebSocket = self.Args.get('WebSocket')
+        if (WebSocket is not None):
+            await WebSocket.send_json(aData)
 
     async def cbOnGet(self, aUrl: str, aData: str):
+        await self.WebSocketSend({'Data': aUrl, 'Type': 'Url'})
         if (aData.get('Err')):
             self.Res.append([aUrl, aData['Err']])
         else:
-            print(aUrl)
             Soup = BeautifulSoup(aData['Data'], 'lxml')
             Scheme = self.Hash[aUrl]
             Scheme.Parse(Soup)
@@ -36,8 +45,12 @@ class get_scheme_test_all():
         Data = await self.Args['WebClient'].Send('web/get_scheme_not_empty', aData)
         DblJ = GetNestedKey(Data, 'Data.Data')
         if (not DblJ):
-            return {'Err': 'Error getting scheme'}
+            Res = {'Data': 'Error getting scheme', 'Type': 'Err'}
+            await self.WebSocketSend(Res)
+            return Res
 
+        self.Hash = {}
+        self.Res = []
         Dbl = TDbList().Import(DblJ)
         for Rec in Dbl:
             SchemeStr = Rec.GetField('scheme')
@@ -46,14 +59,19 @@ class get_scheme_test_all():
             for Url in Urls:
                 self.Hash[Url] = Scheme
 
+            if (Dbl.RecNo > 10):
+                break
+
         Download = TDownload(aHeaders = THeaders())
         Download.OnGet = self.cbOnGet
         await Download.Gets(self.Hash.keys())
-        print('Done')
-        return {'Data': self.Res}
+
+        Res = {'Data': self.Res, 'Type': 'Res'}
+        await self.WebSocketSend(Res)
+        return Res
 
 
-class get_scheme_find():
+class get_scheme_find(TApiPlugin):
     Param = {'param': ['url']}
 
     async def Exec(self, aPath: str, aData: dict) -> dict:
@@ -79,7 +97,7 @@ class get_scheme_find():
         return Res
 
 
-class get_scheme_test():
+class get_scheme_test(TApiPlugin):
     Param = {'param': ['scheme']}
 
     async def Exec(self, aPath: str, aData: dict) -> dict:
@@ -108,7 +126,7 @@ class get_scheme_test():
         return Res
 
 
-class set_scheme():
+class set_scheme(TApiPlugin):
     Param = {'param': ['id', 'scheme', 'url']}
 
     async def Exec(self, aPath: str, aData: dict) -> dict:
@@ -130,7 +148,7 @@ class set_scheme():
         return Res
 
 
-class get_scheme():
+class get_scheme(TApiPlugin):
     Param = {'param': ['id']}
 
     async def Exec(self, aPath: str, aData: dict) -> dict:
@@ -156,11 +174,11 @@ class TApi(TApiBase):
         self.DefMethod = self.DefHandler
         self.WebClient = TWebClient()
 
-        self.AddPlugin(get_scheme_find, {'WebClient': self.WebClient})
-        self.AddPlugin(get_scheme_test_all, {'WebClient': self.WebClient})
-        self.AddPlugin(get_scheme_test)
-        self.AddPlugin(get_scheme, {'WebClient': self.WebClient})
-        self.AddPlugin(set_scheme, {'WebClient': self.WebClient})
+        self.PluginAdd(get_scheme_find, {'WebClient': self.WebClient})
+        self.PluginAdd(get_scheme_test_all, {'WebClient': self.WebClient})
+        self.PluginAdd(get_scheme_test)
+        self.PluginAdd(get_scheme, {'WebClient': self.WebClient})
+        self.PluginAdd(set_scheme, {'WebClient': self.WebClient})
 
     async def DefHandler(self, aPath: str, aData: dict) -> dict:
         return await self.WebClient.Send('web/' + aPath, aData)

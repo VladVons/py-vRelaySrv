@@ -34,11 +34,10 @@ class TApiBase():
         if (Diff):
             return 'param unknown. %s' % Diff
 
-    def AddPlugin(self, aCls: object, aArgs: dict = {}) -> object:
+    def PluginAdd(self, aCls: object, aArgs: dict = {}) -> object:
         Name = aCls.__name__
         if (not self.Url.get(Name)):
-            Res = aCls()
-            Res.Args = aArgs
+            Res = aCls(aArgs)
             self.Url[Name] = aCls.Param
             self.Url[Name]['Class'] = Res
             return Res

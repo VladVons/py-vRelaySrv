@@ -7,9 +7,36 @@
 </style>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-<script src="/js/ajax.js"></script>
+<script src="/js/Api.js"></script>
 <script src="/js/TDbList.js"></script>
 <script>
+    class TWebSockApp extends TWebSock {
+        CallTest() {
+            this.Log('CallTest')
+            document.getElementById('Output').value = 'Starting request ...\n';
+            this.Call('get_scheme_test_all', {'cnt': 1000})
+        }
+
+        OnMessage(aEvent, aData) {
+            let Output = document.getElementById('Output')
+
+            let Msg = aData['Data']
+            if (aData['Type'] == 'Res'){
+                Output.value += '\n\nErr:\n';
+                for (let i = 0; i < Msg.length; i++) {
+                    Output.value += Msg[i][0] + '\n';
+                    Output.value += Msg[i][1] + '\n\n';
+                }
+            }else{
+                Output.value += Msg + '\n';
+            }
+        }
+    };
+
+    WebSock = new TWebSockApp();
+    WebSock.Debug = true;
+    WebSock.Connect('ws://localhost:8080/ws/sites_list?plugin=get_scheme_test_all');
+
     function BtnGet_OnClick(aId, aThis) {
         document.getElementById('Output').value = '';
 
@@ -142,7 +169,7 @@
                         <th>Get</th>
                         <th>
                             Test
-                            <button onclick="BtnTestAll_OnClick()">test</button>
+                            <button onclick="WebSock.CallTest()">test</button>
                         </th>
                         <th>Set</th>
                     </tr>

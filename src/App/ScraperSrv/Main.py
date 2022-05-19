@@ -11,7 +11,7 @@ from aiohttp import web
 #
 from IncP.Log import Log
 from IncP.Utils import TJsonEncoder
-from IncP.ApiWeb import TWebSockServer
+#from IncP.ApiWeb import TWebSockServer
 from .Api import TApi
 
 
@@ -19,12 +19,12 @@ class TScraperSrv():
     def __init__(self, aConf: dict):
         self.Conf = aConf
 
-        self.WebSockSrv = TWebSockServer()
-        self.WebSockSrv.OnReplay = self.cbWebSockReplay
+        #self.WebSockSrv = TWebSockServer()
+        #self.WebSockSrv.OnReplay = self.cbWebSockReplay
 
-    async def cbWebSockReplay(self, aWS, aData: dict):
-        print('cbWebSockServer', aData)
-        await aWS.send_json(aData)
+    #async def cbWebSockReplay(self, aWS, aData: dict):
+        #print('cbWebSockServer', aData)
+        #await aWS.send_json(aData)
 
     #async def cbOnStartup(self, aApp: web.Application):
     async def cbInit(self, aApp: web.Application):

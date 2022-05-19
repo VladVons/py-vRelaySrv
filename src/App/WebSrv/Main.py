@@ -17,7 +17,8 @@ import aiohttp_jinja2
 import base64
 #
 from IncP.Log import Log
-from IncP.ApiWeb import TWebSockServer
+#from IncP.ApiWeb import TWebSockServer
+from IncP.Utils import GetNestedKey
 from .Api import Api
 from .Routes import *
 
@@ -87,12 +88,27 @@ class TWebSrv():
 
         self.Form = TForm(self)
 
-        self.WebSockSrv = TWebSockServer()
-        self.WebSockSrv.OnReplay = self.cbWebSockReplay
+    async def WebSocket(self, aRequest: web.Request) -> web.WebSocketResponse:
+        WS = web.WebSocketResponse()
+        if (not await self.AuthUser(aRequest)):
+            await WS.send_json({'Err': 'Authorization failed'})
+            return WS
 
-    async def cbWebSockReplay(self, aWS, aData: dict):
-        print('cbWebSockServer', aData)
-        await aWS.send_json(aData)
+        await WS.prepare(aRequest)
+        try:
+            async for Msg in WS:
+                if (Msg.type == web.WSMsgType.text):
+                    Name = aRequest.query.get('plugin')
+                    Class = GetNestedKey(Api.Url, Name + '.Class')
+                    if (Class is None):
+                        await WS.send_json({'Err': 'Unknown plugin %s' % (Name)})
+                    else:
+                        Class.Args['WebSocket'] = WS
+                        Data = Msg.json()
+                        await Class.Exec(Name, Data.get('Param', {}))
+        except Exception as E:
+            Log.Print(1, 'x', 'AddHandler()', aE=E)
+        return WS
 
     async def AuthUser(self, aRequest: web.Request) -> bool:
         if (self.Conf.get('Auth')):
@@ -104,7 +120,7 @@ class TWebSrv():
         else:
             return True
 
-    async def _rDownload(self, aRequest: web.Request):
+    async def _rDownload(self, aRequest: web.Request) -> web.Response:
         Name = aRequest.match_info['Name']
         File = '%s/%s/%s' % (self.DirRoot, self.DirDownload, Name)
         if (not os.path.exists(File)):
@@ -132,12 +148,7 @@ class TWebSrv():
         return await Form.Render()
 
     async def _rWebSock(self, aRequest: web.Request) -> web.WebSocketResponse:
-        WS = web.WebSocketResponse()
-        if (not await self.AuthUser(aRequest)):
-            return WS
-
-        await self.WebSockSrv.AddHandler(aRequest, WS)
-        return WS
+        return await self.WebSocket(aRequest)
 
     async def Run(self):
         App = web.Application()
