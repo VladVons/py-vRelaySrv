@@ -30,7 +30,10 @@ async def GetUrlSoup(aUrl: str) -> BeautifulSoup:
     UrlDown = await Download.Get(aUrl, True)
     if (UrlDown['Status'] == 200) and (not UrlDown.get('Err')):
         Data = UrlDown['Data']
-        return BeautifulSoup(Data, 'lxml')
+        Res = BeautifulSoup(Data, 'lxml')
+        if (len(Res) == 0):
+            Res = BeautifulSoup(Data, 'html.parser')
+        return Res
 
 
 class THeaders():

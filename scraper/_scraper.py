@@ -76,22 +76,28 @@ def TestJson(aMod: str, aExt: str = '.html'):
 
 def TestPy(aMod: str, aExt: str = '.html'):
     Data = ReadFile(aMod + aExt)
-    Soup = BeautifulSoup(Data, 'lxml')
 
-    Soup1 = Soup.find('div', {'id': 'main_content'})
-    print('--x1', bool(Soup))
+    SoupA = BeautifulSoup(Data, 'lxml')
+    SoupB = BeautifulSoup(Data, 'html.parser')
+    SoupC = BeautifulSoup(Data, 'html5lib')
+
+    print('--x0', len(SoupA), len(SoupB), len(SoupC))
+
+    Soup1 = Soup.find('div', {'class': 'product-wrapper'})
+
+    #Soup1 = Soup.find('div', {'class': 'section main-section'})
+    print('--x1', Soup1)
     #WriteFile(aMod + '.txt', str(Soup1))
 
     #Soup2 = Soup.find_all('div', {'class': 'product-page'})
     #print('--x2', len(Soup2))
 
     #Soup3 = Soup.find('script', {'type': 'application/ld+jso'})
-    Soup3 = Soup1.find('script', type='application/ld+json').text
-    Data1 = json.loads(Soup3)
-    Data2 = json.dumps(Data1, indent=2, sort_keys=True, ensure_ascii=False)
-    print('--x3', bool(Soup3), Data2)
-    WriteFile(aMod + '.txt.json', Data2)
-
+    #Soup3 = Soup1.find('script', type='application/ld+json').text
+    #Data1 = json.loads(Soup3)
+    #Data2 = json.dumps(Data1, indent=2, sort_keys=True, ensure_ascii=False)
+    #print('--x3', bool(Soup3), Data2)
+    #WriteFile(aMod + '.txt.json', Data2)
 
     #Soup4 = Soup1.find('div', {'class': 'price'})
     #print('--x4', bool(Soup4))
@@ -127,8 +133,8 @@ def TestApi():
 
 
 os.system('clear')
-asyncio.run(SaveScheme('Schemes.txt'))
+#asyncio.run(SaveScheme('Schemes.txt'))
 #
-#TestPy('allo.ua-a')
+TestPy('btmax.com.ua')
 #TestJson('allo.ua-a')
 #TestApi()
