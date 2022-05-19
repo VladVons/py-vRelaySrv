@@ -59,9 +59,6 @@ class get_scheme_test_all(TApiPlugin):
             for Url in Urls:
                 self.Hash[Url] = Scheme
 
-            if (Dbl.RecNo > 10):
-                break
-
         Download = TDownload(aHeaders = THeaders())
         Download.OnGet = self.cbOnGet
         await Download.Gets(self.Hash.keys())
