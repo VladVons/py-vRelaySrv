@@ -33,9 +33,12 @@
         }
     };
 
+    let WsUrl = 'ws://' + window.location.host + '/ws/sites_list?plugin=get_scheme_test_all';
+
     WebSock = new TWebSockApp();
     WebSock.Debug = true;
-    WebSock.Connect('ws://localhost:8080/ws/sites_list?plugin=get_scheme_test_all');
+    //WebSock.Connect('ws://localhost:8080/ws/sites_list?plugin=get_scheme_test_all');
+    WebSock.Connect(WsUrl);
 
     function BtnGet_OnClick(aId, aThis) {
         document.getElementById('Output').value = '';
