@@ -22,8 +22,8 @@ class TForm(TFormBase):
 
         Download = TDownload(aHeaders = THeaders())
         UrlDown = await Download.Get(self.Data.Url0, True)
-        if (UrlDown.get('Err')):
-            self.Data.Output = 'Error loading %s, %s, %s' % (self.Data.Url0, UrlDown.get('Err'), UrlDown.get('Msg'))
+        if (UrlDown.get('Type') == 'Err'):
+            self.Data.Output = 'Error loading %s, %s, %s' % (self.Data.Url0, UrlDown.get('Data'), UrlDown.get('Msg'))
             return
 
         Status = UrlDown['Status']

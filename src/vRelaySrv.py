@@ -20,7 +20,7 @@ def Run():
     if (ConfApp.Debug):
         Loop = asyncio.get_event_loop()
         Loop.set_debug(True)
-        Loop.slow_callback_duration = 0.001
+        Loop.slow_callback_duration = 0.01
         Loop.run_until_complete(Task)
     else:
         if (sys.version_info >= (3, 7)):

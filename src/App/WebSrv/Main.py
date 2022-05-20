@@ -9,6 +9,7 @@ https://docs.aiohttp.org/en/stable/web_advanced.html#aiohttp-web-app-runners
 
 
 import os
+import json
 from aiohttp import web, streamer
 from aiohttp_session.cookie_storage import EncryptedCookieStorage
 import aiohttp_session
@@ -88,28 +89,6 @@ class TWebSrv():
 
         self.Form = TForm(self)
 
-    async def WebSocket(self, aRequest: web.Request) -> web.WebSocketResponse:
-        WS = web.WebSocketResponse()
-        if (not await self.AuthUser(aRequest)):
-            await WS.send_json({'Err': 'Authorization failed'})
-            return WS
-
-        await WS.prepare(aRequest)
-        try:
-            async for Msg in WS:
-                if (Msg.type == web.WSMsgType.text):
-                    Name = aRequest.query.get('plugin')
-                    Class = GetNestedKey(Api.Url, Name + '.Class')
-                    if (Class is None):
-                        await WS.send_json({'Err': 'Unknown plugin %s' % (Name)})
-                    else:
-                        Class.Args['WebSocket'] = WS
-                        Data = Msg.json()
-                        await Class.Exec(Name, Data.get('Param', {}))
-        except Exception as E:
-            Log.Print(1, 'x', 'AddHandler()', aE=E)
-        return WS
-
     async def AuthUser(self, aRequest: web.Request) -> bool:
         if (self.Conf.get('Auth')):
             Auth = aRequest.headers.get('Authorization')
@@ -119,6 +98,29 @@ class TWebSrv():
                 return (not Dbl.IsEmpty())
         else:
             return True
+
+    async def WebSocket(self, aRequest: web.Request) -> web.WebSocketResponse:
+        WS = web.WebSocketResponse()
+        await WS.prepare(aRequest)
+
+        if (not await self.AuthUser(aRequest)):
+            await WS.send_json({'Type': 'Err', 'Data': 'Authorization failed'})
+            return WS
+
+        try:
+            async for Msg in WS:
+                if (Msg.type == web.WSMsgType.text):
+                    Name = aRequest.query.get('plugin')
+                    Class = GetNestedKey(Api.Url, Name + '.Class')
+                    if (Class is None):
+                        await WS.send_json({'Type': 'Err', 'Data': 'Unknown plugin %s' % (Name)})
+                    else:
+                        Class.Args['WebSocket'] = WS
+                        Data = Msg.json()
+                        await Class.Exec(Name, Data.get('Param', {}))
+        except Exception as E:
+            Log.Print(1, 'x', 'AddHandler()', aE=E)
+        return WS
 
     async def _rDownload(self, aRequest: web.Request) -> web.Response:
         Name = aRequest.match_info['Name']
@@ -132,9 +134,23 @@ class TWebSrv():
     async def _rApi(self, aRequest: web.Request) -> web.Response:
         Name = aRequest.match_info.get('Name')
         Post = await aRequest.text()
-        Res = await Api.Call(Name, Post)
-        if (Res.get('Err')):
-            Log.Print(1, 'e', '_rApi() %s' % (Res.get('Err')))
+        if (Post):
+            try:
+                Param = json.loads(Post)
+            except Exception as E:
+                return web.json_response({'Type': 'Err', 'Data': E})
+        else:
+            Param = {}
+
+        #if (Param.get('ws')):
+        #    WS = web.WebSocketResponse()
+        #    await WS.prepare(aRequest)
+        #    await WS.send_json({'Err': 'Hello'})
+        #    Param['ws'] = WS
+
+        Res = await Api.Call(Name, Param)
+        if (Res.get('Type') == 'Err'):
+            Log.Print(1, 'e', '_rApi() %s' % (Res.get('Data')))
         else:
             Res = Res.get('Data')
         return web.json_response(Res)

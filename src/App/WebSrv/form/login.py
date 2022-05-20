@@ -28,8 +28,8 @@ class TForm(TFormBase):
 
         Post = {'login': self.UserName.data, 'passw': self.Password.data}
         Data = await Api.WebClient.Send('web/get_user_id', Post)
-        if (Data.get('Err')):
-            self.Message = Data['Err']
+        if (Data.get('Type') == 'Err'):
+            self.Message = Data['Data']
         else:
             Id = GetNestedKey(Data, 'Data.Data')
             if (Id):

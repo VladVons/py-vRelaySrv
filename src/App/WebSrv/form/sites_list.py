@@ -23,4 +23,4 @@ class TForm(TFormBase):
             Cond = TDbCond().AddFields([ ['eq', (Dbl, 'has_scheme'), True, True]])
             self.Data.CntScheme = Dbl.Clone(aCond=Cond).GetSize()
         else:
-            return self.RenderInfo(DataA.get('Err'))
+            return self.RenderInfo(DataA.get('Data'))

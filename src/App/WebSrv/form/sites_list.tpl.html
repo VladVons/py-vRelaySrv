@@ -10,36 +10,6 @@
 <script src="/js/Api.js"></script>
 <script src="/js/TDbList.js"></script>
 <script>
-    class TWebSockApp extends TWebSock {
-        CallTest() {
-            this.Log('CallTest')
-            document.getElementById('Output').value = 'Starting request ...\n';
-            this.Call('get_scheme_test_all', {'cnt': 1000})
-        }
-
-        OnMessage(aEvent, aData) {
-            let Output = document.getElementById('Output')
-
-            let Msg = aData['Data']
-            if (aData['Type'] == 'Res'){
-                Output.value += '\n\nErr:\n';
-                for (let i = 0; i < Msg.length; i++) {
-                    Output.value += Msg[i][0] + '\n';
-                    Output.value += Msg[i][1] + '\n\n';
-                }
-            }else{
-                Output.value += Msg + '\n';
-            }
-        }
-    };
-
-    let WsUrl = 'ws://' + window.location.host + '/ws/sites_list?plugin=get_scheme_test_all';
-    console.log('WsUrl', WsUrl)
-    WebSock = new TWebSockApp();
-    WebSock.Debug = true;
-    //WebSock.Connect('ws://localhost:8080/ws/sites_list?plugin=get_scheme_test_all');
-    WebSock.Connect(WsUrl);
-
     function BtnGet_OnClick(aId, aThis) {
         document.getElementById('Output').value = '';
 
@@ -64,28 +34,6 @@
         );
     };
 
-    function BtnSet_OnClick(aId, aUrl) {
-        let Script = document.getElementById('Script').value;
-        if (Script.trim().length < 0) {
-            window.alert('Script is empty');
-            return;
-        }
-
-        if (! window.confirm('Save ' + aUrl + ' to database ?')) {
-          return;
-        }
-
-        HttpRequest(
-            '/api/set_scheme',
-            function(aData) {
-                console.log('aData', aData);
-                let Msg = aData['Err'] ? 'Err: ' + aData['Err'] : 'Saved';
-                window.alert(Msg + ' ' + aUrl);
-            },
-            {'id': aId, 'scheme': Script, 'url': aUrl}
-        );
-    };
-
     function BtnTest_OnClick(aId, aThis) {
         StartAt = Date.now();
         let Output = document.getElementById('Output')
@@ -104,40 +52,25 @@
         );
     };
 
-    function BtnTestAll_OnClick() {
-        let Output = document.getElementById('Output')
-        Output.value = '';
-
-        HttpRequest(
-            '/api/get_scheme_test_all',
-            function(aData) {
-                console.log('aData', aData);
-                Output.value = JSON.stringify(aData, null, ' ');
-            },
-            {'cnt': 1000}
-        );
-    };
-
-    function BtnFind_OnClick() {
-        if (document.getElementById('Url0').value == '') {
-            alert('Url is empty');
+    function BtnSet_OnClick(aId, aUrl) {
+        let Script = document.getElementById('Script').value;
+        if (Script.trim().length < 0) {
+            window.alert('Script is empty');
             return;
-        };
+        }
 
-        let ObjScript = document.getElementById('Script');
-        ObjScript.value = '';
-        document.getElementById('Output').value = '';
+        if (! window.confirm('Save ' + aUrl + ' to database ?')) {
+          return;
+        }
 
         HttpRequest(
-            '/api/get_scheme_find',
+            '/api/set_scheme',
             function(aData) {
                 console.log('aData', aData);
-                aData['Data'].forEach((aItem) => {
-                    ObjScript.value += JSON.stringify(aItem, null, ' ') + '\n';
-                    ObjScript.value += '\n---\n\n';
-                })
+                let Msg = aData['Type'] == 'Err' ? 'Err: ' + aData['Data'] : 'Saved';
+                window.alert(Msg + ' ' + aUrl);
             },
-            {'url': document.getElementById('Url0').value}
+            {'id': aId, 'scheme': Script, 'url': aUrl}
         );
     };
 
@@ -159,7 +92,6 @@
         <td colspan="2">
             <input type="text" name="Url0" id="Url0" style="width:90%">
             <button onclick="BtnGo_OnClick()">go</button>
-            <button onclick="BtnFind_OnClick()">find</button>
         </td>
     </tr>
     <tr>
@@ -170,10 +102,7 @@
                         <th>{{Data.CntScheme}}<br>{{Data.Sites.GetSize()}}</th>
                         <th style="width: 70%">Url</th>
                         <th>Get</th>
-                        <th>
-                            Test
-                            <button onclick="WebSock.CallTest()">test</button>
-                        </th>
+                        <th>Test</th>
                         <th>Set</th>
                     </tr>
                     {% for Rec in Data.Sites %}

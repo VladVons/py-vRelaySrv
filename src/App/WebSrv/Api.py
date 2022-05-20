@@ -18,6 +18,11 @@ class TApiPlugin():
     def __init__(self, aArgs: dict = {}):
         self.Args = aArgs
 
+    async def WebSocketSend(self, aData):
+        WebSocket = self.Args.get('WebSocket')
+        if (WebSocket is not None):
+            await WebSocket.send_json(aData)
+
     async def Exec(self, aPath: str, aData: dict) -> dict:
         raise NotImplementedError()
 
@@ -25,15 +30,10 @@ class TApiPlugin():
 class get_scheme_test_all(TApiPlugin):
     Param = {'param': ['cnt']}
 
-    async def WebSocketSend(self, aData):
-        WebSocket = self.Args.get('WebSocket')
-        if (WebSocket is not None):
-            await WebSocket.send_json(aData)
-
     async def cbOnGet(self, aUrl: str, aData: str):
         await self.WebSocketSend({'Data': aUrl, 'Type': 'Url'})
-        if (aData.get('Err')):
-            self.Res.append([aUrl, aData['Err']])
+        if (aData.get('Type') == 'Err'):
+            self.Res.append([aUrl, aData['Data']])
         else:
             Soup = BeautifulSoup(aData['Data'], 'lxml')
             Scheme = self.Hash[aUrl]
@@ -45,7 +45,7 @@ class get_scheme_test_all(TApiPlugin):
         Data = await self.Args['WebClient'].Send('web/get_scheme_not_empty', aData)
         DblJ = GetNestedKey(Data, 'Data.Data')
         if (not DblJ):
-            Res = {'Data': 'Error getting scheme', 'Type': 'Err'}
+            Res = {'Type': 'Err', 'Data': 'Error getting scheme'}
             await self.WebSocketSend(Res)
             return Res
 
@@ -58,6 +58,7 @@ class get_scheme_test_all(TApiPlugin):
             Urls = Scheme.GetUrl()
             for Url in Urls:
                 self.Hash[Url] = Scheme
+            #break
 
         Download = TDownload(aHeaders = THeaders())
         Download.OnGet = self.cbOnGet
@@ -69,20 +70,20 @@ class get_scheme_test_all(TApiPlugin):
 
 
 class get_scheme_find(TApiPlugin):
-    Param = {'param': ['url']}
+    Param = {'param': ['url', 'ws']}
 
     async def Exec(self, aPath: str, aData: dict) -> dict:
         Data = await self.Args['WebClient'].Send('web/get_scheme_not_empty', {'cnt': 100})
 
         DblJ = GetNestedKey(Data, 'Data.Data')
         if (not DblJ):
-            return {'Err': 'Error getting scheme'}
+            return {'Type': 'Err', 'Data': 'Error getting scheme'}
         Dbl = TDbList().Import(DblJ)
 
         Url = aData.get('url')
         Soup = await GetUrlSoup(Url)
         if (not Soup):
-            return {'Err': 'Error loading %s' % (Url)}
+            return {'Type': 'Err', 'Data': 'Error loading %s' % (Url)}
 
         Arr = []
         for Rec in Dbl:
@@ -99,16 +100,16 @@ class get_scheme_test(TApiPlugin):
 
     async def Exec(self, aPath: str, aData: dict) -> dict:
         if (not aData['scheme']):
-            return {'Err': 'No scheme'}
+            return {'Type': 'Err', 'Data': 'No scheme'}
 
         try:
             Scheme = TScheme(aData['scheme'])
         except ValueError as E:
-            return {'Err': str(E)}
+            return {'Type': 'Err', 'Data': str(E)}
 
         Urls = Scheme.GetUrl()
         if (not Urls):
-            return {'Err': 'No product url'}
+            return {'Type': 'Err', 'Data': 'No product url'}
 
         Url = Urls[0]
         Soup = await GetUrlSoup(Url)
@@ -117,9 +118,9 @@ class get_scheme_test(TApiPlugin):
             try:
                 json.dumps(Res)
             except Exception as E:
-                Res = {'Err': str(E)}
+                Res = {'Type': 'Err', 'Data': str(E)}
         else:
-            Res = {'Err': 'Error loading %s' % (Url)}
+            Res = {'Type': 'Err', 'Data': 'Error loading %s' % (Url)}
         return Res
 
 
@@ -134,11 +135,11 @@ class set_scheme(TApiPlugin):
 
         Soup = await GetUrlSoup(Url)
         if (not Soup):
-            return {'Err': 'Error loading %s' % (Url)}
+            return {'Type': 'Err', 'Data': 'Error loading %s' % (Url)}
 
         Scheme.Parse(Soup)
         if (Scheme.Err):
-            Res = {'Err': Scheme.Err}
+            Res = {'Type': 'Err', 'Data': Scheme.Err}
         else:
             aData.pop('url', None)
             Res = await self.Args['WebClient'].Send('web/set_scheme', aData)

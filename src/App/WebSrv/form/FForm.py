@@ -15,15 +15,19 @@ from IncP import Info
 
 
 class TFormBase(Form):
-    Title = 'TFormBase'
+    Title = ''
 
     def __init__(self, aRequest: web.Request, aTpl: str):
         super().__init__()
 
         self.Request = aRequest
-        self.Tpl = aTpl
         self.Data = TDictStr()
         self.Info = Info
+        self.Tpl = aTpl
+
+        if (not self.Title):
+            self.Title = aTpl.split('.')[0]
+
 
     async def PostToForm(self):
         Post = await self.Request.post()

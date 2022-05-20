@@ -20,11 +20,11 @@ class TPython():
         if (aInfo):
             tb = traceback.extract_tb(aInfo[2])[-1]
             if (tb.filename):
-                Res = {'Err': EName, 'LineNo': tb.lineno, 'Line': tb.line, 'File': tb.filename}
+                Res = {'Type': 'Err', 'Data': EName, 'LineNo': tb.lineno, 'Line': tb.line, 'File': tb.filename}
             else:
-                Res = {'Err': EName, 'LineNo': tb.lineno, 'Line': self.GetLine(tb.lineno - 1)}
+                Res = {'Type': 'Err', 'Data': EName, 'LineNo': tb.lineno, 'Line': self.GetLine(tb.lineno - 1)}
         else:
-            Res = {'Err': EName, 'LineNo': aE.lineno, 'Line': self.GetLine(aE.lineno - 1)}
+            Res = {'Type': 'Err', 'Data': EName, 'LineNo': aE.lineno, 'Line': self.GetLine(aE.lineno - 1)}
         return Res
 
     def GetLine(self, aIdx: int) -> str:

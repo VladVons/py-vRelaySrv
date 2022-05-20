@@ -28,7 +28,7 @@ def CheckHost(aUrl: str) -> bool:
 async def GetUrlSoup(aUrl: str) -> BeautifulSoup:
     Download = TDownload(aHeaders = THeaders())
     UrlDown = await Download.Get(aUrl, True)
-    if (UrlDown['Status'] == 200) and (not UrlDown.get('Err')):
+    if (UrlDown['Status'] == 200) and (UrlDown.get('Type') != 'Err'):
         Data = UrlDown['Data']
         Res = BeautifulSoup(Data, 'lxml')
         if (len(Res) == 0):
@@ -83,7 +83,7 @@ class TDownload():
                     Res = {'Data': Data, 'Status': Response.status, 'Time': time.time() - TimeAt}
         except (aiohttp.ClientConnectorError, aiohttp.ClientError, aiohttp.InvalidURL, asyncio.TimeoutError) as E:
                     ErrMsg = Log.Print(1, 'x', 'Download.Get(). %s' % (aUrl), aE = E)
-                    Res = {'Err': E, 'Msg': ErrMsg, 'Status': -1}
+                    Res = {'Type': 'Err', 'Data': E, 'Msg': ErrMsg, 'Status': -1}
 
         if (self.OnGet):
             await self.OnGet(aUrl, Res)

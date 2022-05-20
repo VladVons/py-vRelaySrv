@@ -108,8 +108,8 @@ class TWebScraper():
             Rec = self.DblQueue.RecPop()
             Url = Rec.GetField('Url')
             UrlDown = await self.Download.Get(Url, True)
-            if (UrlDown.get('Err')):
-                await self._DoWorkerException(Url, UrlDown.get('Err'))
+            if (UrlDown.get('Type') == 'Err'):
+                await self._DoWorkerException(Url, UrlDown.get('Data'))
             else:
                 Data = UrlDown['Data']
                 Status = UrlDown['Status']
@@ -141,7 +141,7 @@ class TWebScraperFull(TWebScraper):
     async def InitRobotFile(self, aUrl: str):
         self.RobotFile = RobotFileParser()
         UrlDown = await self.Download.Get(aUrl)
-        if (not UrlDown.get('Err')) and (UrlDown['Status'] == 200):
+        if (UrlDown.get('Type') != 'Err') and (UrlDown['Status'] == 200):
             Data = UrlDown['Data'].decode().splitlines()
             self.RobotFile.parse(Data)
         else:
@@ -191,7 +191,7 @@ class TWebScraperSitemap(TWebScraper):
         Res = []
 
         UrlDown = await self.Download.Get(aUrl, True)
-        if (not UrlDown.get('Err')):
+        if (UrlDown.get('Type') != 'Err'):
             Data = UrlDown['Data']
             Status = UrlDown['Status']
             if (Status == 200):

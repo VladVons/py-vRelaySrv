@@ -49,9 +49,12 @@ class TWebSock {
 
     Connect(aUrl) {
         let This = this;
-
-        this.Log('Connect')
+        this.Log('Connect ' + aUrl)
         this.ws = new WebSocket(aUrl);
+
+        this.ws.onerror = function(aEvent) {
+            alert('Err: ' + aUrl);
+        };
 
         this.ws.onopen = function() {
             This.Log('OnOpen');
@@ -67,9 +70,15 @@ class TWebSock {
         };
     };
 
-    Call(aPlugin, aParam) {
-        let Data = JSON.stringify({'Plugin': aPlugin, 'Param': aParam});
-        this.ws.send(Data);
+    ConnectPlugin(aName) {
+        let Url = 'ws://' + window.location.host + '/ws/?plugin=' + aName;
+        this.Connect(Url)
+    }
+
+    Call(aParam) {
+        let Data = JSON.stringify({'Param': aParam});
+        //this.ws.send(Data);
+        this.ws.onopen = () => this.ws.send(Data);
     };
 
     OnOpen() {

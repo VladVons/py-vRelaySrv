@@ -62,7 +62,7 @@ class TScraperSrv():
             Res = await self.Api.Call(Name, Post)
             return web.json_response(Res, dumps=TJsonEncoder.Dumps)
         else:
-            Res = {'Err': 'Authorization'}
+            Res = {'Type': 'Err', 'Data': 'Authorization'}
             return web.json_response(Res, status=403)
 
     async def _rWebSock(self, aRequest: web.Request) -> web.WebSocketResponse:

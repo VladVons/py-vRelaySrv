@@ -406,8 +406,8 @@ class TSchemePy():
         if (aSoup):
             Param = {'aVal': aSoup, 'aApi': TApi, 'aRes': TRes, 'aPy': self.Python}
             Res = self.Python.Exec(Param)
-            if (Res.get('Err')):
-                self.Err = Res.get('Err')
+            if (Res.get('Type') == 'Err'):
+                self.Err = Res.get('Data')
             else:
                 Data = Res.get('Data')
                 self.Data = Data.get('Data', {})

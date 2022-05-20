@@ -42,10 +42,10 @@ class TApiBase():
             self.Url[Name]['Class'] = Res
             return Res
 
-    async def Call(self, aPath: str, aParam: str) -> dict:
+    async def Call(self, aPath: str, aParam: dict) -> dict:
         UrlInf = self.Url.get(aPath)
         if (not UrlInf):
-            return {'Err': 'unknown url %s' % (aPath)}
+            return {'Type': 'Err', 'Data': 'unknown url %s' % (aPath)}
 
         MethodName = self.GetMethodName(aPath)
         Method = getattr(self, MethodName, None)
@@ -54,24 +54,19 @@ class TApiBase():
             if (Class):
                 Method = getattr(Class, 'Exec', self.DefMethod)
                 if (not Method):
-                    return {'Err': 'unknown method %s' % (MethodName)}
+                    return {'Type': 'Err', 'Data': 'unknown method %s' % (MethodName)}
 
         ParamInf = UrlInf.get('param')
-        if (ParamInf):
-            Param = json.loads(aParam)
-        else:
-            Param = {}
-
         if (ParamInf) and (ParamInf[0] == '*'):
-            ParamInf = Param.keys()
+            ParamInf = aParam.keys()
 
-        ErrMsg = self.CheckParam(Param, ParamInf)
+        ErrMsg = self.CheckParam(aParam, ParamInf)
         if (ErrMsg):
             Log.Print(1, 'e', ErrMsg)
-            Res = {'Err': ErrMsg}
+            Res = {'Type': 'Err', 'Data': ErrMsg}
         else:
             try:
-                Data = await Method(aPath, Param)
+                Data = await Method(aPath, aParam)
             except Exception as E:
                 Data = None
                 Log.Print(1, 'x', 'Call()', aE = E)
@@ -94,7 +89,7 @@ class TWebClient():
                     Res = {'Data': Data, 'Status': Response.status, 'Time': time.time() - TimeAt}
         except (aiohttp.ContentTypeError, aiohttp.ClientConnectorError, aiohttp.InvalidURL) as E:
             ErrMsg = Log.Print(1, 'x', 'Send(). %s' % (Url), aE = E)
-            Res = {'Err': E, 'Msg': ErrMsg, 'Time': time.time() - TimeAt}
+            Res = {'Type': 'Err', 'Data': E, 'Msg': ErrMsg, 'Time': time.time() - TimeAt}
         return Res
 
 
