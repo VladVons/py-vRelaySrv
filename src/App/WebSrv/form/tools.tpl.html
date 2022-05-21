@@ -8,27 +8,65 @@
     class TWS_scheme_test_all extends TWebSock {
         Run() {
             this.Output = document.getElementById('Output');
-            this.Output.value = 'Starting request ...\n';
+            let Output = this.Output;
+            Output.value = 'Start\n';
 
-            this.Debug = true;
-            this.ConnectPlugin('get_scheme_test_all');
-            this.Call({'cnt': 1000})
-        }
+            //--- Method1. Catch all data in OnMessage()
+            //this.ConnectPlugin('get_scheme_test_all');
+            //this.Call({'cnt': 1000, 'ws': this.Id})
+            //return
+
+            //--- Method2. Catch log in OnMessage()
+            this.ConnectId()
+
+            HttpRequest(
+                '/api/get_scheme_test_all',
+                function(aData) {
+                    Output.value += '\n';
+                    aData['Data'].forEach((aItem) => {
+                        Output.value += JSON.stringify(aItem, null, ' ') + '\n';
+                        Output.value += '\n';
+                    })
+                },
+                {'cnt': 1000, 'ws': this.Id}
+            );
+        };
 
         OnMessage(aEvent, aData) {
-            //console.log(aEvent)
-            let Msg = aData['Data']
-            if (aData['Type'] == 'Res'){
-                this.Output.value += '\n\nErr:\n';
-                for (let i = 0; i < Msg.length; i++) {
-                    this.Output.value += Msg[i][0] + '\n';
-                    this.Output.value += Msg[i][1] + '\n\n';
-                }
-            }else{
-                this.Output.value += Msg + '\n';
-            }
-        }
+            console.log(aData);
+            this.Output.value += aData['Data'] + '\n';
+        };
+    };
 
+    class TWS_scheme_find extends TWebSock {
+        Run() {
+            if (document.getElementById('Url0').value == '') {
+                alert('Url is empty');
+                return;
+            };
+
+            this.ConnectId()
+
+            this.Output = document.getElementById('Output');
+            let Output = this.Output;
+            Output.value = 'Start\n';
+
+            HttpRequest(
+                '/api/get_scheme_find',
+                function(aData) {
+                    Output.value += '\n';
+                    aData['Data'].forEach((aItem) => {
+                        Output.value += JSON.stringify(aItem, null, ' ') + '\n';
+                        Output.value += '\n---\n\n';
+                    })
+                },
+                {'url': document.getElementById('Url0').value, 'ws': this.Id}
+            );
+        };
+
+        OnMessage(aEvent, aData) {
+            this.Output.value += aData['Data'] + '\n';
+        };
     };
 
     function BtnGoUrl() {
@@ -40,34 +78,12 @@
         let Url = document.getElementById('Url0').value;
         window.open(Url, '_blank').focus();
     };
-
-    function BtnFind() {
-        if (document.getElementById('Url0').value == '') {
-            alert('Url is empty');
-            return;
-        };
-
-        let Output = document.getElementById('Output');
-        Output.value = '';
-
-        HttpRequest(
-            '/api/get_scheme_find',
-            function(aData) {
-                console.log('aData', aData);
-                aData['Data'].forEach((aItem) => {
-                    Output.value += JSON.stringify(aItem, null, ' ') + '\n';
-                    Output.value += '\n---\n\n';
-                })
-            },
-            {'url': document.getElementById('Url0').value, 'ws': true}
-        );
-    };
 </script>
 {% endblock %}
 
 {% block content %}
 
-<table style="border-collapse: collapse; width: 100%; height: 36px;" border="1">
+<table style="width: 100%">
     <tr>
         <td colspan="2">
             <button onclick="BtnGoUrl()">go</button>
@@ -80,7 +96,7 @@
                 <tr>
                     <td>find match schemes</td>
                     <td>
-                        <button onclick="BtnFind()">ok</button>
+                        <button onclick="new TWS_scheme_find().Run()">ok</button>
                     </td>
                 </tr>
                 <tr">

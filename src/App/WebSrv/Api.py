@@ -4,6 +4,7 @@ Created:     2021.02.28
 License:     GNU, see LICENSE for more details
 '''
 
+import asyncio
 import json
 from bs4 import BeautifulSoup
 #
@@ -17,23 +18,29 @@ from Inc.DB.DbList import TDbList
 class TApiPlugin():
     def __init__(self, aArgs: dict = {}):
         self.Args = aArgs
+        self.WebSock = None
 
     async def WebSocketSend(self, aData):
-        WebSocket = self.Args.get('WebSocket')
-        if (WebSocket is not None):
-            await WebSocket.send_json(aData)
+        #WS = self.Args.get('WebSocket')
+        if (self.WebSock):
+            Dbl, Id = self.WebSock
+            RecNo = Dbl.FindField('Id', Id)
+            if (RecNo is not None):
+                Dbl.RecNo = RecNo
+                WS = Dbl.Rec.GetField('WS')
+                await WS.send_json(aData)
 
     async def Exec(self, aPath: str, aData: dict) -> dict:
         raise NotImplementedError()
 
 
 class get_scheme_test_all(TApiPlugin):
-    Param = {'param': ['cnt']}
+    Param = {'param': ['cnt', 'ws']}
 
     async def cbOnGet(self, aUrl: str, aData: str):
-        await self.WebSocketSend({'Data': aUrl, 'Type': 'Url'})
+        await self.WebSocketSend({'Data': aUrl})
         if (aData.get('Type') == 'Err'):
-            self.Res.append([aUrl, aData['Data']])
+            self.Res.append([aUrl, str(aData['Data'])])
         else:
             Soup = BeautifulSoup(aData['Data'], 'lxml')
             Scheme = self.Hash[aUrl]
@@ -42,6 +49,11 @@ class get_scheme_test_all(TApiPlugin):
                 self.Res.append([aUrl, Scheme.Err])
 
     async def Exec(self, aPath: str, aData: dict) -> dict:
+        self.WebSock = aData['ws']
+        await asyncio.sleep(0.1)
+        await self.WebSocketSend({'Data': 'Ask server'})
+
+        aData.pop('ws')
         Data = await self.Args['WebClient'].Send('web/get_scheme_not_empty', aData)
         DblJ = GetNestedKey(Data, 'Data.Data')
         if (not DblJ):
@@ -49,6 +61,7 @@ class get_scheme_test_all(TApiPlugin):
             await self.WebSocketSend(Res)
             return Res
 
+        await self.WebSocketSend({'Data': 'Check'})
         self.Hash = {}
         self.Res = []
         Dbl = TDbList().Import(DblJ)
@@ -64,15 +77,18 @@ class get_scheme_test_all(TApiPlugin):
         Download.OnGet = self.cbOnGet
         await Download.Gets(self.Hash.keys())
 
-        Res = {'Data': self.Res, 'Type': 'Res'}
-        await self.WebSocketSend(Res)
-        return Res
+        await self.WebSocketSend({'Data': 'Done'})
+        return {'Data': self.Res}
 
 
 class get_scheme_find(TApiPlugin):
     Param = {'param': ['url', 'ws']}
 
     async def Exec(self, aPath: str, aData: dict) -> dict:
+        self.WebSock = aData['ws']
+        await asyncio.sleep(0.1)
+        await self.WebSocketSend({'Data': 'Ask server'})
+
         Data = await self.Args['WebClient'].Send('web/get_scheme_not_empty', {'cnt': 100})
 
         DblJ = GetNestedKey(Data, 'Data.Data')
@@ -81,16 +97,23 @@ class get_scheme_find(TApiPlugin):
         Dbl = TDbList().Import(DblJ)
 
         Url = aData.get('url')
+        await self.WebSocketSend({'Data': 'Load ' + Url})
         Soup = await GetUrlSoup(Url)
         if (not Soup):
             return {'Type': 'Err', 'Data': 'Error loading %s' % (Url)}
 
+        await self.WebSocketSend({'Data': 'Check'})
         Arr = []
         for Rec in Dbl:
+            Url = Rec.GetField('url')
+            await self.WebSocketSend({'Data': Url})
+
             Scheme = TScheme(Rec.GetField('scheme'))
             Scheme.Parse(Soup)
             if (Scheme.Pipe):
-                Arr.append([Rec.GetField('url'), Scheme.Pipe])
+                Arr.append([Url, Scheme.Pipe])
+
+        await self.WebSocketSend({'Data': 'Done'})
         Res = {'Data': Arr}
         return Res
 
@@ -180,5 +203,6 @@ class TApi(TApiBase):
 
     async def DefHandler(self, aPath: str, aData: dict) -> dict:
         return await self.WebClient.Send('web/' + aPath, aData)
+
 
 Api = TApi()

@@ -18,8 +18,8 @@ import aiohttp_jinja2
 import base64
 #
 from IncP.Log import Log
-#from IncP.ApiWeb import TWebSockServer
 from IncP.Utils import GetNestedKey
+from IncP.ApiWeb import TWebSockSrv
 from .Api import Api
 from .Routes import *
 
@@ -89,6 +89,10 @@ class TWebSrv():
 
         self.Form = TForm(self)
 
+        self.WebSockSrv = TWebSockSrv()
+        self.WebSockSrv.Api = Api
+
+
     async def AuthUser(self, aRequest: web.Request) -> bool:
         if (self.Conf.get('Auth')):
             Auth = aRequest.headers.get('Authorization')
@@ -98,29 +102,6 @@ class TWebSrv():
                 return (not Dbl.IsEmpty())
         else:
             return True
-
-    async def WebSocket(self, aRequest: web.Request) -> web.WebSocketResponse:
-        WS = web.WebSocketResponse()
-        await WS.prepare(aRequest)
-
-        if (not await self.AuthUser(aRequest)):
-            await WS.send_json({'Type': 'Err', 'Data': 'Authorization failed'})
-            return WS
-
-        try:
-            async for Msg in WS:
-                if (Msg.type == web.WSMsgType.text):
-                    Name = aRequest.query.get('plugin')
-                    Class = GetNestedKey(Api.Url, Name + '.Class')
-                    if (Class is None):
-                        await WS.send_json({'Type': 'Err', 'Data': 'Unknown plugin %s' % (Name)})
-                    else:
-                        Class.Args['WebSocket'] = WS
-                        Data = Msg.json()
-                        await Class.Exec(Name, Data.get('Param', {}))
-        except Exception as E:
-            Log.Print(1, 'x', 'AddHandler()', aE=E)
-        return WS
 
     async def _rDownload(self, aRequest: web.Request) -> web.Response:
         Name = aRequest.match_info['Name']
@@ -142,11 +123,8 @@ class TWebSrv():
         else:
             Param = {}
 
-        #if (Param.get('ws')):
-        #    WS = web.WebSocketResponse()
-        #    await WS.prepare(aRequest)
-        #    await WS.send_json({'Err': 'Hello'})
-        #    Param['ws'] = WS
+        if (Param.get('ws')):
+            Param['ws'] = (self.WebSockSrv.DblWS, Param.get('ws'))
 
         Res = await Api.Call(Name, Param)
         if (Res.get('Type') == 'Err'):
@@ -164,7 +142,12 @@ class TWebSrv():
         return await Form.Render()
 
     async def _rWebSock(self, aRequest: web.Request) -> web.WebSocketResponse:
-        return await self.WebSocket(aRequest)
+        if (await self.AuthUser(aRequest)):
+            return await self.WebSockSrv.Handle(aRequest)
+        else:
+            WS = web.WebSocketResponse()
+            await WS.prepare(aRequest)
+            await WS.send_json({'Type': 'Err', 'Data': 'Authorization failed'})
 
     async def Run(self):
         App = web.Application()

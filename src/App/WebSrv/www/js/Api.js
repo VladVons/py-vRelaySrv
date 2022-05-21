@@ -39,6 +39,7 @@ function HttpRequest(aUrl, aFunc, aPostJson = null) {
 class TWebSock {
     constructor() {
         this.Debug = false;
+        this.Id = Math.random().toString(16).slice(2);
     };
 
     Log(aMsg) {
@@ -50,14 +51,11 @@ class TWebSock {
     Connect(aUrl) {
         let This = this;
         this.Log('Connect ' + aUrl)
+
         this.ws = new WebSocket(aUrl);
 
         this.ws.onerror = function(aEvent) {
             alert('Err: ' + aUrl);
-        };
-
-        this.ws.onopen = function() {
-            This.Log('OnOpen');
         };
 
         this.ws.onmessage = function(aEvent) {
@@ -71,7 +69,12 @@ class TWebSock {
     };
 
     ConnectPlugin(aName) {
-        let Url = 'ws://' + window.location.host + '/ws/?plugin=' + aName;
+        let Url = 'ws://' + window.location.host + '/ws/?plugin=' + aName + '&id=' + this.Id;
+        this.Connect(Url)
+    }
+
+    ConnectId() {
+        let Url = 'ws://' + window.location.host + '/ws/?id=' + this.Id;
         this.Connect(Url)
     }
 
@@ -79,10 +82,6 @@ class TWebSock {
         let Data = JSON.stringify({'Param': aParam});
         //this.ws.send(Data);
         this.ws.onopen = () => this.ws.send(Data);
-    };
-
-    OnOpen() {
-        this.Log('OnOpen');
     };
 
     OnClose() {
