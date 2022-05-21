@@ -4,13 +4,13 @@ Created:     2022.05.16
 License:     GNU, see LICENSE for more details
 '''
 
+from aiohttp import web
 from wtforms.fields import StringField, SubmitField, PasswordField
 from wtforms.validators import DataRequired, Length
-from aiohttp import web
 #
-from IncP.Utils import GetNestedKey
-from .FForm import TFormBase
 from ..Api import Api
+from .FForm import TFormBase
+from IncP.Utils import GetNestedKey
 
 
 class TForm(TFormBase):

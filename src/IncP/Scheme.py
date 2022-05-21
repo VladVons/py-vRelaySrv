@@ -6,17 +6,17 @@ License:     GNU, see LICENSE for more details
 https://github.com/pythontoday/scrap_tutorial
 '''
 
-import sys
-import re
+import datetime
 import json
 import operator
-import datetime
 import random
-import string
+import re
+import sys
 #
-from IncP.Utils import GetNestedKey, GetMethodInfo
-from IncP.Python import TPython
 from IncP.Log import Log
+from IncP.Python import TPython
+from IncP.Utils import GetMethodInfo, GetNestedKey, FilterKey, FilterKeyErr
+
 
 _Whitespace = ' \t\n\r\v\f\xA0'
 _Digits = '0123456789.'
@@ -406,7 +406,8 @@ class TSchemePy():
         if (aSoup):
             Param = {'aVal': aSoup, 'aApi': TApi, 'aRes': TRes, 'aPy': self.Python}
             Res = self.Python.Exec(Param)
-            if (Res.get('Type') == 'Err'):
+            Err = FilterKeyErr(Res)
+            if (Err):
                 self.Err = Res.get('Data')
             else:
                 Data = Res.get('Data')
@@ -414,7 +415,7 @@ class TSchemePy():
                 self.Err = Data.get('Err', [])
 
                 Keys = ['Image', 'Price', 'PriceOld', 'Name', 'Stock', 'MPN']
-                self._FilterRecurs(self.Data, Keys, self.Pipe)
+                self.Pipe = FilterKey(self.Data, Keys, dict)
         return self
 
 
@@ -438,7 +439,7 @@ class TSchemeJson():
             self.Err = SoupScheme.Err
 
             Keys = ['Image', 'Price', 'PriceOld', 'Name', 'Stock', 'MPN']
-            self._FilterRecurs(self.Data, Keys, self.Pipe)
+            self.Pipe = FilterKey(self.Data, Keys, dict)
         return self
 
     def GetUrl(self) -> list:
@@ -452,13 +453,6 @@ def TScheme(aScheme: str):
         Class = TSchemeJson
 
     class TClass(Class):
-        def _FilterRecurs(self, aData: object, aKeys: list, aRes: dict):
-            if (type(aData) == dict):
-                for Key, Val in aData.items():
-                    self._FilterRecurs(Val, aKeys, aRes)
-                    if (Key in aKeys):
-                        aRes[Key] = Val
-
         def IsJson(self):
             #Name = self.__class__.__bases__[0].__name__
             return self.__class__.__bases__[0] == TSchemeJson

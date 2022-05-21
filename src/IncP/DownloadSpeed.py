@@ -9,11 +9,11 @@ asyncio.run(TDownloadSpeed(2).Test(Url))
 '''
 
 
-import io
-import time
-import asyncio
-import ssl
 from urllib.parse import urlparse
+import asyncio
+import io
+import ssl
+import time
 #
 from Inc.Http.HttpLib import ReadHead
 

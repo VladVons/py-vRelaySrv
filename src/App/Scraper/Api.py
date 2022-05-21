@@ -5,8 +5,8 @@ License:     GNU, see LICENSE for more details
 '''
 
 
-from IncP.ApiWeb import TWebClient
 from IncP.ApiWeb import TApiBase
+from IncP.ApiWeb import TWebClient
 
 
 class TApi(TApiBase):

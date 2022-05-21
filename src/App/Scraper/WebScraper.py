@@ -17,19 +17,20 @@ UrlChekIP = 'http://icanhazip.com'
 '''
 
 
-import os
-import re
-import gzip
-import asyncio
-import random
+from bs4 import BeautifulSoup
 from urllib.parse import urlparse
 from urllib.robotparser import RobotFileParser
-from bs4 import BeautifulSoup
+import asyncio
+import gzip
+import os
+import random
+import re
 #
-from IncP.Log import Log
-from IncP.Download import TDownload
-from Inc.DB.DbList import TDbList
 from .Api import Api
+from Inc.DB.DbList import TDbList
+from IncP.Download import TDownload
+from IncP.Log import Log
+from IncP.Utils import FilterKeyErr
 
 
 class TSender():
@@ -108,7 +109,8 @@ class TWebScraper():
             Rec = self.DblQueue.RecPop()
             Url = Rec.GetField('Url')
             UrlDown = await self.Download.Get(Url, True)
-            if (UrlDown.get('Type') == 'Err'):
+            Err = FilterKeyErr(UrlDown)
+            if (Err):
                 await self._DoWorkerException(Url, UrlDown.get('Data'))
             else:
                 Data = UrlDown['Data']
@@ -141,7 +143,8 @@ class TWebScraperFull(TWebScraper):
     async def InitRobotFile(self, aUrl: str):
         self.RobotFile = RobotFileParser()
         UrlDown = await self.Download.Get(aUrl)
-        if (UrlDown.get('Type') != 'Err') and (UrlDown['Status'] == 200):
+        Err = FilterKeyErr(UrlDown)
+        if (not Err) and (UrlDown['Status'] == 200):
             Data = UrlDown['Data'].decode().splitlines()
             self.RobotFile.parse(Data)
         else:
@@ -191,7 +194,8 @@ class TWebScraperSitemap(TWebScraper):
         Res = []
 
         UrlDown = await self.Download.Get(aUrl, True)
-        if (UrlDown.get('Type') != 'Err'):
+        Err = FilterKeyErr(UrlDown)
+        if (not Err):
             Data = UrlDown['Data']
             Status = UrlDown['Status']
             if (Status == 200):

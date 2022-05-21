@@ -12,7 +12,7 @@ from Inc.DB.DbList import TDbList
 from IncP.ApiWeb import TApiBase, TWebClient
 from IncP.Download import TDownload, THeaders, GetUrlSoup
 from IncP.Scheme import TScheme
-from IncP.Utils import GetNestedKey
+from IncP.Utils import GetNestedKey, FilterKey, FilterKeyErr
 
 
 class TApiPlugin():
@@ -20,8 +20,7 @@ class TApiPlugin():
         self.Args = aArgs
         self.WebSock = None
 
-    async def WebSocketSend(self, aData):
-        #WS = self.Args.get('WebSocket')
+    async def WebSockSend(self, aData):
         if (self.WebSock):
             Dbl, Id = self.WebSock
             RecNo = Dbl.FindField('Id', Id)
@@ -30,11 +29,35 @@ class TApiPlugin():
                 WS = Dbl.Rec.GetField('WS')
                 await WS.send_json(aData)
 
-    async def WebSocketInit(self, aPath, aData):
+    async def WebSockInit(self, aPath, aData):
         self.WebSock = aData['ws']
         await asyncio.sleep(0.1)
-        await self.WebSocketSend({'Data': 'Ask server ' + aPath})
+        await self.WebSockSend({'Data': 'Ask server ' + aPath})
         aData.pop('ws')
+
+    async def WebSockDbl(self, aPath, aData) -> dict:
+        Url = 'web/get_hand_shake'
+        await self.WebSockSend({'Data': Url})
+        DataApi = await Api.WebClient.Send(Url)
+        Err = FilterKeyErr(DataApi, True)
+        if (Err):
+            await self.WebSockSend({'Data': Err})
+            return DataApi
+
+        await self.WebSockSend({'Data': aPath})
+        DataApi = await self.Args['WebClient'].Send(aPath, aData)
+        Err = FilterKeyErr(DataApi, True)
+        if (Err):
+            await self.WebSockSend({'Data': Err})
+            return DataApi
+
+        DblJ = GetNestedKey(DataApi, 'Data.Data')
+        if (DblJ):
+            Res = {'Data': TDbList().Import(DblJ)}
+        else:
+            Res = {'Type': 'Err', 'Data': 'Err ' + aPath}
+            await self.WebSockSend(Res)
+        return Res
 
     async def Exec(self, aPath: str, aData: dict) -> dict:
         raise NotImplementedError()
@@ -44,8 +67,9 @@ class get_scheme_test_all(TApiPlugin):
     Param = {'param': ['cnt', 'ws']}
 
     async def cbOnGet(self, aUrl: str, aData: str):
-        await self.WebSocketSend({'Data': aUrl})
-        if (aData.get('Type') == 'Err'):
+        await self.WebSockSend({'Data': aUrl})
+        Err = FilterKeyErr(aData)
+        if (Err):
             self.Res.append([aUrl, str(aData['Data'])])
         else:
             Soup = BeautifulSoup(aData['Data'], 'lxml')
@@ -55,113 +79,126 @@ class get_scheme_test_all(TApiPlugin):
                 self.Res.append([aUrl, Scheme.Err])
 
     async def Exec(self, aPath: str, aData: dict) -> dict:
-        await self.WebSocketInit(aPath, aData)
-
-        DataApi = await Api.WebClient.Send('web/get_hand_shake')
-        if (GetNestedKey(DataApi, 'Type') == 'Err'):
-            return DataApi.get('Data')
-
-        DataApi = await self.Args['WebClient'].Send('web/get_scheme_not_empty', aData)
-        DblJ = GetNestedKey(DataApi, 'Data.Data')
-        if (not DblJ):
-            Res = {'Type': 'Err', 'Data': 'Error getting scheme'}
-            await self.WebSocketSend(Res)
-            return Res
+        await self.WebSockInit(aPath, aData)
+        Data = await self.WebSockDbl('web/get_scheme_not_empty', aData)
+        Err = FilterKeyErr(Data)
+        if (Err):
+            return Data
+        Dbl = Data.get('Data')
 
         self.Hash = {}
         self.Res = []
-        Dbl = TDbList().Import(DblJ)
 
-        await self.WebSocketSend({'Data': 'Check items %s' % len(Dbl)})
+        await self.WebSockSend({'Data': 'Check items %s' % len(Dbl)})
         for Rec in Dbl:
             SchemeStr = Rec.GetField('scheme')
             Scheme = TScheme(SchemeStr)
             Urls = Scheme.GetUrl()
             for Url in Urls:
                 self.Hash[Url] = Scheme
-            #break
+            break
 
         Download = TDownload(aHeaders = THeaders())
         Download.OnGet = self.cbOnGet
         await Download.Gets(self.Hash.keys())
 
-        await self.WebSocketSend({'Data': 'Done'})
+        await self.WebSockSend({'Data': 'Done'})
         return {'Data': self.Res}
+
 
 class get_sites_check_file(TApiPlugin):
     Param = {'param': ['file', 'cnt', 'ws']}
 
     async def cbOnGet(self, aUrl: str, aData: str):
         Ok = aData.get('Status') == 200
-        await self.WebSocketSend({'Data': '%s %s' % (aUrl, Ok)})
+        await self.WebSockSend({'Data': '%s %s' % (aUrl, Ok)})
         if (Ok):
-            self.Res.append([aUrl, Ok])
+            self.Res.append([aUrl])
 
     async def Exec(self, aPath: str, aData: dict) -> dict:
-        await self.WebSocketInit(aPath, aData)
+        await self.WebSockInit(aPath, aData)
+        Data = await self.WebSockDbl('web/get_sites', FilterKey(aData, ['cnt']), dict)
+        Err = FilterKeyErr(Data)
+        if (Err):
+            return Data
+        Dbl = Data.get('Data')
 
-        DataApi = await Api.WebClient.Send('web/get_hand_shake')
-        if (GetNestedKey(DataApi, 'Type') == 'Err'):
-            return DataApi.get('Data')
-
-        DataApi = await self.Args['WebClient'].Send('web/get_sites', aData)
-        DblJ = GetNestedKey(DataApi, 'Data.Data')
-        if (not DblJ):
-            Res = {'Type': 'Err', 'Data': 'Error getting sites'}
-            await self.WebSocketSend(Res)
-            return Res
-
-        Dbl = TDbList().Import(DblJ)
         File = aData.get('file')
         Urls = ['%s/%s' % (x, File) for x in Dbl.ExportList('url')]
 
-        await self.WebSocketSend({'Data': 'Check items %s' % len(Dbl)})
+        await self.WebSockSend({'Data': 'Check items %s' % len(Dbl)})
         self.Res = []
         Download = TDownload(aHeaders = THeaders())
         Download.FakeRead = True
         Download.OnGet = self.cbOnGet
         await Download.Gets(Urls)
 
-        await self.WebSocketSend({'Data': 'Done'})
+        await self.WebSockSend({'Data': 'Done'})
         return {'Data': self.Res}
 
 
 class get_scheme_find(TApiPlugin):
-    Param = {'param': ['url', 'ws']}
+    Param = {'param': ['url', 'cnt', 'ws']}
 
     async def Exec(self, aPath: str, aData: dict) -> dict:
-        await self.WebSocketInit(aPath, aData)
-
-        DataApi = await Api.WebClient.Send('web/get_hand_shake')
-        if (GetNestedKey(DataApi, 'Type') == 'Err'):
-            return DataApi.get('Data')
-
-        DataApi = await self.Args['WebClient'].Send('web/get_scheme_not_empty', {'cnt': 100})
-        DblJ = GetNestedKey(DataApi, 'Data.Data')
-        if (not DblJ):
-            return {'Type': 'Err', 'Data': 'Error getting scheme'}
-        Dbl = TDbList().Import(DblJ)
+        await self.WebSockInit(aPath, aData)
+        Data = await self.WebSockDbl('web/get_scheme_not_empty', FilterKey(aData, ['cnt'], dict))
+        Err = FilterKeyErr(Data)
+        if (Err):
+            return Data
+        Dbl = Data.get('Data')
 
         Url = aData.get('url')
-        await self.WebSocketSend({'Data': 'Load ' + Url})
+        await self.WebSockSend({'Data': 'Load ' + Url})
         Soup = await GetUrlSoup(Url)
         if (not Soup):
             return {'Type': 'Err', 'Data': 'Error loading %s' % (Url)}
 
-        await self.WebSocketSend({'Data': 'Check items %s' % len(Dbl)})
+        await self.WebSockSend({'Data': 'Check items %s' % len(Dbl)})
         Arr = []
         for Rec in Dbl:
             Url = Rec.GetField('url')
-            await self.WebSocketSend({'Data': Url})
+            await self.WebSockSend({'Data': Url})
 
             Scheme = TScheme(Rec.GetField('scheme'))
             Scheme.Parse(Soup)
             if (Scheme.Pipe):
                 Arr.append([Url, Scheme.Pipe])
 
-        await self.WebSocketSend({'Data': 'Done'})
+        await self.WebSockSend({'Data': 'Done'})
         Res = {'Data': Arr}
         return Res
+
+class get_sites_grep(TApiPlugin):
+    Param = {'param': ['file', 'filter', 'cnt', 'ws']}
+
+    async def cbOnGet(self, aUrl: str, aData: str):
+        Ok = (self.Filter in aData)
+        if (Ok):
+            await self.WebSockSend({'Data': '%s' % (aUrl)})
+            self.Res.append([aUrl])
+
+    async def Exec(self, aPath: str, aData: dict) -> dict:
+        await self.WebSockInit(aPath, aData)
+        Data = await self.WebSockDbl('web/get_sites', FilterKey(aData, ['cnt'], dict))
+        Err = FilterKeyErr(Data)
+        if (Err):
+            return Data
+        Dbl = Data.get('Data')
+
+        File = aData.get('file')
+        Urls = ['%s%s' % (x, File) for x in Dbl.ExportList('url')]
+
+        await self.WebSockSend({'Data': 'Check items %s' % len(Dbl)})
+        self.Res = []
+        self.Filter = aData.get('filter')
+        Download = TDownload(aHeaders = THeaders())
+        Download.OnGet = self.cbOnGet
+        Download.Decode = True
+        await Download.Gets(Urls)
+
+        await self.WebSockSend({'Data': 'Done'})
+        return {'Data': self.Res}
 
 
 class get_scheme_test(TApiPlugin):
@@ -249,8 +286,9 @@ class TApi(TApiBase):
         self.PluginAdd(get_scheme_test_all, {'WebClient': self.WebClient})
         self.PluginAdd(get_scheme_test)
         self.PluginAdd(get_scheme, {'WebClient': self.WebClient})
-        self.PluginAdd(set_scheme, {'WebClient': self.WebClient})
         self.PluginAdd(get_sites_check_file, {'WebClient': self.WebClient})
+        self.PluginAdd(get_sites_grep, {'WebClient': self.WebClient})
+        self.PluginAdd(set_scheme, {'WebClient': self.WebClient})
 
     async def DoAuthRequest(self, aUser: str, aPassw: str):
         return True

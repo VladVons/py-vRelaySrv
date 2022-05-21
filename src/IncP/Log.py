@@ -5,11 +5,10 @@ License:     GNU, see LICENSE for more details
 '''
 
 
-import re
-import os
 import asyncio
-import traceback
 import inspect
+import os
+import traceback
 #
 from Inc.Log import TLog, TEcho, TEchoConsole
 

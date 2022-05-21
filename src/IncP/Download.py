@@ -4,17 +4,17 @@ Created:     2022.02.10
 License:     GNU, see LICENSE for more details
 '''
 
-import time
-import random
-import asyncio
-import aiohttp
-import socket
-from urllib.parse import urlparse
 from aiohttp_socks import ProxyConnector
 from bs4 import BeautifulSoup
-
+from urllib.parse import urlparse
+import aiohttp
+import asyncio
+import random
+import socket
+import time
 #
 from IncP.Log import Log
+from IncP.Utils import FilterKeyErr
 
 #from fake_useragent import UserAgent
 #self.ua = UserAgent()
@@ -28,7 +28,8 @@ def CheckHost(aUrl: str) -> bool:
 async def GetUrlSoup(aUrl: str) -> BeautifulSoup:
     Download = TDownload(aHeaders = THeaders())
     UrlDown = await Download.Get(aUrl, True)
-    if (UrlDown['Status'] == 200) and (UrlDown.get('Type') != 'Err'):
+    Err = FilterKeyErr(UrlDown)
+    if (not Err) and (UrlDown['Status'] == 200):
         Data = UrlDown['Data']
         Res = BeautifulSoup(Data, 'lxml')
         if (len(Res) == 0):
@@ -66,6 +67,7 @@ class TDownload():
         self.Timeout = 10
         self.OnGet = None
         self.FakeRead = False
+        self.Decode = False
 
     async def _GetWithSem(self, aUrl: str, aSem: asyncio.Semaphore) -> dict:
         async with aSem:
@@ -82,12 +84,12 @@ class TDownload():
                         Data = await Response.content.read(0)
                     else:
                         Data = await Response.read()
-                        if (Data) and (aDecode):
+                        if (Data) and (aDecode or self.Decode):
                             Data = Data.decode(errors='ignore')
-                    Res = {'Data': Data, 'Status': Response.status, 'Time': time.time() - TimeAt}
+                    Res = {'Data': Data, 'Status': Response.status, 'Time': round(time.time() - TimeAt, 2)}
         except (aiohttp.ClientConnectorError, aiohttp.ClientError, aiohttp.InvalidURL, asyncio.TimeoutError) as E:
                     ErrMsg = Log.Print(1, 'x', 'Download.Get(). %s' % (aUrl), aE = E)
-                    Res = {'Type': 'Err', 'Data': E, 'Msg': ErrMsg, 'Status': -1}
+                    Res = {'Type': 'Err', 'Data': E, 'Msg': ErrMsg, 'Status': -1, 'Time': round(time.time() - TimeAt, 2)}
 
         if (self.OnGet):
             await self.OnGet(aUrl, Res)

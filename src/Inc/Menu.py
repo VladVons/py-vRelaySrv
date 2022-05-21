@@ -10,9 +10,9 @@ try:
 except:
   import uasyncio as asyncio
 #
-from Inc.Util.UObj import GetTree
-from Inc.Util.UArr import SortLD
 from Inc.KbdTerm  import TKbdTerm
+from Inc.Util.UArr import SortLD
+from Inc.Util.UObj import GetTree
 
 
 class TMenu():

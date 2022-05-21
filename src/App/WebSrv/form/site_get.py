@@ -4,13 +4,14 @@ Created:     2022.04.10
 License:     GNU, see LICENSE for more details
 '''
 
-import time
 from bs4 import BeautifulSoup
+import time
 #
 from .FForm import TFormBase
 from IncP.Download import TDownload, THeaders
-from IncP.Scheme import TScheme
 from IncP.Log import Log
+from IncP.Scheme import TScheme
+from IncP.Utils import FilterKeyErr
 
 
 class TForm(TFormBase):
@@ -22,7 +23,8 @@ class TForm(TFormBase):
 
         Download = TDownload(aHeaders = THeaders())
         UrlDown = await Download.Get(self.Data.Url0, True)
-        if (UrlDown.get('Type') == 'Err'):
+        Err = FilterKeyErr(UrlDown)
+        if (Err):
             self.Data.Output = 'Error loading %s, %s, %s' % (self.Data.Url0, UrlDown.get('Data'), UrlDown.get('Msg'))
             return
 

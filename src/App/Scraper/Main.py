@@ -5,17 +5,17 @@ License:     GNU, see LICENSE for more details
 '''
 
 
+from collections import deque
 import asyncio
 import random
-from collections import deque
 #
-from IncP.Log import Log
-from IncP.Scheme import TScheme
+#from .Selenium import TStarter
+from .Api import Api
+from .WebScraper import TWebScraperFull, TWebScraperUpdate, TWebScraperSitemap
 from IncP.ApiWeb import TWebSockClient
 from IncP.DownloadSpeed import TDownloadSpeed
-#from .Selenium import TStarter
-from .WebScraper import TWebScraperFull, TWebScraperUpdate, TWebScraperSitemap
-from .Api import Api
+from IncP.Log import Log
+from IncP.Scheme import TScheme
 
 
 class TMain():

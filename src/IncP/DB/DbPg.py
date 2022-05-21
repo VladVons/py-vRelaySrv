@@ -7,6 +7,7 @@ pip3 install aiopg
 '''
 
 import aiopg
+#
 from .Db import TDb, TDbSql
 
 

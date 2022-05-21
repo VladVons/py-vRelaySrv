@@ -7,6 +7,10 @@ from Inc.Log  import TLog, Log
 #import cloudscraper
 
 
+def WriteFile(aFile: str, aData: str):
+    with open(aFile, 'w') as F:
+        Data = F.write(aData)
+
 def Test_1():
     from pympler.asizeof import asizeof 
 
@@ -69,16 +73,6 @@ async def TestA_1():
     print(Res)
 
 
-async def SaveScheme():
-    from IncP.DB.Scraper_pg import TDbApp
-
-    DbApp = TDbApp(DbAuth)
-    await DbApp.Connect()
-    Db1 = await DbApp.GetScheme(False, 1000)
-    await DbApp.Close()
-    print('Schemes', Db1.GetSize())
-    Db1.Save('Schemes.json', not True)
-
 async def Test_pyppeteer():
     from pyppeteer import launch
 
@@ -98,24 +92,39 @@ async def Test_speed():
     Url = 'https://speed.hetzner.de/100MB.bin'
     await TDownloadSpeed(5).Test(Url)
 
+async def Test_GetUrl():
+    from IncP.Download import TDownload, THeaders
+
+    Url = 'https://didi.ua/robots.txt'
+    Download = TDownload(aHeaders = THeaders())
+    #Download.FakeRead = True
+    #Download.Timeout = None
+    DataRaw = await Download.Get(Url, True)
+    Data = DataRaw.get('Data')
+
+    if ('checking your browser' in Data):
+        print('protected')
+
+    #print(Data)
+    #WriteFile('Data1.txt', Data)
+    pass
 
 print()
 #asyncio.run(TestA_1())
 #asyncio.run(TestA_2())
 #asyncio.run(Test_pyppeteer())
 #asyncio.run(Test_speed())
-#asyncio.run(SaveScheme())
+#asyncio.run(Test_GetUrl())
 #Test_2()
 #Test_3()
 
 
-Arr1 = [1, 2, 3, 4, 5, 6, 7, 1, 2, 3]
-a ,b, *c = Arr1
-print(a, b, c)
+from IncP.Utils import FilterKey, FilterKeyErr
+#Data = {'Err': 'Err1', 'Data': {'Err': 'Err2', 'Name': 'Vlad'} }
+#Res = FilterKey(Data, ['Err'], set)
+#print(Res)
 
-Arr2 = [1, 2]
-a ,b, *c = Arr2
-print(a, b, c)
-
-c = max(set(Arr1), key=Arr1.count)
-print(c)
+Data = {'Type': 'Err', 'Data': {'Type': 'Err', 'Data': 'Vlad'} }
+Res = FilterKeyErr(Data, True)
+print(Res)
+pass

@@ -8,10 +8,10 @@ License:     GNU, see LICENSE for more details
 import os, sys
 #
 from App import ConfApp
-from Inc.Plugin import Plugin
 from Inc.Log  import TEchoFile
-from IncP.Log  import Log, TEchoConsoleEx
+from Inc.Plugin import Plugin
 from IncP import Info
+from IncP.Log  import Log, TEchoConsoleEx
 
 
 class TApp():

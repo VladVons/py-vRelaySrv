@@ -8,20 +8,19 @@ https://docs.aiohttp.org/en/stable/web_advanced.html#aiohttp-web-app-runners
 '''
 
 
-import os
-import json
 from aiohttp import web, streamer
 from aiohttp_session.cookie_storage import EncryptedCookieStorage
+import aiohttp_jinja2
 import aiohttp_session
 import jinja2
-import aiohttp_jinja2
-import base64
+import json
+import os
 #
-from IncP.Log import Log
-from IncP.Utils import GetNestedKey
-from IncP.ApiWeb import TWebSockSrv
 from .Api import Api
 from .Routes import *
+from IncP.ApiWeb import TWebSockSrv
+from IncP.Log import Log
+from IncP.Utils import GetNestedKey, FilterKeyErr
 
 
 @streamer
@@ -116,7 +115,8 @@ class TWebSrv():
             Param['ws'] = (self.WebSockSrv.DblWS, Param.get('ws'))
 
         Res = await Api.Call(Name, Param)
-        if (Res.get('Type') == 'Err'):
+        Err = FilterKeyErr(Res)
+        if (Err):
             Log.Print(1, 'e', '_rApi() %s' % (Res.get('Data')))
         else:
             Res = Res.get('Data')

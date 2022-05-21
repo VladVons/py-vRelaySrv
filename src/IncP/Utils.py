@@ -60,6 +60,37 @@ def GetNestedKey(aData: dict, aKeys: str, aDef = None) -> object:
     return aData
 
 
+def FilterKey(aData: object, aKeys: list, aInstance: list) -> object:
+    def _FilterKey(aData: object, aKeys: list, aRes: dict, aPath: str):
+        if (type(aData) == dict):
+            for Key, Val in aData.items():
+                Path = (aPath + '.' + Key).lstrip('.')
+                _FilterKey(Val, aKeys, aRes, Path)
+                if (Key in aKeys):
+                    if (aInstance == dict):
+                        aRes[Path] = Val
+                    elif (aInstance == list):
+                        aRes.append(Val)
+    if (aInstance == list) or (aInstance == dict):
+        Res = aInstance()
+        _FilterKey(aData, aKeys, Res, '')
+        return Res
+    else:
+        raise ValueError('Must be dict or list')
+
+def FilterKeyErr(aData: dict, aAsStr: bool = False) -> list:
+    def _FilterKey(aData: object, aRes: list):
+        if (type(aData) == dict):
+            for Key, Val in aData.items():
+                _FilterKey(Val, aRes)
+                if (Key == 'Type') and (Val == 'Err'):
+                    aRes.append(aData.get('Data'))
+    Res = []
+    _FilterKey(aData, Res)
+    if (aAsStr):
+        Res = ', '.join([str(x) for x in Res])
+    return Res
+
 #--- String ---
 def GetLeadCharCnt(aValue: str, aChar: str) -> int:
     return len(aValue) - len(aValue.lstrip(aChar))

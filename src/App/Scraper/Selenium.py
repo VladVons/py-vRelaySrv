@@ -14,12 +14,12 @@ Starter.ThreadCreate(Urls, 5)
 '''
 
 
-import asyncio
-import time
-import multiprocessing
 
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
+import asyncio
+import multiprocessing
+import time
 
 
 class TSelenium():

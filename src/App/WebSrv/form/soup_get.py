@@ -4,13 +4,13 @@ Created:     2022.04.10
 License:     GNU, see LICENSE for more details
 '''
 
-import json
 from bs4 import BeautifulSoup
+import json
 #
 from .FForm import TFormBase
 from IncP.Download import GetUrlSoup
-from IncP.Scheme import TSoupScheme
 from IncP.Log import Log
+from IncP.Scheme import TSoupScheme
 
 
 class TForm(TFormBase):

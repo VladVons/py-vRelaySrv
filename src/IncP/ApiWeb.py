@@ -5,15 +5,15 @@ License:     GNU, see LICENSE for more details
 '''
 
 
-import time
-import json
-import base64
-import aiohttp
 from aiohttp import web
+import aiohttp
+import base64
+import json
+import time
 #
 from Inc.DB.DbList import TDbList, TDbCond
-from IncP.Utils import GetNestedKey
 from IncP.Log import Log
+from IncP.Utils import GetNestedKey
 
 
 class TApiBase():
@@ -84,6 +84,9 @@ class TApiBase():
         else:
             return True
 
+    async def DoAuthRequest(aUser: str, aPassw: str) -> bool:
+        raise NotImplemented
+
 
 class TWebClient():
     def __init__(self, aAuth: dict = {}):
@@ -97,10 +100,10 @@ class TWebClient():
             async with aiohttp.ClientSession(auth=Auth) as Session:
                 async with Session.post(Url, json=aPost) as Response:
                     Data = await Response.json()
-                    Res = {'Data': Data, 'Status': Response.status, 'Time': time.time() - TimeAt}
+                    Res = {'Data': Data, 'Status': Response.status, 'Time': round(time.time() - TimeAt, 2)}
         except (aiohttp.ContentTypeError, aiohttp.ClientConnectorError, aiohttp.InvalidURL) as E:
             ErrMsg = Log.Print(1, 'x', 'Send(). %s' % (Url), aE = E)
-            Res = {'Type': 'Err', 'Data': E, 'Msg': ErrMsg, 'Time': time.time() - TimeAt}
+            Res = {'Type': 'Err', 'Data': E, 'Msg': ErrMsg, 'Time': round(time.time() - TimeAt, 2)}
         return Res
 
 

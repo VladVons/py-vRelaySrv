@@ -5,16 +5,16 @@ License:     GNU, see LICENSE for more details
 '''
 
 
-import json
-import asyncio
-from datetime import datetime
 from aiohttp import web
+from datetime import datetime
+import asyncio
+import json
 #
-from IncP.Log import Log, TEchoDb
-from IncP.DB.Scraper_pg import TDbApp
 from Inc.DB.DbList import TDbList
-from IncP.DB.Db import TDbSql
 from IncP.ApiWeb import TApiBase
+from IncP.DB.Db import TDbSql
+from IncP.DB.Scraper_pg import TDbApp
+from IncP.Log import Log, TEchoDb
 
 
 class TApiTask():
@@ -103,7 +103,7 @@ class TApi(TApiBase):
         return await self.Db.SetScheme(aData.get('id'), aData.get('scheme'))
 
     async def path_get_sites(self, aPath: str, aData: dict) -> dict:
-        Dbl = await self.Db.GetSites()
+        Dbl = await self.Db.GetSites(aData.get('cnt', -1))
         return Dbl.Export()
 
     async def path_get_user_id(self, aPath: str, aData: dict) -> dict:

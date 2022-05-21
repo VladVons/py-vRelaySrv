@@ -7,8 +7,8 @@ License:     GNU, see LICENSE for more details
 '''
 
 
-import sys
 import asyncio
+import sys
 #
 from App import ConfApp
 from App.Main import TApp
