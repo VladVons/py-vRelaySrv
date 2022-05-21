@@ -8,8 +8,7 @@
     class TWebSockApp extends TWebSock {
         Init() {
             this.Output = document.getElementById('Output');
-            let Output = this.Output;
-            Output.value = 'Start at ' + new Date().toLocaleTimeString('en-US') + '\n';
+            this.Output.value = 'Start at ' + new Date().toLocaleTimeString('en-US') + '\n';
 
             this.ConnectId()
         }
@@ -31,6 +30,7 @@
             //--- Method2. Catch log in OnMessage()
             this.Init();
 
+            let Output = this.Output
             HttpRequest(
                 '/api/get_scheme_test_all',
                 function(aData) {
@@ -38,6 +38,7 @@
                     aData['Data'].forEach((aItem) => {
                         Output.value += JSON.stringify(aItem, null, ' ') + '\n';
                         Output.value += '\n';
+                    Output.scrollTop = Output.scrollHeight;
                     })
                 },
                 {'cnt': 1000, 'ws': this.Id}
@@ -54,6 +55,7 @@
 
             this.Init();
 
+            let Output = this.Output
             HttpRequest(
                 '/api/get_scheme_find',
                 function(aData) {
@@ -61,6 +63,7 @@
                     aData['Data'].forEach((aItem) => {
                         Output.value += JSON.stringify(aItem, null, ' ') + '\n';
                         Output.value += '\n---\n\n';
+                    Output.scrollTop = Output.scrollHeight;
                     })
                 },
                 {'url': document.getElementById('Url0').value, 'ws': this.Id}
@@ -72,6 +75,7 @@
         Run() {
             this.Init();
 
+            let Output = this.Output
             HttpRequest(
                 '/api/get_sites_check_file',
                 function(aData) {
@@ -79,6 +83,7 @@
                     aData['Data'].forEach((aItem) => {
                         //Output.value += JSON.stringify(aItem, null, ' ') + '\n';
                         //Output.value += '\n';
+                    Output.scrollTop = Output.scrollHeight;
                     })
                 },
                 {'file': 'robots.txt', 'cnt': 1000, 'ws': this.Id}
@@ -90,6 +95,7 @@
         Run() {
             this.Init();
 
+            let Output = this.Output
             HttpRequest(
                 '/api/get_sites_check_file',
                 function(aData) {
@@ -97,6 +103,7 @@
                     aData['Data'].forEach((aItem) => {
                         //Output.value += JSON.stringify(aItem, null, ' ') + '\n';
                         //Output.value += '\n';
+                    Output.scrollTop = Output.scrollHeight;
                     })
                 },
                 {'file': 'sitemap.xml', 'cnt': 1000, 'ws': this.Id}

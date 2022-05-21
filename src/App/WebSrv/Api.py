@@ -57,8 +57,12 @@ class get_scheme_test_all(TApiPlugin):
     async def Exec(self, aPath: str, aData: dict) -> dict:
         await self.WebSocketInit(aPath, aData)
 
-        Data = await self.Args['WebClient'].Send('web/get_sites', aData)
-        DblJ = GetNestedKey(Data, 'Data.Data')
+        DataApi = await Api.WebClient.Send('web/get_hand_shake')
+        if (GetNestedKey(DataApi, 'Type') == 'Err'):
+            return DataApi.get('Data')
+
+        DataApi = await self.Args['WebClient'].Send('web/get_scheme_not_empty', aData)
+        DblJ = GetNestedKey(DataApi, 'Data.Data')
         if (not DblJ):
             Res = {'Type': 'Err', 'Data': 'Error getting scheme'}
             await self.WebSocketSend(Res)
@@ -96,6 +100,10 @@ class get_sites_check_file(TApiPlugin):
     async def Exec(self, aPath: str, aData: dict) -> dict:
         await self.WebSocketInit(aPath, aData)
 
+        DataApi = await Api.WebClient.Send('web/get_hand_shake')
+        if (GetNestedKey(DataApi, 'Type') == 'Err'):
+            return DataApi.get('Data')
+
         DataApi = await self.Args['WebClient'].Send('web/get_sites', aData)
         DblJ = GetNestedKey(DataApi, 'Data.Data')
         if (not DblJ):
@@ -124,8 +132,12 @@ class get_scheme_find(TApiPlugin):
     async def Exec(self, aPath: str, aData: dict) -> dict:
         await self.WebSocketInit(aPath, aData)
 
-        Data = await self.Args['WebClient'].Send('web/get_scheme_not_empty', {'cnt': 100})
-        DblJ = GetNestedKey(Data, 'Data.Data')
+        DataApi = await Api.WebClient.Send('web/get_hand_shake')
+        if (GetNestedKey(DataApi, 'Type') == 'Err'):
+            return DataApi.get('Data')
+
+        DataApi = await self.Args['WebClient'].Send('web/get_scheme_not_empty', {'cnt': 100})
+        DblJ = GetNestedKey(DataApi, 'Data.Data')
         if (not DblJ):
             return {'Type': 'Err', 'Data': 'Error getting scheme'}
         Dbl = TDbList().Import(DblJ)
@@ -207,14 +219,18 @@ class get_scheme(TApiPlugin):
     Param = {'param': ['id']}
 
     async def Exec(self, aPath: str, aData: dict) -> dict:
-        Data = await self.Args['WebClient'].Send('web/get_scheme', aData)
-        DataDbl = GetNestedKey(Data, 'Data.Data')
-        if (DataDbl):
-            Dbl = TDbList().Import(DataDbl)
+        DataApi = await Api.WebClient.Send('web/get_hand_shake')
+        if (GetNestedKey(DataApi, 'Type') == 'Err'):
+            return DataApi.get('Data')
+
+        DataApi = await self.Args['WebClient'].Send('web/get_scheme', aData)
+        DblJ = GetNestedKey(DataApi, 'Data.Data')
+        if (DblJ):
+            Dbl = TDbList().Import(DblJ)
             Scheme = TScheme(Dbl.Rec.GetField('scheme'))
-            Data['IsJson'] = Scheme.IsJson()
-            Data['Url'] = Scheme.GetUrl()[0]
-        return Data
+            DataApi['IsJson'] = Scheme.IsJson()
+            DataApi['Url'] = Scheme.GetUrl()[0]
+        return DataApi
 
 
 class TApi(TApiBase):
