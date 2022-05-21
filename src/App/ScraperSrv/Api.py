@@ -8,6 +8,7 @@ License:     GNU, see LICENSE for more details
 import json
 import asyncio
 from datetime import datetime
+from aiohttp import web
 #
 from IncP.Log import Log, TEchoDb
 from IncP.DB.Scraper_pg import TDbApp
@@ -56,6 +57,7 @@ class TApi(TApiBase):
         super().__init__()
 
         self.Url = {
+            'get_hand_shake':       {'param': []},
             'get_task':             {'param': []},
             'get_config':           {'param': ['user']},
             'get_scheme_empty':     {'param': ['cnt']},
@@ -70,6 +72,13 @@ class TApi(TApiBase):
 
         self.Db: TDbApp = None
         self.ApiTask = TApiTask(self)
+
+    async def DoAuthRequest(self, aUser: str, aPassw: str):
+        Dbl = await self.Db.AuthUser(aUser, aPassw)
+        return (not Dbl.IsEmpty())
+
+    async def path_get_hand_shake(self, aPath: str, aData: dict) -> dict:
+        return True
 
     async def path_get_task(self, aPath: str, aData: dict) -> dict:
         return await self.ApiTask.Get(aData)

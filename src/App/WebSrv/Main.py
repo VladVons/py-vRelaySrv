@@ -92,17 +92,6 @@ class TWebSrv():
         self.WebSockSrv = TWebSockSrv()
         self.WebSockSrv.Api = Api
 
-
-    async def AuthUser(self, aRequest: web.Request) -> bool:
-        if (self.Conf.get('Auth')):
-            Auth = aRequest.headers.get('Authorization')
-            if (Auth):
-                User, Passw = base64.b64decode(Auth.split()[1]).decode().split(':')
-                Dbl = await self.Api.Db.AuthUser(User, Passw)
-                return (not Dbl.IsEmpty())
-        else:
-            return True
-
     async def _rDownload(self, aRequest: web.Request) -> web.Response:
         Name = aRequest.match_info['Name']
         File = '%s/%s/%s' % (self.DirRoot, self.DirDownload, Name)
@@ -142,7 +131,7 @@ class TWebSrv():
         return await Form.Render()
 
     async def _rWebSock(self, aRequest: web.Request) -> web.WebSocketResponse:
-        if (await self.AuthUser(aRequest)):
+        if (await Api.AuthRequest(aRequest, self.Conf.Auth)):
             return await self.WebSockSrv.Handle(aRequest)
         else:
             WS = web.WebSocketResponse()

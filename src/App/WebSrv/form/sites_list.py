@@ -14,8 +14,12 @@ class TForm(TFormBase):
     Title = 'Site list'
 
     async def _Render(self):
-        DataA = await Api.WebClient.Send('web/get_sites')
-        Data = GetNestedKey(DataA, 'Data.Data')
+        DataApi = await Api.WebClient.Send('web/get_hand_shake')
+        if (GetNestedKey(DataApi, 'Type') == 'Err'):
+            return self.RenderInfo(DataApi.get('Data'))
+
+        DataApi = await Api.WebClient.Send('web/get_sites')
+        Data = GetNestedKey(DataApi, 'Data.Data')
         if (Data):
             Dbl = TDbList().Import(Data)
             self.Data.Sites = Dbl
@@ -23,4 +27,4 @@ class TForm(TFormBase):
             Cond = TDbCond().AddFields([ ['eq', (Dbl, 'has_scheme'), True, True]])
             self.Data.CntScheme = Dbl.Clone(aCond=Cond).GetSize()
         else:
-            return self.RenderInfo(DataA.get('Data'))
+            return self.RenderInfo(DataApi.get('Data'))

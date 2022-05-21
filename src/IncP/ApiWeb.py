@@ -7,6 +7,7 @@ License:     GNU, see LICENSE for more details
 
 import time
 import json
+import base64
 import aiohttp
 from aiohttp import web
 #
@@ -73,6 +74,15 @@ class TApiBase():
                 Log.Print(1, 'x', 'Call()', aE = E)
             Res = {'Data': Data}
         return Res
+
+    async def AuthRequest(self, aRequest: web.Request, aAuth: bool = True) -> bool:
+        if (aAuth):
+            Auth = aRequest.headers.get('Authorization')
+            if (Auth):
+                User, Passw = base64.b64decode(Auth.split()[1]).decode().split(':')
+                return await self.DoAuthRequest(User, Passw)
+        else:
+            return True
 
 
 class TWebClient():

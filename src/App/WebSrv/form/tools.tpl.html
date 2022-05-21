@@ -5,19 +5,31 @@
 <script src="/js/Api.js"></script>
 <script src="/js/TDbList.js"></script>
 <script>
-    class TWS_scheme_test_all extends TWebSock {
-        Run() {
+    class TWebSockApp extends TWebSock {
+        Init() {
             this.Output = document.getElementById('Output');
             let Output = this.Output;
-            Output.value = 'Start\n';
+            Output.value = 'Start at ' + new Date().toLocaleTimeString('en-US') + '\n';
 
+            this.ConnectId()
+        }
+
+        OnMessage(aEvent, aData) {
+            //console.log(aData);
+            this.Output.value += aData['Data'] + '\n';
+            this.Output.scrollTop = this.Output.scrollHeight;
+        };
+    }
+
+    class TWS_get_scheme_test_all extends TWebSockApp {
+        Run() {
             //--- Method1. Catch all data in OnMessage()
             //this.ConnectPlugin('get_scheme_test_all');
             //this.Call({'cnt': 1000, 'ws': this.Id})
             //return
 
             //--- Method2. Catch log in OnMessage()
-            this.ConnectId()
+            this.Init();
 
             HttpRequest(
                 '/api/get_scheme_test_all',
@@ -31,25 +43,16 @@
                 {'cnt': 1000, 'ws': this.Id}
             );
         };
-
-        OnMessage(aEvent, aData) {
-            console.log(aData);
-            this.Output.value += aData['Data'] + '\n';
-        };
     };
 
-    class TWS_scheme_find extends TWebSock {
+    class TWS_get_scheme_find extends TWebSockApp {
         Run() {
             if (document.getElementById('Url0').value == '') {
                 alert('Url is empty');
                 return;
             };
 
-            this.ConnectId()
-
-            this.Output = document.getElementById('Output');
-            let Output = this.Output;
-            Output.value = 'Start\n';
+            this.Init();
 
             HttpRequest(
                 '/api/get_scheme_find',
@@ -63,9 +66,41 @@
                 {'url': document.getElementById('Url0').value, 'ws': this.Id}
             );
         };
+    };
 
-        OnMessage(aEvent, aData) {
-            this.Output.value += aData['Data'] + '\n';
+    class TWS_get_site_robots extends TWebSockApp {
+        Run() {
+            this.Init();
+
+            HttpRequest(
+                '/api/get_sites_check_file',
+                function(aData) {
+                    Output.value += '\n';
+                    aData['Data'].forEach((aItem) => {
+                        //Output.value += JSON.stringify(aItem, null, ' ') + '\n';
+                        //Output.value += '\n';
+                    })
+                },
+                {'file': 'robots.txt', 'cnt': 1000, 'ws': this.Id}
+            );
+        };
+    };
+
+    class TWS_get_site_sitemap extends TWebSockApp {
+        Run() {
+            this.Init();
+
+            HttpRequest(
+                '/api/get_sites_check_file',
+                function(aData) {
+                    Output.value += '\n';
+                    aData['Data'].forEach((aItem) => {
+                        //Output.value += JSON.stringify(aItem, null, ' ') + '\n';
+                        //Output.value += '\n';
+                    })
+                },
+                {'file': 'sitemap.xml', 'cnt': 1000, 'ws': this.Id}
+            );
         };
     };
 
@@ -96,13 +131,25 @@
                 <tr>
                     <td>find match schemes</td>
                     <td>
-                        <button onclick="new TWS_scheme_find().Run()">ok</button>
+                        <button onclick="new TWS_get_scheme_find().Run()">ok</button>
                     </td>
                 </tr>
-                <tr">
+                <tr>
                     <td>test all schemes</td>
                     <td>
-                        <button onclick="new TWS_scheme_test_all().Run()">ok</button>
+                        <button onclick="new TWS_get_scheme_test_all().Run()">ok</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>check robots.txt</td>
+                    <td>
+                        <button onclick="new TWS_get_site_robots().Run()">ok</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>check sitemap.xml</td>
+                    <td>
+                        <button onclick="new TWS_get_site_sitemap().Run()">ok</button>
                     </td>
                 </tr>
             </table>

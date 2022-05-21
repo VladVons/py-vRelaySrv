@@ -13,7 +13,6 @@ import asyncio
 from App import ConfApp
 from App.Main import TApp
 
-
 def Run():
     Task = TApp().Run()
 

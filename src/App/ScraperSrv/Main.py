@@ -6,7 +6,6 @@ License:     GNU, see LICENSE for more details
 
 
 import asyncio
-import base64
 from aiohttp import web
 #
 from IncP.Log import Log
@@ -37,23 +36,12 @@ class TScraperSrv():
         Log.Print(1, 'i', 'cbInit(). Close connection')
         await self.Api.DbClose()
 
-    async def AuthUser(self, aRequest: web.Request) -> bool:
-        if (self.Conf.get('Auth')):
-            Auth = aRequest.headers.get('Authorization')
-            if (Auth):
-                User, Passw = base64.b64decode(Auth.split()[1]).decode().split(':')
-                Dbl = await self.Api.Db.AuthUser(User, Passw)
-                return (not Dbl.IsEmpty())
-        else:
-            return True
-
     async def _rIndex(self, aRequest: web.Request) -> web.Response:
         #await self.WebSockServer.SendAll({'hello': 111}, '/ws/test')
-
-        if (await self.AuthUser(aRequest)):
+        if (await self.Api.AuthRequest(aRequest, self.Conf.Auth)):
             #Conf = aRequest.app.get('Conf')
             Name = aRequest.match_info.get('Name')
-            Post = await aRequest.text()
+            Post = await aRequest.json()
 
             # ToDo. Test for safety
             #Res = await asyncio.shield(self.Api.Call(Name, Post))
@@ -61,7 +49,7 @@ class TScraperSrv():
             Res = await self.Api.Call(Name, Post)
             return web.json_response(Res, dumps=TJsonEncoder.Dumps)
         else:
-            Res = {'Type': 'Err', 'Data': 'Authorization'}
+            Res = {'Type': 'Err', 'Data': 'Authorization failed'}
             return web.json_response(Res, status=403)
 
     async def _rWebSock(self, aRequest: web.Request) -> web.WebSocketResponse:

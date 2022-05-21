@@ -8,12 +8,13 @@ Description:
 
 from urllib.parse import urlparse
 #
-from ..Api import Api
-from .FForm import TFormBase
+from IncP.Utils import GetNestedKey
 from IncP.Download import TDownload, CheckHost
 from Inc.DB.DbList import TDbList, TDbCond
 from IncP.DB.Db import TDbSql
 from IncP.Log import Log
+from ..Api import Api
+from .FForm import TFormBase
 
 
 class TForm(TFormBase):
@@ -23,19 +24,23 @@ class TForm(TFormBase):
         if (not await self.PostToForm()) and (not self.Data.Sites):
             return
 
+        DataApi = await Api.WebClient.Send('web/get_hand_shake')
+        if (GetNestedKey(DataApi, 'Type') == 'Err'):
+            return self.RenderInfo(DataApi.get('Data'))
+
         Sites = []
         Lines = self.Data.Sites.splitlines()
         for Line in Lines:
             Data = urlparse(Line)
             Sites.append(Data.scheme + '://' + Data.hostname)
 
-        DataA = await Api.WebClient.Send('web/get_sites')
-        Data = DataA.get('Data', {}).get('Data')
-        if (not Data):
+        DataApi = await Api.WebClient.Send('web/get_sites')
+        DataDbl = GetNestedKey(DataApi, 'Data.Data')
+        if (not DataDbl):
             self.Data.Output = Log.Print(1, 'e', 'Cant get data from server')
             return
 
-        Dbl = TDbList().Import(Data)
+        Dbl = TDbList().Import(DataDbl)
         Diff = Dbl.GetDiff('url', Sites)
 
         Cond = TDbCond().AddFields([ ['eq', (Dbl, 'has_scheme'), True, True]])
@@ -54,7 +59,6 @@ class TForm(TFormBase):
         #UrlOk = [x.get('Url') for x in Data if (x.get('Status') == 200)]
         UrlOk = [x for x in Diff[1] if CheckHost(x)]
 
-        Data = await Api.WebClient.Send('web/set_sites')
         Output.append('New:')
         Output += UrlOk
         Output.append('')

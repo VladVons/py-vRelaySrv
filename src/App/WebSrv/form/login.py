@@ -26,16 +26,17 @@ class TForm(TFormBase):
         if (not self.validate()):
             return
 
+        DataApi = await Api.WebClient.Send('web/get_hand_shake')
+        if (GetNestedKey(DataApi, 'Type') == 'Err'):
+            return self.RenderInfo(DataApi.get('Data'))
+
         Post = {'login': self.UserName.data, 'passw': self.Password.data}
-        Data = await Api.WebClient.Send('web/get_user_id', Post)
-        if (Data.get('Type') == 'Err'):
-            self.Message = Data['Data']
+        DataApi = await Api.WebClient.Send('web/get_user_id', Post)
+        Id = GetNestedKey(DataApi, 'Data.Data')
+        if (Id):
+            self.Session['UserId'] = Id
+            self.Session['UserName'] = self.UserName.data
+            Redirect = self.Request.query.get('url', '/')
+            raise web.HTTPFound(location = Redirect)
         else:
-            Id = GetNestedKey(Data, 'Data.Data')
-            if (Id):
-                self.Session['UserId'] = Id
-                self.Session['UserName'] = self.UserName.data
-                Redirect = self.Request.query.get('url', '/')
-                raise web.HTTPFound(location = Redirect)
-            else:
-                self.Message = 'Wrong authorization'
+            self.Message = 'Authorization failed'

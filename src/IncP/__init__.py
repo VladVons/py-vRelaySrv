@@ -5,8 +5,8 @@ License:     GNU, see LICENSE for more details
 '''
 
 
-__version__ = '1.0.12'
-__date__ =  '2022.05.19'
+__version__ = '1.0.13'
+__date__ =  '2022.05.21'
 
 Info = {
     'Version' : __version__,
