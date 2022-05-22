@@ -75,6 +75,8 @@ class TWebScraper():
 
         #self.Download = TDownload(self.Parent.Conf.get('Proxy', []))
         self.Download = TDownload()
+        self.Download.Opt.update({'Decode': True})
+
         self.DblQueue = TDbList( [('Url', str)] )
         self.Sender = TSender(self)
 
@@ -108,7 +110,7 @@ class TWebScraper():
 
             Rec = self.DblQueue.RecPop()
             Url = Rec.GetField('Url')
-            UrlDown = await self.Download.Get(Url, True)
+            UrlDown = await self.Download.Get(Url)
             Err = FilterKeyErr(UrlDown)
             if (Err):
                 await self._DoWorkerException(Url, UrlDown.get('Data'))
@@ -193,7 +195,7 @@ class TWebScraperSitemap(TWebScraper):
     async def LoadSiteMap(self, aUrl: str) -> list:
         Res = []
 
-        UrlDown = await self.Download.Get(aUrl, True)
+        UrlDown = await self.Download.Get(aUrl)
         Err = FilterKeyErr(UrlDown)
         if (not Err):
             Data = UrlDown['Data']

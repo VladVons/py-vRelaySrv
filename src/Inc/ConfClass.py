@@ -9,12 +9,15 @@ import os
 import json
 #
 from Inc.Log import Log
-from Inc.Conf import TConfD
+from Inc.Conf import TConf, TDictDef
 
 
-class TConfClass(TConfD):
-    def __init__(self, aFile: str, aConf: TConfD = {}):
+class TConfClass(TConf):
+    def __init__(self, aFile: str, aConf: TDictDef = None):
         super().__init__(aFile)
+
+        if (aConf is None):
+            aConf = TDictDef()
         self.Conf = aConf
 
     def _Replace(self, aData: str) -> str:

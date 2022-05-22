@@ -21,8 +21,9 @@ class TForm(TFormBase):
         if (not await self.PostToForm()):
             return
 
-        Download = TDownload(aHeaders = THeaders())
-        UrlDown = await Download.Get(self.Data.Url0, True)
+        Download = TDownload()
+        Download.Opt.update({'Headers': THeaders(), 'Decode': True})
+        UrlDown = await Download.Get(self.Data.Url0)
         Err = FilterKeyErr(UrlDown)
         if (Err):
             self.Data.Output = 'Error loading %s, %s, %s' % (self.Data.Url0, UrlDown.get('Data'), UrlDown.get('Msg'))

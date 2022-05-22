@@ -131,7 +131,7 @@ class TWebSrv():
         return await Form.Render()
 
     async def _rWebSock(self, aRequest: web.Request) -> web.WebSocketResponse:
-        if (await Api.AuthRequest(aRequest, self.Conf.Auth)):
+        if (await Api.AuthRequest(aRequest, self.Conf.Get('Auth'))):
             return await self.WebSockSrv.Handle(aRequest)
         else:
             WS = web.WebSocketResponse()

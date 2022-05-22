@@ -9,9 +9,9 @@ from aiohttp_jinja2 import render_template
 from wtforms import Form
 import aiohttp_session
 #
+from Inc.Conf import TDictDef
 from IncP import Info
 from IncP.Log import Log
-from IncP.Utils import TDictStr
 
 
 class TFormBase(Form):
@@ -21,7 +21,7 @@ class TFormBase(Form):
         super().__init__()
 
         self.Request = aRequest
-        self.Data = TDictStr()
+        self.Data = TDictDef('')
         self.Info = Info
         self.Tpl = aTpl
 
@@ -50,7 +50,7 @@ class TFormBase(Form):
         return Res
 
     def RenderInfo(self, aMsg: str) -> web.Response:
-        Data = TDictStr({'Info': aMsg})
+        Data = TDictDef('', {'Info': aMsg})
         return render_template('info.tpl.html', self.Request, {'Data': Data, 'Form': self})
 
     async def _Render(self):

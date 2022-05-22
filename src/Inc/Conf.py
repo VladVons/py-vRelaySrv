@@ -18,15 +18,29 @@ def ImportMod(aFile: str, aMod: list = ['*']):
     return __import__(aFile.replace('/', '.'), None, None, aMod)
 
 
-class TConfD(dict):
+class TDictDef(dict):
+    def __init__(self, aDef: object = None, aData: dict = None):
+        self.Def = aDef
+
+        if (aData is None):
+            aData = {}
+        self.SetData(aData)
+
+    def __getattr__(self, aName: str) -> object:
+        return self.get(aName, self.Def)
+
+    def Get(self, aName: str) -> object:
+        if (type(self.Def) == dict):
+            return self.get(aName, self.Def.get(aName))
+
+    def SetData(self, aData: dict):
+        super().__init__(aData)
+
+
+class TConf(TDictDef):
     def __init__(self, aFile: str):
         super().__init__()
-
         self.File = aFile
-        self.Def = {}
-
-    def __getattr__(self, aName: str):
-        return self.Get(aName)
 
     def Load(self):
         Name, Ext = self.File.split('.')
@@ -35,14 +49,10 @@ class TConfD(dict):
             if (FileExists(File)):
                 self._Load(File)
 
-    def Get(self, aName: str):
-        return self.get(aName, self.Def.get(aName))
-
-class TConf(TConfD):
     def _Load(self, aFile: str):
-        Name, _ = aFile.split('.')
+        Name, *_ = aFile.split('.')
         Obj = ImportMod(Name)
-        Keys = [O for O in dir(Obj) if (not O.startswith('__'))]
+        Keys = [x for x in dir(Obj) if (not x.startswith('__'))]
         for Key in Keys:
             self[Key] = getattr(Obj, Key, None)
 

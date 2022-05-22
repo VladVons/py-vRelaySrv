@@ -98,8 +98,8 @@ class get_scheme_test_all(TApiPlugin):
                 self.Hash[Url] = Scheme
             break
 
-        Download = TDownload(aHeaders = THeaders())
-        Download.OnGet = self.cbOnGet
+        Download = TDownload()
+        Download.Opt.update({'Headers': THeaders(), 'OnGet': self.cbOnGet, 'Decode': True})
         await Download.Gets(self.Hash.keys())
 
         await self.WebSockSend({'Data': 'Done'})
@@ -128,9 +128,8 @@ class get_sites_check_file(TApiPlugin):
 
         await self.WebSockSend({'Data': 'Check items %s' % len(Dbl)})
         self.Res = []
-        Download = TDownload(aHeaders = THeaders())
-        Download.FakeRead = True
-        Download.OnGet = self.cbOnGet
+        Download = TDownload()
+        Download.Opt.update({'Headers': THeaders(), 'FakeRead': True, 'OnGet': self.cbOnGet})
         await Download.Gets(Urls)
 
         await self.WebSockSend({'Data': 'Done'})
@@ -192,9 +191,8 @@ class get_sites_grep(TApiPlugin):
         await self.WebSockSend({'Data': 'Check items %s' % len(Dbl)})
         self.Res = []
         self.Filter = aData.get('filter')
-        Download = TDownload(aHeaders = THeaders())
-        Download.OnGet = self.cbOnGet
-        Download.Decode = True
+        Download = TDownload()
+        Download.Opt.update({'Headers': THeaders(), 'OnGet': self.cbOnGet, 'Decode': True})
         await Download.Gets(Urls)
 
         await self.WebSockSend({'Data': 'Done'})

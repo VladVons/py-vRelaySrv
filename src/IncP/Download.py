@@ -13,8 +13,10 @@ import random
 import socket
 import time
 #
+from Inc.Conf import TDictDef
 from IncP.Log import Log
 from IncP.Utils import FilterKeyErr
+
 
 #from fake_useragent import UserAgent
 #self.ua = UserAgent()
@@ -26,8 +28,9 @@ def CheckHost(aUrl: str) -> bool:
     return socket.gethostbyname(Host)
 
 async def GetUrlSoup(aUrl: str) -> BeautifulSoup:
-    Download = TDownload(aHeaders = THeaders())
-    UrlDown = await Download.Get(aUrl, True)
+    Download = TDownload()
+    Download.Opt.update({'Headers': THeaders(), 'Decode': True})
+    UrlDown = await Download.Get(aUrl)
     Err = FilterKeyErr(UrlDown)
     if (not Err) and (UrlDown['Status'] == 200):
         Data = UrlDown['Data']
@@ -60,14 +63,16 @@ class THeaders():
 
 
 class TDownload():
-    def __init__(self, aProxies: list = [], aHeaders: THeaders = None, aAuth: tuple = ()):
-        self.Proxies = aProxies
-        self.Headers = aHeaders
-        self.Auth = aAuth
-        self.Timeout = 10
-        self.OnGet = None
-        self.FakeRead = False
-        self.Decode = False
+    def __init__(self):
+        self.Opt = TDictDef(None, {
+            'Proxies': [],
+            'Headers': None,
+            'Auth': None,
+            'Timeout': 10,
+            'OnGet': None,
+            'FakeRead': False,
+            'Decode': False
+        })
 
     async def _GetWithSem(self, aUrl: str, aSem: asyncio.Semaphore) -> dict:
         async with aSem:
@@ -75,26 +80,29 @@ class TDownload():
             Res['Url'] = aUrl
             return Res
 
-    async def Get(self, aUrl: str, aDecode: bool = False) -> dict:
+    async def _Get(self, aUrl: str) -> dict:
         TimeAt = time.time()
         try:
             async with aiohttp.ClientSession(connector=self._GetConnector(), auth=self._GetAuth()) as Session:
-                async with Session.get(aUrl, headers=self._GetHeaders(), timeout=self.Timeout) as Response:
-                    if (self.FakeRead):
+                async with Session.get(aUrl, headers=self._GetHeaders(), timeout=self.Opt.Timeout) as Response:
+                    if (self.Opt.FakeRead):
                         Data = await Response.content.read(0)
                     else:
                         Data = await Response.read()
-                        if (Data) and (aDecode or self.Decode):
+                        if (Data) and (self.Opt.Decode):
                             Data = Data.decode(errors='ignore')
                     Res = {'Data': Data, 'Status': Response.status, 'Time': round(time.time() - TimeAt, 2)}
         except (aiohttp.ClientConnectorError, aiohttp.ClientError, aiohttp.InvalidURL, asyncio.TimeoutError) as E:
-                    ErrMsg = Log.Print(1, 'x', 'Download.Get(). %s' % (aUrl), aE = E)
-                    Res = {'Type': 'Err', 'Data': E, 'Msg': ErrMsg, 'Status': -1, 'Time': round(time.time() - TimeAt, 2)}
+            Log.Print(1, 'x', 'Download.Get(). %s' % (aUrl), aE = E)
+            Res = {'Type': 'Err', 'Data': E, 'Status': -1, 'Time': round(time.time() - TimeAt, 2)}
+        return Res
 
-        if (self.OnGet):
-            await self.OnGet(aUrl, Res)
+    async def Get(self, aUrl: str) -> dict:
+        Res = await self._Get(aUrl)
+
+        if (self.Opt.OnGet):
+            await self.Opt.OnGet(aUrl, Res)
             await asyncio.sleep(0.1)
-
         return Res
 
     async def Gets(self, aUrls: list, aMaxConn: int = 5) -> list:
@@ -103,13 +111,14 @@ class TDownload():
         return await asyncio.gather(*Tasks)
 
     def _GetConnector(self) -> ProxyConnector:
-        if (self.Proxies):
-            return ProxyConnector.from_url(random.choice(self.Proxies))
+        #return aiohttp.TCPConnector(family=socket.AF_INET, verify_ssl=False)
+        if (self.Opt.Proxies):
+            return ProxyConnector.from_url(random.choice(self.Opt.Proxies))
 
     def _GetHeaders(self) -> THeaders:
-        if (self.Headers):
-            return self.Headers.Get()
+        if (self.Opt.Headers):
+            return self.Opt.Headers.Get()
 
     def _GetAuth(self) -> aiohttp.BasicAuth:
-        if (self.Auth):
-            return aiohttp.BasicAuth(login=self.Auth[0], password=self.Auth[1])
+        if (self.Opt.Auth):
+            return aiohttp.BasicAuth(login=self.Opt.Auth[0], password=self.Opt.Auth[1])

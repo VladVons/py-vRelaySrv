@@ -95,11 +95,14 @@ async def Test_speed():
 async def Test_GetUrl():
     from IncP.Download import TDownload, THeaders
 
-    Url = 'https://didi.ua/robots.txt'
-    Download = TDownload(aHeaders = THeaders())
+    #Url = 'https://didi.ua/robots.txt'
+    Url = 'https://expert24.com.ua/'
+    Download = TDownload()
+    Download.Opt['Headers'] = THeaders()
+    Download.Opt['Decode'] = True
     #Download.FakeRead = True
     #Download.Timeout = None
-    DataRaw = await Download.Get(Url, True)
+    DataRaw = await Download.Get(Url)
     Data = DataRaw.get('Data')
 
     if ('checking your browser' in Data):
@@ -118,13 +121,10 @@ print()
 #Test_2()
 #Test_3()
 
+from Inc.Conf import TDictDef
+DictDef = TDictDef()
+DictDef['Two'] = 2
 
-from IncP.Utils import FilterKey, FilterKeyErr
-#Data = {'Err': 'Err1', 'Data': {'Err': 'Err2', 'Name': 'Vlad'} }
-#Res = FilterKey(Data, ['Err'], set)
-#print(Res)
-
-Data = {'Type': 'Err', 'Data': {'Type': 'Err', 'Data': 'Vlad'} }
-Res = FilterKeyErr(Data, True)
-print(Res)
+print(DictDef.One)
+print(DictDef.Two)
 pass
