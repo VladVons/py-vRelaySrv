@@ -13,7 +13,6 @@ import random
 import socket
 import time
 #
-from Inc.Conf import TDictDef
 from IncP.Log import Log
 from IncP.Utils import FilterKeyErr
 
@@ -29,7 +28,7 @@ def CheckHost(aUrl: str) -> bool:
 
 async def GetUrlSoup(aUrl: str) -> BeautifulSoup:
     Download = TDownload()
-    Download.Opt.update({'Headers': THeaders(), 'Decode': True})
+    Download.Opt.update({'Headers': TDHeaders(), 'Decode': True})
     UrlDown = await Download.Get(aUrl)
     Err = FilterKeyErr(UrlDown)
     if (not Err) and (UrlDown['Status'] == 200):
@@ -40,7 +39,15 @@ async def GetUrlSoup(aUrl: str) -> BeautifulSoup:
         return Res
 
 
-class THeaders():
+class TDictDefCall(dict):
+    def __getattr__(self, aName: str) -> object:
+        Res = self.get(aName)
+        if (hasattr(Res, 'Get')):
+           Res = Res.Get()
+        return Res
+
+
+class TDHeaders():
     def __init__(self):
         self.OS = [
             'Macintosh; Intel Mac OS X 10_15_5',
@@ -53,8 +60,7 @@ class THeaders():
             'Opera/45'
         ]
 
-
-    def Get(self):
+    def Get(self) -> dict:
         return  {
             'Accept': '*/*',
             'User-Agent': 'Mozilla/5.0 (%s) %s' % (random.choice(self.OS), random.choice(self.Browser)),
@@ -62,10 +68,32 @@ class THeaders():
         }
 
 
+class TDAuth():
+    def __init__(self, aUser: str, aPassw: str):
+        self.User = aUser
+        self.Passw = aPassw
+
+    def Get(self) -> aiohttp.BasicAuth:
+        return aiohttp.BasicAuth(login=self.User, password=self.Passw)
+
+
+class TDConnector():
+    def __init__(self):
+        self.Proxies = []
+        self.Mode = 0
+
+    def Get(self) -> aiohttp.TCPConnector:
+        if (self.Mode == 0):
+            if (self.Proxies):
+                return ProxyConnector.from_url(random.choice(self.Proxies))
+        elif (self.Mode == 1):
+            return aiohttp.TCPConnector(family=socket.AF_INET, verify_ssl=False)
+
+
 class TDownload():
     def __init__(self):
-        self.Opt = TDictDef(None, {
-            'Proxies': [],
+        self.Opt = TDictDefCall({
+            'Connector': TDConnector(),
             'Headers': None,
             'Auth': None,
             'Timeout': 10,
@@ -83,22 +111,34 @@ class TDownload():
     async def _Get(self, aUrl: str) -> dict:
         TimeAt = time.time()
         try:
-            async with aiohttp.ClientSession(connector=self._GetConnector(), auth=self._GetAuth()) as Session:
-                async with Session.get(aUrl, headers=self._GetHeaders(), timeout=self.Opt.Timeout) as Response:
+            async with aiohttp.ClientSession(connector=self.Opt.Connector, auth=self.Opt.Auth) as Session:
+                async with Session.get(aUrl, headers=self.Opt.Headers, timeout=self.Opt.Timeout) as Response:
                     if (self.Opt.FakeRead):
                         Data = await Response.content.read(0)
                     else:
                         Data = await Response.read()
-                        if (Data) and (self.Opt.Decode):
+                        if (self.Opt.Decode):
                             Data = Data.decode(errors='ignore')
                     Res = {'Data': Data, 'Status': Response.status, 'Time': round(time.time() - TimeAt, 2)}
         except (aiohttp.ClientConnectorError, aiohttp.ClientError, aiohttp.InvalidURL, asyncio.TimeoutError) as E:
-            Log.Print(1, 'x', 'Download.Get(). %s' % (aUrl), aE = E)
+            Log.Print(1, 'x', '_Get(). %s' % (aUrl), aE = E)
             Res = {'Type': 'Err', 'Data': E, 'Status': -1, 'Time': round(time.time() - TimeAt, 2)}
         return Res
 
     async def Get(self, aUrl: str) -> dict:
         Res = await self._Get(aUrl)
+        if (Res.get('Type') == 'Err'):
+            asyncio.sleep(1)
+            E = Res.get('Data')
+            if (type(E) == aiohttp.ClientConnectorError):
+                Mode = self.Opt['Connector'].Mode
+                self.Opt['Connector'].Mode = 1
+                Res = await self._Get(aUrl)
+                self.Opt['Connector'].Mode = Mode
+            elif (type(E) == aiohttp.ClientConnectorCertificateError):
+                pass
+            else:
+                Res = await self._Get(aUrl)
 
         if (self.Opt.OnGet):
             await self.Opt.OnGet(aUrl, Res)
@@ -109,16 +149,3 @@ class TDownload():
         Sem = asyncio.Semaphore(aMaxConn)
         Tasks = [asyncio.create_task(self._GetWithSem(Url, Sem)) for Url in aUrls]
         return await asyncio.gather(*Tasks)
-
-    def _GetConnector(self) -> ProxyConnector:
-        #return aiohttp.TCPConnector(family=socket.AF_INET, verify_ssl=False)
-        if (self.Opt.Proxies):
-            return ProxyConnector.from_url(random.choice(self.Opt.Proxies))
-
-    def _GetHeaders(self) -> THeaders:
-        if (self.Opt.Headers):
-            return self.Opt.Headers.Get()
-
-    def _GetAuth(self) -> aiohttp.BasicAuth:
-        if (self.Opt.Auth):
-            return aiohttp.BasicAuth(login=self.Opt.Auth[0], password=self.Opt.Auth[1])

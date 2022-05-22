@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 #
 from Inc.DB.DbList import TDbList
 from IncP.ApiWeb import TApiBase, TWebClient
-from IncP.Download import TDownload, THeaders, GetUrlSoup
+from IncP.Download import TDownload, TDHeaders, GetUrlSoup
 from IncP.Scheme import TScheme
 from IncP.Utils import GetNestedKey, FilterKey, FilterKeyErr
 
@@ -96,10 +96,10 @@ class get_scheme_test_all(TApiPlugin):
             Urls = Scheme.GetUrl()
             for Url in Urls:
                 self.Hash[Url] = Scheme
-            break
+            #break
 
         Download = TDownload()
-        Download.Opt.update({'Headers': THeaders(), 'OnGet': self.cbOnGet, 'Decode': True})
+        Download.Opt.update({'Headers': TDHeaders(), 'OnGet': self.cbOnGet, 'Decode': True})
         await Download.Gets(self.Hash.keys())
 
         await self.WebSockSend({'Data': 'Done'})
@@ -117,19 +117,19 @@ class get_sites_check_file(TApiPlugin):
 
     async def Exec(self, aPath: str, aData: dict) -> dict:
         await self.WebSockInit(aPath, aData)
-        Data = await self.WebSockDbl('web/get_sites', FilterKey(aData, ['cnt']), dict)
+        Data = await self.WebSockDbl('web/get_sites', FilterKey(aData, ['cnt'], dict))
         Err = FilterKeyErr(Data)
         if (Err):
             return Data
         Dbl = Data.get('Data')
 
         File = aData.get('file')
-        Urls = ['%s/%s' % (x, File) for x in Dbl.ExportList('url')]
+        Urls = ['%s%s' % (x, File) for x in Dbl.ExportList('url')]
 
         await self.WebSockSend({'Data': 'Check items %s' % len(Dbl)})
         self.Res = []
         Download = TDownload()
-        Download.Opt.update({'Headers': THeaders(), 'FakeRead': True, 'OnGet': self.cbOnGet})
+        Download.Opt.update({'Headers': TDHeaders(), 'FakeRead': True, 'OnGet': self.cbOnGet})
         await Download.Gets(Urls)
 
         await self.WebSockSend({'Data': 'Done'})
@@ -171,11 +171,15 @@ class get_scheme_find(TApiPlugin):
 class get_sites_grep(TApiPlugin):
     Param = {'param': ['file', 'filter', 'cnt', 'ws']}
 
-    async def cbOnGet(self, aUrl: str, aData: str):
-        Ok = (self.Filter in aData)
-        if (Ok):
-            await self.WebSockSend({'Data': '%s' % (aUrl)})
-            self.Res.append([aUrl])
+    async def cbOnGet(self, aUrl: str, aData: dict):
+        if (aData.get('Type') == 'Err'):
+            await self.WebSockSend({'Data': '%s, Err: %s' % (aUrl, aData.get('Data'))})
+        else:
+            if (self.Filter in aData.get('Data')):
+                await self.WebSockSend({'Data': '%s %s' % (aUrl, self.Filter)})
+                self.Res.append([aUrl])
+            else:
+                await self.WebSockSend({'Data': aUrl})
 
     async def Exec(self, aPath: str, aData: dict) -> dict:
         await self.WebSockInit(aPath, aData)
@@ -185,14 +189,16 @@ class get_sites_grep(TApiPlugin):
             return Data
         Dbl = Data.get('Data')
 
+        self.Size = len(Dbl)
+        await self.WebSockSend({'Data': 'Check items %s' % self.Size})
+
         File = aData.get('file')
         Urls = ['%s%s' % (x, File) for x in Dbl.ExportList('url')]
 
-        await self.WebSockSend({'Data': 'Check items %s' % len(Dbl)})
         self.Res = []
         self.Filter = aData.get('filter')
         Download = TDownload()
-        Download.Opt.update({'Headers': THeaders(), 'OnGet': self.cbOnGet, 'Decode': True})
+        Download.Opt.update({'Headers': TDHeaders(), 'OnGet': self.cbOnGet, 'Decode': True})
         await Download.Gets(Urls)
 
         await self.WebSockSend({'Data': 'Done'})

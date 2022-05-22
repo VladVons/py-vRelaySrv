@@ -93,12 +93,12 @@ async def Test_speed():
     await TDownloadSpeed(5).Test(Url)
 
 async def Test_GetUrl():
-    from IncP.Download import TDownload, THeaders
+    from IncP.Download import TDownload, TDHeaders
 
     #Url = 'https://didi.ua/robots.txt'
     Url = 'https://expert24.com.ua/'
     Download = TDownload()
-    Download.Opt['Headers'] = THeaders()
+    Download.Opt['Headers'] = TDHeaders()
     Download.Opt['Decode'] = True
     #Download.FakeRead = True
     #Download.Timeout = None
@@ -117,14 +117,6 @@ print()
 #asyncio.run(TestA_2())
 #asyncio.run(Test_pyppeteer())
 #asyncio.run(Test_speed())
-#asyncio.run(Test_GetUrl())
+asyncio.run(Test_GetUrl())
 #Test_2()
 #Test_3()
-
-from Inc.Conf import TDictDef
-DictDef = TDictDef()
-DictDef['Two'] = 2
-
-print(DictDef.One)
-print(DictDef.Two)
-pass

@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 import time
 #
 from .FForm import TFormBase
-from IncP.Download import TDownload, THeaders
+from IncP.Download import TDownload, TDHeaders
 from IncP.Log import Log
 from IncP.Scheme import TScheme
 from IncP.Utils import FilterKeyErr
@@ -22,7 +22,7 @@ class TForm(TFormBase):
             return
 
         Download = TDownload()
-        Download.Opt.update({'Headers': THeaders(), 'Decode': True})
+        Download.Opt.update({'Headers': TDHeaders(), 'Decode': True})
         UrlDown = await Download.Get(self.Data.Url0)
         Err = FilterKeyErr(UrlDown)
         if (Err):
