@@ -15,6 +15,7 @@ import time
 #
 from IncP.Log import Log
 from IncP.Utils import FilterKeyErr
+from Inc.Conf import TDictDef
 
 
 #from fake_useragent import UserAgent

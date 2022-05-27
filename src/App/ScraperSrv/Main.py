@@ -24,8 +24,7 @@ class TScraperSrv():
         #print('cbWebSockServer', aData)
         #await aWS.send_json(aData)
 
-    #async def cbOnStartup(self, aApp: web.Application):
-    async def cbInit(self, aApp: web.Application):
+    async def cbOnStartup(self, aApp: web.Application):
         aApp['Conf'] = self.Conf
 
         self.Api = TApi()
@@ -65,7 +64,7 @@ class TScraperSrv():
         #App['SomeKey'] = 'Hello'
 
         #App.on_startup.append(self.cbOnStartup)
-        App.cleanup_ctx.append(self.cbInit)
+        App.cleanup_ctx.append(self.cbOnStartup)
 
         App.add_routes([
             web.get('/web/{Name:.*}', self._rIndex),

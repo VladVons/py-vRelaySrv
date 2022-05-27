@@ -6,6 +6,7 @@ License:     GNU, see LICENSE for more details
 
 
 import os, sys
+import platform
 #
 from App import ConfApp
 from Inc.Log  import TEchoFile
@@ -31,10 +32,10 @@ class TApp():
     async def Run(self):
         self.InitLog()
 
-        UName = os.uname()
+        UName =  platform.uname()
         About = {
-            'OS': UName.sysname,
-            'Host': UName.nodename,
+            'OS': UName.system,
+            'Host': UName.node,
             'User': os.environ.get('USER'),
             'PyVer': (sys.version_info.major, sys.version_info.minor),
             'AppVer': (Info.get('Version'), Info.get('Date'))

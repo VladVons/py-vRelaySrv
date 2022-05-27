@@ -112,11 +112,36 @@ async def Test_GetUrl():
     #WriteFile('Data1.txt', Data)
     pass
 
+
+def Test_cloudscraper():
+    import cloudscraper
+
+    Url = 'https://didi.ua'
+    scraper = cloudscraper.create_scraper()
+    #scraper = cloudscraper.CloudScraper()
+    print(scraper.get(Url).text)
+
+
+def Test_TDictDef():
+    import json
+    from Inc.Conf import TDictDef
+
+    DictDef = TDictDef(aData = {'One': 1})
+    print(DictDef)
+    print(DictDef.One, DictDef.Two, DictDef.get('Two'))
+
+    #Data = json.dumps(DictDef)
+    #print(Data)
+
+
 print()
 #asyncio.run(TestA_1())
 #asyncio.run(TestA_2())
 #asyncio.run(Test_pyppeteer())
 #asyncio.run(Test_speed())
-asyncio.run(Test_GetUrl())
+#asyncio.run(Test_GetUrl())
 #Test_2()
 #Test_3()
+
+#Test_cloudscraper()
+Test_TDictDef()
