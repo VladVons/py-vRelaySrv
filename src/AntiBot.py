@@ -19,9 +19,7 @@ async def Get_2(aUrl):
         async with Session.get(aUrl) as Response:
             Res = await Response.text()
             if (Response.status == 200):
-                return Res
-    return ''
-
+                WriteFile('Get_2.html', Res)
 
 
 def Test2(aUrl):
@@ -29,16 +27,15 @@ def Test2(aUrl):
 
     scraper = cloudscraper.create_scraper(delay=10, browser='chrome')
     Data = scraper.get(aUrl).text
-    return Data 
+    WriteFile('Test2.html', Data)
 
 def Test3(aUrl):
-    import cfscrape
+   from debug import cfscrape
     scraper = cfscrape.create_scraper()
     Data = scraper.get(aUrl).content
-    return Data.decode() 
+    WriteFile('Test3.html', Data.decode())
 
 Url = 'https://didi.ua'
-#Data = asyncio.run(Get_2(Url))
-#Data = Test2(UrlUrl)
-Data = Test3(Url)
-WriteFile('Test2.html', Data)
+#asyncio.run(Get_2(Url))
+#Test2(Url)
+Test3(Url)

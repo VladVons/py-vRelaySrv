@@ -59,12 +59,12 @@ class TApi(TApiBase):
         self.Url = {
             'get_hand_shake':       {'param': []},
             'get_task':             {'param': []},
-            'get_config':           {'param': ['user']},
             'get_scheme_empty':     {'param': ['cnt']},
             'get_scheme_not_empty': {'param': ['cnt']},
             'get_scheme':           {'param': ['id']},
             'get_sites':            {'param': ['*']},
             'get_user_id':          {'param': ['login', 'passw']},
+            'get_user_config':      {'param': ['id']},
             'add_sites':            {'param': ['dbl']},
             'send_result':          {'param': ['*']},
             'set_scheme':           {'param': ['id', 'scheme']}
@@ -83,9 +83,9 @@ class TApi(TApiBase):
     async def path_get_task(self, aPath: str, aData: dict) -> dict:
         return await self.ApiTask.Get(aData)
 
-    async def path_get_config(self, aPath: str, aData: dict) -> dict:
-        Dbl = await self.Db.GetConfig(aData.get('user'))
-        return Dbl.Rec.GetAsDict()
+    async def path_get_user_config(self, aPath: str, aData: dict) -> dict:
+        Dbl = await self.Db.GetUserConfig(aData.get('id'))
+        return Dbl.Export()
 
     async def path_get_scheme_empty(self, aPath: str, aData: dict) -> dict:
         Dbl = await self.Db.GetScheme(True, aData.get('cnt', 1))
@@ -139,3 +139,6 @@ class TApi(TApiBase):
         List = Log.FindEcho(TEchoDb.__name__)
         Log.Echoes.remove(List[0])
         await self.Db.Close()
+
+
+Api = TApi()

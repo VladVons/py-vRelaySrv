@@ -9,14 +9,15 @@ from collections import deque
 import asyncio
 import random
 #
-#from .Selenium import TStarter
 from .Api import Api
+#from .Selenium import TStarter
 from .WebScraper import TWebScraperFull, TWebScraperUpdate, TWebScraperSitemap
+from Inc.DB.DbList import TDbList
 from IncP.ApiWeb import TWebSockClient
 from IncP.DownloadSpeed import TDownloadSpeed
 from IncP.Log import Log
 from IncP.Scheme import TScheme
-
+from IncP.Utils import FilterKeyErr, GetNestedKey
 
 class TMain():
     def __init__(self, aConf: dict):
@@ -41,8 +42,8 @@ class TMain():
             #await self.WebSock.Send({'Data': 'Hellow from client. Id %s' % aTaskId})
             #continue
 
-            DataA = await Api.GetTask()
-            Data = DataA.get('Data', {}).get('Data')
+            DataApi = await Api.DefHandler('get_task')
+            Data = GetNestedKey(DataApi, 'Data.Data')
             if (Data):
                 Scheme = TScheme(Data['scheme'])
                 Type = Data.get('Type')
@@ -70,36 +71,34 @@ class TMain():
     def GetInfo(self) -> list:
         return [x.GetInfo() for x in self.Scrapers]
 
-    async def GetMaxWorkers(self, aConfServ) -> int:
-        Res = self.Conf.get('MaxWorkers')
+    async def GetMaxWorkers(self, aWorkers) -> int:
+        Res = self.Conf.get('MaxWorkers', aWorkers)
         if (not Res):
-            Res = aConfServ.get('workers')
-            if (not Res):
-                Url = self.Conf.get('SpeedTestUrl')
-                if (Url):
-                    Speed = await TDownloadSpeed(2).Test(Url)
-                    Res = round(Speed / 5)
-                else:
-                    Res = 5
-            return Res
+            Url = self.Conf.get('SpeedTestUrl')
+            if (Url):
+                Speed = await TDownloadSpeed(2).Test(Url)
+                Res = round(Speed / 5)
+            else:
+                Res = 5
+        return Res
 
     async def Run(self):
-        WaitLocalHost = 1
+        WaitLocalHost = 2
         await asyncio.sleep(WaitLocalHost)
 
         while (True):
             try:
-                TaskWS = asyncio.create_task(self.WebSock.Connect('ws/api', {'id': 1}))
+                #TaskWS = asyncio.create_task(self.WebSock.Connect('ws/api', {'id': 1}))
 
-                DataA = await Api.GetConfig()
-                Data = DataA.get('Data', {}).get('Data')
-                if (Data):
-                    MaxWorkers = await self.GetMaxWorkers(Data)
-                    await self._CreateTasks(MaxWorkers)
+                DataApi = await Api.GetUserConfig()
+                Err = FilterKeyErr(DataApi)
+                if (Err):
+                    Log.Print(1, 'e', 'Run() %s' % Err)
                 else:
-                    Log.Print(1, 'i', 'Run(). Cant get config from server')
+                    Dbl = TDbList().Import(GetNestedKey(DataApi, 'Data.Data'))
+                    Workers = Dbl.Rec.GetField('workers')
+                    MaxWorkers = await self.GetMaxWorkers(Workers)
+                    await self._CreateTasks(MaxWorkers)
             except Exception as E:
                 Log.Print(1, 'x', 'Run()', aE = E)
-            finally:
-                TaskWS.cancel()
             await asyncio.sleep(30)

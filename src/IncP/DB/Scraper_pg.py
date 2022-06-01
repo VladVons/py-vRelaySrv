@@ -240,7 +240,7 @@ class TDbApp(TDbPg):
             '''
         return await TDbSql(self).Fetch(Query)
 
-    async def GetConfig(self, aUser: str) -> TDbSql:
+    async def GetUserConfig(self, aId: int) -> TDbSql:
         Query = f'''
             select
                 workers,
@@ -248,6 +248,6 @@ class TDbApp(TDbPg):
             from
                 auth
             where
-                (login = '{aUser}')
+                (id = '{aId}')
             '''
         return await TDbSql(self).Fetch(Query)

@@ -57,7 +57,7 @@ class TSender():
     async def Flush(self):
         if (not self.Dbl.IsEmpty()):
             Data = self.Dbl.Export()
-            SrvRes = await Api.SendResult(Data)
+            SrvRes = await Api.DefHandler('send_result', Data)
             if (SrvRes):
                 self.Dbl.Empty()
 

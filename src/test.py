@@ -133,8 +133,27 @@ def Test_TDictDef():
     #Data = json.dumps(DictDef)
     #print(Data)
 
+class TClass():
+    def __init__(self, aName):
+        self.Name = aName
 
-print()
+    def __enter__(self):
+        print("__enter__()")
+        return self
+
+    def __exit__(self, Type, Value, Trace):
+        print("__exit__()")
+
+    def Print(self):
+        print("Print()", self.Name)
+
+with TClass('hello') as F:
+    F.Print()
+    print("Блок внутри with")
+    #raise TypeError("Исключение TypeError")
+
+
+#print()
 #asyncio.run(TestA_1())
 #asyncio.run(TestA_2())
 #asyncio.run(Test_pyppeteer())
@@ -144,4 +163,4 @@ print()
 #Test_3()
 
 #Test_cloudscraper()
-Test_TDictDef()
+#Test_TDictDef()
