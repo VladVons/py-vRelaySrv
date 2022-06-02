@@ -4,8 +4,9 @@ Created:     2022.02.10
 License:     GNU, see LICENSE for more details
 '''
 
-from aiohttp_socks import ProxyConnector
+
 from bs4 import BeautifulSoup
+from aiohttp_socks import ProxyConnector
 from urllib.parse import urlparse
 import aiohttp
 import asyncio
@@ -27,18 +28,19 @@ def CheckHost(aUrl: str) -> bool:
     Host = urlparse(aUrl).hostname
     return socket.gethostbyname(Host)
 
+def GetSoup(aData: str) -> BeautifulSoup:
+    Res = BeautifulSoup(aData, 'lxml')
+    if (len(Res) == 0):
+        Res = BeautifulSoup(aData, 'html.parser')
+    return Res
+
 async def GetUrlSoup(aUrl: str) -> BeautifulSoup:
     Download = TDownload()
     Download.Opt.update({'Headers': TDHeaders(), 'Decode': True})
     UrlDown = await Download.Get(aUrl)
     Err = FilterKeyErr(UrlDown)
     if (not Err) and (UrlDown['Status'] == 200):
-        Data = UrlDown['Data']
-        Res = BeautifulSoup(Data, 'lxml')
-        if (len(Res) == 0):
-            Res = BeautifulSoup(Data, 'html.parser')
-        return Res
-
+        return GetSoup(UrlDown['Data'])
 
 class TDictDefCall(dict):
     def __getattr__(self, aName: str) -> object:

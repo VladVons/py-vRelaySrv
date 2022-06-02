@@ -1,4 +1,4 @@
-#MaxWorkers = 4
+MaxWorkers = 1
 
 SpeedTestUrl='https://speed.hetzner.de/100MB.bin'
 

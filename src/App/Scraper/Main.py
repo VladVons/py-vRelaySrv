@@ -19,6 +19,7 @@ from IncP.Log import Log
 from IncP.Scheme import TScheme
 from IncP.Utils import FilterKeyErr, GetNestedKey
 
+
 class TMain():
     def __init__(self, aConf: dict):
         self.Conf = aConf

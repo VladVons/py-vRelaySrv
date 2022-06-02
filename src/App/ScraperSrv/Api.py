@@ -33,7 +33,7 @@ class TApiTask():
                 Dbl.Shuffle()
                 Res = Dbl.Rec.GetAsDict()
                 Res['Type'] = Dbl.Tag
-                Res['scheme'] = json.loads(Res['scheme'])
+                #Res['scheme'] = json.loads(Res['scheme'])
                 self.Tasks.RecAdd([Dbl.Rec.GetField('id'), datetime.now(), Dbl])
                 return Res
             else:

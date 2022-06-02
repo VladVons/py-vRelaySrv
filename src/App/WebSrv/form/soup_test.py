@@ -4,7 +4,6 @@ Created:     2022.04.08
 License:     GNU, see LICENSE for more details
 '''
 
-from bs4 import BeautifulSoup
 import json
 #
 from .FForm import TFormBase

@@ -4,11 +4,10 @@ Created:     2022.04.10
 License:     GNU, see LICENSE for more details
 '''
 
-from bs4 import BeautifulSoup
 import time
 #
 from .FForm import TFormBase
-from IncP.Download import TDownload, TDHeaders
+from IncP.Download import TDownload, TDHeaders, GetSoup
 from IncP.Log import Log
 from IncP.Scheme import TScheme
 from IncP.Utils import FilterKeyErr
@@ -37,7 +36,7 @@ class TForm(TFormBase):
         Data = UrlDown['Data']
         TimeAt = time.time()
         if (self.Data.Path):
-            Soup = BeautifulSoup(Data, 'lxml')
+            Soup = GetSoup(Data, 'lxml')
             Script = '''
                 {
                     "Product": {

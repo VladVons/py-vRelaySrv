@@ -17,7 +17,6 @@ UrlChekIP = 'http://icanhazip.com'
 '''
 
 
-from bs4 import BeautifulSoup
 from urllib.parse import urlparse
 from urllib.robotparser import RobotFileParser
 import asyncio
@@ -28,7 +27,7 @@ import re
 #
 from .Api import Api
 from Inc.DB.DbList import TDbList
-from IncP.Download import TDownload
+from IncP.Download import TDownload, GetSoup
 from IncP.Log import Log
 from IncP.Utils import FilterKeyErr
 
@@ -156,7 +155,7 @@ class TWebScraperFull(TWebScraper):
         await self.InitRobotFile(self.UrlRoot + '/robots.txt')
 
     async def _DoWorkerUrl(self, aUrl: str, aData: str, aStatus: int):
-        Soup = BeautifulSoup(aData, 'lxml')
+        Soup = GetSoup(aData)
         Htrefs = Soup.find_all('a')
         for A in Htrefs:
             Href = A.get('href', '').strip().rstrip('/')
@@ -174,7 +173,7 @@ class TWebScraperFull(TWebScraper):
                     #Log.Print(1, 'i', '_GrabHref(). Add url %s' % (Href))
         await self._GrabHref(aUrl, Soup, aStatus)
 
-    async def _GrabHref(self, aUrl: str, aSoup: BeautifulSoup, aStatus: int):
+    async def _GrabHref(self, aUrl: str, aSoup, aStatus: int):
         Msg = 'status:%d, found:%2d, done:%d, total:%dM, %s ;' % (
             aStatus, len(self.Url), self.TotalUrl, self.TotalData / 1000000, aUrl)
         Log.Print(1, 'i', Msg)
@@ -204,12 +203,12 @@ class TWebScraperSitemap(TWebScraper):
                 if (aUrl.endswith('.xml.gz')):
                     Data = gzip.decompress(Data)
 
-                Urls = re.findall('<loc>(.*?)</loc>', Data.decode())
+                Urls = re.findall('<loc>(.*?)</loc>', Data)
                 for Url in Urls:
                     if (Url.endswith('.xml')) or (Url.endswith('.xml.gz')):
                         Res += await self.LoadSiteMap(Url)
                     else:
-                        Res.append(Url.strip('/'))
+                        Res.append(Url.rstrip('/'))
             else:
                 Log.Print(1, 'e', 'Sitemap error %s, %s' % (Status, self.UrlRoot))
         return Res
@@ -222,15 +221,15 @@ class TWebScraperSitemap(TWebScraper):
             Log.Print(1, 'i', 'No sitemap %s' % (self.UrlRoot))
 
     async def _DoWorkerUrl(self, aUrl: str, aData: str, aStatus: int):
-        Soup = BeautifulSoup(aData, 'lxml')
+        Soup = GetSoup(aData)
         self.Scheme.Parse(Soup)
-        if (not self.Scheme.Err):
-            #Dif = set(Keys) - set(Value.keys())
-            #Log.Print(1, 'i', ' %s' % aUrl, Dif)
-            if (not Err):
+        if (len(self.Scheme.Pipe) >= 3):
+            if (self.Scheme.Err):
+                Log.Print(1, 'i', '_DoWorkerUrl() %s' % aUrl, self.Scheme.Err)
+            else:
                 self.UrlScheme += 1
                 self.Scheme.Pipe['Price'], self.Scheme.Pipe['Currency'] = self.Scheme.Pipe.get('Price', (0, ''))
-                await self.Sender.Add(Value)
+                await self.Sender.Add(self.Scheme.Pipe)
 
 class TWebScraperUpdate(TWebScraper):
     def __init__(self, aParent, aScheme: dict, aUrls: list, aSleep: int):
@@ -240,8 +239,7 @@ class TWebScraperUpdate(TWebScraper):
             self.Queue.put_nowait(Url)
 
     async def _DoWorkerUrl(self, aUrl: str, aData: str, aStatus: int):
-        Soup = BeautifulSoup(aData, "lxml")
-
+        Soup = GetSoup(aData)
         Msg = 'status:%d, found:%2d, done:%d, total:%dM, %s ;' % (
             aStatus, self.TotalUrl, self.TotalData / 1000000, aUrl)
         Log.Print(1, 'i', Msg)

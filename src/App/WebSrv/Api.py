@@ -6,11 +6,10 @@ License:     GNU, see LICENSE for more details
 
 import asyncio
 import json
-from bs4 import BeautifulSoup
 #
 from Inc.DB.DbList import TDbList
 from IncP.ApiWeb import TApiBase, TWebClient
-from IncP.Download import TDownload, TDHeaders, GetUrlSoup
+from IncP.Download import TDownload, TDHeaders, GetSoup, GetUrlSoup
 from IncP.Scheme import TScheme
 from IncP.Utils import GetNestedKey, FilterKey, FilterKeyErr
 
@@ -72,7 +71,7 @@ class get_scheme_test_all(TApiPlugin):
         if (Err):
             self.Res.append([aUrl, str(aData['Data'])])
         else:
-            Soup = BeautifulSoup(aData['Data'], 'lxml')
+            Soup = GetSoup(aData['Data'])
             Scheme = self.Hash[aUrl]
             Scheme.Parse(Soup)
             if (Scheme.Err):
