@@ -87,6 +87,14 @@ def FilterKeyErr(aData: dict, aAsStr: bool = False) -> list:
         Res = ', '.join([str(x) for x in Res])
     return Res
 
+def FilterNone(aData: dict, aTrue: bool) -> dict:
+    return {
+        Key: Val
+        for Key, Val in aData.items()
+        if ((Val is None) == aTrue)
+    }
+
+
 #--- String ---
 def GetLeadCharCnt(aValue: str, aChar: str) -> int:
     return len(aValue) - len(aValue.lstrip(aChar))

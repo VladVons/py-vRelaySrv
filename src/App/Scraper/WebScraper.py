@@ -29,7 +29,7 @@ from .Api import Api
 from Inc.DB.DbList import TDbList
 from IncP.Download import TDownload, GetSoup
 from IncP.Log import Log
-from IncP.Utils import FilterKeyErr
+from IncP.Utils import FilterKeyErr, FilterNone
 
 
 class TSender():
@@ -40,8 +40,9 @@ class TSender():
             ('Url', str),
             ('Name', str),
             ('Price', float),
-            ('Currency', str),
+            ('PriceCurr', str),
             ('PriceOld', float),
+            ('PriceOldCurr', str),
             ('Image', str),
             ('Stock', bool),
             ('MPN', str)
@@ -223,13 +224,17 @@ class TWebScraperSitemap(TWebScraper):
     async def _DoWorkerUrl(self, aUrl: str, aData: str, aStatus: int):
         Soup = GetSoup(aData)
         self.Scheme.Parse(Soup)
-        if (len(self.Scheme.Pipe) >= 3):
+        Empty = FilterNone(self.Scheme.Pipe, False)
+        if (len(Empty) >= 3):
             if (self.Scheme.Err):
                 Log.Print(1, 'i', '_DoWorkerUrl() %s' % aUrl, self.Scheme.Err)
             else:
                 self.UrlScheme += 1
-                self.Scheme.Pipe['Price'], self.Scheme.Pipe['Currency'] = self.Scheme.Pipe.get('Price', (0, ''))
-                await self.Sender.Add(self.Scheme.Pipe)
+                Pipe = self.Scheme.Pipe.copy()
+                Pipe['Price'], Pipe['PriceCurr'] = self.Scheme.Pipe.get('Price', (0, ''))
+                Pipe['PriceOld'], Pipe['PriceOldCurr'] = self.Scheme.Pipe.get('PriceOld', (0, ''))
+                await self.Sender.Add(Pipe)
+
 
 class TWebScraperUpdate(TWebScraper):
     def __init__(self, aParent, aScheme: dict, aUrls: list, aSleep: int):

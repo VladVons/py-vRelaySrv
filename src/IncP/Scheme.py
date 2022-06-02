@@ -453,7 +453,7 @@ def TScheme(aScheme: str):
         Class = TSchemeJson
 
     class TClass(Class):
-        def IsJson(self):
+        def IsJson(self) -> bool:
             #Name = self.__class__.__bases__[0].__name__
             return self.__class__.__bases__[0] == TSchemeJson
 
@@ -462,7 +462,7 @@ def TScheme(aScheme: str):
             self.Err = []
             self.Pipe = {}
 
-        def GetData(self, aKeys: list = []):
+        def GetData(self, aKeys: list = []) -> dict:
             Res = {'Data': self.Data, 'Err': self.Err, 'Pipe': self.Pipe}
             if (aKeys):
                 Res = {Key: Res.get(Key) for Key in aKeys}
