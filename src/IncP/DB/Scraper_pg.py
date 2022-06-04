@@ -12,10 +12,10 @@ from .DbPg import TDbPg
 
 
 class TDbApp(TDbPg):
-    async def InsertUrl(self, aUrl: str, aName: str, aPrice: float, aPriceOld: float, aOnStock: bool, aImage: str):
+    async def InsertUrl(self, aUrl: str, aName: str, aPrice: float, aPriceOld: float, aStock: bool, aImage: str):
             Query = f'''
                 INSERT INTO url (url, name, price, price_old, on_stock, image)
-                VALUES('{aUrl}', '{aName}', {aPrice}, {aPriceOld}, {aOnStock}, '{aImage}')
+                VALUES('{aUrl}', '{aName}', {aPrice}, {aPriceOld}, {aStock}, '{aImage}')
             '''
             await self.Exec(Query)
 

@@ -9,7 +9,7 @@ pip3 install aiopg
 import aiopg
 #
 from .Db import TDb, TDbSql
-
+from IncP.Log import Log
 
 class TDbPg(TDb):
     def __init__(self, aAuth: dict):
@@ -18,23 +18,27 @@ class TDbPg(TDb):
     async def Connect(self):
         await self.Close()
 
-        self.Pool = await aiopg.create_pool(
-                host = self.Auth.get('Server', 'localhost'),
-                port = self.Auth.get('Port', 5432),
-                dbname = self.Auth.get('Database'),
-                user = self.Auth.get('User'),
-                password = self.Auth.get('Password')
-        )
+        AuthDef = {
+            'host': self.Auth.get('Server', 'localhost'),
+            'port': self.Auth.get('Port', 5432),
+            'dbname': self.Auth.get('Database'),
+            'user': self.Auth.get('User', 'postgres')
+        }
+        Log.Print(1, 'i', 'Connect()', [AuthDef])
+
+        AuthDef['password'] = self.Auth.get('Password')
+        self.Pool = await aiopg.create_pool(**AuthDef)
 
     async def GetTableColumns(self, aName: str) -> TDbSql:
         Query = f'''
-            SELECT
-                column_name as name
-            FROM
+            select
+                column_name as name,
+                udt_name as type
+            from
                 information_schema.columns
-            WHERE
+            where
                 table_name = '{aName}'
-            ORDER BY
+            order by
                 ordinal_position
             '''
         return await self.Fetch(Query)

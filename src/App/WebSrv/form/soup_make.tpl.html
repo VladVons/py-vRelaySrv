@@ -34,7 +34,7 @@
                     Object.entries(Val).forEach(([Idx, Macro]) => {
                       Script_Key += JSON.stringify(Macro) + ',\n';
                     });
-                    document.getElementById('Script_' + Key).value = Script_Key;
+                    document.getElementById('script_' + Key).value = Script_Key;
                   })
                 } else {
                   Pipe += JSON.stringify(PipeJ[i]) + ',\n';
@@ -145,39 +145,39 @@
       </td>
     </tr>
     <tr>
-      <td>Name</td>
+      <td>name</td>
       <td>
-        <textarea name="Script_Name" id="Script_Name" rows="4" onblur="OnBlur(this)">{{ Data.Script_Name }}</textarea>
+        <textarea name="script_name" id="script_name" rows="4" onblur="OnBlur(this)">{{ Data.script_name }}</textarea>
       </td>
     </tr>
     <tr>
-      <td>Price</td>
+      <td>price</td>
       <td>
-        <textarea name="Script_Price" id="Script_Price" rows="4" onblur="OnBlur(this)">{{ Data.Script_Price }}</textarea>
+        <textarea name="script_price" id="script_price" rows="4" onblur="OnBlur(this)">{{ Data.script_price }}</textarea>
       </td>
     </tr>
     <tr>
-      <td>Price_old</td>
+      <td>price_old</td>
       <td>
-        <textarea name="Script_PriceOld" id="Script_PriceOld" rows="4" onblur="OnBlur(this)">{{ Data.Script_PriceOld }}</textarea>
+        <textarea name="script_price_old" id="script_price_old" rows="4" onblur="OnBlur(this)">{{ Data.script_price_old }}</textarea>
       </td>
     </tr>
     <tr>
-      <td>Stock</td>
+      <td>stock</td>
       <td>
-        <textarea name="Script_Stock" id="Script_Stock" rows="4" onblur="OnBlur(this)">{{ Data.Script_Stock }}</textarea>
+        <textarea name="script_stock" id="script_stock" rows="4" onblur="OnBlur(this)">{{ Data.script_stock }}</textarea>
       </td>
     </tr>
     <tr>
-      <td>Image</td>
+      <td>image</td>
       <td>
-        <textarea name="Script_Image" id="Script_Image" rows="4" onblur="OnBlur(this)">{{ Data.Script_Image }}</textarea>
+        <textarea name="script_image" id="script_image" rows="4" onblur="OnBlur(this)">{{ Data.script_image }}</textarea>
       </td>
     </tr>
     <tr>
-      <td>MPN</td>
+      <td>mpn</td>
       <td>
-        <textarea name="Script_MPN" id="Script_MPN" rows="4" onblur="OnBlur(this)">{{ Data.Script_MPN }}</textarea>
+        <textarea name="script_mpn" id="script_mpn" rows="4" onblur="OnBlur(this)">{{ Data.script_mpn }}</textarea>
       </td>
     </tr>
     <tr>

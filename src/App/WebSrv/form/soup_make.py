@@ -15,7 +15,7 @@ from IncP.Scheme import TScheme
 from IncP.Utils import TJsonEncoder, FormatJsonStr
 
 
-_FieldPrefix = 'Script_'
+_FieldPrefix = 'script_'
 
 
 class TForm(TFormBase):

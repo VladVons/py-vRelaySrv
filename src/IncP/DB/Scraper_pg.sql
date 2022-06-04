@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS product(
     price               FLOAT,
     price_old           FLOAT,
     image               VARCHAR(256),
-    on_stock            BOOLEAN DEFAULT TRUE,
+    stock               BOOLEAN DEFAULT TRUE,
     FOREIGN KEY (url_id) REFERENCES url(id)
 );
 

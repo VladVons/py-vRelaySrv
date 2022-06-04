@@ -55,8 +55,11 @@ class TApiBase():
             Class = UrlInf.get('Class')
             if (Class):
                 Method = getattr(Class, 'Exec', self.DefMethod)
-                if (not Method):
-                    return {'Type': 'Err', 'Data': 'unknown method %s' % (MethodName)}
+            else:
+                Method = self.DefMethod
+
+            if (not Method):
+               return {'Type': 'Err', 'Data': 'unknown method %s' % (aPath)}
 
         ParamInf = UrlInf.get('param')
         if (ParamInf) and (ParamInf[0] == '*'):

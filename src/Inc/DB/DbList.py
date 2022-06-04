@@ -5,41 +5,41 @@ License:     GNU, see LICENSE for more details
 
     Dbl1 = TDbList( [('User', str), ('Age', int), ('Male', bool, True)] )
     Data = [['User2', 22, True], ['User1', 11, False], ['User3', 33, True]]
-    Db1.Safe = True
-    Db1.SetData(Data)
+    Dbl1.Safe = True
+    Dbl1.SetData(Data)
 
-    Db1.RecAdd()
-    #Db1.RecFlush()
+    Dbl1.RecAdd()
+    #Dbl1.RecFlush()
 
-    Db1.RecAdd()
-    Db1.Rec.SetField('User', 'User4')
-    Db1.Rec.SetField('Age', 20)
-    Db1.Rec.SetField('Male', False)
-    Db1.Rec.Flush()
+    Dbl1.RecAdd()
+    Dbl1.Rec.SetField('User', 'User4')
+    Dbl1.Rec.SetField('Age', 20)
+    Dbl1.Rec.SetField('Male', False)
+    Dbl1.Rec.Flush()
 
-    Db1.Data.append(['User5', 30, False])
-    Db1.RecAdd(['User6', 40, True])
-    Db1.Rec.Flush()
+    Dbl1.Data.append(['User5', 30, False])
+    Dbl1.RecAdd(['User6', 40, True])
+    Dbl1.Rec.Flush()
 
-    Db1.RecAdd()
-    Db1.Rec.SetAsDict({'User': 'User7', 'Age': 45, 'Male': True})
-    Db1.Rec.Flush()
+    Dbl1.RecAdd()
+    Dbl1.Rec.SetAsDict({'User': 'User7', 'Age': 45, 'Male': True})
+    Dbl1.Rec.Flush()
 
-    Db1.RecNo = 0
+    Dbl1.RecNo = 0
     print()
-    print('GetSize:', Db1.GetSize())
-    print('Data:', Db1.Data)
-    print('Rec:', Db1.Rec)
-    print('Rec.GetAsDict:', Db1.Rec.GetAsDict())
-    print('Rec.GetAsTuple:', Db1.Rec.GetAsTuple())
-    print('Rec.GetList:', Db1.ExportList('User', True))
+    print('GetSize:', Dbl1.GetSize())
+    print('Data:', Dbl1.Data)
+    print('Rec:', Dbl1.Rec)
+    print('Rec.GetAsDict:', Dbl1.Rec.GetAsDict())
+    print('Rec.GetAsTuple:', Dbl1.Rec.GetAsTuple())
+    print('Rec.GetList:', Dbl1.ExportList('User', True))
 
-    Db1.Sort(['User', 'Age'], True)
-    for Idx, Rec in enumerate(Db1):
+    Dbl1.Sort(['User', 'Age'], True)
+    for Idx, Rec in enumerate(Dbl1):
         print(Idx, Rec.GetField('User'),  Rec[1])
 
     print()
-    Db3 = Db1.Clone(['User', 'Age'], (0, 3))
+    Db3 = Dbl1.Clone(aFields = ['User', 'Age'], aRecNo = (0, 3))
     Db3.Shuffle()
     for Idx, Rec in enumerate(Db3):
         print(Idx, Rec.GetField('User'),  Rec[1])
@@ -49,14 +49,14 @@ License:     GNU, see LICENSE for more details
 
     print()
     Cond = TDbCond().AddFields([
-        ['lt', (Db1, 'Age'), 40, True],
-        ['eq', (Db1, 'Male'), True, True]
+        ['lt', (Dbl1, 'Age'), 40, True],
+        ['eq', (Dbl1, 'Male'), True, True]
     ])
-    Db2 = Db1.Clone(aCond=Cond)
-    print(Db2)
+    Dbl2 = Dbl1.Clone(aCond=Cond)
+    print(Dbl2)
 
-    Db1.Save('Db2.json')
-    Db1.Load('Db2.json')
+    Dbl1.Save('Dbl2.json')
+    Dbl1.Load('Dbl2.json')
 '''
 
 
@@ -130,6 +130,13 @@ class TDbFields(dict):
     def Import(self, aFields: list):
         Data = [(Name, type(eval(Type)()), Def) for Name, Type, Def in aFields]
         self.AddList(Data)
+
+    def GetFields(self, aFields: list) -> 'TDbFields':
+        Res = TDbFields()
+        for Name in aFields:
+            _, Type, Def = self[Name]
+            Res.Add(Name, Type, Def)
+        return Res
 
     def GetList(self) -> list:
         return [self.IdxOrd[i][0] for i in range(len(self))]
@@ -205,10 +212,10 @@ class TDbRec(list):
 class TDbList():
     def __init__(self, aFields: list = [], aData: list = None):
         self.Tag = 0
-        self.Fields = None
         self.Data = []
         self._RecNo = 0
         self.Safe = True
+        self.Fields = None
         self.Rec = TDbRec(self)
         self.Init(aFields, aData)
 
@@ -258,13 +265,8 @@ class TDbList():
         return '\n'.join(Res)
 
     def _DbExp(self, aData: list, aFields: list) -> 'TDbList':
-        DbFields = TDbFields()
-        for Name in aFields:
-            Len, Type, Def = self.Fields[Name]
-            DbFields.Add(Name, Type, Def)
-
         Res = TDbList()
-        Res.Fields = DbFields
+        Res.Fields = self.Fields.GetFields(aFields)
         Res.Data = aData
         return Res
 
@@ -328,6 +330,24 @@ class TDbList():
             Res = list(set(Res))
         return Res
 
+    def ExportData(self, aFields: list = [], aCond: TDbCond = None, aRecNo: tuple = (0, -1)) -> list:
+        Start, Finish = aRecNo
+        if (Finish == -1):
+            Finish = self.GetSize()
+
+        if (aFields):
+            FieldsNo = [self.Fields.GetNo(F) for F in aFields]
+        else:
+            aFields = self.Fields.GetList()
+            FieldsNo = list(range(len(self.Fields)))
+
+        if (aCond):
+            Data = [[Val[i] for i in FieldsNo] for Val in self.Data[Start:Finish] if aCond.Find(Val)]
+        else:
+            #return [list(map(i.__getitem__, FieldsNo)) for i in self.Data[Start:Finish]]
+            Data = [[Val[i] for i in FieldsNo] for Val in self.Data[Start:Finish]]
+        return Data
+
     def Export(self) -> dict:
         '''
         Returns all data in a simple dict for future import
@@ -349,6 +369,12 @@ class TDbList():
         self.Fields = TDbFields()
         self.Fields.Import(aData['Head'])
         self.RecNo = 0
+        return self
+
+    def ImportDbl(self, aDbl: 'TDbList', aFields: list = [], aCond: TDbCond = None, aRecNo: tuple = (0, -1)):
+        self.Data = aDbl.ExportData(aFields, aCond, aRecNo)
+        self.Fields = aDbl.Fields.GetFields(aFields)
+        self.Tag = aDbl.Tag
         return self
 
     def SetData(self, aData: list):
@@ -382,21 +408,7 @@ class TDbList():
                 return i
 
     def Clone(self, aFields: list = [], aCond: TDbCond = None, aRecNo: tuple = (0, -1)) -> 'TDbList':
-        Start, Finish = aRecNo
-        if (Finish == -1):
-            Finish = self.GetSize()
-
-        if (aFields):
-            FieldsNo = [self.Fields.GetNo(F) for F in aFields]
-        else:
-            aFields = self.Fields.GetList()
-            FieldsNo = list(range(len(self.Fields)))
-
-        if (aCond):
-            Data = [[Val[i] for i in FieldsNo] for Val in self.Data[Start:Finish] if aCond.Find(Val)]
-        else:
-            #return [list(map(i.__getitem__, FieldsNo)) for i in self.Data[Start:Finish]]
-            Data = [[Val[i] for i in FieldsNo] for Val in self.Data[Start:Finish]]
+        Data = self.ExportData(aFields, aCond, aRecNo)
         return self._DbExp(Data, aFields)
 
     def Sort(self, aFields: list, aReverse: bool = False):
@@ -446,4 +458,11 @@ if (__name__ == '__main__'):
     Dbl1 = TDbList( [('User', str), ('Age', int), ('Male', bool, True)] )
     Data = [['User2', 22, True], ['User1', 11, False], ['User3', 33, True], ['User4', 44, True]]
     Dbl1.SetData(Data)
+
+    Cond = TDbCond().AddFields([
+        ['lt', (Dbl1, 'Age'), 40, True],
+        ['eq', (Dbl1, 'Male'), True, True]
+    ])
+    Dbl2 = Dbl1.Clone(aFields = ['User', 'Age'], aCond=Cond)
+    print(Dbl2)
 '''

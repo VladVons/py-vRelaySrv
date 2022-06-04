@@ -29,6 +29,10 @@ class TDbSql(TDbList):
         Values = [Rec.GetAsSql() for Rec in self]
         return 'insert into %s (%s) values (%s)' % (aTable, ', '.join(Fields), '), ('.join(Values))
 
+    def _GetUpdate(self, aTable: str, aRecNo: int = 0):
+        self.RecNo = aRecNo
+        return 'update %s set %s' % (aTable, self.Rec.GetAsSql())
+
     async def Fetch(self, aQuery: str):
         Data, Fields = await self._Db.Fetch(aQuery)
         self.Fields = self._GetFields(Fields, Data)
@@ -38,6 +42,23 @@ class TDbSql(TDbList):
     async def Insert(self, aTable: str):
         Query = self._GetInsertStr(aTable)
         await self._Db.Exec(Query)
+
+    async def InsertUpdate(self, aTable: str, aUniqField: str):
+        Insert = self._GetInsertStr(aTable)
+        Set = [
+            '%s = excluded.%s' % (Key, Key)
+            for Key in self.Fields
+            if (Key != aUniqField)
+        ]
+        Set = ', '.join(Set)
+
+        Query = f'''
+            {Insert}
+            on conflict ({aUniqField}) do update
+            set {Set}
+        '''
+        await self._Db.Exec(Query)
+
 
 class TDb():
     Pool = None

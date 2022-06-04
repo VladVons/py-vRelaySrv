@@ -19,6 +19,7 @@ UrlChekIP = 'http://icanhazip.com'
 
 from urllib.parse import urlparse
 from urllib.robotparser import RobotFileParser
+from datetime import datetime
 import asyncio
 import gzip
 import os
@@ -29,24 +30,14 @@ from .Api import Api
 from Inc.DB.DbList import TDbList
 from IncP.Download import TDownload, GetSoup
 from IncP.Log import Log
-from IncP.Utils import FilterKeyErr, FilterNone
+from IncP.Utils import FilterKeyErr, FilterNone, GetNestedKey
 
 
 class TSender():
-    def __init__(self, aParent: 'TWebScraper', aMaxSize: int = 3):
+    def __init__(self, aParent: 'TWebScraper', aDbl: TDbList, aMaxSize: int = 0):
         self.Parent = aParent
         self.MaxSize = aMaxSize
-        self.Dbl = TDbList([
-            ('Url', str),
-            ('Name', str),
-            ('Price', float),
-            ('PriceCurr', str),
-            ('PriceOld', float),
-            ('PriceOldCurr', str),
-            ('Image', str),
-            ('Stock', bool),
-            ('MPN', str)
-        ])
+        self.Dbl = aDbl
 
     async def Add(self, aData: dict):
         self.Dbl.RecAdd()
@@ -57,8 +48,8 @@ class TSender():
     async def Flush(self):
         if (not self.Dbl.IsEmpty()):
             Data = self.Dbl.Export()
-            SrvRes = await Api.DefHandler('send_result', Data)
-            if (SrvRes):
+            DataApi = await Api.DefHandler('send_result', Data)
+            if (GetNestedKey(DataApi, 'Data.Data')):
                 self.Dbl.Empty()
 
 
@@ -78,7 +69,22 @@ class TWebScraper():
         self.Download.Opt.update({'Decode': True})
 
         self.DblQueue = TDbList( [('Url', str)] )
-        self.Sender = TSender(self)
+
+        Dbl = TDbList([
+            ('url', str),
+            ('name', str),
+            ('price', float),
+            ('price_cur', str),
+            ('price_old', float),
+            ('image', str),
+            ('stock', bool),
+            ('mpn', str),
+            ('update_date', str),
+            ('data_size', int),
+            ('url_count', int),
+            ('status', int)
+            ])
+        self.Sender = TSender(self, Dbl)
 
         self.Event = asyncio.Event()
         self.Wait(False)
@@ -122,7 +128,7 @@ class TWebScraper():
                     self.TotalUrl += 1
                 await self._DoWorkerUrl(Url, Data, Status)
 
-        await self.Sender.Flush()
+        await self.SenderProduct.Flush()
         await self._DoWorkerEnd()
         Log.Print(1, 'i', '_Worker(). done')
 
@@ -142,6 +148,15 @@ class TWebScraperFull(TWebScraper):
         Ext = os.path.splitext(Path)[1]
         return Ext in ['.zip', '.rar', '.xml', '.pdf', '.jpg', '.jpeg', '.png', '.gif']
 
+    def GetHrefs(self, aSoup) -> list:
+        Res = []
+        for x in aSoup.find_all('a'):
+            x = x.get('href', '').strip().rstrip('/')
+            if (x):
+                if (x.startswith('/')):
+                    x = self.UrlRoot + x
+                Res.append(x)
+
     async def InitRobotFile(self, aUrl: str):
         self.RobotFile = RobotFileParser()
         UrlDown = await self.Download.Get(aUrl)
@@ -157,21 +172,16 @@ class TWebScraperFull(TWebScraper):
 
     async def _DoWorkerUrl(self, aUrl: str, aData: str, aStatus: int):
         Soup = GetSoup(aData)
-        Htrefs = Soup.find_all('a')
-        for A in Htrefs:
-            Href = A.get('href', '').strip().rstrip('/')
-            if (Href):
-                if (Href.startswith('/')):
-                    Href = self.UrlRoot + Href
-
-                if (Href.startswith(self.UrlRoot)) and \
-                   (not Href.startswith('#')) and \
-                   (self.RobotFile.can_fetch('*', Href)) and \
-                   (not Href in self.Url) and \
-                   (not self.IsMimeApp(Href)):
-                    self.Url.append(Href)
-                    self.DblQueue.RecAdd([Href])
-                    #Log.Print(1, 'i', '_GrabHref(). Add url %s' % (Href))
+        Htrefs = self.GetHrefs(Soup)
+        for Href in Htrefs:
+            if (Href.startswith(self.UrlRoot)) and \
+                (not Href.startswith('#')) and \
+                (self.RobotFile.can_fetch('*', Href)) and \
+                (not Href in self.Url) and \
+                (not self.IsMimeApp(Href)):
+                self.Url.append(Href)
+                self.DblQueue.RecAdd([Href])
+                #Log.Print(1, 'i', '_GrabHref(). Add url %s' % (Href))
         await self._GrabHref(aUrl, Soup, aStatus)
 
     async def _GrabHref(self, aUrl: str, aSoup, aStatus: int):
@@ -183,7 +193,7 @@ class TWebScraperFull(TWebScraper):
         if (not self.Scheme.Err):
             self.UrlScheme += 1
             #print('---x1', Res)
-            #await self.Parent.Db.InsertUrl(aUrl, Res.get('Name', ''), Res.get('Price', 0), Res.get('PriceOld', 0), Res.get('OnStock', 1), Res.get('Image', ''))
+            #await self.Parent.Db.InsertUrl(aUrl, Res.get('name', ''), Res.get('price', 0), Res.get('price_Old', 0), Res.get('stock', 1), Res.get('image', ''))
 
 
 class TWebScraperSitemap(TWebScraper):
@@ -222,18 +232,20 @@ class TWebScraperSitemap(TWebScraper):
             Log.Print(1, 'i', 'No sitemap %s' % (self.UrlRoot))
 
     async def _DoWorkerUrl(self, aUrl: str, aData: str, aStatus: int):
+        Res = {'data_size': len(aData), 'status': aStatus, 'update_date': datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+
         Soup = GetSoup(aData)
         self.Scheme.Parse(Soup)
-        Empty = FilterNone(self.Scheme.Pipe, False)
-        if (len(Empty) >= 3):
+        NotEmpty = FilterNone(self.Scheme.Pipe, False)
+        if (len(NotEmpty) >= 3):
             if (self.Scheme.Err):
                 Log.Print(1, 'i', '_DoWorkerUrl() %s' % aUrl, self.Scheme.Err)
             else:
                 self.UrlScheme += 1
-                Pipe = self.Scheme.Pipe.copy()
-                Pipe['Price'], Pipe['PriceCurr'] = self.Scheme.Pipe.get('Price', (0, ''))
-                Pipe['PriceOld'], Pipe['PriceOldCurr'] = self.Scheme.Pipe.get('PriceOld', (0, ''))
-                await self.Sender.Add(Pipe)
+                Res.update(self.Scheme.Pipe)
+                Res['price'], Res['price_cur'] = Res.get('price', (0, ''))
+                Res['price_old'], _ = Res.get('price_old', (0, ''))
+        await self.Sender.Add(Res)
 
 
 class TWebScraperUpdate(TWebScraper):

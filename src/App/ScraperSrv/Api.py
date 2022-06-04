@@ -118,12 +118,24 @@ class TApi(TApiBase):
         return True
 
     async def path_send_result(self, aPath: str, aData: dict) -> dict:
+        Dbl = TDbList().Import(aData)
+        DblFields = Dbl.Fields.GetList()
+        TableFields = self.TableFields['url']
+        Fields = [x for x in DblFields if (x in TableFields)]
+        DblUrl = TDbSql(self.Db).ImportDbl(Dbl, Fields)
+        await DblUrl.InsertUpdate('url', 'url')
         return True
 
     async def DbInit(self, aAuth: dict):
         self.Db = TDbApp(aAuth)
         await self.Db.Connect()
         # await self.Db.ExecFile('IncP/DB/Scraper_pg.sql')
+
+        self.TableFields = {}
+        for Table in ['url', 'product']:
+            Data = await self.Db.GetTableColumns(Table)
+            Names = [x[0] for x in Data[0]]
+            self.TableFields[Table] = Names
 
         Dbl = await self.Db.GetDbVersion()
         Rec = Dbl.Rec

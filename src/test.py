@@ -164,3 +164,10 @@ with TClass('hello') as F:
 
 #Test_cloudscraper()
 #Test_TDictDef()
+
+
+a1 = [1,2,3,4]
+a2 = [2,3,5]
+diff = set(a1) - set(a2)
+print(diff)
+pass

@@ -414,7 +414,7 @@ class TSchemePy():
                 self.Data = Data.get('Data', {})
                 self.Err = Data.get('Err', [])
 
-                Keys = ['Image', 'Price', 'PriceOld', 'Name', 'Stock', 'MPN']
+                Keys = ['image', 'price', 'price_old', 'name', 'stock', 'mpn']
                 self.Pipe = FilterKey(self.Data, Keys, dict)
         return self
 
@@ -438,7 +438,7 @@ class TSchemeJson():
             self.Data = SoupScheme.Parse(aSoup, self.Scheme)
             self.Err = SoupScheme.Err
 
-            Keys = ['Image', 'Price', 'PriceOld', 'Name', 'Stock', 'MPN']
+            Keys = ['image', 'price', 'price_old', 'name', 'stock', 'mpn']
             self.Pipe = FilterKey(self.Data, Keys, dict)
         return self
 
