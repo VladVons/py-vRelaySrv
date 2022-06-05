@@ -10,9 +10,6 @@ License:     GNU, see LICENSE for more details
 
     Dbl1.AddField([('Weight', int, 100)])
 
-    Dbl1.RecAdd()
-    #Dbl1.RecFlush()
-
     Rec = Dbl1.RecAdd()
     Rec.SetField('User', 'User4')
     Rec.SetField('Age', 20)

@@ -71,21 +71,24 @@ class TWebScraper():
         self.DblQueue = TDbList( [('Url', str)] )
 
         Dbl = TDbList([
-            ('url', str),
-            ('site_id', int),
+            # product
+            ('category', str),
+            ('image', str),
+            ('mpn', str),
             ('name', str),
-            ('price', float),
             ('price_cur', str),
             ('price_old', float),
-            ('image', str),
-            ('stock', bool),
-            ('mpn', str),
-            ('update_date', str),
-            ('data_size', int),
-            ('url_count', int),
+            ('price', float),
             ('product_count', int),
+            ('stock', bool),
+            # url
+            ('data_size', int),
+            ('site_id', int),
             ('status', int),
             ('timer', float)
+            ('update_date', str),
+            ('url_count', int),
+            ('url', str),
             ])
         self.Sender = TSender(self, Dbl, 5)
 
@@ -241,13 +244,13 @@ class TWebScraperSitemap(TWebScraper):
         Soup = GetSoup(aData)
 
         Res = {
-            'url': aUrl,
-            'site_id': self.UrlRootId,
             'data_size': len(aData),
-            'url_count': len(self.GetHrefs(Soup, self.UrlRoot)),
+            'site_id': self.UrlRootId,
             'status': aStatus,
             'timer': aTime,
-            'update_date': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            'update_date': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            'url_count': len(self.GetHrefs(Soup, self.UrlRoot)),
+            'url': aUrl,
             }
 
         self.Scheme.Parse(Soup)
