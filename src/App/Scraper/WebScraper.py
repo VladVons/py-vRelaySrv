@@ -83,14 +83,16 @@ class TWebScraper():
             ('update_date', str),
             ('data_size', int),
             ('url_count', int),
-            ('status', int)
+            ('product_count', int),
+            ('status', int),
+            ('timer', float)
             ])
-        self.Sender = TSender(self, Dbl, 2)
+        self.Sender = TSender(self, Dbl, 5)
 
         self.Event = asyncio.Event()
         self.Wait(False)
 
-    async def _DoWorkerUrl(self, aUrl: str, aData, aStatus: int):
+    async def _DoWorkerUrl(self, aUrl: str, aData, aStatus: int, aTime: float):
         raise NotImplementedError()
 
     async def _DoWorkerStart(self): ...
@@ -127,7 +129,7 @@ class TWebScraper():
                 if (Status == 200):
                     self.TotalData += len(Data)
                     self.TotalUrl += 1
-                await self._DoWorkerUrl(Url, Data, Status)
+                await self._DoWorkerUrl(Url, Data, Status, UrlDown['Time'])
 
         await self.SenderProduct.Flush()
         await self._DoWorkerEnd()
@@ -173,7 +175,7 @@ class TWebScraperFull(TWebScraper):
     async def _DoWorkerStart(self):
         await self.InitRobotFile(self.UrlRoot + '/robots.txt')
 
-    async def _DoWorkerUrl(self, aUrl: str, aData: str, aStatus: int):
+    async def _DoWorkerUrl(self, aUrl: str, aData: str, aStatus: int, aTime: float):
         Soup = GetSoup(aData)
         Htrefs = self.GetHrefs(Soup, self.UrlRoot)
         for Href in Htrefs:
@@ -235,7 +237,7 @@ class TWebScraperSitemap(TWebScraper):
         else:
             Log.Print(1, 'i', 'No sitemap %s' % (self.UrlRoot))
 
-    async def _DoWorkerUrl(self, aUrl: str, aData: str, aStatus: int):
+    async def _DoWorkerUrl(self, aUrl: str, aData: str, aStatus: int, aTime: float):
         Soup = GetSoup(aData)
 
         Res = {
@@ -244,11 +246,13 @@ class TWebScraperSitemap(TWebScraper):
             'data_size': len(aData),
             'url_count': len(self.GetHrefs(Soup, self.UrlRoot)),
             'status': aStatus,
+            'timer': aTime,
             'update_date': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             }
 
         self.Scheme.Parse(Soup)
         NotEmpty = FilterNone(self.Scheme.Pipe, False)
+        Res['product_count'] = len(NotEmpty)
         if (len(NotEmpty) >= 3):
             if (self.Scheme.Err):
                 Log.Print(1, 'i', '_DoWorkerUrl() %s' % aUrl, self.Scheme.Err)
@@ -268,7 +272,7 @@ class TWebScraperUpdate(TWebScraper):
         for Url in aUrls:
             self.Queue.put_nowait(Url)
 
-    async def _DoWorkerUrl(self, aUrl: str, aData: str, aStatus: int):
+    async def _DoWorkerUrl(self, aUrl: str, aData: str, aStatus: int, aTime: float):
         Soup = GetSoup(aData)
         Msg = 'status:%d, found:%2d, done:%d, total:%dM, %s ;' % (
             aStatus, self.TotalUrl, self.TotalData / 1000000, aUrl)

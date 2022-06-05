@@ -35,6 +35,7 @@ class TMain():
         print('--- _OnWebSockMessage', aData)
 
     async def _Worker(self, aTaskId: int):
+        Log.Print(1, 'i', '_Worker(). Start Id %d' % (aTaskId))
         while (True):
             Wait = random.randint(2, 5)
             #Log.Print(1, 'i', '_Worker(). Ready for task. Id %d, wait %d sec' % (aTaskId, Wait))

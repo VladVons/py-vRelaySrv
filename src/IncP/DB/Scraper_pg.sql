@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS site(
     scheme              TEXT NOT NULL,
     scheme_date         DATE,
     robots              TEXT,
-    sleep               FLOAT DEFAULT 3,
+    sleep               FLOAT4 DEFAULT 3,
     sitemap             BOOLEAN DEFAULT FALSE,
     hours               VARCHAR(64),
     enabled             BOOLEAN DEFAULT FALSE,
@@ -38,6 +38,8 @@ CREATE TABLE IF NOT EXISTS url(
     url_count           SMALLINT DEFAULT 0,
     status              SMALLINT,
     product_id          INTEGER,
+    product_count       SMALLINT DEFAULT 0,
+    timer               FLOAT4 DEFAULT 0,
     FOREIGN KEY (site_id) REFERENCES site(id),
     UNIQUE (url)
 );
@@ -47,8 +49,8 @@ CREATE TABLE IF NOT EXISTS product(
     create_date         TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     url_id              INTEGER,
     name                VARCHAR(128),
-    price               FLOAT,
-    price_old           FLOAT,
+    price               FLOAT4,
+    price_old           FLOAT4,
     price_cur           VARCHAR(3),
     image               VARCHAR(256),
     mpn                 VARCHAR(20),
