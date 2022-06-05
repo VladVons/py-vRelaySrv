@@ -8,14 +8,16 @@ License:     GNU, see LICENSE for more details
     Dbl1.Safe = True
     Dbl1.SetData(Data)
 
+    Dbl1.AddField([('Weight', int, 100)])
+
     Dbl1.RecAdd()
     #Dbl1.RecFlush()
 
-    Dbl1.RecAdd()
-    Dbl1.Rec.SetField('User', 'User4')
-    Dbl1.Rec.SetField('Age', 20)
-    Dbl1.Rec.SetField('Male', False)
-    Dbl1.Rec.Flush()
+    Rec = Dbl1.RecAdd()
+    Rec.SetField('User', 'User4')
+    Rec.SetField('Age', 20)
+    Rec.SetField('Male', False)
+    Rec.Flush()
 
     Dbl1.Data.append(['User5', 30, False])
     Dbl1.RecAdd(['User6', 40, True])
@@ -132,6 +134,9 @@ class TDbFields(dict):
         self.AddList(Data)
 
     def GetFields(self, aFields: list) -> 'TDbFields':
+        if (not aFields):
+           aFields = self.GetList()
+
         Res = TDbFields()
         for Name in aFields:
             _, Type, Def = self[Name]
@@ -155,6 +160,7 @@ class TDbRec(list):
 
     def Flush(self):
         self.Parent.Data[self.Parent._RecNo] = self.copy()
+        pass
 
     def Init(self):
         Fields = self.Parent.Fields
@@ -189,7 +195,7 @@ class TDbRec(list):
         Res = []
         for _, (FNo, FType, _) in self.Parent.Fields.items():
             if (FType == bool):
-                Val = str(int(self[FNo]))
+                Val = str(self[FNo])
             elif (FType in [int, float]):
                 Val = str(self[FNo])
             else:
@@ -223,14 +229,15 @@ class TDbList():
         return self.GetSize()
 
     def __iter__(self):
+        self._RecNo = -1
         return self
 
     def __next__(self):
-        if (self._RecNo >= self.GetSize()):
+        if (self._RecNo >= self.GetSize() - 1):
             raise StopIteration
         else:
-            self._RecInit()
             self._RecNo += 1
+            self._RecInit()
             return self.Rec
 
     def __repr__(self):
@@ -407,6 +414,13 @@ class TDbList():
             if (self.Data[i][FieldNo] == aValue):
                 return i
 
+    def AddField(self, aFields: list = []):
+        self.Fields.AddList(aFields)
+        for Data in self.Data:
+            for Field in aFields:
+                Def = self.Fields[Field[0]][2]
+                Data.append(Def)
+
     def Clone(self, aFields: list = [], aCond: TDbCond = None, aRecNo: tuple = (0, -1)) -> 'TDbList':
         Data = self.ExportData(aFields, aCond, aRecNo)
         return self._DbExp(Data, aFields)
@@ -459,10 +473,10 @@ if (__name__ == '__main__'):
     Data = [['User2', 22, True], ['User1', 11, False], ['User3', 33, True], ['User4', 44, True]]
     Dbl1.SetData(Data)
 
-    Cond = TDbCond().AddFields([
-        ['lt', (Dbl1, 'Age'), 40, True],
-        ['eq', (Dbl1, 'Male'), True, True]
-    ])
-    Dbl2 = Dbl1.Clone(aFields = ['User', 'Age'], aCond=Cond)
-    print(Dbl2)
+    for Idx, Rec in enumerate(Dbl1):
+        Rec.SetField('Age', Idx)
+        Rec.Flush()
+
+    print(Dbl1)
 '''
+

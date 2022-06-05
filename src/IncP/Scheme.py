@@ -468,4 +468,7 @@ def TScheme(aScheme: str):
                 Res = {Key: Res.get(Key) for Key in aKeys}
             return Res
 
+        def GetPipe(self) -> dict:
+            return {Key.split('.')[-1]: Val for Key, Val in self.Pipe.items()}
+
     return TClass(aScheme)

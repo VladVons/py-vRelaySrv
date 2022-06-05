@@ -50,9 +50,9 @@ class TMain():
                 Type = Data.get('Type')
                 if (Type == 'Full'):
                     if (Data['sitemap']):
-                        Scraper = TWebScraperSitemap(self, Scheme, Data['url'], Data['sleep'])
+                        Scraper = TWebScraperSitemap(self, Scheme, Data['url'], Data['id'], Data['sleep'])
                     else:
-                        Scraper = TWebScraperFull(self, Scheme, Data['url'], Data['sleep'])
+                        Scraper = TWebScraperFull(self, Scheme, Data['url'], Data['id'], Data['sleep'])
                 elif (Type == 'Update'):
                     Scraper = TWebScraperUpdate(self, Scheme, Data['Urls'], Data['sleep'])
                 elif (Type == 'UpdateSelenium'):

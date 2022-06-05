@@ -49,8 +49,12 @@ CREATE TABLE IF NOT EXISTS product(
     name                VARCHAR(128),
     price               FLOAT,
     price_old           FLOAT,
+    price_cur           VARCHAR(3),
     image               VARCHAR(256),
+    mpn                 VARCHAR(20),
+    category            VARCHAR(30),
     stock               BOOLEAN DEFAULT TRUE,
+
     FOREIGN KEY (url_id) REFERENCES url(id)
 );
 

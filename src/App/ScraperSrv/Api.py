@@ -10,7 +10,7 @@ from datetime import datetime
 import asyncio
 import json
 #
-from Inc.DB.DbList import TDbList
+from Inc.DB.DbList import TDbList, TDbCond
 from IncP.ApiWeb import TApiBase
 from IncP.DB.Db import TDbSql
 from IncP.DB.Scraper_pg import TDbApp
@@ -120,10 +120,29 @@ class TApi(TApiBase):
     async def path_send_result(self, aPath: str, aData: dict) -> dict:
         Dbl = TDbList().Import(aData)
         DblFields = Dbl.Fields.GetList()
+
         TableFields = self.TableFields['url']
         Fields = [x for x in DblFields if (x in TableFields)]
-        DblUrl = TDbSql(self.Db).ImportDbl(Dbl, Fields)
-        await DblUrl.InsertUpdate('url', 'url')
+        DblS = TDbSql(self.Db).ImportDbl(Dbl, Fields)
+        IDs = await DblS.InsertUpdate('url', 'url')
+
+        TableFields = self.TableFields['product']
+        Fields = [x for x in DblFields if (x in TableFields)]
+        DblS = TDbSql(self.Db).ImportDbl(Dbl, Fields)
+
+        DblS.AddField([('url_id', int)])
+        for Idx, Rec in enumerate(DblS):
+            Id = IDs[0][Idx][0]
+            Rec.SetField('url_id', Id)
+            Rec.Flush()
+
+        Cond = TDbCond().AddFields([
+            ['ne', (DblS, 'name'), '', True]
+        ])
+        DblS = TDbSql(self.Db).ImportDbl(DblS, aCond=Cond)
+        if (not DblS.IsEmpty()):
+            await DblS.Insert('product')
+
         return True
 
     async def DbInit(self, aAuth: dict):
@@ -131,11 +150,7 @@ class TApi(TApiBase):
         await self.Db.Connect()
         # await self.Db.ExecFile('IncP/DB/Scraper_pg.sql')
 
-        self.TableFields = {}
-        for Table in ['url', 'product']:
-            Data = await self.Db.GetTableColumns(Table)
-            Names = [x[0] for x in Data[0]]
-            self.TableFields[Table] = Names
+        self.TableFields = await self.Db.GetTablesColumns(['url', 'product'])
 
         Dbl = await self.Db.GetDbVersion()
         Rec = Dbl.Rec

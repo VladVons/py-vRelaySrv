@@ -34,7 +34,7 @@ from IncP.Utils import FilterKeyErr, FilterNone, GetNestedKey
 
 
 class TSender():
-    def __init__(self, aParent: 'TWebScraper', aDbl: TDbList, aMaxSize: int = 0):
+    def __init__(self, aParent: 'TWebScraper', aDbl: TDbList, aMaxSize: int = 1):
         self.Parent = aParent
         self.MaxSize = aMaxSize
         self.Dbl = aDbl
@@ -42,7 +42,7 @@ class TSender():
     async def Add(self, aData: dict):
         self.Dbl.RecAdd()
         self.Dbl.Rec.SetAsDict(aData)
-        if (self.Dbl.GetSize() > self.MaxSize):
+        if (self.Dbl.GetSize() >= self.MaxSize):
             await self.Flush()
 
     async def Flush(self):
@@ -72,6 +72,7 @@ class TWebScraper():
 
         Dbl = TDbList([
             ('url', str),
+            ('site_id', int),
             ('name', str),
             ('price', float),
             ('price_cur', str),
@@ -84,7 +85,7 @@ class TWebScraper():
             ('url_count', int),
             ('status', int)
             ])
-        self.Sender = TSender(self, Dbl)
+        self.Sender = TSender(self, Dbl, 2)
 
         self.Event = asyncio.Event()
         self.Wait(False)
@@ -132,12 +133,23 @@ class TWebScraper():
         await self._DoWorkerEnd()
         Log.Print(1, 'i', '_Worker(). done')
 
+    def GetHrefs(self, aSoup, aUrlRoot: str = '') -> list:
+        Res = []
+        for x in aSoup.find_all('a'):
+            x = x.get('href', '').strip().rstrip('/')
+            if (x):
+                if (aUrlRoot) and (x.startswith('/')):
+                    x = aUrlRoot + x
+                Res.append(x)
+        return Res
+
 
 class TWebScraperFull(TWebScraper):
-    def __init__(self, aParent, aScheme: dict, aUrlRoot: str, aSleep: int = 1):
+    def __init__(self, aParent, aScheme: dict, aUrlRoot: str, aUrlRootId: int, aSleep: int = 1):
         super().__init__(aParent, aScheme, aSleep)
 
         self.UrlRoot = aUrlRoot
+        self.UrlRootId = aUrlRootId
         self.Url = []
         self.RobotFile: RobotFileParser = None
         self.DblQueue.RecAdd([aUrlRoot])
@@ -147,15 +159,6 @@ class TWebScraperFull(TWebScraper):
         Path = urlparse(aUrl).path
         Ext = os.path.splitext(Path)[1]
         return Ext in ['.zip', '.rar', '.xml', '.pdf', '.jpg', '.jpeg', '.png', '.gif']
-
-    def GetHrefs(self, aSoup) -> list:
-        Res = []
-        for x in aSoup.find_all('a'):
-            x = x.get('href', '').strip().rstrip('/')
-            if (x):
-                if (x.startswith('/')):
-                    x = self.UrlRoot + x
-                Res.append(x)
 
     async def InitRobotFile(self, aUrl: str):
         self.RobotFile = RobotFileParser()
@@ -172,7 +175,7 @@ class TWebScraperFull(TWebScraper):
 
     async def _DoWorkerUrl(self, aUrl: str, aData: str, aStatus: int):
         Soup = GetSoup(aData)
-        Htrefs = self.GetHrefs(Soup)
+        Htrefs = self.GetHrefs(Soup, self.UrlRoot)
         for Href in Htrefs:
             if (Href.startswith(self.UrlRoot)) and \
                 (not Href.startswith('#')) and \
@@ -197,10 +200,11 @@ class TWebScraperFull(TWebScraper):
 
 
 class TWebScraperSitemap(TWebScraper):
-    def __init__(self, aParent, aScheme: dict, aUrlRoot: str, aSleep: int):
+    def __init__(self, aParent, aScheme: dict, aUrlRoot: str, aUrlRootId: int, aSleep: int):
         super().__init__(aParent, aScheme, aSleep)
 
         self.UrlRoot = aUrlRoot
+        self.UrlRootId = aUrlRootId
 
     async def LoadSiteMap(self, aUrl: str) -> list:
         Res = []
@@ -232,9 +236,17 @@ class TWebScraperSitemap(TWebScraper):
             Log.Print(1, 'i', 'No sitemap %s' % (self.UrlRoot))
 
     async def _DoWorkerUrl(self, aUrl: str, aData: str, aStatus: int):
-        Res = {'data_size': len(aData), 'status': aStatus, 'update_date': datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
-
         Soup = GetSoup(aData)
+
+        Res = {
+            'url': aUrl,
+            'site_id': self.UrlRootId,
+            'data_size': len(aData),
+            'url_count': len(self.GetHrefs(Soup, self.UrlRoot)),
+            'status': aStatus,
+            'update_date': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            }
+
         self.Scheme.Parse(Soup)
         NotEmpty = FilterNone(self.Scheme.Pipe, False)
         if (len(NotEmpty) >= 3):
@@ -242,9 +254,10 @@ class TWebScraperSitemap(TWebScraper):
                 Log.Print(1, 'i', '_DoWorkerUrl() %s' % aUrl, self.Scheme.Err)
             else:
                 self.UrlScheme += 1
-                Res.update(self.Scheme.Pipe)
-                Res['price'], Res['price_cur'] = Res.get('price', (0, ''))
-                Res['price_old'], _ = Res.get('price_old', (0, ''))
+                Product = self.Scheme.GetPipe()
+                Res.update(Product)
+                Res['price'], Res['price_cur'] = Res.get('price', (0.0, ''))
+                Res['price_old'], _ = Res.get('price_old', (0.0, ''))
         await self.Sender.Add(Res)
 
 

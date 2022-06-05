@@ -56,8 +56,9 @@ class TDbSql(TDbList):
             {Insert}
             on conflict ({aUniqField}) do update
             set {Set}
+            returning id;
         '''
-        await self._Db.Exec(Query)
+        return await self._Db.Exec(Query)
 
 
 class TDb():
@@ -74,8 +75,8 @@ class TDb():
             self.Pool = None
 
     async def Exec(self, aSql: str):
-        async with self.Pool.acquire() as Con:
-            async with Con.cursor() as Cur:
+        async with self.Pool.acquire() as Connect:
+            async with Connect.cursor() as Cursor:
                 # ToDo
                 #for Sql in filter(None, aSql.split(';')):
                 #    Sql = Sql.strip()
@@ -85,18 +86,22 @@ class TDb():
                     print(aSql)
 
                 try:
-                    await Cur.execute(aSql)
+                    await Cursor.execute(aSql)
+                    if (Cursor.description):
+                        Data = await Cursor.fetchall()
+                        Fields = [x.name for x in Cursor.description]
+                        return (Data, Fields)
                 except Exception as E:
                     Log.Print(1, 'x', 'Exec() %s' % (aSql), aE=E, aSkipEcho=['TEchoDb'])
                     await asyncio.sleep(1)
-            #await Con.commit()
+            #await Connect.commit()
 
     async def ExecFile(self, aFile: str):
         with open(aFile, 'r') as File:
             Query = File.read().strip()
             await self.Exec(Query)
 
-    async def Fetch(self, aSql: str, aAll = True):
+    async def Fetch(self, aSql: str, aAll = True) -> tuple:
         async with self.Pool.acquire() as Connect:
             async with Connect.cursor() as Cursor:
             #async with Con.cursor(cursor_factory = psycopg2.extras.RealDictCursor) as Cur:

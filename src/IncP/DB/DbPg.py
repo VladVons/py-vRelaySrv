@@ -28,12 +28,25 @@ class TDbPg(TDb):
 
         AuthDef['password'] = self.Auth.get('Password')
         self.Pool = await aiopg.create_pool(**AuthDef)
+        return (not self.Pool.closed)
 
-    async def GetTableColumns(self, aName: str) -> TDbSql:
+    async def GetTables(self) -> tuple:
+        Query = f'''
+            select
+                table_name
+            from
+                information_schema.tables
+            where
+                table_schema = 'public'
+            '''
+        return await self.Fetch(Query)
+
+    async def GetTableColumns(self, aName: str) -> tuple:
         Query = f'''
             select
                 column_name as name,
-                udt_name as type
+                udt_name as type,
+                table_name
             from
                 information_schema.columns
             where
@@ -42,3 +55,15 @@ class TDbPg(TDb):
                 ordinal_position
             '''
         return await self.Fetch(Query)
+
+    async def GetTablesColumns(self, aTable: list = []) -> dict:
+        if (not aTable):
+            Data = await self.GetTables()
+            aTable = [x[0] for x in Data[0]]
+
+        Res = {}
+        for Table in aTable:
+            Data = await self.GetTableColumns(Table)
+            Names = [x[0] for x in Data[0]]
+            Res[Table] = Names
+        return Res
