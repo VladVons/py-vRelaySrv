@@ -5,18 +5,20 @@
 <script src="/js/Api.js"></script>
 <script src="/js/TDbList.js"></script>
 <script>
-    function Btn_GetSchemeEmpty() {
+    function Btn_GetScheme(aEmpty) {
         let Output = document.getElementById('Output')
         Output.value = '';
 
+        let Url = aEmpty ? '/api/get_scheme_empty' : '/api/get_scheme_not_empty'
         HttpRequest(
-            '/api/get_scheme_empty',
+            Url,
             function(aData) {
                 console.log('aData', aData);
                 let Dbl = new TDbList(aData['Data']['Data']);
                 for (let Rec of Dbl) {
                     Output.value += Rec.GetField('url') + '\n';
                 }
+                Output.value += '\n' + Dbl.GetSize() + '\n'
             },
             {'cnt': 1000}
         );
@@ -205,7 +207,13 @@
                 <tr>
                     <td>get empty scheme</td>
                     <td>
-                        <button onclick="Btn_GetSchemeEmpty()">ok</button>
+                        <button onclick="Btn_GetScheme(true)">ok</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>get not empty scheme</td>
+                    <td>
+                        <button onclick="Btn_GetScheme(false)">ok</button>
                     </td>
                 </tr>
             </table>
