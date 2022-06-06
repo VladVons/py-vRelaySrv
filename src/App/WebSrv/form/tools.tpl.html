@@ -5,6 +5,23 @@
 <script src="/js/Api.js"></script>
 <script src="/js/TDbList.js"></script>
 <script>
+    function Btn_GetSchemeEmpty() {
+        let Output = document.getElementById('Output')
+        Output.value = '';
+
+        HttpRequest(
+            '/api/get_scheme_empty',
+            function(aData) {
+                console.log('aData', aData);
+                let Dbl = new TDbList(aData['Data']['Data']);
+                for (let Rec of Dbl) {
+                    Output.value += Rec.GetField('url') + '\n';
+                }
+            },
+            {'cnt': 1000}
+        );
+    };
+
     class TWebSockApp extends TWebSock {
         Init() {
             this.Output = document.getElementById('Output');
@@ -183,6 +200,12 @@
                     <td>check protected</td>
                     <td>
                         <button onclick="new TWS_get_sites_grep().Run()">ok</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>get empty scheme</td>
+                    <td>
+                        <button onclick="Btn_GetSchemeEmpty()">ok</button>
                     </td>
                 </tr>
             </table>
