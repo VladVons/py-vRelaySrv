@@ -15,7 +15,7 @@ function Btn_GetSchemeEmpty() {
             document.getElementById('Url0').value = Rec.GetField('url');
             document.getElementById('Script').value = '';
           },
-        {'cnt': 10}
+        {'cnt': 20}
     );
 };
 

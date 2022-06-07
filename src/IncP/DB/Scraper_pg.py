@@ -77,6 +77,7 @@ class TDbApp(TDbPg):
             from
                 site
             where
+                (enabled is not null) and
                 {CondEmpty}
             order by
                 id
