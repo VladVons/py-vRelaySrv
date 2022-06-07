@@ -17,7 +17,7 @@
 
               let Dbl = new TDbList(aData['Data']['Data']);
               Dbl.Shuffle();
-              Dbl.RecNo = 1;
+              Dbl.RecNo = 0;
               let Scheme = Dbl.Rec.GetField('scheme');
               let SchemeJ = JSON.parse(Scheme);
 
@@ -55,21 +55,24 @@
         Btn_GetSchemeEmpty();
     }
 
-    function Btn_Test(aId, aThis) {
-        StartAt = Date.now();
-        document.getElementById('Output').value = '';
+    function Btn_Test(aThis) {
+      // ToDo. Dont remove line below. Some problem with 'required' in HTML
+      document.getElementById('Url0').value = '';
 
-        HttpRequest(
-            '/api/get_scheme_test',
-            function(aData) {
-                console.log('aData', aData);
-                document.getElementById('Output').value = JSON.stringify(aData, null, ' ');
+      let StartAt = Date.now();
+      document.getElementById('Output').value = '';
 
-                let Duration = (Date.now() - StartAt) / 1000;
-                aThis.textContent = Duration.toFixed(2);
-            },
-            {'scheme': document.getElementById('Script').value}
-        );
+      HttpRequest(
+          '/api/get_scheme_test',
+          function(aData) {
+            console.log('aData', aData);
+            document.getElementById('Output').value = JSON.stringify(aData, null, ' ');
+
+            let Duration = (Date.now() - StartAt) / 1000;
+            //aThis.textContent = Duration.toFixed(2);
+          },
+          {'scheme': document.getElementById('Script').value}
+      );
     };
 
     function Sel_Help(aThis) {
@@ -108,8 +111,8 @@
         <button onclick="Btn_GetSchemeEmpty2()">get empty</button>
         <button onclick="Btn_GetSchemeDone()">get done</button>
         <button onclick="Btn_Go()">go</button>
+        <button onclick="Btn_Test(this)">test</button>
         <input type="submit" name="BtnOk" value="make">
-        <button onclick="Btn_Test()">test</button>
         <br>
         <select id="SelHelp" onclick="Sel_Help(this)">
           <optgroup label="- top -"></optgroup>
@@ -182,8 +185,8 @@
         <button onclick="Btn_SchemeGetEmpty2()">get empty</button>
         <button onclick="Btn_SchemeGetDone()">get done</button>
         <button onclick="Btn_Go()">go</button>
+        <button onclick="Btn_Test(this)">test</button>
         <input type="submit" name="BtnOk" value="make">
-        <button onclick="Btn_Test()">test</button>
       </td>
     </tr>
   </tbody>

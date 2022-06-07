@@ -6,7 +6,7 @@ Created:     2022.04.10
 
 
 function HttpRequest(aUrl, aFunc, aPostJson = null) {
-    console.log(aUrl, aPostJson);
+    console.log('HttpRequest()', aUrl, aPostJson);
 
     let xhr = new XMLHttpRequest();
     if (aPostJson) {
@@ -17,7 +17,8 @@ function HttpRequest(aUrl, aFunc, aPostJson = null) {
     }
 
     xhr.onload = function() {
-        if (xhr.status == 200) {
+        if (xhr.status == 200) {        
+            console.log('HttpRequest().OnLoad()', xhr.responseText);
             let Data = JSON.parse(xhr.responseText);
             aFunc(Data);
         } else {
