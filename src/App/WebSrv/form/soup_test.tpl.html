@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% block content %}
-<form name="Form" method="post" action="/form/soup_test?action=go" enctype="multipart/form-data">
+<form name="Form" method="post" action="/form/soup_test" enctype="multipart/form-data">
     <table width="100%">
         <tr>
             <td>url</td>
@@ -28,7 +28,9 @@
             <td>Output</td>
             <td><textarea readonly name="Output" rows="10">{{ Data.Output }}</textarea></td>
         <tr>
-            <td colspan="2" style="text-align:center"><input type="submit" name="btn" value="OK" class="btn"></td>
+            <td colspan="2" style="text-align:center">
+                <input type="submit" name="BtnOk" value="OK" class="btn">
+            </td>
         </tr>
     </table>
 </form>

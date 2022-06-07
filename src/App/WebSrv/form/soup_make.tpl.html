@@ -7,12 +7,13 @@
 <script src="/js/Forms.js"></script>
 <script>
     function Btn_GetSchemeDone() {
+      ClearObj('input');
+      ClearObj('textarea');
+
       HttpRequest(
           '/api/get_scheme_not_empty',
           function(aData) {
               console.log('aData', aData);
-              ClearObj('input');
-              ClearObj('textarea');
 
               let Dbl = new TDbList(aData['Data']['Data']);
               Dbl.Shuffle();
@@ -94,7 +95,7 @@
 {% endblock %}
 
 {% block content %}
-<form name="Form" method="post" action="/form/soup_make?action=go" enctype="multipart/form-data">
+<form name="Form" method="post" action="/form/soup_make" enctype="multipart/form-data">
   <table style="width:100%">
   <tbody>
     <tr>
@@ -112,7 +113,6 @@
         <br>
         <select id="SelHelp" onclick="Sel_Help(this)">
           <optgroup label="- top -"></optgroup>
-            <option>["equal", ["str1|str2"]]</option>
             <option>["find_all", ["li"]]</option>
             <option>["find", ["div", {"class": "content"}]]</option>
             <option>["image"]</option>
@@ -124,12 +124,6 @@
             <option>["text"]</option>
             <option>["txt2json"]</option>
             <option>["unbracket", ["()", -1]]</option>
-          </optgroup>
-          <optgroup label="- misc -"></optgroup>
-            <option>["as_dict", {"key1": [macros1], "key2": [macros2]}</option>
-            <option>["as_if", {"cond": [...], "true": [...], "false:[...]"}</option>
-            <option>["as_list", [[macros1],[macros2]]</option>
-            <option>["help"]</option>
           </optgroup>
         </select>
       </td>

@@ -16,7 +16,7 @@ class TForm(TFormBase):
     Title = 'Soup get'
 
     async def _Render(self):
-        if (not await self.PostToForm()):
+        if (not await self.PostToForm()) or (not self.Data.get('BtnOk')):
             return
 
         Soup = await GetUrlSoup(self.Data.Url0)
