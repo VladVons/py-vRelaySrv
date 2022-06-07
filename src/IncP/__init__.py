@@ -5,10 +5,11 @@ License:     GNU, see LICENSE for more details
 '''
 
 
-__version__ = '1.0.13'
-__date__ =  '2022.05.21'
+__version__ = '1.0.14'
+__date__ =  '2022.06.07'
 
 Info = {
+    'App' : 'Web scraper',
     'Version' : __version__,
     'Date': __date__,
     'Author':  'Vladimir Vons',

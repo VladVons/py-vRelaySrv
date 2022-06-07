@@ -5,7 +5,7 @@
 <script src="/js/Api.js"></script>
 <script src="/js/TDbList.js"></script>
 <script>
-    function Btn_GetScheme(aEmpty) {
+    function Btn_GetUrlScheme(aEmpty) {
         let Output = document.getElementById('Output')
         Output.value = '';
 
@@ -23,6 +23,21 @@
             {'cnt': 1000}
         );
     };
+
+    function Btn_GetBackup() {
+        let Output = document.getElementById('Output')
+        Output.value = '';
+
+        HttpRequest(
+            '/api/get_scheme_not_empty',
+            function(aData) {
+                console.log('aData', aData);
+                Output.value = JSON.stringify(aData['Data']['Data'], null, ' ');
+            },
+            {'cnt': 1000}
+        );
+    };
+
 
     class TWebSockApp extends TWebSock {
         Init() {
@@ -207,13 +222,19 @@
                 <tr>
                     <td>get empty scheme</td>
                     <td>
-                        <button onclick="Btn_GetScheme(true)">ok</button>
+                        <button onclick="Btn_GetUrlScheme(true)">ok</button>
                     </td>
                 </tr>
                 <tr>
                     <td>get not empty scheme</td>
                     <td>
-                        <button onclick="Btn_GetScheme(false)">ok</button>
+                        <button onclick="Btn_GetUrlScheme(false)">ok</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>get backup</td>
+                    <td>
+                        <button onclick="Btn_GetBackup()">ok</button>
                     </td>
                 </tr>
             </table>

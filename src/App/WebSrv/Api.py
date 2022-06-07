@@ -256,7 +256,7 @@ class set_scheme(TApiPlugin):
         return Res
 
 
-class get_scheme(TApiPlugin):
+class get_scheme_by_id(TApiPlugin):
     Param = {'param': ['id']}
 
     async def Exec(self, aPath: str, aData: dict) -> dict:
@@ -264,9 +264,10 @@ class get_scheme(TApiPlugin):
         if (GetNestedKey(DataApi, 'Type') == 'Err'):
             return DataApi.get('Data')
 
-        DataApi = await self.Args['WebClient'].Send('web/get_scheme', aData)
-        DblJ = GetNestedKey(DataApi, 'Data.Data')
-        if (DblJ):
+        DataApi = await self.Args['WebClient'].Send('web/get_scheme_by_id', aData)
+        Err = FilterKeyErr(DataApi)
+        if (not Err):
+            DblJ = GetNestedKey(DataApi, 'Data.Data')
             Dbl = TDbList().Import(DblJ)
             Scheme = TScheme(Dbl.Rec.GetField('scheme'))
             DataApi['IsJson'] = Scheme.IsJson()
@@ -289,7 +290,7 @@ class TApi(TApiBase):
         self.PluginAdd(get_scheme_find, {'WebClient': self.WebClient})
         self.PluginAdd(get_scheme_test_all, {'WebClient': self.WebClient})
         self.PluginAdd(get_scheme_test)
-        self.PluginAdd(get_scheme, {'WebClient': self.WebClient})
+        self.PluginAdd(get_scheme_by_id, {'WebClient': self.WebClient})
         self.PluginAdd(get_sites_check_file, {'WebClient': self.WebClient})
         self.PluginAdd(get_sites_grep, {'WebClient': self.WebClient})
         self.PluginAdd(set_scheme, {'WebClient': self.WebClient})

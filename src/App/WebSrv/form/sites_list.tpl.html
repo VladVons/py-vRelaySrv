@@ -10,7 +10,7 @@
 <script src="/js/Api.js"></script>
 <script src="/js/TDbList.js"></script>
 <script>
-    function BtnGet_OnClick(aId, aThis) {
+    function Btn_Get(aId, aThis) {
         document.getElementById('Output').value = '';
 
         Color = aThis.style.background;
@@ -21,7 +21,7 @@
         aThis.style.background = '#3498DB'
 
         HttpRequest(
-            '/api/get_scheme',
+            '/api/get_scheme_by_id',
             function(aData) {
                 console.log('aData', aData);
 
@@ -34,7 +34,7 @@
         );
     };
 
-    function BtnTest_OnClick(aId, aThis) {
+    function Btn_Test(aId, aThis) {
         StartAt = Date.now();
         let Output = document.getElementById('Output')
         Output.value = '';
@@ -52,7 +52,7 @@
         );
     };
 
-    function BtnSet_OnClick(aId, aUrl) {
+    function Btn_Set(aId, aUrl) {
         let Script = document.getElementById('Script').value;
         if (Script.trim().length < 0) {
             window.alert('Script is empty');
@@ -74,7 +74,7 @@
         );
     };
 
-    function BtnGo_OnClick() {
+    function Btn_Go() {
         if (document.getElementById('Url0').value == '') {
             alert('Url is empty');
             return;
@@ -91,7 +91,7 @@
     <tr>
         <td colspan="2">
             <input type="text" name="Url0" id="Url0" style="width:90%">
-            <button onclick="BtnGo_OnClick()">go</button>
+            <button onclick="Btn_Go()">go</button>
         </td>
     </tr>
     <tr>
@@ -111,16 +111,16 @@
                         <td><a href="{{ Rec.GetField('url') }}">{{ Rec.GetField('url') }}</a></td>
                         <td>
                             {% if Rec.GetField('has_scheme') %}
-                            <button name="BtnGet" onclick="BtnGet_OnClick({{ Rec.GetField('id') }}, this)">get</button>
+                            <button name="BtnGet" onclick="Btn_Get({{ Rec.GetField('id') }}, this)">get</button>
                             {% endif %}
                         </td>
                         <td>
                             {% if Rec.GetField('has_scheme') %}
-                            <button onclick="BtnTest_OnClick( {{ Rec.GetField('id') }}, this)">test</button>
+                            <button onclick="Btn_Test( {{ Rec.GetField('id') }}, this)">test</button>
                             {% endif %}
                         </td>
                         <td>
-                            <button onclick="BtnSet_OnClick( {{ Rec.GetField('id') }}, '{{ Rec.GetField('url') }}' )">set</button>
+                            <button onclick="Btn_Set( {{ Rec.GetField('id') }}, '{{ Rec.GetField('url') }}' )">set</button>
                         </td>
                     </tr>
                     {% endfor %}

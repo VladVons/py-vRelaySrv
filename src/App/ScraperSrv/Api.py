@@ -5,7 +5,6 @@ License:     GNU, see LICENSE for more details
 '''
 
 
-from aiohttp import web
 from datetime import datetime
 import asyncio
 import json
@@ -61,7 +60,7 @@ class TApi(TApiBase):
             'get_task':             {'param': []},
             'get_scheme_empty':     {'param': ['cnt']},
             'get_scheme_not_empty': {'param': ['cnt']},
-            'get_scheme':           {'param': ['id']},
+            'get_scheme_by_id':     {'param': ['id']},
             'get_sites':            {'param': ['*']},
             'get_user_id':          {'param': ['login', 'passw']},
             'get_user_config':      {'param': ['id']},
@@ -95,7 +94,7 @@ class TApi(TApiBase):
         Dbl = await self.Db.GetScheme(False, aData.get('cnt', 1))
         return Dbl.Export()
 
-    async def path_get_scheme(self, aPath: str, aData: dict) -> dict:
+    async def path_get_scheme_by_id(self, aPath: str, aData: dict) -> dict:
         Dbl = await self.Db.GetSiteById(aData.get('id'))
         return Dbl.Export()
 

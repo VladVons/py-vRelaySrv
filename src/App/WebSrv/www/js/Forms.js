@@ -5,7 +5,7 @@ Created:     2022.05.15-2
 */
 
 
-function BtnGetSchemeEmpty_OnClick() {
+function Btn_GetSchemeEmpty() {
     HttpRequest(
         '/api/get_scheme_empty',
         function(aData) {

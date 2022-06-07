@@ -6,7 +6,7 @@
 <script src="/js/TDbList.js"></script>
 <script src="/js/Forms.js"></script>
 <script>
-    function BtnGetSchemeDone_OnClick() {
+    function Btn_GetSchemeDone() {
       HttpRequest(
           '/api/get_scheme_not_empty',
           function(aData) {
@@ -48,13 +48,13 @@
       );
     };
 
-    function BtnGetSchemeEmpty2_OnClick(aId, aThis) {
+    function Btn_GetSchemeEmpty2(aId, aThis) {
         ClearObj('input');
         ClearObj('textarea');
-        BtnGetSchemeEmpty_OnClick();
+        Btn_GetSchemeEmpty();
     }
 
-    function BtnTest_OnClick(aId, aThis) {
+    function Btn_Test(aId, aThis) {
         StartAt = Date.now();
         document.getElementById('Output').value = '';
 
@@ -71,12 +71,12 @@
         );
     };
 
-    function SelHelp_OnClick(aThis) {
+    function Sel_Help(aThis) {
       let Val = aThis.options[aThis.selectedIndex].text;
       LastBlur.value += Val;
     }
 
-    function BtnGo_OnClick() {
+    function Btn_Go() {
       let Items = document.getElementsByTagName('input');
       for (let i = 0; i < Items.length; i++) {
         if (Items[i].name.startsWith('Url')) {
@@ -104,13 +104,13 @@
         <input type="text" name="Url1" id="Url1" placeholder="url 2" style="width:100%" value="{{ Data.Url1 }}">
       </td>
       <td>
-        <button onclick="BtnGetSchemeEmpty2_OnClick()">get empty</button>
-        <button onclick="BtnGetSchemeDone_OnClick()">get done</button>
-        <button onclick="BtnGo_OnClick()">go</button>
+        <button onclick="Btn_GetSchemeEmpty2()">get empty</button>
+        <button onclick="Btn_GetSchemeDone()">get done</button>
+        <button onclick="Btn_Go()">go</button>
         <input type="submit" name="BtnOk" value="make">
-        <button onclick="BtnTest_OnClick()">test</button>
+        <button onclick="Btn_Test()">test</button>
         <br>
-        <select id="SelHelp" onclick="SelHelp_OnClick(this)">
+        <select id="SelHelp" onclick="Sel_Help(this)">
           <optgroup label="- top -"></optgroup>
             <option>["equal", ["str1|str2"]]</option>
             <option>["find_all", ["li"]]</option>
@@ -185,11 +185,11 @@
       <td>
       </td>
       <td>
-        <button onclick="BtnSchemeGetEmpty2_OnClick()">get empty</button>
-        <button onclick="BtnSchemeGetDone_OnClick()">get done</button>
-        <button onclick="BtnGo_OnClick()">go</button>
+        <button onclick="Btn_SchemeGetEmpty2()">get empty</button>
+        <button onclick="Btn_SchemeGetDone()">get done</button>
+        <button onclick="Btn_Go()">go</button>
         <input type="submit" name="BtnOk" value="make">
-        <button onclick="BtnTest_OnClick()">test</button>
+        <button onclick="Btn_Test()">test</button>
       </td>
     </tr>
   </tbody>
