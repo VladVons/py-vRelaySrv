@@ -394,6 +394,7 @@ class TDbList():
             self.RecNo = 0
         else:
             self.Empty()
+        return
 
     def GetDiff(self, aField: str, aList: list) -> tuple:
         Set1 = set(self.ExportList(aField))

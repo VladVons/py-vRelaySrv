@@ -65,9 +65,9 @@ class TDbApp(TDbPg):
 
     async def GetScheme(self, aEmpty: bool = False, aLimit: int = 10) -> TDbSql:
         if (aEmpty):
-            CondEmpty = '(site.scheme is null)'
+            CondEmpty = '(scheme is null)'
         else:
-            CondEmpty = '(site.scheme is not null)'
+            CondEmpty = '(scheme is not null)'
 
         Query = f'''
            select
@@ -119,14 +119,16 @@ class TDbApp(TDbPg):
 
         Query = f'''
             select
-                site.id,
-                site.url,
-                site.scheme is not null as has_scheme,
-                site.enabled
+                id,
+                url,
+                scheme is not null as has_scheme,
+                enabled
             from
                 site
+            where
+                enabled is not null
             order by
-                site.url
+                url
             {Limit}
             '''
         return await TDbSql(self).Fetch(Query)
@@ -134,26 +136,26 @@ class TDbApp(TDbPg):
     async def GetSitesForUpdateFull(self, aExclId: list = [], aLimit: int = 10, aUpdDaysX: float = 1) -> TDbSql:
         ExclId = self.ListToComma(aExclId)
         if (ExclId):
-            CondExcl = 'and (not site.id in(%s))' % ExclId
+            CondExcl = 'and (not id in(%s))' % ExclId
         else:
             CondExcl = ''
 
         Query = f'''
             select
-                site.id,
-                site.url,
-                site.sleep,
-                site.scheme,
-                site.sitemap
+                id,
+                url,
+                sleep,
+                scheme,
+                sitemap
             from
                 site
             where
-                (site.enabled) and
-                ((site.hours = '') or (site.hours is null) or (site.hours like CONCAT('%', LPAD(DATE_PART('hour', NOW())::text, 2, '0'), '%'))) and
-                (DATE_PART('day', NOW() - site.update_date) > site.update_days * {aUpdDaysX})
+                (enabled) and
+                ((hours = '') or (hours is null) or (hours like CONCAT('%', LPAD(DATE_PART('hour', NOW())::text, 2, '0'), '%'))) and
+                (DATE_PART('day', NOW() - update_date) > update_days * {aUpdDaysX})
                 {CondExcl}
             order by
-                site.update_date desc
+                update_date desc
             limit
                 {aLimit}
             '''

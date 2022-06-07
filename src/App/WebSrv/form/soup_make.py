@@ -53,6 +53,7 @@ class TForm(TFormBase):
             {
                 "Product": {
                     "Info": {
+                        "Author": "%s",
                         "Date": "%s",
                         "Url": [
                             %s
@@ -66,7 +67,12 @@ class TForm(TFormBase):
                     ]
                 }
             }
-        ''' % (datetime.date.today().strftime('%Y-%m-%d'), Urls, self.Data.Pipe, ','.join(Items))
+        ''' % (
+                self.Session['UserName'],
+                datetime.date.today().strftime('%Y-%m-%d'),
+                Urls,
+                self.Data.Pipe, ','.join(Items)
+            )
 
         return (FormatJsonStr(ScriptStr), '\n'.join(Err))
 
