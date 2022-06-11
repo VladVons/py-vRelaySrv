@@ -260,7 +260,7 @@ class get_scheme_by_id(TApiPlugin):
     Param = {'param': ['id']}
 
     async def Exec(self, aPath: str, aData: dict) -> dict:
-        DataApi = await Api.WebClient.Send('web/get_hand_shake')
+        DataApi = await Api.DefHandler('get_hand_shake')
         if (GetNestedKey(DataApi, 'Type') == 'Err'):
             return DataApi.get('Data')
 
@@ -298,7 +298,7 @@ class TApi(TApiBase):
     async def DoAuthRequest(self, aUser: str, aPassw: str):
         return True
 
-    async def DefHandler(self, aPath: str, aData: dict) -> dict:
+    async def DefHandler(self, aPath: str, aData: dict = {}) -> dict:
         return await self.WebClient.Send('web/' + aPath, aData)
 
 

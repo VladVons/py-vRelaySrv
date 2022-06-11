@@ -78,22 +78,23 @@ def TestPy(aMod: str, aExt: str = '.html'):
     Data = ReadFile(aMod + aExt)
 
     SoupA = BeautifulSoup(Data, 'lxml')
-    SoupB = BeautifulSoup(Data, 'html.parser')
-    SoupC = BeautifulSoup(Data, 'html5lib')
+    #SoupB = BeautifulSoup(Data, 'html.parser')
+    #SoupC = BeautifulSoup(Data, 'html5lib')
 
-    print('--x0', len(SoupA), len(SoupB), len(SoupC))
+    #print('--x0', len(SoupA), len(SoupB), len(SoupC))
 
-    Soup1 = Soup.find('div', {'class': 'product-wrapper'})
+    #Soup1 = Soup.find('div', {'class': 'product-wrapper'})
 
     #Soup1 = Soup.find('div', {'class': 'section main-section'})
-    print('--x1', Soup1)
+    #print('--x1', SoupA)
     #WriteFile(aMod + '.txt', str(Soup1))
 
     #Soup2 = Soup.find_all('div', {'class': 'product-page'})
     #print('--x2', len(Soup2))
 
     #Soup3 = Soup.find('script', {'type': 'application/ld+jso'})
-    #Soup3 = Soup1.find('script', type='application/ld+json').text
+    Soup3 = SoupA.find('script', type='application/ld+json').text
+    print(Soup3)
     #Data1 = json.loads(Soup3)
     #Data2 = json.dumps(Data1, indent=2, sort_keys=True, ensure_ascii=False)
     #print('--x3', bool(Soup3), Data2)
@@ -103,8 +104,8 @@ def TestPy(aMod: str, aExt: str = '.html'):
     #print('--x4', bool(Soup4))
 
 def TestBoth(aMod: str, aExt: str = '.html'):
-    Script = ReadFile(aMod + '.txt.py')
-    #Script = ReadFile(aMod + '.json')
+    #Script = ReadFile(aMod + '.txt.py')
+    Script = ReadFile(aMod + '.json')
     Scheme = TScheme(Script)
 
     Html = ReadFile(aMod + aExt)
@@ -135,6 +136,7 @@ def TestApi():
 os.system('clear')
 #asyncio.run(SaveScheme('Schemes.txt'))
 #
-TestPy('btmax.com.ua')
-#TestJson('allo.ua-a')
+#TestPy('megabit.od.ua')
+#TestJson('megabit.od.ua')
+TestBoth('megabit.od.ua')
 #TestApi()

@@ -5,8 +5,6 @@ License:     GNU, see LICENSE for more details
 '''
 
 
-import aiopg
-#
 from .Db import TDbSql
 from .DbPg import TDbPg
 
@@ -230,7 +228,8 @@ class TDbApp(TDbPg):
             '''
         return await TDbSql(self).Fetch(Query)
 
-    async def AuthUser(self, aLogin: str, aPassw: str) -> TDbSql:
+### --- user --- ###
+    async def UserAuth(self, aLogin: str, aPassw: str) -> TDbSql:
         Query = f'''
             select
                 id
@@ -243,14 +242,42 @@ class TDbApp(TDbPg):
             '''
         return await TDbSql(self).Fetch(Query)
 
-    async def GetUserConfig(self, aId: int) -> TDbSql:
+    async def GetUserInfo(self, aId: int) -> TDbSql:
         Query = f'''
             select
-                workers,
-                enabled
+                enabled,
+                create_date,
+                valid_date,
+                auth_group_id
             from
                 auth
             where
-                (id = '{aId}')
+                (id = {aId})
+            '''
+        return await TDbSql(self).Fetch(Query)
+
+    async def GetUserConf(self, aId) -> TDbSql:
+        Query = f'''
+            select
+                name,
+                data
+            from
+                auth_ext
+            where
+                (enabled) and
+                (auth_id = {aId})
+            '''
+        return await TDbSql(self).Fetch(Query)
+
+    async def GetGroupConf(self, aId) -> TDbSql:
+        Query = f'''
+            select
+                name,
+                data
+            from
+                auth_group_ext
+            where
+                (enabled) and
+                (auth_group_id = {aId})
             '''
         return await TDbSql(self).Fetch(Query)

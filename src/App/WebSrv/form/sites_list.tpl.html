@@ -52,7 +52,7 @@
         );
     };
 
-    function Btn_Set(aId, aUrl) {
+    function Btn_SetScheme(aId, aUrl) {
         let Script = document.getElementById('Script').value;
         if (Script.trim().length < 0) {
             window.alert('Script is empty');
@@ -120,7 +120,7 @@
                             {% endif %}
                         </td>
                         <td>
-                            <button onclick="Btn_Set( {{ Rec.GetField('id') }}, '{{ Rec.GetField('url') }}' )">set</button>
+                            <button onclick="Btn_SetScheme( {{ Rec.GetField('id') }}, '{{ Rec.GetField('url') }}' )">set</button>
                         </td>
                     </tr>
                     {% endfor %}

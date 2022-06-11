@@ -2,6 +2,7 @@ import os
 import asyncio
 from Inc.Conf import TConf
 from Inc.Log  import TLog, Log
+from Inc.DB.DbList import TDbList
 #
 #import cfscrape
 #import cloudscraper
@@ -63,14 +64,32 @@ async def TestA_1():
 
     DbApp = TDbApp(DbAuth)
     await DbApp.Connect()
-    Db1 = await DbApp.GetSiteExtById(2)
-    await DbApp.Close()
-    for Idx, Rec in enumerate(Db1):
-        print(Rec.GetAsDict())
+    #Db1 = await DbApp.GetSiteExtById(2)
 
-    print()
-    Res = Db1.ExportPair('name', 'data')
+    UserId = 1
+    DblInfo = await DbApp.GetUserInfo(UserId)
+    GroupId = DblInfo.Rec.GetField('auth_group_id')
+    if (GroupId):
+        Dbl = await DbApp.GetGroupConf(GroupId)
+        Res = Dbl.ExportPair('name', 'data')
+    else:
+        Res = {}
+
+    Dbl = await DbApp.GetUserConf(UserId)
+    Res.update(Dbl.ExportPair('name', 'data'))
     print(Res)
+    
+    Dbl = TDbList().ImportPair(Res, 'Key', ('Val', str))
+    print(Dbl)
+
+    await DbApp.Close()
+
+    #for Idx, Rec in enumerate(Db1):
+    #    print(Rec.GetAsDict())
+
+    #print()
+    #Res = Db1.ExportPair('name', 'data')
+    #print(Res)
 
 
 async def Test_pyppeteer():
@@ -147,27 +166,18 @@ class TClass():
     def Print(self):
         print("Print()", self.Name)
 
-with TClass('hello') as F:
-    F.Print()
-    print("Блок внутри with")
-    #raise TypeError("Исключение TypeError")
+#with TClass('hello') as F:
+#    F.Print()
+#    print("Блок внутри with")
+#    #raise TypeError("Исключение TypeError")
 
 
 #print()
-#asyncio.run(TestA_1())
-#asyncio.run(TestA_2())
+asyncio.run(TestA_1())
 #asyncio.run(Test_pyppeteer())
 #asyncio.run(Test_speed())
 #asyncio.run(Test_GetUrl())
 #Test_2()
-#Test_3()
 
 #Test_cloudscraper()
 #Test_TDictDef()
-
-
-a1 = [1,2,3,4]
-a2 = [2,3,5]
-diff = set(a1) - set(a2)
-print(diff)
-pass

@@ -367,18 +367,23 @@ class TDbList():
             Arr[FieldNo] = Val
             self.Data.append(Arr)
 
+    def ImportDbl(self, aDbl: 'TDbList', aFields: list = [], aCond: TDbCond = None, aRecNo: tuple = (0, -1)):
+        self.Data = aDbl.ExportData(aFields, aCond, aRecNo)
+        self.Fields = aDbl.Fields.GetFields(aFields)
+        self.Tag = aDbl.Tag
+        return self
+
+    def ImportPair(self, aData: dict, aKeyName: str, aFieldValue: tuple):
+        self.Fields = TDbFields([(aKeyName, str), aFieldValue])
+        self.Data = [[Key, Val] for Key, Val in aData.items()]
+        return self
+
     def Import(self, aData: dict):
         self.Tag = aData['Tag']
         self.Data = aData['Data']
         self.Fields = TDbFields()
         self.Fields.Import(aData['Head'])
         self.RecNo = 0
-        return self
-
-    def ImportDbl(self, aDbl: 'TDbList', aFields: list = [], aCond: TDbCond = None, aRecNo: tuple = (0, -1)):
-        self.Data = aDbl.ExportData(aFields, aCond, aRecNo)
-        self.Fields = aDbl.Fields.GetFields(aFields)
-        self.Tag = aDbl.Tag
         return self
 
     def SetData(self, aData: list):

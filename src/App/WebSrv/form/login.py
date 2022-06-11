@@ -10,6 +10,7 @@ from wtforms.validators import DataRequired, Length
 #
 from ..Api import Api
 from .FForm import TFormBase
+from Inc.DB.DbList import TDbList
 from IncP.Utils import GetNestedKey
 
 
@@ -26,16 +27,23 @@ class TForm(TFormBase):
         if (not self.validate()):
             return
 
-        DataApi = await Api.WebClient.Send('web/get_hand_shake')
+        DataApi = await Api.DefHandler('web/get_hand_shake')
         if (GetNestedKey(DataApi, 'Type') == 'Err'):
             return self.RenderInfo(DataApi.get('Data'))
 
         Post = {'login': self.UserName.data, 'passw': self.Password.data}
-        DataApi = await Api.WebClient.Send('web/get_user_id', Post)
+        DataApi = await Api.DefHandler('get_user_id', Post)
         Id = GetNestedKey(DataApi, 'Data.Data')
         if (Id):
             self.Session['UserId'] = Id
             self.Session['UserName'] = self.UserName.data
+
+            DataApi = await Api.DefHandler('get_user_config', {'id': Id})
+            DblJ = GetNestedKey(DataApi, 'Data.Data')
+            if (DblJ):
+                Conf = TDbList().Import(DblJ).ExportPair('name', 'data')
+                self.Session['UserConf'] = Conf
+
             Redirect = self.Request.query.get('url', '/')
             raise web.HTTPFound(location = Redirect)
         else:

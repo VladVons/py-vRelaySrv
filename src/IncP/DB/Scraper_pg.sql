@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS site(
     sitemap             BOOLEAN DEFAULT FALSE,
     hours               VARCHAR(64),
     enabled             BOOLEAN DEFAULT FALSE,
+    moderated           BOOLEAN DEFAULT FALSE,
     UNIQUE (url)
 );
 
@@ -44,7 +45,7 @@ CREATE TABLE IF NOT EXISTS url(
     UNIQUE (url)
 );
 
-CREATE TABLE IF NOT EXISTS product(
+CREATE TABLE IF NOT EXISTS product (
     id                  SERIAL PRIMARY KEY,
     create_date         TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     url_id              INTEGER,
@@ -60,14 +61,44 @@ CREATE TABLE IF NOT EXISTS product(
     FOREIGN KEY (url_id) REFERENCES url(id)
 );
 
-CREATE TABLE IF NOT EXISTS auth(
+CREATE TABLE IF NOT EXISTS auth (
     id                  SERIAL PRIMARY KEY,
+    auth_group_id       INTEGER,
     create_date         TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    valid_date          DATE,
     login               VARCHAR(16) NOT NULL,
     passw               VARCHAR(16),
-    workers             SMALLINT DEFAULT 5,
     enabled             BOOLEAN DEFAULT TRUE,
+    FOREIGN KEY (auth_group_id) REFERENCES auth_group(id),
     UNIQUE (login)
+);
+
+CREATE TABLE IF NOT EXISTS auth_ext(
+    id                  SERIAL PRIMARY KEY,
+    auth_id             INTEGER,
+    name                VARCHAR(24) NOT NULL,
+    data                TEXT ,
+    enabled             BOOLEAN DEFAULT TRUE,
+    FOREIGN KEY (auth_id) REFERENCES auth(id),
+    UNIQUE (auth_id, name)
+);
+
+CREATE TABLE IF NOT EXISTS auth_group (
+    id                  SERIAL PRIMARY KEY,
+    create_date         TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    valid_date          DATE,
+    name                VARCHAR(16) NOT NULL,
+    UNIQUE (name)
+);
+
+CREATE TABLE IF NOT EXISTS auth_group_ext (
+    id                  SERIAL PRIMARY KEY,
+    auth_group_id       INTEGER,
+    name                VARCHAR(24) NOT NULL,
+    data                TEXT ,
+    enabled             BOOLEAN DEFAULT TRUE,
+    FOREIGN KEY (auth_group_id) REFERENCES auth_group(id),
+    UNIQUE (auth_group_id, name)
 );
 
 CREATE TABLE IF NOT EXISTS proxy(

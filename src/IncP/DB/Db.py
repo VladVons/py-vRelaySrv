@@ -19,10 +19,10 @@ class TDbSql(TDbList):
         self._Db = aDb
 
     def _GetFields(self, aFields: list, aData: list) -> TDbFields:
-        if (aData):
-            Res = TDbFields()
-            Res.AddAuto(aFields, aData[0])
-            return Res
+        Res = TDbFields()
+        Data = aData[0] if (aData) else None
+        Res.AddAuto(aFields, Data)
+        return Res
 
     def _GetInsertStr(self, aTable: str):
         Fields = [Val[0] for Key, Val in self.Fields.IdxOrd.items()]

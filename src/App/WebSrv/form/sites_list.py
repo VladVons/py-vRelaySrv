@@ -14,11 +14,11 @@ class TForm(TFormBase):
     Title = 'Site list'
 
     async def _Render(self):
-        DataApi = await Api.WebClient.Send('web/get_hand_shake')
+        DataApi = await Api.DefHandler('get_hand_shake')
         if (GetNestedKey(DataApi, 'Type') == 'Err'):
             return self.RenderInfo(DataApi.get('Data'))
 
-        DataApi = await Api.WebClient.Send('web/get_sites')
+        DataApi = await Api.DefHandler('get_sites')
         Data = GetNestedKey(DataApi, 'Data.Data')
         if (Data):
             Dbl = TDbList().Import(Data)

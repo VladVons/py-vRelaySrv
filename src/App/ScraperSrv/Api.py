@@ -63,6 +63,7 @@ class TApi(TApiBase):
             'get_scheme_by_id':     {'param': ['id']},
             'get_sites':            {'param': ['*']},
             'get_user_id':          {'param': ['login', 'passw']},
+            'get_user_rights':      {'param': ['id']},
             'get_user_config':      {'param': ['id']},
             'add_sites':            {'param': ['dbl']},
             'send_result':          {'param': ['*']},
@@ -73,7 +74,7 @@ class TApi(TApiBase):
         self.ApiTask = TApiTask(self)
 
     async def DoAuthRequest(self, aUser: str, aPassw: str):
-        Dbl = await self.Db.AuthUser(aUser, aPassw)
+        Dbl = await self.Db.UserAuth(aUser, aPassw)
         return (not Dbl.IsEmpty())
 
     async def path_get_hand_shake(self, aPath: str, aData: dict) -> dict:
@@ -81,10 +82,6 @@ class TApi(TApiBase):
 
     async def path_get_task(self, aPath: str, aData: dict) -> dict:
         return await self.ApiTask.Get(aData)
-
-    async def path_get_user_config(self, aPath: str, aData: dict) -> dict:
-        Dbl = await self.Db.GetUserConfig(aData.get('id'))
-        return Dbl.Export()
 
     async def path_get_scheme_empty(self, aPath: str, aData: dict) -> dict:
         Dbl = await self.Db.GetScheme(True, aData.get('cnt', 1))
@@ -106,9 +103,28 @@ class TApi(TApiBase):
         return Dbl.Export()
 
     async def path_get_user_id(self, aPath: str, aData: dict) -> dict:
-        Dbl = await self.Db.AuthUser(aData.get('login'), aData.get('passw'))
+        Dbl = await self.Db.UserAuth(aData.get('login'), aData.get('passw'))
         if (not Dbl.IsEmpty()):
             return Dbl.Rec.GetField('id')
+
+    async def path_get_user_config(self, aPath: str, aData: dict) -> dict:
+        Conf = {}
+
+        UserId = aData.get('id')
+        Dbl = await self.Db.GetUserInfo(UserId)
+        if (not Dbl.IsEmpty()):
+            GroupId = Dbl.Rec.GetField('auth_group_id')
+            if (GroupId):
+                Dbl = await self.Db.GetGroupConf(GroupId)
+                Conf = Dbl.ExportPair('name', 'data')
+
+            Dbl = await self.Db.GetUserConf(UserId)
+            if (not Dbl.IsEmpty()):
+                Data = Dbl.ExportPair('name', 'data')
+                if (Data):
+                    Conf.update(Data)
+        Dbl = TDbList().ImportPair(Conf, 'name', ('data', str))
+        return Dbl.Export()
 
     async def path_add_sites(self, aPath: str, aData: dict) -> dict:
         Data = aData.get('dbl')

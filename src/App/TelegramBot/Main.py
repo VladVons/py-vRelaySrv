@@ -26,7 +26,7 @@ class TMain():
         await message.reply('unknown command')
 
     async def cmd_start(self, message: types.Message):
-        DataA = await Api.WebClient.Send('web/get_sites')
+        DataA = await Api.DefHandler('get_sites')
         Data = GetNestedKey(DataA, 'Data.Data')
         if (Data):
             Dbl = TDbList().Import(Data)

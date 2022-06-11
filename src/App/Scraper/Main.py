@@ -98,7 +98,8 @@ class TMain():
                     Log.Print(1, 'e', 'Run() %s' % Err)
                 else:
                     Dbl = TDbList().Import(GetNestedKey(DataApi, 'Data.Data'))
-                    Workers = Dbl.Rec.GetField('workers')
+                    Conf = Dbl.ExportPair('name', 'data')
+                    Workers = int(Conf.get('workers', 0))
                     MaxWorkers = await self.GetMaxWorkers(Workers)
                     await self._CreateTasks(MaxWorkers)
             except Exception as E:

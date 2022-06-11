@@ -24,7 +24,7 @@ class TForm(TFormBase):
         if (not await self.PostToForm()) and (not self.Data.Sites):
             return
 
-        DataApi = await Api.WebClient.Send('web/get_hand_shake')
+        DataApi = await Api.DefHandler('get_hand_shake')
         if (GetNestedKey(DataApi, 'Type') == 'Err'):
             return self.RenderInfo(DataApi.get('Data'))
 
@@ -34,7 +34,7 @@ class TForm(TFormBase):
             Data = urlparse(Line)
             Sites.append(Data.scheme + '://' + Data.hostname)
 
-        DataApi = await Api.WebClient.Send('web/get_sites')
+        DataApi = await Api.DefHandler('get_sites')
         DataDbl = GetNestedKey(DataApi, 'Data.Data')
         if (not DataDbl):
             self.Data.Output = Log.Print(1, 'e', 'Cant get data from server')
@@ -72,4 +72,4 @@ class TForm(TFormBase):
         if (UrlOk):
             Dbl = TDbSql(None)
             Dbl.InitList(('url', str), UrlOk)
-            await Api.WebClient.Send('web/add_sites', {'dbl': Dbl.Export()})
+            await Api.DefHandler('add_sites', {'dbl': Dbl.Export()})
