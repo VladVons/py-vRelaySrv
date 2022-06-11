@@ -8,11 +8,12 @@ import asyncio
 import datetime
 import json
 #
+from ..Api import Api
 from .FForm import TFormBase
 from IncP.Download import GetUrlSoup
 from IncP.Log import Log
 from IncP.Scheme import TScheme
-from IncP.Utils import TJsonEncoder, FormatJsonStr
+from IncP.Utils import TJsonEncoder, FormatJsonStr, FilterKey, GetNestedKey
 
 
 _FieldPrefix = 'script_'
@@ -76,10 +77,7 @@ class TForm(TFormBase):
 
         return (FormatJsonStr(ScriptStr), '\n'.join(Err))
 
-    async def _Render(self):
-        if (not await self.PostToForm()) or (not self.Data.get('BtnOk')):
-            return
-
+    def CompileUrl(self):
         Urls = [
             Val
             for Key, Val in self.Data.items()
@@ -88,21 +86,67 @@ class TForm(TFormBase):
 
         FieldsScript = [Key for Key in self.Data if Key.startswith(_FieldPrefix)] + ['Pipe']
         self.StripDataLines(FieldsScript)
+        return (self.Compile(Urls), Urls)
 
-        self.Data.Script = ''
-        Script, Err = self.Compile(Urls)
+    async def BtnMake(self):
+        (Script, Err), Urls = self.CompileUrl()
         if (Err):
             self.Data.Output = Err
-        else:
-            self.Data.Output = ''
+            return
 
-            for Url in Urls:
-                Soup = await GetUrlSoup(Url)
-                if (Soup):
-                    Output = TScheme(Script).Parse(Soup).GetData(['Err', 'Pipe'])
-                    self.Data.Output += json.dumps(Output, indent=2, sort_keys=True, ensure_ascii=False, cls=TJsonEncoder) + '\n'
-                    self.Data.Script = Script
-                else:
-                    self.Data.Output = 'Error loading %s' % (Url)
-                    break
-                await asyncio.sleep(0.1)
+        self.Data.Script = ''
+        self.Data.Output = ''
+        for Url in Urls:
+            Soup = await GetUrlSoup(Url)
+            if (Soup):
+                Output = TScheme(Script).Parse(Soup).GetData(['Err', 'Pipe'])
+                self.Data.Output += json.dumps(Output, indent=2, sort_keys=True, ensure_ascii=False, cls=TJsonEncoder) + '\n'
+                self.Data.Script = Script
+            else:
+                self.Data.Output = 'Error loading %s' % (Url)
+                break
+            await asyncio.sleep(0.1)
+
+    async def BtnSave(self):
+        (Script, Err), Urls = self.CompileUrl()
+        if (Err):
+            self.Data.Output = 'Error compiler %s' % (Err)
+            return
+
+        Soup = await GetUrlSoup(Urls[0])
+        if (not Soup):
+            self.Data.Output = 'Error loading %s' % (Urls[0])
+            return
+
+        Scheme = TScheme(Script).Parse(Soup)
+        Output = Scheme.GetData(['Err'])
+        if (Output.get('Err')):
+            self.Data.Output = 'Error pharser: %s' % Output.get('Err')
+            return
+
+        Trust = self.Session.get('UserGroup') == 'admin'
+        Author = GetNestedKey(Scheme.Data, 'Product.Info.Author')
+        if (Author != self.Session.get('UserName')) or (not Trust):
+            self.Data.Output = 'Error: Cant change owner %s to %s' % (Author, self.Session.get('UserName'))
+            return
+
+        RequiredKey = ['name', 'price']
+        Filtered = FilterKey(Scheme.GetPipe(), RequiredKey, dict)
+        if (len(Filtered) < len(RequiredKey)):
+            self.Data.Output = 'Error: Required keys %s' % (RequiredKey)
+            return
+
+        DataApi = await Api.DefHandler('set_scheme', {'scheme': Script, 'trust': Trust})
+        if (GetNestedKey(DataApi, 'Type') == 'Err'):
+            self.Data.Output = DataApi.get('Data')
+        else:
+            self.Data.Output = 'Saved'
+
+    async def _Render(self):
+        if (not await self.PostToForm()):
+             return
+
+        if ('BtnMake' in self.Data):
+            await self.BtnMake()
+        elif ('BtnSave' in self.Data):
+            await self.BtnSave()

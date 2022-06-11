@@ -235,14 +235,11 @@ class get_scheme_test(TApiPlugin):
 
 
 class set_scheme(TApiPlugin):
-    Param = {'param': ['id', 'scheme', 'url']}
+    Param = {'param': ['scheme', 'trust']}
 
     async def Exec(self, aPath: str, aData: dict) -> dict:
         Scheme = TScheme(aData.get('scheme'))
         Url = Scheme.GetUrl()[0]
-        if (not Url.startswith(aData.get('url'))):
-            return {'Err': 'Url mismatch'}
-
         Soup = await GetUrlSoup(Url)
         if (not Soup):
             return {'Type': 'Err', 'Data': 'Error loading %s' % (Url)}
@@ -251,7 +248,6 @@ class set_scheme(TApiPlugin):
         if (Scheme.Err):
             Res = {'Type': 'Err', 'Data': Scheme.Err}
         else:
-            aData.pop('url', None)
             Res = await self.Args['WebClient'].Send('web/set_scheme', aData)
         return Res
 

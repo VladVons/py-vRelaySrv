@@ -12,7 +12,7 @@ class TForm(TFormBase):
         '/form/soup_test': 'soup test',
         '/form/sites_list': 'sites list',
         '/form/sites_add': 'sites_add',
-        '/form/site_get': 'site geT',
+        '/form/site_get': 'site get',
         '/form/tools': 'tools',
     }
 

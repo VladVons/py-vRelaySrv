@@ -9,6 +9,7 @@
     function Btn_GetSchemeDone() {
       ClearObj('input');
       ClearObj('textarea');
+      //document.getElementById('BtnSave').disabled = true;
 
       HttpRequest(
           '/api/get_scheme_not_empty',
@@ -55,7 +56,7 @@
         Btn_GetSchemeEmpty();
     }
 
-    function Btn_Test(aThis) {
+    function Btn_Test_Unused(aThis) {
       // ToDo. Dont remove line below. Some problem with <input 'required'> in HTML
       document.getElementById('Url0').value = '';
 
@@ -90,6 +91,18 @@
       };
     };
 
+    function Btn_Make(aThis) {
+      document.getElementById('Output').value = '';
+      document.getElementById('Script').value = '';
+      document.forms["Form"].requestSubmit(aThis)
+    }
+
+    function Btn_Save(aThis) {
+      if (window.confirm('Save scheme ?')) {
+        document.forms["Form"].requestSubmit(aThis)
+      }
+    }
+
     function OnBlur(aThis) {
       LastBlur = aThis;
     }
@@ -108,11 +121,11 @@
         <input type="text" name="Url1" id="Url1" placeholder="url 2" style="width:100%" value="{{ Data.Url1 }}">
       </td>
       <td>
+        <button onclick="Btn_Go()">go</button>
         <button onclick="Btn_GetSchemeEmpty2()">get empty</button>
         <button onclick="Btn_GetSchemeDone()">get done</button>
-        <button onclick="Btn_Go()">go</button>
-        <button onclick="Btn_Test(this)">test</button>
-        <input type="submit" name="BtnOk" value="make">
+        <button name="BtnMake" onclick="Btn_Make(this)">make</button>
+        <button name="BtnSave" id="BtnSave" onclick="Btn_Save(this)">save</button>
         <br>
         <select id="SelHelp" onclick="Sel_Help(this)">
           <optgroup label="- top -"></optgroup>
@@ -137,7 +150,7 @@
         <textarea name="Pipe" id="Pipe" rows="3" onblur="OnBlur(this)" required>{{ Data.Pipe }}</textarea>
       </td>
       <td rowspan="7">
-        <textarea name="Script" id="Script" rows="20">{{ Data.Script }}</textarea>
+        <textarea readonly name="Script" id="Script" rows="20">{{ Data.Script }}</textarea>
         <textarea readonly name="Output" id="Output" rows="20">{{ Data.Output }}</textarea>
       </td>
     </tr>
@@ -179,15 +192,7 @@
     </tr>
     <tr>
       <td>Make</td>
-      <td>
-      </td>
-      <td>
-        <button onclick="Btn_SchemeGetEmpty2()">get empty</button>
-        <button onclick="Btn_SchemeGetDone()">get done</button>
-        <button onclick="Btn_Go()">go</button>
-        <button onclick="Btn_Test(this)">test</button>
-        <input type="submit" name="BtnOk" value="make">
-      </td>
+      <td></td>
     </tr>
   </tbody>
   </table>

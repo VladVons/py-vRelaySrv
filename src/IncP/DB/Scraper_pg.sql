@@ -86,7 +86,6 @@ CREATE TABLE IF NOT EXISTS auth_ext(
 CREATE TABLE IF NOT EXISTS auth_group (
     id                  SERIAL PRIMARY KEY,
     create_date         TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    valid_date          DATE,
     name                VARCHAR(16) NOT NULL,
     UNIQUE (name)
 );

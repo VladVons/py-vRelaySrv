@@ -11,7 +11,8 @@ from wtforms.validators import DataRequired, Length
 from ..Api import Api
 from .FForm import TFormBase
 from Inc.DB.DbList import TDbList
-from IncP.Utils import GetNestedKey
+from IncP.Log import Log
+from IncP.Utils import GetNestedKey, FilterKeyErr
 
 
 class TForm(TFormBase):
@@ -22,29 +23,37 @@ class TForm(TFormBase):
     Submit = SubmitField("ok")
 
     async def _Render(self):
-        self.Message = self.Session.get('UserName')
+        self.Message = '%s %s' % (self.Session.get('UserName'), self.Session.get('UserGroup', ''))
         self.Query = self.Request.query_string
         if (not self.validate()):
             return
 
-        DataApi = await Api.DefHandler('web/get_hand_shake')
+        DataApi = await Api.DefHandler('get_hand_shake')
         if (GetNestedKey(DataApi, 'Type') == 'Err'):
             return self.RenderInfo(DataApi.get('Data'))
 
-        Post = {'login': self.UserName.data, 'passw': self.Password.data}
-        DataApi = await Api.DefHandler('get_user_id', Post)
-        Id = GetNestedKey(DataApi, 'Data.Data')
-        if (Id):
-            self.Session['UserId'] = Id
-            self.Session['UserName'] = self.UserName.data
+        Data = {'login': self.UserName.data, 'passw': self.Password.data}
+        DataApi = await Api.DefHandler('get_user_id', Data)
+        Err = FilterKeyErr(DataApi)
+        if (Err):
+            Log.Print(1, 'e', 'Err: %s' % Err)
+            return
 
-            DataApi = await Api.DefHandler('get_user_config', {'id': Id})
-            DblJ = GetNestedKey(DataApi, 'Data.Data')
-            if (DblJ):
-                Conf = TDbList().Import(DblJ).ExportPair('name', 'data')
-                self.Session['UserConf'] = Conf
+        Dbl = TDbList().Import(GetNestedKey(DataApi, 'Data.Data'))
+        if (Dbl.IsEmpty()):
+            self.Message = 'Authorization failed for %s' % (self.UserName.data)
+            return
 
-            Redirect = self.Request.query.get('url', '/')
-            raise web.HTTPFound(location = Redirect)
-        else:
-            self.Message = 'Authorization failed'
+        UserId = Dbl.Rec.GetField('id')
+        self.Session['UserId'] = UserId
+        self.Session['UserName'] = self.UserName.data
+        self.Session['UserGroup'] = Dbl.Rec.GetField('auth_group_name')
+
+        DataApi = await Api.DefHandler('get_user_config', {'id': UserId})
+        DblJ = GetNestedKey(DataApi, 'Data.Data')
+        if (DblJ):
+            Conf = TDbList().Import(DblJ).ExportPair('name', 'data')
+            self.Session['UserConf'] = Conf
+
+        Redirect = self.Request.query.get('url', '/')
+        raise web.HTTPFound(location = Redirect)

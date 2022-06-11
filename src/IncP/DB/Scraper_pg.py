@@ -36,14 +36,16 @@ class TDbApp(TDbPg):
             ''' % (aId)
         await self.Exec(Query)
 
-    async def SetScheme(self, aId: int, aScheme: str):
+    async def SetScheme(self, aUrl: str, aScheme: str, aModerated: bool):
         Query = f'''
             update
                 site
             set
-                scheme = '{aScheme}'
+                scheme = '{aScheme}',
+                moderated = {aModerated},
+                scheme_date = now()
             where
-                (id = {aId})
+                (url = '{aUrl}')
             '''
         await self.Exec(Query)
 
@@ -232,13 +234,17 @@ class TDbApp(TDbPg):
     async def UserAuth(self, aLogin: str, aPassw: str) -> TDbSql:
         Query = f'''
             select
-                id
+                auth.id,
+                auth.auth_group_id,
+                auth_group.name as auth_group_name
             from
                 auth
+            left join auth_group on
+                (auth_group.id = auth.auth_group_id)
             where
-                (enabled) and
-                (login = '{aLogin}') and
-                (passw = '{aPassw}')
+                (auth.enabled) and
+                (auth.login = '{aLogin}') and
+                (auth.passw = '{aPassw}')
             '''
         return await TDbSql(self).Fetch(Query)
 

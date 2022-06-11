@@ -6,6 +6,7 @@ License:     GNU, see LICENSE for more details
 
 
 from datetime import datetime
+from urllib.parse import urlparse
 import asyncio
 import json
 #
@@ -14,6 +15,7 @@ from IncP.ApiWeb import TApiBase
 from IncP.DB.Db import TDbSql
 from IncP.DB.Scraper_pg import TDbApp
 from IncP.Log import Log, TEchoDb
+from IncP.Utils import GetNestedKey
 
 
 class TApiTask():
@@ -67,7 +69,7 @@ class TApi(TApiBase):
             'get_user_config':      {'param': ['id']},
             'add_sites':            {'param': ['dbl']},
             'send_result':          {'param': ['*']},
-            'set_scheme':           {'param': ['id', 'scheme']}
+            'set_scheme':           {'param': ['scheme', 'trust']}
         }
 
         self.Db: TDbApp = None
@@ -96,7 +98,12 @@ class TApi(TApiBase):
         return Dbl.Export()
 
     async def path_set_scheme(self, aPath: str, aData: dict) -> dict:
-        return await self.Db.SetScheme(aData.get('id'), aData.get('scheme'))
+        Scheme = json.loads(aData.get('scheme'))
+        Urls = GetNestedKey(Scheme, 'Product.Info.Url')
+        if (Urls):
+            UrlInf = urlparse(Urls[0])
+            Url = UrlInf.scheme + '://' + UrlInf.hostname
+            return await self.Db.SetScheme(Url, aData.get('scheme'), aData.get('trust', False))
 
     async def path_get_sites(self, aPath: str, aData: dict) -> dict:
         Dbl = await self.Db.GetSites(aData.get('cnt', -1))
@@ -104,8 +111,7 @@ class TApi(TApiBase):
 
     async def path_get_user_id(self, aPath: str, aData: dict) -> dict:
         Dbl = await self.Db.UserAuth(aData.get('login'), aData.get('passw'))
-        if (not Dbl.IsEmpty()):
-            return Dbl.Rec.GetField('id')
+        return Dbl.Export()
 
     async def path_get_user_config(self, aPath: str, aData: dict) -> dict:
         Conf = {}

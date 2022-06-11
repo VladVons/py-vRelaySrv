@@ -5,10 +5,11 @@ License:     GNU, see LICENSE for more details
 '''
 
 
+from Inc.DB.DbList import TDbList
 from IncP.ApiWeb import TApiBase
 from IncP.ApiWeb import TWebClient
 from IncP.Log import Log
-from IncP.Utils import GetNestedKey
+from IncP.Utils import GetNestedKey, FilterKeyErr
 
 
 class TApi(TApiBase):
@@ -20,12 +21,20 @@ class TApi(TApiBase):
         return await self.WebClient.Send('web/' + aPath, aData)
 
     async def GetUserConfig(self):
-        Data = {'login': self.WebClient.Auth.get('User'), 'passw': self.WebClient.Auth.get('Password')}
+        User = self.WebClient.Auth.get('User')
+        Data = {'login': User, 'passw': self.WebClient.Auth.get('Password')}
         DataApi = await self.DefHandler('get_user_id', Data)
-        if (DataApi):
-            Data = {'id': GetNestedKey(DataApi, 'Data.Data')}
-            return await self.DefHandler('get_user_config', Data)
+        Err = FilterKeyErr(DataApi)
+        if (Err):
+            Log.Print(1, 'e', 'Err: %s' % Err)
+            return
+
+        Dbl = TDbList().Import(GetNestedKey(DataApi, 'Data.Data'))
+        if (Dbl.IsEmpty()):
+            Log.Print(1, 'GetUserConfig() failed for %s' % (User))
         else:
-            Log.Print(1, 'GetUserConfig() failed')
+            UserId = Dbl.Rec.GetField('id')
+            return await self.DefHandler('get_user_config', {'id': UserId})
+
 
 Api = TApi()

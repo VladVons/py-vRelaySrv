@@ -131,7 +131,7 @@ class TDownload():
     async def Get(self, aUrl: str) -> dict:
         Res = await self._Get(aUrl)
         if (Res.get('Type') == 'Err'):
-            asyncio.sleep(1)
+            await asyncio.sleep(1)
             E = Res.get('Data')
             if (type(E) == aiohttp.ClientConnectorError):
                 Mode = self.Opt['Connector'].Mode

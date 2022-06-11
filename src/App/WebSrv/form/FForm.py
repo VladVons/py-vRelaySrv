@@ -42,8 +42,12 @@ class TFormBase(Form):
 
         if (aUrls):
             for x in aUrls:
-                if (x.strip()) and (re.match(x, aUrl)):
-                    return True
+                try:
+                    if (x.strip()) and (re.match(x, aUrl)):
+                        return True
+                except Exception as E:
+                    Log.Print(1, 'e', 'CheckAccess()', aE = E)
+                    return False
         return False
 
     async def Render(self) -> web.Response:
@@ -61,7 +65,7 @@ class TFormBase(Form):
                     Log.Print(1, 'x', Msg, aE = E)
                     Res = self.RenderInfo(Msg)
         else:
-            Msg = 'Access denied for interface_allow %s' % (self.Request.path)
+            Msg = 'Access denied for %s. Policy interface_allow' % (self.Request.path)
             Res = self.RenderInfo(Msg)
         return Res
 
