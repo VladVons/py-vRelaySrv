@@ -64,6 +64,8 @@ class TDbSql(TDbList):
 class TDb():
     Pool = None
     Debug = False
+    CntGet = 0
+    CntSet = 0
 
     def Connect(self):
         raise NotImplementedError()
@@ -82,7 +84,10 @@ class TDb():
                 #    Sql = Sql.strip()
                 #    if (Sql):
                 #        await Cur.execute(Sql)
+
+                self.CntSet += 1
                 if (self.Debug):
+                    print('CntSet', self.CntSet)
                     print(aSql)
 
                 try:
@@ -105,18 +110,21 @@ class TDb():
         async with self.Pool.acquire() as Connect:
             async with Connect.cursor() as Cursor:
             #async with Con.cursor(cursor_factory = psycopg2.extras.RealDictCursor) as Cur:
-                if (self.Debug):
-                    print(aSql)
-
+                self.CntGet += 1
                 try:
                     await Cursor.execute(aSql)
                     Data = await Cursor.fetchall()
                     Fields = [x.name for x in Cursor.description]
-                    return (Data, Fields)
+                    Res = (Data, Fields)
                 except Exception as E:
                     Log.Print(1, 'x', 'Fetch()', aE = E)
-                finally:
-                    pass
+                    Res = None
+
+                if (self.Debug):
+                    print(aSql)
+                    print(Res)
+                    print('CntGet', self.CntGet)
+                return Res
 
     async def FetchWait(self, aSql: str, aTimeout = 5):
           try:

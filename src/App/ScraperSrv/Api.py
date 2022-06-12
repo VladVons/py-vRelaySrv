@@ -95,9 +95,7 @@ class TApi(TApiBase):
         return Dbl.Export()
 
     async def path_get_scheme_mederate(self, aPath: str, aData: dict) -> dict:
-        print('-x1')
         Dbl = await self.Db.GetSchemeModerate()
-        print('--z2', Dbl)
         return Dbl.Export()
 
     async def path_get_scheme_by_id(self, aPath: str, aData: dict) -> dict:

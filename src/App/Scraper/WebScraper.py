@@ -200,7 +200,6 @@ class TWebScraperFull(TWebScraper):
         self.Scheme.Parse(aSoup)
         if (not self.Scheme.Err):
             self.UrlScheme += 1
-            #print('---x1', Res)
             #await self.Parent.Db.InsertUrl(aUrl, Res.get('name', ''), Res.get('price', 0), Res.get('price_Old', 0), Res.get('stock', 1), Res.get('image', ''))
 
 

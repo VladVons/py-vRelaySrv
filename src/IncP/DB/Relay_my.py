@@ -49,7 +49,6 @@ class TDbApp(TDb):
 
     async def InsertDeviceByUniq(self, aUniq: str, aAlias: str, aValue: float):
         Row = await self.GetDeviceByUniq(aUniq, aAlias)
-        #print('---x1', aUniq, aAlias, Row)
         Res = (Row is not None)
         if (Row):
             Query = '''

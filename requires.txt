@@ -4,6 +4,7 @@
 #pip3 install setuptools wheel
 #pip3 install --upgrade pip
 #pip3 install -r requires.txt
+#curl -sS https://bootstrap.pypa.io/get-pip.py | python3.10
 
 
 #--- WebSrv
@@ -15,6 +16,7 @@ aiohttp_session
 aiohttp_jinja2
 jinja2
 wtforms
+cffi
 
 bs4
 lxml

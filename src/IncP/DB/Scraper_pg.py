@@ -32,7 +32,7 @@ class TDbApp(TDbPg):
                 update_date=NOW()
             WHERE
                 id=%d;
-            COMMIT;
+            COMMIT
             ''' % (aId)
         await self.Exec(Query)
 

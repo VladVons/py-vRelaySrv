@@ -6,11 +6,50 @@
 <script src="/js/TDbList.js"></script>
 <script src="/js/Forms.js"></script>
 <script>
+  function SplitScheme(aData) {
+      console.log('aData', aData);
+
+      let Dbl = new TDbList(aData['Data']['Data']);
+      Dbl.Shuffle();
+      Dbl.RecNo = 0;
+      let Scheme = Dbl.Rec.GetField('scheme');
+      let SchemeJ = JSON.parse(Scheme);
+
+      let Urls = SchemeJ['Product']['Info']['Url'];
+      for (let i = 0; i < Urls.length; i++) {
+          document.getElementById('Url' + i).value = Urls[i];
+      };
+
+      let Pipe = '';
+      let PipeJ = SchemeJ['Product']['Pipe'];
+      for (let i = 0; i < PipeJ.length; i++) {
+        if (PipeJ[i][0] == 'as_dict') {
+          Object.entries(PipeJ[i][1]).forEach(([Key, Val]) => {
+            let Script_Key = '';
+            Object.entries(Val).forEach(([Idx, Macro]) => {
+              Script_Key += JSON.stringify(Macro) + ',\n';
+            });
+            document.getElementById('script_' + Key).value = Script_Key;
+          })
+        } else {
+          Pipe += JSON.stringify(PipeJ[i]) + ',\n';
+        };
+      };
+
+      document.getElementById('Pipe').value = Pipe;
+      document.getElementById('Script').value = Scheme;
+    }
+
     function Btn_Moderate() {
+      // ToDo. Fuck! Hangs TDb.Fetch.Cursor.execute(aSql)
+      // dont remove line below
+      ClearObj('input');
+      ClearObj('textarea');
+
       HttpRequest(
           '/api/get_scheme_mederate',
           function(aData) {
-              console.log('aData', aData);
+            SplitScheme(aData)
           },
           {}
         );
@@ -26,38 +65,8 @@
       HttpRequest(
           '/api/get_scheme_not_empty',
           function(aData) {
-              console.log('aData', aData);
-
-              let Dbl = new TDbList(aData['Data']['Data']);
-              Dbl.Shuffle();
-              Dbl.RecNo = 0;
-              let Scheme = Dbl.Rec.GetField('scheme');
-              let SchemeJ = JSON.parse(Scheme);
-
-              let Urls = SchemeJ['Product']['Info']['Url'];
-              for (let i = 0; i < Urls.length; i++) {
-                  document.getElementById('Url' + i).value = Urls[i];
-              };
-
-              let Pipe = '';
-              let PipeJ = SchemeJ['Product']['Pipe'];
-              for (let i = 0; i < PipeJ.length; i++) {
-                if (PipeJ[i][0] == 'as_dict') {
-                  Object.entries(PipeJ[i][1]).forEach(([Key, Val]) => {
-                    let Script_Key = '';
-                    Object.entries(Val).forEach(([Idx, Macro]) => {
-                      Script_Key += JSON.stringify(Macro) + ',\n';
-                    });
-                    document.getElementById('script_' + Key).value = Script_Key;
-                  })
-                } else {
-                  Pipe += JSON.stringify(PipeJ[i]) + ',\n';
-                };
-              };
-
-              document.getElementById('Pipe').value = Pipe;
-              document.getElementById('Script').value = Scheme;
-            },
+            SplitScheme(aData)
+          },
           {'cnt': 10}
       );
     };

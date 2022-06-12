@@ -32,7 +32,8 @@ class TFormBase(Form):
     async def PostToForm(self):
         self.Data.clear()
         Post = await self.Request.post()
-        self.Data = {Key: Val.strip() for Key, Val in Post.items()}
+        for Key, Val in Post.items():
+            self.Data[Key] =  Val.strip()
         return bool(Post)
 
     @staticmethod
