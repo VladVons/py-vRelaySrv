@@ -379,10 +379,10 @@ class TDbList():
         return self
 
     def Import(self, aData: dict):
-        self.Tag = aData['Tag']
-        self.Data = aData['Data']
+        self.Tag = aData.get('Tag')
+        self.Data = aData.get('Data')
         self.Fields = TDbFields()
-        self.Fields.Import(aData['Head'])
+        self.Fields.Import(aData.get('Head'))
         self.RecNo = 0
         return self
 
@@ -475,11 +475,5 @@ if (__name__ == '__main__'):
     Dbl1 = TDbList( [('User', str), ('Age', int), ('Male', bool, True)] )
     Data = [['User2', 22, True], ['User1', 11, False], ['User3', 33, True], ['User4', 44, True]]
     Dbl1.SetData(Data)
-
-    for Idx, Rec in enumerate(Dbl1):
-        Rec.SetField('Age', Idx)
-        Rec.Flush()
-
-    print(Dbl1)
 '''
 

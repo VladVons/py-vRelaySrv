@@ -23,7 +23,7 @@ class TForm(TFormBase):
     Submit = SubmitField("ok")
 
     async def _Render(self):
-        self.Message = '%s %s' % (self.Session.get('UserName'), self.Session.get('UserGroup', ''))
+        self.Message = '%s (%s)' % (self.Session.get('UserName'), self.Session.get('UserGroup', ''))
         self.Query = self.Request.query_string
         if (not self.validate()):
             return
@@ -39,7 +39,8 @@ class TForm(TFormBase):
             Log.Print(1, 'e', 'Err: %s' % Err)
             return
 
-        Dbl = TDbList().Import(GetNestedKey(DataApi, 'Data.Data'))
+        DblJ = GetNestedKey(DataApi, 'Data.Data')
+        Dbl = TDbList().Import(DblJ)
         if (Dbl.IsEmpty()):
             self.Message = 'Authorization failed for %s' % (self.UserName.data)
             return

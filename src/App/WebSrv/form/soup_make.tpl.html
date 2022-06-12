@@ -6,10 +6,22 @@
 <script src="/js/TDbList.js"></script>
 <script src="/js/Forms.js"></script>
 <script>
+    function Btn_Moderate() {
+      HttpRequest(
+          '/api/get_scheme_mederate',
+          function(aData) {
+              console.log('aData', aData);
+          },
+          {}
+        );
+      };
+
     function Btn_GetSchemeDone() {
       ClearObj('input');
       ClearObj('textarea');
-      //document.getElementById('BtnSave').disabled = true;
+
+      document.getElementById('BtnSave').disabled = true;
+      document.getElementById('BtnSaveFlag').value = 'disabled';
 
       HttpRequest(
           '/api/get_scheme_not_empty',
@@ -53,6 +65,10 @@
     function Btn_GetSchemeEmpty2(aId, aThis) {
         ClearObj('input');
         ClearObj('textarea');
+
+        document.getElementById('BtnSave').disabled = false;
+        document.getElementById('BtnSaveFlag').value = '';
+
         Btn_GetSchemeEmpty();
     }
 
@@ -86,7 +102,9 @@
       for (let i = 0; i < Items.length; i++) {
         if (Items[i].name.startsWith('Url')) {
           let Url = Items[i].value;
-          window.open(Url, '_blank').focus();
+          if (Url) {
+            window.open(Url, '_blank').focus();
+          }
         };
       };
     };
@@ -122,11 +140,16 @@
       </td>
       <td>
         <button onclick="Btn_Go()">go</button>
-        <button onclick="Btn_GetSchemeEmpty2()">get empty</button>
-        <button onclick="Btn_GetSchemeDone()">get done</button>
+        <button onclick="Btn_GetSchemeEmpty2()">get task</button>
+        <button onclick="Btn_GetSchemeDone()">example</button>
         <button name="BtnMake" onclick="Btn_Make(this)">make</button>
-        <button name="BtnSave" id="BtnSave" onclick="Btn_Save(this)">save</button>
+        <button name="BtnSave" id="BtnSave" onclick="Btn_Save(this)" {{ Data.BtnSaveDisabled }} >save</button>
+        <input type="hidden" name="BtnSaveFlag" id="BtnSaveFlag" value={{ Data.BtnSaveDisabled }}>
+        {% if Data.Admin %}
+        <button name="BtnModerate" onclick="Btn_Moderate()">Moderate</button>
+        {% endif %}
         <br>
+
         <select id="SelHelp" onclick="Sel_Help(this)">
           <optgroup label="- top -"></optgroup>
             <option>["find_all", ["li"]]</option>

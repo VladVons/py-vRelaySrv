@@ -62,6 +62,7 @@ class TApi(TApiBase):
             'get_task':             {'param': []},
             'get_scheme_empty':     {'param': ['cnt']},
             'get_scheme_not_empty': {'param': ['cnt']},
+            'get_scheme_mederate':  {'param': []},
             'get_scheme_by_id':     {'param': ['id']},
             'get_sites':            {'param': ['*']},
             'get_user_id':          {'param': ['login', 'passw']},
@@ -91,6 +92,12 @@ class TApi(TApiBase):
 
     async def path_get_scheme_not_empty(self, aPath: str, aData: dict) -> dict:
         Dbl = await self.Db.GetScheme(False, aData.get('cnt', 1))
+        return Dbl.Export()
+
+    async def path_get_scheme_mederate(self, aPath: str, aData: dict) -> dict:
+        print('-x1')
+        Dbl = await self.Db.GetSchemeModerate()
+        print('--z2', Dbl)
         return Dbl.Export()
 
     async def path_get_scheme_by_id(self, aPath: str, aData: dict) -> dict:

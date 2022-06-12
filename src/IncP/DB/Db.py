@@ -101,7 +101,7 @@ class TDb():
             Query = File.read().strip()
             await self.Exec(Query)
 
-    async def Fetch(self, aSql: str, aAll = True) -> tuple:
+    async def Fetch(self, aSql: str) -> tuple:
         async with self.Pool.acquire() as Connect:
             async with Connect.cursor() as Cursor:
             #async with Con.cursor(cursor_factory = psycopg2.extras.RealDictCursor) as Cur:
@@ -110,15 +110,13 @@ class TDb():
 
                 try:
                     await Cursor.execute(aSql)
-                    if (aAll):
-                        Data = await Cursor.fetchall()
-                    else:
-                        Data = await Cursor.fetchone()
-
+                    Data = await Cursor.fetchall()
                     Fields = [x.name for x in Cursor.description]
                     return (Data, Fields)
                 except Exception as E:
                     Log.Print(1, 'x', 'Fetch()', aE = E)
+                finally:
+                    pass
 
     async def FetchWait(self, aSql: str, aTimeout = 5):
           try:

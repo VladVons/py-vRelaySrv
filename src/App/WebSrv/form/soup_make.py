@@ -70,7 +70,7 @@ class TForm(TFormBase):
             }
         ''' % (
                 self.Session['UserName'],
-                datetime.date.today().strftime('%Y-%m-%d'),
+                datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S'),
                 Urls,
                 self.Data.Pipe, ','.join(Items)
             )
@@ -93,6 +93,9 @@ class TForm(TFormBase):
         if (Err):
             self.Data.Output = Err
             return
+
+        if (self.Data.get('BtnSaveFlag') == 'disabled'):
+            self.Data.BtnSaveDisabled = 'disabled'
 
         self.Data.Script = ''
         self.Data.Output = ''
@@ -124,26 +127,22 @@ class TForm(TFormBase):
             self.Data.Output = 'Error pharser: %s' % Output.get('Err')
             return
 
-        Trust = self.Session.get('UserGroup') == 'admin'
-        Author = GetNestedKey(Scheme.Data, 'Product.Info.Author')
-        if (Author != self.Session.get('UserName')) or (not Trust):
-            self.Data.Output = 'Error: Cant change owner %s to %s' % (Author, self.Session.get('UserName'))
-            return
-
         RequiredKey = ['name', 'price']
         Filtered = FilterKey(Scheme.GetPipe(), RequiredKey, dict)
         if (len(Filtered) < len(RequiredKey)):
             self.Data.Output = 'Error: Required keys %s' % (RequiredKey)
             return
 
-        DataApi = await Api.DefHandler('set_scheme', {'scheme': Script, 'trust': Trust})
+        DataApi = await Api.DefHandler('set_scheme', {'scheme': Script, 'trust': self.Data.Admin})
         if (GetNestedKey(DataApi, 'Type') == 'Err'):
             self.Data.Output = DataApi.get('Data')
         else:
             self.Data.Output = 'Saved'
 
     async def _Render(self):
-        if (not await self.PostToForm()):
+        HasItems = await self.PostToForm()
+        self.Data['Admin'] = (self.Session.get('UserGroup') == 'admin')
+        if (not HasItems):
              return
 
         if ('BtnMake' in self.Data):

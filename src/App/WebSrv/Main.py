@@ -117,7 +117,7 @@ class TWebSrv():
         Res = await Api.Call(Name, Param)
         Err = FilterKeyErr(Res)
         if (Err):
-            Log.Print(1, 'e', '_rApi() %s' % (Res.get('Data')))
+            Log.Print(1, 'e', 'TWebSrv._rApi() %s' % (Res.get('Data')))
         else:
             Res = Res.get('Data')
         return web.json_response(Res)

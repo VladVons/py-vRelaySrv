@@ -30,9 +30,9 @@ class TFormBase(Form):
             self.Title = aTpl.split('.')[0]
 
     async def PostToForm(self):
+        self.Data.clear()
         Post = await self.Request.post()
-        for Key, Val in Post.items():
-            self.Data[Key] = Val.strip()
+        self.Data = {Key: Val.strip() for Key, Val in Post.items()}
         return bool(Post)
 
     @staticmethod

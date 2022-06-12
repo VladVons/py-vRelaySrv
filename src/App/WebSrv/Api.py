@@ -277,7 +277,8 @@ class TApi(TApiBase):
 
         self.Url = {
             'get_scheme_empty':         {'param': ['cnt']},
-            'get_scheme_not_empty':     {'param': ['cnt']}
+            'get_scheme_not_empty':     {'param': ['cnt']},
+            'get_scheme_mederate':      {'param': []},
         }
 
         self.DefMethod = self.DefHandler

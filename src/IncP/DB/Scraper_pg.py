@@ -71,9 +71,7 @@ class TDbApp(TDbPg):
 
         Query = f'''
            select
-                id,
-                url,
-                scheme
+                id, url, scheme
             from
                 site
             where
@@ -86,12 +84,24 @@ class TDbApp(TDbPg):
             '''
         return await TDbSql(self).Fetch(Query)
 
+    async def GetSchemeModerate(self) -> TDbSql:
+        Query = f'''
+            select
+                id, url, scheme
+            from
+                site
+            where
+                (scheme is not null) and
+                (not moderated)
+            order by
+                id
+            '''
+        return await TDbSql(self).Fetch(Query)
+
     async def GetSiteById(self, aId: int) -> TDbSql:
         Query = f'''
            select
-                id,
-                url,
-                scheme
+                id, url, scheme
             from
                 site
             where
@@ -102,8 +112,7 @@ class TDbApp(TDbPg):
     async def GetSiteExtById(self, aId: int) -> TDbSql:
         Query = f'''
             select
-                name,
-                data
+                name, data
             from
                 site_ext
             where
@@ -142,11 +151,7 @@ class TDbApp(TDbPg):
 
         Query = f'''
             select
-                id,
-                url,
-                sleep,
-                scheme,
-                sitemap
+                id, url, sleep, scheme, sitemap
             from
                 site
             where
@@ -211,8 +216,7 @@ class TDbApp(TDbPg):
 
         Query = f'''
             select
-                url.id,
-                url.url
+                url.id, url.url
             from
                 url
             left join site on
@@ -251,10 +255,7 @@ class TDbApp(TDbPg):
     async def GetUserInfo(self, aId: int) -> TDbSql:
         Query = f'''
             select
-                enabled,
-                create_date,
-                valid_date,
-                auth_group_id
+                enabled, create_date, valid_date, auth_group_id
             from
                 auth
             where
@@ -265,8 +266,7 @@ class TDbApp(TDbPg):
     async def GetUserConf(self, aId) -> TDbSql:
         Query = f'''
             select
-                name,
-                data
+                name, data
             from
                 auth_ext
             where
@@ -278,8 +278,7 @@ class TDbApp(TDbPg):
     async def GetGroupConf(self, aId) -> TDbSql:
         Query = f'''
             select
-                name,
-                data
+                name, data
             from
                 auth_group_ext
             where
