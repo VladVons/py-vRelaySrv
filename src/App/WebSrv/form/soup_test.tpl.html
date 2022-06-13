@@ -10,6 +10,16 @@
                 selectedLine: 0
             });
         });
+
+        function Btn_Go() {
+        if (document.getElementById('Url0').value == '') {
+            alert('Url is empty');
+            return;
+        }
+
+        let Url = document.getElementById('Url0').value;
+        window.open(Url, '_blank').focus();
+    };
     </script>
 {% endblock %}
 
@@ -18,7 +28,10 @@
     <table width="100%">
         <tr>
             <td>url</td>
-            <td><input type="text" name="Url" placeholder="url" style="width:100%" required value="{{ Data.Url }}"></td>
+            <td>
+                <input type="text" name="Url0" id="Url0" placeholder="Url" style="width:95%" required value="{{ Data.Url0 }}">
+                <button onclick="Btn_Go()">go</button>
+            </td>
         </tr>
         <tr>
             <td>Script</td>

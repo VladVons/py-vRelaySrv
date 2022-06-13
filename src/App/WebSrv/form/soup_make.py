@@ -13,7 +13,7 @@ from .FForm import TFormBase
 from IncP.Download import GetUrlSoup
 from IncP.Log import Log
 from IncP.Scheme import TScheme
-from IncP.Utils import TJsonEncoder, FormatJsonStr, FilterKey, GetNestedKey
+from IncP.Utils import TJsonEncoder, FormatJsonStr, FilterKey, FilterKeyErr, GetNestedKey
 
 
 _FieldPrefix = 'script_'
@@ -94,7 +94,7 @@ class TForm(TFormBase):
             self.Data.Output = Err
             return
 
-        if (self.Data.get('BtnSaveFlag') == 'disabled'):
+        if (not self.Data.Admin) and (self.Data.get('BtnSaveFlag') == 'disabled'):
             self.Data.BtnSaveDisabled = 'disabled'
 
         self.Data.Script = ''
@@ -134,14 +134,15 @@ class TForm(TFormBase):
             return
 
         DataApi = await Api.DefHandler('set_scheme', {'scheme': Script, 'trust': self.Data.Admin})
-        if (GetNestedKey(DataApi, 'Type') == 'Err'):
-            self.Data.Output = DataApi.get('Data')
+        Err = FilterKeyErr(DataApi)
+        if (Err):
+            self.Data.Output = DataApi.get(Err)
         else:
             self.Data.Output = 'Saved'
 
     async def _Render(self):
         HasItems = await self.PostToForm()
-        self.Data['Admin'] = (self.Session.get('UserGroup') == 'admin')
+        self.Data.Admin = (self.Session.get('UserGroup') == 'admin')
         if (not HasItems):
              return
 

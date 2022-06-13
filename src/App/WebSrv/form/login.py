@@ -29,8 +29,9 @@ class TForm(TFormBase):
             return
 
         DataApi = await Api.DefHandler('get_hand_shake')
-        if (GetNestedKey(DataApi, 'Type') == 'Err'):
-            return self.RenderInfo(DataApi.get('Data'))
+        Err = FilterKeyErr(DataApi)
+        if (Err):
+            return self.RenderInfo(Err)
 
         Data = {'login': self.UserName.data, 'passw': self.Password.data}
         DataApi = await Api.DefHandler('get_user_id', Data)

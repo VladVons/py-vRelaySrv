@@ -172,8 +172,9 @@ class get_sites_grep(TApiPlugin):
     Param = {'param': ['file', 'filter', 'cnt', 'ws']}
 
     async def cbOnGet(self, aUrl: str, aData: dict):
-        if (aData.get('Type') == 'Err'):
-            await self.WebSockSend({'Data': '%s, Err: %s' % (aUrl, aData.get('Data'))})
+        Err = FilterKeyErr(aData)
+        if (Err):
+            await self.WebSockSend({'Data': '%s, Err: %s' % (aUrl, Err)})
         else:
             if (self.Filter in aData.get('Data')):
                 await self.WebSockSend({'Data': '%s %s' % (aUrl, self.Filter)})
@@ -257,8 +258,9 @@ class get_scheme_by_id(TApiPlugin):
 
     async def Exec(self, aPath: str, aData: dict) -> dict:
         DataApi = await Api.DefHandler('get_hand_shake')
-        if (GetNestedKey(DataApi, 'Type') == 'Err'):
-            return DataApi.get('Data')
+        Err = FilterKeyErr(DataApi)
+        if (Err):
+            return Err
 
         DataApi = await self.Args['WebClient'].Send('web/get_scheme_by_id', aData)
         Err = FilterKeyErr(DataApi)

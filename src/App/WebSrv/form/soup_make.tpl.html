@@ -50,6 +50,12 @@
           '/api/get_scheme_mederate',
           function(aData) {
             SplitScheme(aData)
+
+            let Dbl = new TDbList(aData['Data']['Data']);
+            for (let Rec of Dbl) {
+              Output.value += Rec.GetField('url') + '\n';
+            }
+            Output.value += '\n' + Dbl.GetSize() + '\n'
           },
           {}
         );

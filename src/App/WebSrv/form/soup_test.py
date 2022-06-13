@@ -20,9 +20,9 @@ class TForm(TFormBase):
         if (not await self.PostToForm()) or (not self.Data.get('BtnOk')):
             return
 
-        Soup = await GetUrlSoup(self.Data.Url)
+        Soup = await GetUrlSoup(self.Data.Url0)
         if (not Soup):
-            self.Data.Output = 'Error loading %s' % (self.Data.Url)
+            self.Data.Output = 'Error loading %s' % (self.Data.Url0)
             return
 
         try:

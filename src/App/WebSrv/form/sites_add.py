@@ -14,7 +14,7 @@ from Inc.DB.DbList import TDbList, TDbCond
 from IncP.DB.Db import TDbSql
 from IncP.Download import TDownload, CheckHost
 from IncP.Log import Log
-from IncP.Utils import GetNestedKey
+from IncP.Utils import GetNestedKey, FilterKeyErr
 
 
 class TForm(TFormBase):
@@ -25,8 +25,9 @@ class TForm(TFormBase):
             return
 
         DataApi = await Api.DefHandler('get_hand_shake')
-        if (GetNestedKey(DataApi, 'Type') == 'Err'):
-            return self.RenderInfo(DataApi.get('Data'))
+        Err = FilterKeyErr(DataApi)
+        if (Err):
+            return self.RenderInfo(Err)
 
         Sites = []
         Lines = self.Data.Sites.splitlines()
