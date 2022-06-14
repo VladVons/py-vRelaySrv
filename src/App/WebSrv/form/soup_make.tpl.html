@@ -43,6 +43,7 @@
       let VarJ = SchemeJ['Product']['Var'];
       if (VarJ) {
         Var = JSON.stringify(VarJ);
+        Var = Var.substring(1, Var.length - 1);
       }
       document.getElementById('Var').value = Var;
     }

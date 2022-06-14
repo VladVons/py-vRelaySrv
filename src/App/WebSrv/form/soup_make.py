@@ -33,8 +33,9 @@ class TForm(TFormBase):
         Err = []
         try:
             json.loads('[%s]' % self.Data.Pipe)
+            json.loads('{%s}' % self.Data.Var)
         except ValueError as E:
-            Err.append('Pipe: %s\n' % E.args)
+            Err.append('Err: %s\n' % E.args)
 
         Items = []
         for Key, Val in self.Data.items():
@@ -106,14 +107,11 @@ class TForm(TFormBase):
         for Url in Urls:
             Soup = await GetUrlSoup(Url)
             if (Soup):
-                try:
-                    Scheme = TScheme(Script)
-                    Scheme.Debug = True
-                    Output = Scheme.Parse(Soup).GetData(['Err', 'Pipe', 'Warn'])
-                    self.Data.Output += json.dumps(Output, indent=2, sort_keys=True, ensure_ascii=False, cls=TJsonEncoder) + '\n'
-                    self.Data.Script = Script
-                except Exception as E:
-                    self.Data.Output = 'Error parsing %s' % (E)
+                Scheme = TScheme(Script)
+                Scheme.Debug = True
+                Output = Scheme.Parse(Soup).GetData(['Err', 'Pipe', 'Warn'])
+                self.Data.Output += json.dumps(Output, indent=2, sort_keys=True, ensure_ascii=False, cls=TJsonEncoder) + '\n'
+                self.Data.Script = Script
             else:
                 self.Data.Output = 'Error loading %s' % (Url)
                 break
