@@ -225,7 +225,7 @@ class get_scheme_test(TApiPlugin):
         Url = Urls[0]
         Soup = await GetUrlSoup(Url)
         if (Soup):
-            Res = Scheme.Parse(Soup).GetData(['Err', 'Pipe'])
+            Res = Scheme.Parse(Soup).GetData(['Err', 'Pipe', 'Warn'])
             try:
                 json.dumps(Res)
             except Exception as E:

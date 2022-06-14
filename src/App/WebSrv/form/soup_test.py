@@ -26,7 +26,9 @@ class TForm(TFormBase):
             return
 
         try:
-            Output = TScheme(self.Data.Script).Parse(Soup).GetData(['Err', 'Pipe'])
+            Scheme = TScheme(self.Data.Script)
+            Scheme.Debug = True
+            Output = Scheme.Parse(Soup).GetData(['Err', 'Pipe', 'Warn'])
             self.Data.Output = json.dumps(Output,  indent=2, sort_keys=True, ensure_ascii=False, cls=TJsonEncoder)
         except (json.decoder.JSONDecodeError, AttributeError) as E:
             self.Data.Output = str(E.args)

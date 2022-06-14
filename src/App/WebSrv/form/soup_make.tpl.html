@@ -12,12 +12,14 @@
       let Dbl = new TDbList(aData['Data']['Data']);
       Dbl.Shuffle();
       Dbl.RecNo = 0;
-      let Scheme = Dbl.Rec.GetField('scheme');
-      let SchemeJ = JSON.parse(Scheme);
 
-      let Urls = SchemeJ['Product']['Info']['Url'];
-      for (let i = 0; i < Urls.length; i++) {
-          document.getElementById('Url' + i).value = Urls[i];
+      let Scheme = Dbl.Rec.GetField('scheme');
+      document.getElementById('Script').value = Scheme;
+
+      let SchemeJ = JSON.parse(Scheme);
+      let UrlJ = SchemeJ['Product']['Info']['Url'];
+      for (let i = 0; i < UrlJ.length; i++) {
+          document.getElementById('Url' + i).value = UrlJ[i];
       };
 
       let Pipe = '';
@@ -35,9 +37,14 @@
           Pipe += JSON.stringify(PipeJ[i]) + ',\n';
         };
       };
-
       document.getElementById('Pipe').value = Pipe;
-      document.getElementById('Script').value = Scheme;
+
+      let Var = '';
+      let VarJ = SchemeJ['Product']['Var'];
+      if (VarJ) {
+        Var = JSON.stringify(VarJ);
+      }
+      document.getElementById('Var').value = Var;
     }
 
     function Btn_Moderate() {
@@ -183,13 +190,19 @@
       </td>
     </tr>
     <tr>
-      <td>Pipe</td>
+      <td>Var</td>
       <td>
-        <textarea name="Pipe" id="Pipe" rows="3" onblur="OnBlur(this)" required>{{ Data.Pipe }}</textarea>
+        <textarea name="Var" id="Var" rows="3" onblur="OnBlur(this)">{{ Data.Var }}</textarea>
       </td>
       <td rowspan="7">
         <textarea readonly name="Script" id="Script" rows="20">{{ Data.Script }}</textarea>
         <textarea readonly name="Output" id="Output" rows="20">{{ Data.Output }}</textarea>
+      </td>
+    </tr>
+    <tr>
+      <td>Pipe</td>
+      <td>
+        <textarea name="Pipe" id="Pipe" rows="4" onblur="OnBlur(this)">{{ Data.Pipe }}</textarea>
       </td>
     </tr>
     <tr>

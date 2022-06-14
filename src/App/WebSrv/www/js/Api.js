@@ -18,7 +18,7 @@ function HttpRequest(aUrl, aFunc, aPostJson = null) {
 
     xhr.onload = function() {
         if (xhr.status == 200) {        
-            console.log('HttpRequest().OnLoad()', xhr.responseText);
+            //console.log('HttpRequest().OnLoad()', xhr.responseText);
             let Data = JSON.parse(xhr.responseText);
             aFunc(Data);
         } else {

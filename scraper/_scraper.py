@@ -113,6 +113,7 @@ def TestBoth(aMod: str, aExt: str = '.html'):
     Scheme.Parse(Soup)
     print(Scheme.Data)
     print(Scheme.Err)
+    print('done')
 
 
 def TestApi():
@@ -138,5 +139,5 @@ os.system('clear')
 #
 #TestPy('megabit.od.ua')
 #TestJson('megabit.od.ua')
-TestBoth('megabit.od.ua')
+TestBoth('oster.com.ua')
 #TestApi()

@@ -60,6 +60,9 @@ class TForm(TFormBase):
                             %s
                         ]
                     },
+                    "Var": {
+                        %s
+                    },
                     "Pipe": [
                         %s,
                         ["as_dict", {
@@ -72,6 +75,7 @@ class TForm(TFormBase):
                 self.Session['UserName'],
                 datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S'),
                 Urls,
+                self.Data.Var,
                 self.Data.Pipe, ','.join(Items)
             )
 
@@ -102,9 +106,14 @@ class TForm(TFormBase):
         for Url in Urls:
             Soup = await GetUrlSoup(Url)
             if (Soup):
-                Output = TScheme(Script).Parse(Soup).GetData(['Err', 'Pipe'])
-                self.Data.Output += json.dumps(Output, indent=2, sort_keys=True, ensure_ascii=False, cls=TJsonEncoder) + '\n'
-                self.Data.Script = Script
+                try:
+                    Scheme = TScheme(Script)
+                    Scheme.Debug = True
+                    Output = Scheme.Parse(Soup).GetData(['Err', 'Pipe', 'Warn'])
+                    self.Data.Output += json.dumps(Output, indent=2, sort_keys=True, ensure_ascii=False, cls=TJsonEncoder) + '\n'
+                    self.Data.Script = Script
+                except Exception as E:
+                    self.Data.Output = 'Error parsing %s' % (E)
             else:
                 self.Data.Output = 'Error loading %s' % (Url)
                 break

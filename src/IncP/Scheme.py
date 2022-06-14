@@ -242,6 +242,9 @@ class TApi():
     def left(aVal: str, aIdx: int) -> str:
         return aVal[:aIdx]
 
+    def nop(aVal: object) -> object:
+        return aVal
+
     def sub(aVal: str, aIdx: int, aEnd: int) -> str:
         return aVal[aIdx:aEnd]
 
@@ -272,30 +275,41 @@ class TApi():
         ]
         return Res
 
+def SoupGetParents(aSoup, aItems: list, aDepth: int = 99) -> list:
+    Res = []
+    for Item in aItems:
+        Depth = aDepth
+        ResLoop = []
+        while (Item) and (Item != aSoup) and (Depth > 0):
+            Attr = getattr(Item, 'attrs', None)
+            if (Attr):
+                ResLoop.append([Item.name, Attr])
+            elif (Item.name):
+                ResLoop.append([Item.name, {}])
+            else:
+                if (type(Item).__name__ == 'Script'):
+                    break
+                ResLoop.append([Item, {}])
+            Depth -= 1
+
+            Item = Item.parent
+        Res.append(ResLoop)
+    return Res
+
+def SoupFindParents(aSoup, aSearch: str) -> list:
+    #Items = aSoup.findAll(string=aSearch)
+    Items = aSoup.findAll(string=re.compile(aSearch))
+    return SoupGetParents(Items)
 
 class TSoupScheme():
-    @staticmethod
-    def GetParents(aSoup, aSearch: str) -> list:
-        ResAll = []
-        #Items = aSoup.findAll(string=aSearch)
-        Items = aSoup.findAll(string=re.compile(aSearch))
+    def __init__(self):
+        self.Debug = False
+        self.Clear()
 
-        for Item in Items:
-            Res = []
-            while (Item) and (Item != aSoup):
-                Attr = getattr(Item, 'attrs', None)
-                if (Attr):
-                    Res.append([Item.name, Attr])
-                elif (Item.name):
-                    Res.append([Item.name, {}])
-                else:
-                    if (type(Item).__name__ == 'Script'):
-                        break
-                    Res.append([Item, {}])
-
-                Item = Item.parent
-            ResAll.append(Res)
-        return ResAll
+    def Clear(self):
+        self.Err = []
+        self.Warn = []
+        self.Var = {}
 
     # Syntax ["$date"], ["$rand", [1, 10]], ["$prop", ["IncP", "__version__"]]
     def ParseMacro(self, aItem: list, aPath: str) -> object:
@@ -315,7 +329,8 @@ class TSoupScheme():
         return Res
 
     def ParsePipe(self, aObj, aItem: list, aPath: str) -> object:
-        Obj = getattr(TApi, aItem[0], None)
+        Name = aItem[0]
+        Obj = getattr(TApi, Name, None)
         if (Obj):
             Param = [aObj]
             if (len(aItem) == 2):
@@ -326,7 +341,17 @@ class TSoupScheme():
                 self.Err.append('%s->%s %s (exception)' % (aPath, aItem, E))
                 return
         else:
-            aObj = getattr(aObj, aItem[0], None)
+            if (self.Debug) and (Name == 'find'):
+                FindAll = getattr(aObj, 'find_all', None)
+                if (FindAll) and (len(aItem) == 2):
+                    Arr = aObj(*aItem[1])
+                    if (len(Arr) > 1):
+                        Parents = SoupGetParents(aObj, Arr, 2)
+                        self.Warn.append('%s -> %s (found %s)' % (aPath, aItem[1], len(Arr)))
+                        for x in Parents:
+                            self.Warn.append(str(x))
+
+            aObj = getattr(aObj, Name, None)
             if (aObj):
                 if (len(aItem) == 2):
                     try:
@@ -350,22 +375,28 @@ class TSoupScheme():
                 self.Err.append('%s->%s (not a list)' % (aPath, Scheme))
                 return
 
-            if (not Scheme[0].startswith('-')):
+            Macro = Scheme[0]
+            if (not Macro.startswith('-')):
                 aPath += '/' + Scheme[0]
-                if (Scheme[0] == 'as_if'):
+                if (Macro == 'as_if'):
                     R = self.ParsePipes(aObj, Scheme[1].get('cond', []), aPath)
                     Cond = str(R is not None).lower()
                     aObj = self.ParsePipes(aObj, Scheme[1].get(Cond), aPath)
-                elif (Scheme[0] == 'as_list'):
+                elif (Macro == 'as_list'):
                     aObj = [self.ParsePipes(aObj, x, aPath) for x in Scheme[1]]
-                elif (Scheme[0] == 'as_dict'):
+                elif (Macro == 'as_dict'):
                     aObj = {
                         Key: self.ParsePipes(aObj, Val, aPath + '/' + Key)
                         for Key, Val in Scheme[1].items()
                         if (not Key.startswith('-') and (Val))
                     }
                 else:
-                    aObj = self.ParsePipe(aObj, Scheme, aPath)
+                    if (Macro.startswith('$')):
+                        aObj = self.Var.get(Macro)
+                        if (not aObj):
+                            self.Err.append('%s (unknown)' % (aPath))
+                    else:
+                        aObj = self.ParsePipe(aObj, Scheme, aPath)
             i += 1
         return aObj
 
@@ -376,11 +407,12 @@ class TSoupScheme():
             for Key, Val in aData.items():
                 if (not Key.startswith('-')):
                     Path = aPath + '/' + Key
-                    if Key.startswith('Pipe'):
-                        R = self.ParsePipes(aSoup, Val, Path)
+                    if (Key.startswith('$')):
+                        self.Var[Key] = self.ParsePipes(aSoup, Val, Path)
+                    elif Key.startswith('Pipe'):
+                        Res[Key] = self.ParsePipes(aSoup, Val, Path)
                     else:
-                        R = self._ParseRecurs(aSoup, Val, Path)
-                    Res[Key] = R
+                        Res[Key] = self._ParseRecurs(aSoup, Val, Path)
         elif (Type == list):
             if (aData[0].startswith('$')):
                 Res = self.ParseMacro(aData, aPath)
@@ -391,8 +423,9 @@ class TSoupScheme():
         return Res
 
     def Parse(self, aSoup, aData: dict) -> dict:
-        self.Err = []
-        return self._ParseRecurs(aSoup, aData, '')
+        self.Clear()
+        Res = self._ParseRecurs(aSoup, aData, '')
+        return Res
 
 
 class TSchemePy():
@@ -419,7 +452,6 @@ class TSchemePy():
                 self.Pipe = FilterKey(self.Data, Keys, dict)
         return self
 
-
     def GetUrl(self) -> list:
         #Match = re.search('Url\s*=\s*(.*?)$', self.Scheme, re.DOTALL)
         Match = re.search("(?P<url>http[s]?://[^\s]+)", self.Python.Script, re.DOTALL)
@@ -429,6 +461,7 @@ class TSchemePy():
 
 class TSchemeJson():
     def __init__(self, aScheme: str):
+        self.Debug = False
         self.Scheme = json.loads(aScheme)
         self.Clear()
 
@@ -436,8 +469,10 @@ class TSchemeJson():
         self.Clear()
         if (aSoup):
             SoupScheme = TSoupScheme()
+            SoupScheme.Debug = self.Debug
             self.Data = SoupScheme.Parse(aSoup, self.Scheme)
             self.Err = SoupScheme.Err
+            self.Warn = SoupScheme.Warn
 
             Keys = ['image', 'price', 'price_old', 'name', 'stock', 'mpn']
             self.Pipe = FilterKey(self.Data, Keys, dict)
@@ -460,11 +495,12 @@ def TScheme(aScheme: str):
 
         def Clear(self):
             self.Data = {}
-            self.Err = []
             self.Pipe = {}
+            self.Err = []
+            self.Warn = []
 
         def GetData(self, aKeys: list = []) -> dict:
-            Res = {'Data': self.Data, 'Err': self.Err, 'Pipe': self.Pipe}
+            Res = {'Data': self.Data, 'Err': self.Err, 'Pipe': self.Pipe, 'Warn': self.Warn}
             if (aKeys):
                 Res = {Key: Res.get(Key) for Key in aKeys}
             return Res
