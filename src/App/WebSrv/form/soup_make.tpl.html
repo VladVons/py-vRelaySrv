@@ -54,6 +54,8 @@
       ClearObj('input');
       ClearObj('textarea');
 
+      document.getElementById('BtnModerateFlag').value = 'True';
+
       HttpRequest(
           '/api/get_scheme_mederate',
           function(aData) {
@@ -67,7 +69,7 @@
           },
           {}
         );
-      };
+    };
 
     function Btn_GetSchemeDone() {
       ClearObj('input');
@@ -132,9 +134,13 @@
       };
     };
 
+    function Btn_LoadSource(aThis) {
+      document.getElementById('Output').value = '';
+      document.forms["Form"].submit(aThis)
+    }
+
     function Btn_Make(aThis) {
       document.getElementById('Output').value = '';
-      document.getElementById('Script').value = '';
       document.forms["Form"].requestSubmit(aThis)
     }
 
@@ -164,12 +170,14 @@
       <td>
         <button onclick="Btn_Go()">go</button>
         <button onclick="Btn_GetSchemeEmpty2()">get task</button>
+        <button name="BtnLoadSource" onclick="Btn_LoadSource()">source</button>
         <button onclick="Btn_GetSchemeDone()">example</button>
         <button name="BtnMake" onclick="Btn_Make(this)">make</button>
         <button name="BtnSave" id="BtnSave" onclick="Btn_Save(this)" {{ Data.BtnSaveDisabled }} >save</button>
         <input type="hidden" name="BtnSaveFlag" id="BtnSaveFlag" value={{ Data.BtnSaveDisabled }}>
+        <input type="hidden" name="BtnModerateFlag" id="BtnModerateFlag" value={{ Data.BtnModerate }}>
         {% if Data.Admin %}
-        <button name="BtnModerate" onclick="Btn_Moderate()">Moderate</button>
+        <button name="BtnModerate" onclick="Btn_Moderate()">moderate</button>
         {% endif %}
         <br>
 
@@ -203,7 +211,7 @@
     <tr>
       <td>Pipe</td>
       <td>
-        <textarea name="Pipe" id="Pipe" rows="4" onblur="OnBlur(this)">{{ Data.Pipe }}</textarea>
+        <textarea name="Pipe" id="Pipe" rows="4" onblur="OnBlur(this)" required>{{ Data.Pipe }} </textarea>
       </td>
     </tr>
     <tr>

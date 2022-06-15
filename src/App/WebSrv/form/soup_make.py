@@ -10,7 +10,7 @@ import json
 #
 from ..Api import Api
 from .FForm import TFormBase
-from IncP.Download import GetUrlSoup
+from IncP.Download import GetUrlSoup, TDownload, TDHeaders
 from IncP.Log import Log
 from IncP.Scheme import TScheme
 from IncP.Utils import TJsonEncoder, FormatJsonStr, FilterKey, FilterKeyErr, GetNestedKey
@@ -77,7 +77,8 @@ class TForm(TFormBase):
                 datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S'),
                 Urls,
                 self.Data.Var,
-                self.Data.Pipe, ','.join(Items)
+                self.Data.Pipe,
+                ','.join(Items)
             )
 
         return (FormatJsonStr(ScriptStr), '\n'.join(Err))
@@ -94,24 +95,32 @@ class TForm(TFormBase):
         return (self.Compile(Urls), Urls)
 
     async def BtnMake(self):
+        if (self.Data.Admin):
+            if (self.Data.get('BtnModerateFlag') == 'True'):
+                #ScriptOrig = json.loads(self.Data.Script)
+                pass
+        else:
+            if (self.Data.get('BtnSaveFlag') == 'disabled'):
+                self.Data.BtnSaveDisabled = 'disabled'
+
         (Script, Err), Urls = self.CompileUrl()
         if (Err):
             self.Data.Output = Err
             return
-
-        if (not self.Data.Admin) and (self.Data.get('BtnSaveFlag') == 'disabled'):
-            self.Data.BtnSaveDisabled = 'disabled'
 
         self.Data.Script = ''
         self.Data.Output = ''
         for Url in Urls:
             Soup = await GetUrlSoup(Url)
             if (Soup):
-                Scheme = TScheme(Script)
-                Scheme.Debug = True
-                Output = Scheme.Parse(Soup).GetData(['Err', 'Pipe', 'Warn'])
-                self.Data.Output += json.dumps(Output, indent=2, sort_keys=True, ensure_ascii=False, cls=TJsonEncoder) + '\n'
-                self.Data.Script = Script
+                try:
+                    Scheme = TScheme(Script)
+                    Scheme.Debug = True
+                    Output = Scheme.Parse(Soup).GetData(['Err', 'Pipe', 'Warn'])
+                    self.Data.Output += json.dumps(Output, indent=2, sort_keys=True, ensure_ascii=False, cls=TJsonEncoder) + '\n'
+                    self.Data.Script = Script
+                except Exception as E:
+                    self.Data.Output = 'Error %s' % (E)
             else:
                 self.Data.Output = 'Error loading %s' % (Url)
                 break
@@ -147,6 +156,16 @@ class TForm(TFormBase):
         else:
             self.Data.Output = 'Saved'
 
+    async def BtnLoadSource(self):
+        Download = TDownload()
+        Download.Opt.update({'Headers': TDHeaders(), 'Decode': True})
+        UrlDown = await Download.Get(self.Data.Url0)
+        Err = FilterKeyErr(UrlDown)
+        if (Err):
+            self.Data.Output = 'Error loading %s, %s, %s' % (self.Data.Url0, UrlDown.get('Data'), UrlDown.get('Msg'))
+        else:
+            self.Data.Output = UrlDown.get('Data')
+
     async def _Render(self):
         HasItems = await self.PostToForm()
         self.Data.Admin = (self.Session.get('UserGroup') == 'admin')
@@ -157,3 +176,5 @@ class TForm(TFormBase):
             await self.BtnMake()
         elif ('BtnSave' in self.Data):
             await self.BtnSave()
+        elif ('BtnLoadSource' in self.Data):
+            await self.BtnLoadSource()
