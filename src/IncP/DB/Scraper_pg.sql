@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS site(
     hours               VARCHAR(64),
     enabled             BOOLEAN DEFAULT FALSE,
     moderated           BOOLEAN DEFAULT FALSE,
+    protected           BOOLEAN DEFAULT FALSE,
     UNIQUE (url)
 );
 
