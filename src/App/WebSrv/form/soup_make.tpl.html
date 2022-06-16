@@ -39,13 +39,17 @@
       };
       document.getElementById('Pipe').value = Pipe;
 
-      let Var = '';
-      let VarJ = SchemeJ['Product']['Var'];
-      if (VarJ) {
-        Var = JSON.stringify(VarJ);
-        Var = Var.substring(1, Var.length - 1);
+      let Data = SchemeJ['Product']['Var'];
+      if (Data) {
+        Data = JSON.stringify(Data);
+        Data = Data.substring(1, Data.length - 1);
+        document.getElementById('Var').value = Data;
       }
-      document.getElementById('Var').value = Var;
+
+      Data = SchemeJ['Product']['Info']['Comment'];
+      if (Data) {
+        document.getElementById('Comment').value = Data;
+      }
     }
 
     function Btn_Moderate() {
@@ -135,18 +139,20 @@
     };
 
     function Btn_LoadSource(aThis) {
+      console.log('LoadSource');
+
       document.getElementById('Output').value = '';
-      document.forms["Form"].submit(aThis)
+      document.forms["Form"].submit()
     }
 
     function Btn_Make(aThis) {
       document.getElementById('Output').value = '';
-      document.forms["Form"].requestSubmit(aThis)
+      document.forms["Form"].requestSubmit()
     }
 
     function Btn_Save(aThis) {
       if (window.confirm('Save scheme ?')) {
-        document.forms["Form"].requestSubmit(aThis)
+        document.forms["Form"].requestSubmit()
       }
     }
 
@@ -162,7 +168,7 @@
   <table style="width:100%">
   <tbody>
     <tr>
-      <td style="width :5%">Url</td>
+      <td style="width :5%">url</td>
       <td style="width :40%">
         <input type="text" name="Url0" id="Url0" placeholder="url 1" style="width:100%" value="{{ Data.Url0 }}" required>
         <input type="text" name="Url1" id="Url1" placeholder="url 2" style="width:100%" value="{{ Data.Url1 }}">
@@ -170,7 +176,7 @@
       <td>
         <button onclick="Btn_Go()">go</button>
         <button onclick="Btn_GetSchemeEmpty2()">get task</button>
-        <button name="BtnLoadSource" onclick="Btn_LoadSource()">source</button>
+        <button name="BtnLoadSource" id="BtnLoadSource" onclick="Btn_LoadSource()">source</button>
         <button onclick="Btn_GetSchemeDone()">example</button>
         <button name="BtnMake" onclick="Btn_Make(this)">make</button>
         <button name="BtnSave" id="BtnSave" onclick="Btn_Save(this)" {{ Data.BtnSaveDisabled }} >save</button>
@@ -181,10 +187,11 @@
         {% endif %}
         <br>
 
-        <select id="SelHelp" onclick="Sel_Help(this)">
+        <select id="SelHelp" onchange="Sel_Help(this)">
           <optgroup label="- top -"></optgroup>
             <option>["find_all", ["li"]]</option>
             <option>["find", ["div", {"class": "content"}]]</option>
+            <option>["get", ["src"]]</option>
             <option>["image"]</option>
             <option>["list", [1]]</option>
             <option>["price"]</option>
@@ -199,7 +206,7 @@
       </td>
     </tr>
     <tr>
-      <td>Var</td>
+      <td>var</td>
       <td>
         <textarea name="Var" id="Var" rows="3" onblur="OnBlur(this)">{{ Data.Var }}</textarea>
       </td>
@@ -209,7 +216,7 @@
       </td>
     </tr>
     <tr>
-      <td>Pipe</td>
+      <td>pipe</td>
       <td>
         <textarea name="Pipe" id="Pipe" rows="4" onblur="OnBlur(this)" required>{{ Data.Pipe }} </textarea>
       </td>
@@ -251,8 +258,10 @@
       </td>
     </tr>
     <tr>
-      <td>Make</td>
-      <td></td>
+      <td>comment</td>
+      <td>
+        <textarea name="Comment" id="Comment" rows="4">{{ Data.Comment }}</textarea>
+      </td>
     </tr>
   </tbody>
   </table>

@@ -59,7 +59,8 @@ class TForm(TFormBase):
                         "Date": "%s",
                         "Url": [
                             %s
-                        ]
+                        ],
+                        "Comment": "%s"
                     },
                     "Var": {
                         %s
@@ -76,6 +77,7 @@ class TForm(TFormBase):
                 self.Session['UserName'],
                 datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S'),
                 Urls,
+                self.Data.Comment,
                 self.Data.Var,
                 self.Data.Pipe,
                 ','.join(Items)
