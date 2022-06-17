@@ -230,6 +230,12 @@ class TApi():
     def gets(aVal: dict, aKeys: str) -> dict:
         return GetNestedKey(aVal, aKeys)
 
+    def breadcrumb(aVal: object, aFind: list, aIdx: int = -2) -> str:
+        if (hasattr(aVal, 'find_all')):
+            Items = aVal.find_all(*aFind)
+            if (len(Items) > 0):
+               return Items[aIdx].text.strip()
+
     def lower(aVal: str) -> str:
         return aVal.lower()
 
@@ -342,9 +348,8 @@ class TSoupScheme():
                 return
         else:
             if (self.Debug) and (Name == 'find'):
-                FindAll = getattr(aObj, 'find_all', None)
-                if (FindAll) and (len(aItem) == 2):
-                    Arr = aObj(*aItem[1])
+                if (hasattr(aObj, 'find_all')) and (len(aItem) == 2):
+                    Arr = aObj.find_all(*aItem[1])
                     if (len(Arr) > 1):
                         Parents = SoupGetParents(aObj, Arr, 2)
                         self.Warn.append('%s -> %s (found %s)' % (aPath, aItem[1], len(Arr)))
@@ -448,7 +453,7 @@ class TSchemePy():
                 self.Data = Data.get('Data', {})
                 self.Err = Data.get('Err', [])
 
-                self.Pipe = FilterKey(self.Data, self.GetRequiredKeys(), dict)
+                self.Pipe = FilterKey(self.Data, self.GetFields(), dict)
         return self
 
     def GetUrl(self) -> list:
@@ -473,7 +478,7 @@ class TSchemeJson():
             self.Err = SoupScheme.Err
             self.Warn = SoupScheme.Warn
 
-            self.Pipe = FilterKey(self.Data, self.GetRequiredKeys(), dict)
+            self.Pipe = FilterKey(self.Data, self.GetFields(), dict)
         return self
 
     def GetUrl(self) -> list:
@@ -503,11 +508,8 @@ def TScheme(aScheme: str):
                 Res = {Key: Res.get(Key) for Key in aKeys}
             return Res
 
-        def GetRequiredKeys(self) -> list:
+        def GetFields(self) -> list:
             return ['image', 'price', 'price_old', 'name', 'stock', 'mpn', 'category']
-
-        def GetRequired(self) -> list:
-            return {Key.split('.')[-1]: Val for Key, Val in self.Pipe.items()}
 
         def GetPipe(self) -> dict:
             return {Key.split('.')[-1]: Val for Key, Val in self.Pipe.items()}
