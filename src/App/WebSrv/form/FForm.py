@@ -44,7 +44,7 @@ class TFormBase(Form):
         if (aUrls):
             for x in aUrls:
                 try:
-                    if (x.strip()) and (re.match(x, aUrl)):
+                    if (x.strip()) and (not x.startswith('-')) and (re.match(x, aUrl)):
                         return True
                 except Exception as E:
                     Log.Print(1, 'e', 'CheckAccess()', aE = E)

@@ -73,11 +73,13 @@ def DigDelDecor(aVal: str) -> str:
     return aVal
 
 def DigSplit(aVal: str) -> tuple:
-    Digit = Before = After = ''
+    Digit = ''
+    Before = ''
+    After = ''
     for x in aVal.rstrip('.'):
         if (x in _Whitespace):
             continue
-        elif (x in _DigitsComma):
+        elif (After == '') and (x in _DigitsComma):
             if (x == ','):
                 x = '.'
             Digit += x
@@ -86,6 +88,9 @@ def DigSplit(aVal: str) -> tuple:
                 After += x
             else:
                 Before += x
+    Dots = Digit.count('.')
+    if (Dots > 1):
+        Digit = Digit.replace('.', '', Dots - 1)
     return (Before, DigDelDecor(Digit), After)
 
 
@@ -230,7 +235,7 @@ class TApi():
     def gets(aVal: dict, aKeys: str) -> dict:
         return GetNestedKey(aVal, aKeys)
 
-    def breadcrumb(aVal: object, aFind: list, aIdx: int = -2) -> str:
+    def breadcrumb(aVal: object, aFind: list, aIdx: int = -1) -> str:
         if (hasattr(aVal, 'find_all')):
             Items = aVal.find_all(*aFind)
             if (len(Items) > 0):
