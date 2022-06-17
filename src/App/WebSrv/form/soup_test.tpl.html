@@ -30,7 +30,9 @@
             <td>
                 <button onclick="Btn_Url()">url</button>
                 <button onclick="Btn_GoUrl('Url0')">go</button>
-                <input type="text" name="Url0" id="Url0" placeholder="Url" style="width:95%" required value="{{ Data.Url0 }}">
+                <input type="submit" name="BtnOk" value="make">
+
+                <input type="text" name="Url0" id="Url0" placeholder="Url" style="width:90%" required value="{{ Data.Url0 }}">
             </td>
         </tr>
         <tr>
@@ -39,11 +41,7 @@
         </tr>
         <tr>
             <td>Output</td>
-            <td><textarea readonly name="Output" rows="10">{{ Data.Output }}</textarea></td>
-        <tr>
-            <td colspan="2" style="text-align:center">
-                <input type="submit" name="BtnOk" value="OK" class="btn">
-            </td>
+            <td><textarea readonly name="Output" rows="15">{{ Data.Output }}</textarea></td>
         </tr>
     </table>
 </form>
