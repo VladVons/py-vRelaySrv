@@ -37,10 +37,7 @@ class TFormBase(Form):
         return bool(Post)
 
     @staticmethod
-    def CheckAccess(aUrl: str, aUrls: list):
-        if (aUrl in ['/', '/form/login', '/form/about']):
-            return True
-
+    def _CheckAccess(aUrl: str, aUrls: list):
         if (aUrls):
             for x in aUrls:
                 try:
@@ -51,12 +48,17 @@ class TFormBase(Form):
                     return False
         return False
 
+    def CheckAccess(self, aUrl: str):
+        Grant = ['/$', '/form/login', '/form/about']
+        Allow = self.Session.get('UserConf', {}).get('interface_allow', '').split() + Grant
+        Deny = self.Session.get('UserConf', {}).get('interface_deny', '').split()
+        return (self._CheckAccess(aUrl, Allow)) and (not self._CheckAccess(aUrl, Deny))
+
     async def Render(self) -> web.Response:
         self.Session = await aiohttp_session.get_session(self.Request)
         self.process(await self.Request.post())
 
-        Allow = self.Session.get('UserConf', {}).get('interface_allow', '').split()
-        if (self.CheckAccess(self.Request.path, Allow)):
+        if (self.CheckAccess(self.Request.path)):
             Res = await self._Render()
             if (Res is None):
                 try :

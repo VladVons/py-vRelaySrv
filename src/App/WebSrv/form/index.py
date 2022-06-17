@@ -17,9 +17,8 @@ class TForm(TFormBase):
     }
 
     async def _Render(self):
-        Allow = self.Session.get('UserConf', {}).get('interface_allow', '').split()
         self.Data.Pages = {
             Key: Val
             for Key, Val in self.Pages.items()
-            if (self.CheckAccess(Key, Allow))
+            if (self.CheckAccess(Key))
         }
