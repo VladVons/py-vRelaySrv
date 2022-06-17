@@ -5,13 +5,6 @@
 <script src="/js/Api.js"></script>
 <script src="/js/Forms.js"></script>
 <script src="/js/TDbList.js"></script>
-<script>
-    function Btn_Go() {
-        let Url = document.getElementById('Url0').value;
-        //window.location.href = Url;
-        window.open(Url, '_blank').focus();
-    };
-</script>
 {% endblock %}
 
 {% block content %}
@@ -23,9 +16,9 @@
         <tr>
             <td>Url</td>
             <td>
+                <button onclick="Btn_GetSchemeEmpty()">get</button>
+                <button onclick="Btn_GoUrl('Url0')">go</button>
                 <input type="text" name="Url0" id="Url0" placeholder="url" style="width:90%" required value="{{ Data.Url0 }}">
-                <button style="width:4%" onclick="Btn_GetSchemeEmpty()">get</button>
-                <button style="width:4%" onclick="Btn_Go()">go</button>
             </td>
         </tr>
         <tr>

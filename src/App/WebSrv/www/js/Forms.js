@@ -27,3 +27,12 @@ function ClearObj(aTagName) {
         }
     }
 }
+
+function Btn_GoUrl(aField) {
+    let Url = document.getElementById(aField).value;
+    if (Url) {
+        window.open(Url, '_blank').focus();
+    }else{
+        alert('Url is empty');
+    }
+};

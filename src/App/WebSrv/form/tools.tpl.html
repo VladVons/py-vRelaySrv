@@ -3,6 +3,7 @@
 {% block head %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 <script src="/js/Api.js"></script>
+<script src="/js/Forms.js"></script>
 <script src="/js/TDbList.js"></script>
 <script>
     function Btn_GetUrlScheme(aEmpty) {
@@ -37,7 +38,6 @@
             {'cnt': 1000}
         );
     };
-
 
     class TWebSockApp extends TWebSock {
         Init() {
@@ -164,16 +164,6 @@
             );
         };
     };
-
-    function BtnGoUrl() {
-        if (document.getElementById('Url0').value == '') {
-            alert('Url is empty');
-            return;
-        }
-
-        let Url = document.getElementById('Url0').value;
-        window.open(Url, '_blank').focus();
-    };
 </script>
 {% endblock %}
 
@@ -182,7 +172,7 @@
 <table style="width: 100%">
     <tr>
         <td colspan="2">
-            <button onclick="BtnGoUrl()">go</button>
+            <button onclick="Btn_GoUrl('Url0')">go</button>
             <input type="text" name="Url0" id="Url0" style="width:96%">
         </td>
     </tr>

@@ -1,11 +1,16 @@
 {% extends "Layout.tpl.html" %}
 
+{% block head %}
+<script src="/js/Forms.js"></script>
+{% endblock %}
+
 {% block content %}
 <form name="FormParse" method="post" action="/form/site_get" enctype="multipart/form-data">
     <table style="width:100%">
         <tr>
             <td colspan="2">
-                <input type="text" name="Url0" id="Url0" placeholder="url" style="width:100%" required value="{{ Data.Url0 }}">
+                <button onclick="Btn_GoUrl('Url0')">go</button>
+                <input type="text" name="Url0" id="Url0" placeholder="url" style="width:95%" required value="{{ Data.Url0 }}">
             </td>
         <tr>
             <tr>

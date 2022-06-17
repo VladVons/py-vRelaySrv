@@ -91,7 +91,7 @@
       );
     };
 
-    function Btn_GetSchemeEmpty2(aId, aThis) {
+    function Btn_GetSchemeEmptyWithFlag(aId, aThis) {
         ClearObj('input');
         ClearObj('textarea');
 
@@ -126,7 +126,7 @@
       LastBlur.value += Val;
     }
 
-    function Btn_Go() {
+    function Btn_GoUrls() {
       let Items = document.getElementsByTagName('input');
       for (let i = 0; i < Items.length; i++) {
         if (Items[i].name.startsWith('Url')) {
@@ -174,8 +174,8 @@
         <input type="text" name="Url1" id="Url1" placeholder="url 2" style="width:100%" value="{{ Data.Url1 }}">
       </td>
       <td>
-        <button onclick="Btn_Go()">go</button>
-        <button onclick="Btn_GetSchemeEmpty2()">get task</button>
+        <button onclick="Btn_GoUrls()">go</button>
+        <button onclick="Btn_GetSchemeEmptyWithFlag()">get task</button>
         <button name="BtnLoadSource" id="BtnLoadSource" onclick="Btn_LoadSource()">source</button>
         <button onclick="Btn_GetSchemeDone()">example</button>
         <button name="BtnMake" onclick="Btn_Make(this)">make</button>

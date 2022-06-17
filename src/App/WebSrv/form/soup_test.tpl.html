@@ -4,6 +4,7 @@
     <link href="/css/jquery-linedtextarea.css" type="text/css" rel="stylesheet"/>
     <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
     <script src="/js/jquery-linedtextarea.js"></script>
+    <script src="/js/Forms.js"></script>
     <script>
         $(function() {
             $('.lined').linedtextarea({
@@ -11,15 +12,13 @@
             });
         });
 
-        function Btn_Go() {
-        if (document.getElementById('Url0').value == '') {
-            alert('Url is empty');
-            return;
+        function Btn_Url() {
+            Script = document.getElementById('Script').value;
+            if (Script) {
+                Url = JSON.parse(Script)['Product']['Info']['Url'][0];
+                document.getElementById('Url0').value = Url;
+            }
         }
-
-        let Url = document.getElementById('Url0').value;
-        window.open(Url, '_blank').focus();
-    };
     </script>
 {% endblock %}
 
@@ -29,13 +28,14 @@
         <tr>
             <td>url</td>
             <td>
+                <button onclick="Btn_Url()">url</button>
+                <button onclick="Btn_GoUrl('Url0')">go</button>
                 <input type="text" name="Url0" id="Url0" placeholder="Url" style="width:95%" required value="{{ Data.Url0 }}">
-                <button onclick="Btn_Go()">go</button>
             </td>
         </tr>
         <tr>
             <td>Script</td>
-            <td><textarea name="Script" class="lined" rows="30" required>{{ Data.Script }}</textarea></td>
+            <td><textarea name="Script" id="Script" class="lined" rows="30" required>{{ Data.Script }}</textarea></td>
         </tr>
         <tr>
             <td>Output</td>
