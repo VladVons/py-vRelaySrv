@@ -448,8 +448,7 @@ class TSchemePy():
                 self.Data = Data.get('Data', {})
                 self.Err = Data.get('Err', [])
 
-                Keys = ['image', 'price', 'price_old', 'name', 'stock', 'mpn']
-                self.Pipe = FilterKey(self.Data, Keys, dict)
+                self.Pipe = FilterKey(self.Data, self.GetRequiredKeys(), dict)
         return self
 
     def GetUrl(self) -> list:
@@ -474,8 +473,7 @@ class TSchemeJson():
             self.Err = SoupScheme.Err
             self.Warn = SoupScheme.Warn
 
-            Keys = ['image', 'price', 'price_old', 'name', 'stock', 'mpn']
-            self.Pipe = FilterKey(self.Data, Keys, dict)
+            self.Pipe = FilterKey(self.Data, self.GetRequiredKeys(), dict)
         return self
 
     def GetUrl(self) -> list:
@@ -504,6 +502,12 @@ def TScheme(aScheme: str):
             if (aKeys):
                 Res = {Key: Res.get(Key) for Key in aKeys}
             return Res
+
+        def GetRequiredKeys(self) -> list:
+            return ['image', 'price', 'price_old', 'name', 'stock', 'mpn', 'category']
+
+        def GetRequired(self) -> list:
+            return {Key.split('.')[-1]: Val for Key, Val in self.Pipe.items()}
 
         def GetPipe(self) -> dict:
             return {Key.split('.')[-1]: Val for Key, Val in self.Pipe.items()}
