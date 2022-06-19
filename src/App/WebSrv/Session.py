@@ -44,11 +44,12 @@ class TSession():
         return (self._CheckUserAccess(aUrl, Allow)) and (not self._CheckUserAccess(aUrl, Deny))
 
     async def UpdateUserConfig(self):
-        UserId = self.Data['UserId']
-        DataApi = await Api.DefHandler('get_user_config', {'id': UserId})
-        DblJ = GetNestedKey(DataApi, 'Data.Data')
-        if (DblJ):
-            Conf = TDbList().Import(DblJ).ExportPair('name', 'data')
-            self.Data['UserConf'] = Conf
+        UserId = self.Data.get('UserId')
+        if (UserId):
+            DataApi = await Api.DefHandler('get_user_config', {'id': UserId})
+            DblJ = GetNestedKey(DataApi, 'Data.Data')
+            if (DblJ):
+                Conf = TDbList().Import(DblJ).ExportPair('name', 'data')
+                self.Data['UserConf'] = Conf
 
 Session = TSession()
