@@ -9,6 +9,7 @@ from wtforms.fields import StringField, SubmitField, PasswordField
 from wtforms.validators import DataRequired, Length
 #
 from ..Api import Api
+from ..Session import Session
 from .FForm import TFormBase
 from Inc.DB.DbList import TDbList
 from IncP.Log import Log
@@ -23,7 +24,7 @@ class TForm(TFormBase):
     Submit = SubmitField("ok")
 
     async def _Render(self):
-        self.Message = '%s (%s)' % (self.Session.get('UserName'), self.Session.get('UserGroup', ''))
+        self.Message = '%s (%s)' % (Session.Data.get('UserName'), Session.Data.get('UserGroup', ''))
         self.Query = self.Request.query_string
         if (not self.validate()):
             return
@@ -47,15 +48,8 @@ class TForm(TFormBase):
             return
 
         UserId = Dbl.Rec.GetField('id')
-        self.Session['UserId'] = UserId
-        self.Session['UserName'] = self.UserName.data
-        self.Session['UserGroup'] = Dbl.Rec.GetField('auth_group_name')
-
-        DataApi = await Api.DefHandler('get_user_config', {'id': UserId})
-        DblJ = GetNestedKey(DataApi, 'Data.Data')
-        if (DblJ):
-            Conf = TDbList().Import(DblJ).ExportPair('name', 'data')
-            self.Session['UserConf'] = Conf
+        Session.Data.update({'UserId': UserId, 'UserName': self.UserName.data, 'UserGroup': Dbl.Rec.GetField('auth_group_name')})
+        await Session.UpdateUserConfig()
 
         Redirect = self.Request.query.get('url', '/')
         raise web.HTTPFound(location = Redirect)

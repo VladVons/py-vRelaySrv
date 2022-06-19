@@ -9,6 +9,7 @@ import datetime
 import json
 #
 from ..Api import Api
+from ..Session import Session
 from .FForm import TFormBase
 from IncP.Download import GetUrlSoup, TDownload, TDHeaders
 from IncP.Log import Log
@@ -74,7 +75,7 @@ class TForm(TFormBase):
                 }
             }
         ''' % (
-                self.Session['UserName'],
+                Session['UserName'],
                 datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S'),
                 Urls,
                 self.Data.Comment,
@@ -170,7 +171,7 @@ class TForm(TFormBase):
 
     async def _Render(self):
         HasItems = await self.PostToForm()
-        self.Data.Admin = (self.Session.get('UserGroup') == 'admin')
+        self.Data.Admin = (Session.Data.get('UserGroup') == 'admin')
         if (not HasItems):
              return
 

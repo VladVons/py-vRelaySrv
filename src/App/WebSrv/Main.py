@@ -17,10 +17,11 @@ import json
 import os
 #
 from .Api import Api
+from .Session import Session
 from .Routes import *
 from IncP.ApiWeb import TWebSockSrv
 from IncP.Log import Log
-from IncP.Utils import GetNestedKey, FilterKeyErr
+from IncP.Utils import FilterKeyErr
 
 
 @streamer
@@ -68,8 +69,8 @@ class TForm():
     async def CreateAuth(self, aRequest: web.Request) -> web.Response:
         Name = aRequest.match_info.get('Name')
 
-        Session = await aiohttp_session.get_session(aRequest)
-        if (not Session.get('UserId')) and (Name != 'login'):
+        await Session.Update(aRequest)
+        if (not Session.Data.get('UserId')) and (Name != 'login'):
             Redirect = 'login?url=%s' % (Name)
             raise web.HTTPFound(location = Redirect)
         else:

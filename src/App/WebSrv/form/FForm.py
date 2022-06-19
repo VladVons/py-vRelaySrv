@@ -7,13 +7,11 @@ License:     GNU, see LICENSE for more details
 from aiohttp import web
 from aiohttp_jinja2 import render_template
 from wtforms import Form
-import aiohttp_session
-import re
 #
+from ..Session import Session
 from Inc.Conf import TDictDef
 from IncP import Info
 from IncP.Log import Log
-
 
 class TFormBase(Form):
     Title = ''
@@ -36,29 +34,11 @@ class TFormBase(Form):
             self.Data[Key] =  Val.strip()
         return bool(Post)
 
-    @staticmethod
-    def _CheckAccess(aUrl: str, aUrls: list):
-        if (aUrls):
-            for x in aUrls:
-                try:
-                    if (x.strip()) and (not x.startswith('-')) and (re.match(x, aUrl)):
-                        return True
-                except Exception as E:
-                    Log.Print(1, 'e', 'CheckAccess()', aE = E)
-                    return False
-        return False
-
-    def CheckAccess(self, aUrl: str):
-        Grant = ['/$', '/form/login', '/form/about']
-        Allow = self.Session.get('UserConf', {}).get('interface_allow', '').split() + Grant
-        Deny = self.Session.get('UserConf', {}).get('interface_deny', '').split()
-        return (self._CheckAccess(aUrl, Allow)) and (not self._CheckAccess(aUrl, Deny))
-
     async def Render(self) -> web.Response:
-        self.Session = await aiohttp_session.get_session(self.Request)
         self.process(await self.Request.post())
 
-        if (self.CheckAccess(self.Request.path)):
+        await Session.Update(self.Request)
+        if (Session.CheckUserAccess(self.Request.path)):
             Res = await self._Render()
             if (Res is None):
                 try :
@@ -68,7 +48,7 @@ class TFormBase(Form):
                     Log.Print(1, 'x', Msg, aE = E)
                     Res = self.RenderInfo(Msg)
         else:
-            Msg = 'Access denied for %s. Policy interface_allow' % (self.Request.path)
+            Msg = 'Access denied %s %s. Policy interface_allow' % (self.Request.path, Session.Data.get('UserName'))
             Res = self.RenderInfo(Msg)
         return Res
 

@@ -1,4 +1,5 @@
 from ..Api import Api
+from ..Session import Session
 from .FForm import TFormBase
 from Inc.DB.DbList import TDbList, TDbCond
 from IncP.Utils import GetNestedKey
@@ -20,5 +21,5 @@ class TForm(TFormBase):
         self.Data.Pages = {
             Key: Val
             for Key, Val in self.Pages.items()
-            if (self.CheckAccess(Key))
+            if (Session.CheckUserAccess(Key))
         }
