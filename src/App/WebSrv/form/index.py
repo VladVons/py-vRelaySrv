@@ -8,6 +8,7 @@ from IncP.Utils import GetNestedKey
 class TForm(TFormBase):
     Title = 'Index'
     Pages = {
+        '/form/soup_help': 'soup help',
         '/form/soup_get': 'soup get',
         '/form/soup_make': 'soup make',
         '/form/soup_test': 'soup test',

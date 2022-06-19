@@ -16,10 +16,7 @@ from IncP.Utils import TJsonEncoder
 class TForm(TFormBase):
     Title = 'Soup test'
 
-    async def _Render(self):
-        if (not await self.PostToForm()) or (not self.Data.get('BtnOk')):
-            return
-
+    async def BtnMake(self):
         Soup = await GetUrlSoup(self.Data.Url0)
         if (not Soup):
             self.Data.Output = 'Error loading %s' % (self.Data.Url0)
@@ -33,3 +30,10 @@ class TForm(TFormBase):
         except (json.decoder.JSONDecodeError, AttributeError) as E:
             self.Data.Output = str(E.args)
             Log.Print(1, 'x', self.Data.Output, aE=E)
+
+    async def _Render(self):
+        if (not await self.PostToForm()):
+            return
+
+        if ('BtnMake' in self.Data):
+            await self.BtnMake()

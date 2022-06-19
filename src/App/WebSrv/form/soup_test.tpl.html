@@ -19,6 +19,12 @@
                 document.getElementById('Url0').value = Url;
             }
         }
+
+        function Btn_Make() {
+            document.getElementById('Output').value = '';
+            document.forms["Form"].requestSubmit()
+        }
+
     </script>
 {% endblock %}
 
@@ -30,7 +36,7 @@
             <td>
                 <button onclick="Btn_Url()">url</button>
                 <button onclick="Btn_GoUrl('Url0')">go</button>
-                <input type="submit" name="BtnOk" value="make">
+                <button name="BtnMake" onclick="Btn_Make()">make</button>
 
                 <input type="text" name="Url0" id="Url0" placeholder="Url" style="width:90%" required value="{{ Data.Url0 }}">
             </td>
@@ -41,7 +47,7 @@
         </tr>
         <tr>
             <td>Output</td>
-            <td><textarea readonly name="Output" rows="15">{{ Data.Output }}</textarea></td>
+            <td><textarea readonly name="Output" id="Output" rows="15">{{ Data.Output }}</textarea></td>
         </tr>
     </table>
 </form>

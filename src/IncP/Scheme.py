@@ -31,6 +31,7 @@ class TInStock():
         'в наявності на складі',
         'в наявності',
         'до кошика',
+        'додати у кошик',
         'є в наявності',
         'є на складі',
         'купити',
@@ -47,6 +48,7 @@ class TInStock():
         'есть',
         'купить',
         'на складе',
+        'товар в наличии',
     ]
 
     _Del = [
@@ -93,6 +95,14 @@ def DigSplit(aVal: str) -> tuple:
         Digit = Digit.replace('.', '', Dots - 1)
     return (Before, DigDelDecor(Digit), After)
 
+
+def ApiHelp() -> list:
+    Res = [
+        GetMethodInfo(getattr(TApi, x))[2]
+        for x in dir(TApi)
+        if (not x.startswith('__'))
+    ]
+    return Res
 
 class TRes():
     def __init__(self, aScheme):
@@ -198,9 +208,12 @@ class TApi():
         if (Obj):
             return Obj.get('src')
 
-    def equal(aVal: str, aStr: str, aDelim: str = '|') -> bool:
+    def is_equal(aVal: str, aStr: str, aDelim: str = '|') -> bool:
         Arr = aStr.split(aDelim)
         return (aVal in Arr)
+
+    def is_none(aVal: object, aTrue = True) -> bool:
+        return ((aVal is None) == aTrue)
 
     def search(aVal: object, aStr: str, aDelim: str = '|') -> bool:
         for x in aStr.split(aDelim):
@@ -279,12 +292,8 @@ class TApi():
         return aVal
 
     def help(aVal: object) -> list:
-        Res = [
-            GetMethodInfo(getattr(TApi, x))[2]
-            for x in dir(TApi)
-            if (not x.startswith('__'))
-        ]
-        return Res
+        return ApiHelp()
+
 
 def SoupGetParents(aSoup, aItems: list, aDepth: int = 99) -> list:
     Res = []
