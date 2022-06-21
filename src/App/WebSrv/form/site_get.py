@@ -36,7 +36,7 @@ class TForm(TFormBase):
         Data = UrlDown['Data']
         TimeAt = time.time()
         if (self.Data.Path):
-            Soup = GetSoup(Data, 'lxml')
+            Soup = GetSoup(Data)
             Script = '''
                 {
                     "Product": {

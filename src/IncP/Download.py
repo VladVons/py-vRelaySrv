@@ -34,13 +34,15 @@ def GetSoup(aData: str) -> BeautifulSoup:
         Res = BeautifulSoup(aData, 'html.parser')
     return Res
 
-async def GetUrlSoup(aUrl: str) -> BeautifulSoup:
+async def GetSoupUrl(aUrl: str) -> BeautifulSoup:
     Download = TDownload()
     Download.Opt.update({'Headers': TDHeaders(), 'Decode': True})
-    UrlDown = await Download.Get(aUrl)
-    Err = FilterKeyErr(UrlDown)
-    if (not Err) and (UrlDown['Status'] == 200):
-        return GetSoup(UrlDown['Data'])
+    Res = await Download.Get(aUrl)
+    Err = FilterKeyErr(Res)
+    if (not Err) and (Res['Status'] == 200):
+        Soup = GetSoup(Res['Data'])
+        Res['Soup'] = Soup
+    return Res
 
 class TDictDefCall(dict):
     def __getattr__(self, aName: str) -> object:

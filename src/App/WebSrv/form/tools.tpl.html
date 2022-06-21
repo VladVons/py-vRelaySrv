@@ -72,7 +72,7 @@
                     aData['Data'].forEach((aItem) => {
                         Output.value += JSON.stringify(aItem, null, ' ') + '\n';
                         Output.value += '\n';
-                    Output.scrollTop = Output.scrollHeight;
+                        Output.scrollTop = Output.scrollHeight;
                     })
                 },
                 {'cnt': 1000, 'ws': this.Id}
@@ -97,7 +97,7 @@
                     aData['Data'].forEach((aItem) => {
                         Output.value += JSON.stringify(aItem, null, ' ') + '\n';
                         Output.value += '\n---\n\n';
-                    Output.scrollTop = Output.scrollHeight;
+                        Output.scrollTop = Output.scrollHeight;
                     })
                 },
                 {'url': document.getElementById('Url0').value, 'cnt': 1000, 'ws': this.Id}
@@ -117,7 +117,7 @@
                     aData['Data'].forEach((aItem) => {
                         //Output.value += JSON.stringify(aItem, null, ' ') + '\n';
                         //Output.value += '\n';
-                    Output.scrollTop = Output.scrollHeight;
+                        Output.scrollTop = Output.scrollHeight;
                     })
                 },
                 {'file': '/robots.txt', 'cnt': 1000, 'ws': this.Id}
@@ -137,7 +137,7 @@
                     aData['Data'].forEach((aItem) => {
                         //Output.value += JSON.stringify(aItem, null, ' ') + '\n';
                         //Output.value += '\n';
-                    Output.scrollTop = Output.scrollHeight;
+                        Output.scrollTop = Output.scrollHeight;
                     })
                 },
                 {'file': '/sitemap.xml', 'cnt': 1000, 'ws': this.Id}
@@ -157,13 +157,32 @@
                     aData['Data'].forEach((aItem) => {
                         //Output.value += JSON.stringify(aItem, null, ' ') + '\n';
                         //Output.value += '\n';
-                    Output.scrollTop = Output.scrollHeight;
+                        Output.scrollTop = Output.scrollHeight;
                     })
                 },
                 {'file': '/', 'filter': 'checking your browser', 'cnt': 1000, 'ws': this.Id}
             );
         };
     };
+
+    class TWS_get_sites_app_json extends TWebSockApp {
+        Run() {
+            this.Init();
+
+            let Output = this.Output
+            HttpRequest(
+                '/api/get_sites_app_json',
+                function(aData) {
+                    Output.value += '\n';
+                    aData['Data'].forEach((aItem) => {
+                        Output.scrollTop = Output.scrollHeight;
+                    })
+                },
+                {'cnt': 1000, 'ws': this.Id}
+            );
+        };
+    };
+
 </script>
 {% endblock %}
 
@@ -207,6 +226,12 @@
                     <td>check protected</td>
                     <td>
                         <button onclick="new TWS_get_sites_grep().Run()">ok</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>app json</td>
+                    <td>
+                        <button onclick="new TWS_get_sites_app_json().Run()">ok</button>
                     </td>
                 </tr>
                 <tr>

@@ -9,7 +9,7 @@ import json
 import random
 
 
-#--- Json ---
+#--- json ---
 class TJsonEncoder(json.JSONEncoder):
     def default(self, aObj):
         Type = type(aObj).__name__
@@ -44,7 +44,7 @@ def FormatJsonStr(aScript: str, aPad: int = 2, aChar: str = ' ') -> str:
     return '\n'.join(Res)
 
 
-#--- Dictionary ---
+#--- dict ---
 def GetNestedKey(aData: dict, aKeys: str, aDef = None) -> object:
     for Key in aKeys.split('.'):
         if (isinstance(aData, dict)):
@@ -94,8 +94,16 @@ def FilterNone(aData: dict, aTrue: bool) -> dict:
         if ((Val is None) == aTrue)
     }
 
+def FilterMatch(aData: dict, aFind: dict) -> int:
+    Items = aData.items()
+    return {
+        Pair[0]: Pair[1]
+        for Pair in aFind.items()
+        if (Pair in Items)
+    }
 
-#--- String ---
+
+#--- string ---
 def GetLeadCharCnt(aValue: str, aChar: str) -> int:
     return len(aValue) - len(aValue.lstrip(aChar))
 
@@ -110,6 +118,8 @@ def GetRandStr(aLen: int) -> str:
 def GetRandStrPattern(aLen: int, aPattern = 'YourPattern') -> str:
     return ''.join((random.choice(aPattern)) for x in range(aLen))
 
+
+#--- object ---
 def GetMethodInfo(aObj) -> tuple:
     Name = aObj.__code__.co_name
     Args = aObj.__code__.co_varnames[:aObj.__code__.co_argcount]

@@ -41,7 +41,7 @@ def Test_2():
 
 
 def Test_3():
-    from IncP.Scheme import TApi
+    from IncP.SchemeApi import TSchemeApi
     Param = {'Town': 'Ternopil'}
     Script = f'''
 print('Hello1')

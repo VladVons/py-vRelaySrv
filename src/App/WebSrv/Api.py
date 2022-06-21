@@ -7,10 +7,11 @@ License:     GNU, see LICENSE for more details
 import asyncio
 import json
 #
-from Inc.DB.DbList import TDbList
+from Inc.DB.DbList import TDbList, TDbCond
 from IncP.ApiWeb import TApiBase, TWebClient
-from IncP.Download import TDownload, TDHeaders, GetSoup, GetUrlSoup
+from IncP.Download import TDownload, TDHeaders, GetSoup, GetSoupUrl
 from IncP.Scheme import TScheme
+from IncP.SchemeApi import TSchemeApi
 from IncP.Utils import GetNestedKey, FilterKey, FilterKeyErr
 
 
@@ -148,9 +149,11 @@ class get_scheme_find(TApiPlugin):
 
         Url = aData.get('url')
         await self.WebSockSend({'Data': 'Load ' + Url})
-        Soup = await GetUrlSoup(Url)
-        if (not Soup):
-            return {'Type': 'Err', 'Data': 'Error loading %s' % (Url)}
+
+        Data = await GetSoupUrl(Url)
+        Err = FilterKeyErr(Data)
+        if (Err):
+            return {'Type': 'Err', 'Data': 'Error loading %s, %s' % (Url, Err)}
 
         await self.WebSockSend({'Data': 'Check items %s' % len(Dbl)})
         Arr = []
@@ -159,7 +162,7 @@ class get_scheme_find(TApiPlugin):
             await self.WebSockSend({'Data': Url})
 
             Scheme = TScheme(Rec.GetField('scheme'))
-            Scheme.Parse(Soup)
+            Scheme.Parse(Data.get('Soup'))
             if (Scheme.Pipe):
                 Arr.append([Url, Scheme.Pipe])
 
@@ -206,6 +209,47 @@ class get_sites_grep(TApiPlugin):
         return {'Data': self.Res}
 
 
+class get_sites_app_json(TApiPlugin):
+    Param = {'param': ['cnt', 'ws']}
+
+    async def cbOnGet(self, aUrl: str, aData: dict):
+        Err = FilterKeyErr(aData)
+        if (Err):
+            await self.WebSockSend({'Data': '%s, Err: %s' % (aUrl, Err)})
+        else:
+            Soup = GetSoup(aData.get('Data'))
+            if (Soup):
+                AppData = TSchemeApi.app_json(Soup)
+                if (AppData):
+                    self.Res.append([aUrl])
+                    await self.WebSockSend({'Data': '%s, %s' % (aUrl, bool(AppData))})
+
+    async def Exec(self, aPath: str, aData: dict) -> dict:
+        await self.WebSockInit(aPath, aData)
+        Data = await self.WebSockDbl('web/get_scheme_not_empty', FilterKey(aData, ['cnt'], dict))
+        Err = FilterKeyErr(Data)
+        if (Err):
+            return Data
+
+        Urls = []
+        Dbl = Data.get('Data')
+        for Rec in Dbl:
+            if (not Rec.GetField('protected')):
+                Scheme = TScheme(Rec.GetField('scheme'))
+                Url = Scheme.GetUrl()[0]
+                Urls.append(Url)
+        await self.WebSockSend({'Data': 'Check items %s' % len(Urls)})
+
+        self.Res = []
+        Download = TDownload()
+        Download.Opt.update({'Headers': TDHeaders(), 'OnGet': self.cbOnGet, 'Decode': True})
+        await Download.Gets(Urls)
+
+        await self.WebSockSend({'Data': 'Done'})
+        return {'Data': self.Res}
+
+
+
 class get_scheme_test(TApiPlugin):
     Param = {'param': ['scheme']}
 
@@ -223,15 +267,16 @@ class get_scheme_test(TApiPlugin):
             return {'Type': 'Err', 'Data': 'No product url'}
 
         Url = Urls[0]
-        Soup = await GetUrlSoup(Url)
-        if (Soup):
-            Res = Scheme.Parse(Soup).GetData(['Err', 'Pipe', 'Warn'])
-            try:
-                json.dumps(Res)
-            except Exception as E:
-                Res = {'Type': 'Err', 'Data': str(E)}
-        else:
-            Res = {'Type': 'Err', 'Data': 'Error loading %s' % (Url)}
+        Data = await GetSoupUrl(Url)
+        Err = FilterKeyErr(Data)
+        if (Err):
+            return {'Type': 'Err', 'Data': 'Error loading %s, %s' % (Url, Err)}
+
+        try:
+            Res = Scheme.Parse(Data.get('Soup')).GetData(['Err', 'Pipe', 'Warn'])
+            json.dumps(Res)
+        except Exception as E:
+            Res = {'Type': 'Err', 'Data': str(E)}
         return Res
 
 
@@ -241,11 +286,12 @@ class set_scheme(TApiPlugin):
     async def Exec(self, aPath: str, aData: dict) -> dict:
         Scheme = TScheme(aData.get('scheme'))
         Url = Scheme.GetUrl()[0]
-        Soup = await GetUrlSoup(Url)
-        if (not Soup):
-            return {'Type': 'Err', 'Data': 'Error loading %s' % (Url)}
+        Data = await GetSoupUrl(Url)
+        Err = FilterKeyErr(Data)
+        if (Err):
+            return {'Type': 'Err', 'Data': 'Error loading %s, %s' % (Url, Err)}
 
-        Scheme.Parse(Soup)
+        Scheme.Parse(Data.get('Soup'))
         if (Scheme.Err):
             Res = {'Type': 'Err', 'Data': Scheme.Err}
         else:
@@ -292,6 +338,7 @@ class TApi(TApiBase):
         self.PluginAdd(get_scheme_by_id, {'WebClient': self.WebClient})
         self.PluginAdd(get_sites_check_file, {'WebClient': self.WebClient})
         self.PluginAdd(get_sites_grep, {'WebClient': self.WebClient})
+        self.PluginAdd(get_sites_app_json, {'WebClient': self.WebClient})
         self.PluginAdd(set_scheme, {'WebClient': self.WebClient})
 
     async def DoAuthRequest(self, aUser: str, aPassw: str):

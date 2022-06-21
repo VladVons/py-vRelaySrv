@@ -10,11 +10,11 @@ import json
 #
 from ..Api import Api
 from ..Session import Session
+from ..Utils import GetUrlInfo
 from .FForm import TFormBase
-from IncP.Download import GetUrlSoup, TDownload, TDHeaders
-from IncP.Log import Log
+from IncP.Download import GetSoupUrl, TDownload, TDHeaders
 from IncP.Scheme import TScheme
-from IncP.Utils import TJsonEncoder, FormatJsonStr, FilterKey, FilterKeyErr, GetNestedKey
+from IncP.Utils import TJsonEncoder, FormatJsonStr, FilterKey, FilterKeyErr
 
 
 _FieldPrefix = 'script_'
@@ -75,7 +75,7 @@ class TForm(TFormBase):
                 }
             }
         ''' % (
-                Session['UserName'],
+                Session.Data.get('UserName'),
                 datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S'),
                 Urls,
                 self.Data.Comment,
@@ -114,19 +114,20 @@ class TForm(TFormBase):
         self.Data.Script = ''
         self.Data.Output = ''
         for Url in Urls:
-            Soup = await GetUrlSoup(Url)
-            if (Soup):
-                try:
-                    Scheme = TScheme(Script)
-                    Scheme.Debug = True
-                    Output = Scheme.Parse(Soup).GetData(['Err', 'Pipe', 'Warn'])
-                    self.Data.Output += json.dumps(Output, indent=2, sort_keys=True, ensure_ascii=False, cls=TJsonEncoder) + '\n'
-                    self.Data.Script = Script
-                except Exception as E:
-                    self.Data.Output = 'Error %s' % (E)
-            else:
-                self.Data.Output = 'Error loading %s' % (Url)
+            Data = await GetSoupUrl(Url)
+            Err = FilterKeyErr(Data)
+            if (Err):
+                self.Data.Output = 'Error loading %s, %s' % (Url, Err)
                 break
+
+            try:
+                Scheme = TScheme(Script)
+                Scheme.Debug = True
+                Output = Scheme.Parse(Data.get('Soup')).GetData(['Err', 'Pipe', 'Warn'])
+                self.Data.Output += json.dumps(Output, indent=2, sort_keys=True, ensure_ascii=False, cls=TJsonEncoder) + '\n'
+                self.Data.Script = Script
+            except Exception as E:
+                self.Data.Output = 'Error %s' % (E)
             await asyncio.sleep(0.1)
 
     async def BtnSave(self):
@@ -135,12 +136,14 @@ class TForm(TFormBase):
             self.Data.Output = 'Error compiler %s' % (Err)
             return
 
-        Soup = await GetUrlSoup(Urls[0])
-        if (not Soup):
-            self.Data.Output = 'Error loading %s' % (Urls[0])
+        Url = Urls[0]
+        Data = await GetSoupUrl(Url)
+        Err = FilterKeyErr(Data)
+        if (Err):
+            self.Data.Output = 'Error loading %s, %s' % (Url, Err)
             return
 
-        Scheme = TScheme(Script).Parse(Soup)
+        Scheme = TScheme(Script).Parse(Data.get('Soup'))
         Output = Scheme.GetData(['Err'])
         if (Output.get('Err')):
             self.Data.Output = 'Error pharser: %s' % Output.get('Err')
@@ -159,15 +162,16 @@ class TForm(TFormBase):
         else:
             self.Data.Output = 'Saved'
 
-    async def BtnLoadSource(self):
-        Download = TDownload()
-        Download.Opt.update({'Headers': TDHeaders(), 'Decode': True})
-        UrlDown = await Download.Get(self.Data.Url0)
-        Err = FilterKeyErr(UrlDown)
+    async def BtnInfo(self):
+        Data = await GetSoupUrl(self.Data.Url0)
+        Err = FilterKeyErr(Data)
         if (Err):
-            self.Data.Output = 'Error loading %s, %s, %s' % (self.Data.Url0, UrlDown.get('Data'), UrlDown.get('Msg'))
+            self.Data.Output = 'Error loading %s, %s, %s' % (self.Data.Url0, Data.get('Data'), Data.get('Msg'))
         else:
-            self.Data.Output = UrlDown.get('Data')
+            self.Data.Output = Data.get('Data')
+
+        Arr = GetUrlInfo(Data)
+        self.Data.Script = '\n'.join(Arr) + '\n'
 
     async def _Render(self):
         HasItems = await self.PostToForm()
@@ -179,5 +183,5 @@ class TForm(TFormBase):
             await self.BtnMake()
         elif ('BtnSave' in self.Data):
             await self.BtnSave()
-        elif ('BtnLoadSource' in self.Data):
-            await self.BtnLoadSource()
+        elif ('BtnInfo' in self.Data):
+            await self.BtnInfo()

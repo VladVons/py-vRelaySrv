@@ -5,7 +5,7 @@ License:     GNU, see LICENSE for more details
 '''
 
 from .FForm import TFormBase
-from IncP.Scheme import ApiHelp
+from IncP.SchemeApi import ApiHelp
 
 
 class TForm(TFormBase):

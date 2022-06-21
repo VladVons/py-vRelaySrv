@@ -138,9 +138,8 @@
       };
     };
 
-    function Btn_LoadSource(aThis) {
-      console.log('LoadSource');
-
+    function Btn_Info(aThis) {
+      document.getElementById('Script').value = '';
       document.getElementById('Output').value = '';
       document.forms["Form"].submit()
     }
@@ -176,7 +175,7 @@
       <td>
         <button onclick="Btn_GoUrls()">go</button>
         <button onclick="Btn_GetSchemeEmptyWithFlag()">get task</button>
-        <button name="BtnLoadSource" id="BtnLoadSource" onclick="Btn_LoadSource()">source</button>
+        <button name="BtnInfo" id="BtnInfo" onclick="Btn_Info()">info</button>
         <button onclick="Btn_GetSchemeDone()">example</button>
         <button name="BtnMake" onclick="Btn_Make(this)">make</button>
         <button name="BtnSave" id="BtnSave" onclick="Btn_Save(this)" {{ Data.BtnSaveDisabled }} >save</button>
@@ -189,6 +188,7 @@
 
         <select id="SelHelp" onchange="Sel_Help(this)">
           <optgroup label="- top -"></optgroup>
+            <option>["app_json", [{"@type": "Product"}]]</option>
             <option>["breadcrumb", [["a"], -1]]</option>
             <option>["find_all", ["li"]]</option>
             <option>["find", ["div", {"class": "content"}]]</option>

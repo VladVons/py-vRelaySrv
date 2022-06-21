@@ -25,6 +25,11 @@
             document.forms["Form"].requestSubmit()
         }
 
+        function Btn_Info(aThis) {
+            document.getElementById('Output').value = '';
+            document.forms["Form"].submit()
+        }
+
     </script>
 {% endblock %}
 
@@ -36,6 +41,7 @@
             <td>
                 <button onclick="Btn_Url()">url</button>
                 <button onclick="Btn_GoUrl('Url0')">go</button>
+                <button name="BtnInfo" onclick="Btn_Info()">info</button>
                 <button name="BtnMake" onclick="Btn_Make()">make</button>
 
                 <input type="text" name="Url0" id="Url0" placeholder="Url" style="width:90%" required value="{{ Data.Url0 }}">

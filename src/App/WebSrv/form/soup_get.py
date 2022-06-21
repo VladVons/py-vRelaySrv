@@ -7,9 +7,10 @@ License:     GNU, see LICENSE for more details
 import json
 #
 from .FForm import TFormBase
-from IncP.Download import GetUrlSoup
+from IncP.Download import GetSoupUrl
 from IncP.Log import Log
 from IncP.Scheme import TSoupScheme, SoupFindParents
+from IncP.Utils import FilterKeyErr
 
 
 class TForm(TFormBase):
@@ -19,9 +20,11 @@ class TForm(TFormBase):
         if (not await self.PostToForm()) or (not self.Data.get('BtnOk')):
             return
 
-        Soup = await GetUrlSoup(self.Data.Url0)
-        if (not Soup):
-            self.Data.Output = 'Error loading %s' % (self.Data.Url0)
+        Url = self.Data.Url0
+        Data = await GetSoupUrl(Url)
+        Err = FilterKeyErr(Data)
+        if (Err):
+            self.Data.Output = 'Error loading %s, %s' % (Url, Err)
             return
 
         try:
@@ -29,13 +32,11 @@ class TForm(TFormBase):
             if (self.Data.Path):
                 Path = '[%s]' % self.Data.Path
                 Path = json.loads(Path)
-                #Soup = TSoupScheme.GetItem(Soup, [Path], ({}, [], []))
 
-            if (Soup):
-                x11 = SoupFindParents(Soup, self.Data.Find)
-                for x1 in x11:
-                    for x in reversed(x1):
-                        self.Data.Output += json.dumps(x, ensure_ascii=False) + '\n'
-                    self.Data.Output += '\n'
+            x11 = SoupFindParents(Data.get('Soup'), self.Data.Find)
+            for x1 in x11:
+                for x in reversed(x1):
+                    self.Data.Output += json.dumps(x, ensure_ascii=False) + '\n'
+                self.Data.Output += '\n'
         except (json.decoder.JSONDecodeError, AttributeError) as E:
             self.Data.Output = str(E.args)

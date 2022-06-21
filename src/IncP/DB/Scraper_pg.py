@@ -71,7 +71,7 @@ class TDbApp(TDbPg):
 
         Query = f'''
            select
-                id, url, scheme
+                id, url, scheme, protected
             from
                 site
             where
@@ -132,6 +132,7 @@ class TDbApp(TDbPg):
                 id,
                 url,
                 scheme is not null as has_scheme,
+                protected,
                 enabled
             from
                 site
