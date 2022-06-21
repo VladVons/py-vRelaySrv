@@ -6,10 +6,12 @@
         <th style="width:25%">Name</th>
         <th>Description</th>
     </tr>
-    {% for x in Data.Macros %}
+    {% for x in Data.SchemeApi %}
     <tr>
-        <td>{{x}}</td>
-        <td></td>
+        <td>{{x[2]}}</td>
+        {% autoescape false%}
+        <td>{{x[3].strip().replace('\n', '<br>')}}</td>
+        {% endautoescape%}
     </tr>
     {% endfor %}
 </table>

@@ -5,11 +5,13 @@ License:     GNU, see LICENSE for more details
 '''
 
 from .FForm import TFormBase
-from IncP.SchemeApi import ApiHelp
+from IncP.SchemeApi import TSchemeApi
+from IncP.Utils import GetClassInfo
 
 
 class TForm(TFormBase):
     Title = 'Soup help'
 
     async def _Render(self):
-        self.Data.Macros = ApiHelp()
+        self.Data.SchemeApi = GetClassInfo(TSchemeApi)
+        pass

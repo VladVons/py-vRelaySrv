@@ -124,4 +124,12 @@ def GetMethodInfo(aObj) -> tuple:
     Name = aObj.__code__.co_name
     Args = aObj.__code__.co_varnames[:aObj.__code__.co_argcount]
     Repr = '%s(%s)' % (Name, ', '.join(Args))
-    return (Name, Args, Repr)
+    DocString = aObj.__doc__ if (aObj.__doc__) else ''
+    return (Name, Args, Repr, DocString)
+
+def GetClassInfo(aClass: object) -> list:
+    return [
+        GetMethodInfo(getattr(aClass, x))
+        for x in dir(aClass)
+        if (not x.startswith('__'))
+    ]

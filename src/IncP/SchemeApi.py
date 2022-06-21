@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 import json
 import operator
 #
-from IncP.Utils import GetMethodInfo, GetNestedKey, FilterMatch
+from IncP.Utils import GetMethodInfo, GetClassInfo, GetNestedKey, FilterMatch
 
 
 _Whitespace = ' \t\n\r\v\f\xA0'
@@ -88,13 +88,6 @@ def DigSplit(aVal: str) -> tuple:
     if (Dots > 1):
         Digit = Digit.replace('.', '', Dots - 1)
     return (Before, DigDelDecor(Digit), After)
-
-def ApiHelp() -> list:
-    return [
-        GetMethodInfo(getattr(TSchemeApi, x))[2]
-        for x in dir(TSchemeApi)
-        if (not x.startswith('__'))
-    ]
 
 
 class TSchemeApi():
@@ -248,4 +241,5 @@ class TSchemeApi():
         return aVal
 
     def help(aVal: object) -> list:
-        return ApiHelp()
+        return [x[2] for x in GetClassInfo(TSchemeApi)]
+
