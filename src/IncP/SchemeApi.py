@@ -7,6 +7,7 @@ License:     GNU, see LICENSE for more details
 from bs4 import BeautifulSoup
 import json
 import operator
+import re
 #
 from IncP.Utils import GetMethodInfo, GetClassInfo, GetNestedKey, FilterMatch
 
@@ -241,5 +242,6 @@ class TSchemeApi():
         return aVal
 
     def help(aVal: object) -> list:
-        return [x[2] for x in GetClassInfo(TSchemeApi)]
+        Data = GetClassInfo(TSchemeApi)
+        return [x[2] for x in Data]
 

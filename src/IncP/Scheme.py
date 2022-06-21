@@ -102,7 +102,7 @@ def SoupGetParents(aSoup: BeautifulSoup, aItems: list, aDepth: int = 99) -> list
 def SoupFindParents(aSoup: BeautifulSoup, aSearch: str) -> list:
     #Items = aSoup.findAll(string=aSearch)
     Items = aSoup.findAll(string=re.compile(aSearch))
-    return SoupGetParents(Items)
+    return SoupGetParents(aSoup, Items)
 
 class TSoupScheme():
     def __init__(self):
