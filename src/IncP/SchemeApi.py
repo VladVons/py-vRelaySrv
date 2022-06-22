@@ -32,6 +32,7 @@ class TInStock():
         'купити',
         'на складі',
         'товар в наявності',
+        'товар є в наявності',
         'склад',
 
         'в корзину',
@@ -44,6 +45,7 @@ class TInStock():
         'купить',
         'на складе',
         'товар в наличии',
+        'товар есть в наличии',
     ]
 
     _Del = [
@@ -124,8 +126,6 @@ class TSchemeApi():
 
     def price(aVal: str) -> tuple:
         '''
-        aVal: str
-        Result: tuple
         '''
         Before, Dig, After = DigSplit(aVal)
         if (not Dig):
@@ -133,22 +133,37 @@ class TSchemeApi():
         return (float(Dig), After.lower())
 
     def stock(aVal: str) -> bool:
+        '''
+        Get stock availability.
+        '''
+
         return InStock.Check(aVal)
 
-    def image(aVal: object) -> str:
+    def image(aVal: BeautifulSoup) -> str:
+        '''
+        Get image.
+        This equal to: find('img').get('src')
+        '''
+
         Obj = aVal.find('img')
         if (Obj):
             return Obj.get('src')
 
-    def is_equal(aVal: str, aStr: str, aDelim: str = '|') -> bool:
-        Arr = aStr.split(aDelim)
-        return (aVal in Arr)
+    def is_equal(aVal: str, aStr: list) -> bool:
+        '''
+        Compare values
+        '''
+        return (aVal in aStr)
 
-    def is_none(aVal: object, aTrue = True) -> bool:
+    def is_none(aVal: object, aTrue: bool = True) -> bool:
+        '''
+        Check if value is None
+        '''
+
         return ((aVal is None) == aTrue)
 
-    def search(aVal: object, aStr: str, aDelim: str = '|') -> bool:
-        for x in aStr.split(aDelim):
+    def search(aVal: object, aStr: list) -> bool:
+        for x in aStr:
             if (aVal.find(x) >= 0):
                 return True
         return False
@@ -188,11 +203,7 @@ class TSchemeApi():
 
     def app_json(aVal: BeautifulSoup, aFind: dict = {'@type': 'Product'}) -> dict:
         '''
-        searchs aFind in soup sections <script>application/ld+json</script>
-
-        aVal: BeautifulSoup
-        aFind: dict = {'@type': 'Product'}
-        Result: BeautifulSoup
+        Searches value in sections <script>application/ld+json</script>
         '''
         Items = aVal.find_all('script', type='application/ld+json')
         for x in Items:
