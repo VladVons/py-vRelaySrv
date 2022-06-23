@@ -3,12 +3,12 @@
 {% block content %}
 <table style="width:100%">
     <tr>
-        <th style="width:25%">Name</th>
+        <th style="width:40%">Name</th>
         <th>Description</th>
     </tr>
     {% for x in Data.SchemeApi %}
     <tr>
-        <td>{{x[2]}}</td>
+        <td>{{x[4]}}</td>
         {% autoescape false%}
         <td>{{x[3].strip().replace('\n', '<br>')}}</td>
         {% endautoescape%}

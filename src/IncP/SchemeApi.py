@@ -9,7 +9,8 @@ import json
 import operator
 import re
 #
-from IncP.Utils import GetMethodInfo, GetClassInfo, GetNestedKey, FilterMatch
+from IncP.Utils import GetNestedKey, FilterMatch
+from IncP.ImportInf import GetClass
 
 
 _Whitespace = ' \t\n\r\v\f\xA0'
@@ -98,9 +99,19 @@ class TSchemeApi():
         raise TypeError('Cant instantiate static class')
 
     def strip(aVal: str) -> str:
+        '''
+        remove invisible chars
+        ["strip"]
+        '''
+
         return aVal.strip()
 
     def strip_all(aVal: str) -> str:
+        '''
+        remove all invisible chars
+        ["strip_all"]
+        '''
+
         def Search(aData: str, aIter: list) -> int:
             for i in aIter:
                 if (aData[i].isdigit() or aData[i].isalpha()):
@@ -112,13 +123,28 @@ class TSchemeApi():
         return aVal[L:R+1]
 
     def length(aVal: object) -> int:
+        '''
+        get object length
+        ["length"]
+        '''
+
         return len(aVal)
 
     def list(aVal: list, aIdx: int) -> object:
+        '''
+        get object from list by index
+        ["list", [1]]
+        '''
+
         if (aIdx < len(aVal)):
             return aVal[aIdx]
 
     def split(aVal: str, aDelim: str, aIdx: int = None) -> str:
+        '''
+        split string by delimiter and get object from list by index
+        ["split", [" ", -1]]
+        '''
+
         Res = aVal.split(aDelim)
         if (aIdx is not None):
             Res = Res[aIdx].strip()
@@ -126,7 +152,10 @@ class TSchemeApi():
 
     def price(aVal: str) -> tuple:
         '''
+        get price
+        ["price"]
         '''
+
         Before, Dig, After = DigSplit(aVal)
         if (not Dig):
             Dig = '0'
@@ -134,15 +163,16 @@ class TSchemeApi():
 
     def stock(aVal: str) -> bool:
         '''
-        Get stock availability.
+        Get stock availability
+        ["stock"]
         '''
 
         return InStock.Check(aVal)
 
     def image(aVal: BeautifulSoup) -> str:
         '''
-        Get image.
-        This equal to: find('img').get('src')
+        get image. equal to: find('img').get('src')
+        ["image"]
         '''
 
         Obj = aVal.find('img')
@@ -151,18 +181,26 @@ class TSchemeApi():
 
     def is_equal(aVal: str, aStr: list) -> bool:
         '''
-        Compare values
+        compare values
+        ["is_equal", ["InStock", "available"]]
         '''
+
         return (aVal in aStr)
 
     def is_none(aVal: object, aTrue: bool = True) -> bool:
         '''
-        Check if value is None
+        check if value is None
+        ["is_none", false]
         '''
 
         return ((aVal is None) == aTrue)
 
     def search(aVal: object, aStr: list) -> bool:
+        '''
+        search any string value from a list
+        ["search", ["InStock", "available"]]
+        '''
+
         for x in aStr:
             if (aVal.find(x) >= 0):
                 return True
@@ -177,6 +215,11 @@ class TSchemeApi():
                 return Func(aVal, aValue)
 
     def dig_lat(aVal: str) -> str:
+        '''
+        get filtered chars from [0..9], [a..Z], [.-/]
+        ["dig_lat"]
+        '''
+
         Res = ''
         for x in aVal:
             if ('0' <= x <= '9') or ('a' <= x <= 'z') or ('A' <= x <= 'Z') or (x in '.-/'):
@@ -184,18 +227,43 @@ class TSchemeApi():
         return Res
 
     def txt2json(aVal: str) -> dict:
+        '''
+        convert text to json
+        ["txt2json"]
+        '''
+
         return json.loads(aVal)
 
     def txt2float(aVal: str) -> float:
+        '''
+        convert text to float
+        ["txt2float"]
+        '''
+
         return float(aVal.replace(',', ''))
 
     def json2txt(aVal: dict) -> str:
+        '''
+        convert json to text
+        ["json2txt"]
+        '''
+
         return json.dumps(aVal, indent=2, sort_keys=True, ensure_ascii=False)
 
     def gets(aVal: dict, aKeys: str) -> dict:
+        '''
+        multiple get. equal to get('key1').get('key2')
+        ["gets", ["offers.availability"]]
+        '''
+
         return GetNestedKey(aVal, aKeys)
 
     def breadcrumb(aVal: BeautifulSoup, aFind: list, aIdx: int = -1) -> str:
+        '''
+        equal to find_all() + list()
+        ["breadcrumb", [["a"], -1]]
+        '''
+
         if (hasattr(aVal, 'find_all')):
             Items = aVal.find_all(*aFind)
             if (len(Items) > 0):
@@ -203,7 +271,8 @@ class TSchemeApi():
 
     def app_json(aVal: BeautifulSoup, aFind: dict = {'@type': 'Product'}) -> dict:
         '''
-        Searches value in sections <script>application/ld+json</script>
+        searches value in sections <script>application/ld+json</script>
+        ["app_json", [{"@type": "Product"}]]
         '''
         Items = aVal.find_all('script', type='application/ld+json')
         for x in Items:
@@ -213,27 +282,55 @@ class TSchemeApi():
                 return Data
 
     def lower(aVal: str) -> str:
+        '''
+        string to lower case
+        ["lower"]
+        '''
+
         return aVal.lower()
 
     def replace(aVal: str, aFind: str, aRepl: str) -> str:
+        '''
+        replace string
+        ["replace", ["1", "one"]]
+        '''
         return aVal.replace(aFind, aRepl)
 
     def translate(aVal: str, aFind: str, aRepl: str, aDel: str = None) -> str:
+        '''
+        multiple replace string
+        ["translate", ["abcd", "1234"]]
+        '''
         return aVal.translate(aFind, aRepl, aDel)
 
     def left(aVal: str, aIdx: int) -> str:
+        '''
+        get left string part
+        ["left", [3]]
+        '''
+
         return aVal[:aIdx]
 
     def nop(aVal: object) -> object:
         '''
-        No operation. For debug purpose
+        no operation. for debug purpose
+        ["nop"]
         '''
         return aVal
 
     def sub(aVal: str, aIdx: int, aEnd: int) -> str:
+        '''
+        get sub string
+        ["sub", [2, 7]]
+        '''
+
         return aVal[aIdx:aEnd]
 
     def unbracket(aVal: str, aPair: str = '()', aIdx: int = None) -> str:
+        '''
+        ["unbracket", ["()", -1]]
+        '''
+
         Pattern = '\%s(.*?)\%s' % (aPair[0], aPair[1])
         Res = re.findall(Pattern, aVal)
         if (Res):
@@ -242,6 +339,11 @@ class TSchemeApi():
             return Res
 
     def concat(aVal: str, aStr: str, aRight: bool =  True) -> str:
+        '''
+        concatinate string to left or right side
+        ["concat", ["hello", true]]
+        '''
+
         if (aRight):
             Res = aVal + aStr
         else:
@@ -249,10 +351,20 @@ class TSchemeApi():
         return Res
 
     def print(aVal: object, aMsg: str = '') -> object:
+        '''
+        show value
+        ["print"]
+        '''
+
         print(aVal, aMsg)
         return aVal
 
     def help(aVal: object) -> list:
-        Data = GetClassInfo(TSchemeApi)
+        '''
+        show brief help
+        ["help"]
+        '''
+
+        Data = GetClass(TSchemeApi)
         return [x[2] for x in Data]
 

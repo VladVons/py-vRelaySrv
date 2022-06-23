@@ -166,10 +166,10 @@ class TForm(TFormBase):
         Data = await GetSoupUrl(self.Data.Url0)
         Err = FilterKeyErr(Data)
         if (Err):
-            self.Data.Output = 'Error loading %s, %s, %s' % (self.Data.Url0, Data.get('Data'), Data.get('Msg'))
-        else:
-            self.Data.Output = Data.get('Data')
+            self.Data.Output = 'Error loading %s, %s, %s' % (self.Data.Url0, Err, Data.get('Msg'))
+            return
 
+        self.Data.Output = Data.get('Data')
         Arr = GetUrlInfo(Data)
         self.Data.Script = '\n'.join(Arr) + '\n'
 

@@ -20,14 +20,14 @@
             }
         }
 
-        function Btn_Make() {
+        function Btn_Make(aThis) {
             document.getElementById('Output').value = '';
-            document.forms["Form"].requestSubmit()
+            document.forms["Form"].requestSubmit(aThis)
         }
 
         function Btn_Info(aThis) {
             document.getElementById('Output').value = '';
-            document.forms["Form"].submit()
+            document.forms["Form"].submit(aThis)
         }
 
     </script>
@@ -41,8 +41,8 @@
             <td>
                 <button onclick="Btn_Url()">url</button>
                 <button onclick="Btn_GoUrl('Url0')">go</button>
-                <button name="BtnInfo" onclick="Btn_Info()">info</button>
-                <button name="BtnMake" onclick="Btn_Make()">make</button>
+                <button name="BtnInfo" onclick="Btn_Info(this)">info</button>
+                <button name="BtnMake" onclick="Btn_Make(this)">make</button>
 
                 <input type="text" name="Url0" id="Url0" placeholder="Url" style="width:90%" required value="{{ Data.Url0 }}">
             </td>

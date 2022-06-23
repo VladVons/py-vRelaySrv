@@ -81,6 +81,9 @@ def FilterKeyErr(aData: dict, aAsStr: bool = False) -> list:
                 _FilterKey(Val, aRes)
                 if (Key == 'Type') and (Val == 'Err'):
                     aRes.append(aData.get('Data'))
+                elif (Key == 'Err'):
+                    aRes.append(aData.get('Err'))
+
     Res = []
     _FilterKey(aData, Res)
     if (aAsStr):
@@ -117,19 +120,3 @@ def GetRandStr(aLen: int) -> str:
 
 def GetRandStrPattern(aLen: int, aPattern = 'YourPattern') -> str:
     return ''.join((random.choice(aPattern)) for x in range(aLen))
-
-
-#--- object ---
-def GetMethodInfo(aObj) -> tuple:
-    Name = aObj.__code__.co_name
-    Args = aObj.__code__.co_varnames[:aObj.__code__.co_argcount]
-    Repr = '%s(%s)' % (Name, ', '.join(Args))
-    DocString = aObj.__doc__ if (aObj.__doc__) else ''
-    return (Name, Args, Repr, DocString)
-
-def GetClassInfo(aClass: object) -> list:
-    return [
-        GetMethodInfo(getattr(aClass, x))
-        for x in dir(aClass)
-        if (not x.startswith('__'))
-    ]

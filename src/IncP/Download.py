@@ -39,9 +39,12 @@ async def GetSoupUrl(aUrl: str) -> BeautifulSoup:
     Download.Opt.update({'Headers': TDHeaders(), 'Decode': True})
     Res = await Download.Get(aUrl)
     Err = FilterKeyErr(Res)
-    if (not Err) and (Res['Status'] == 200):
-        Soup = GetSoup(Res['Data'])
-        Res['Soup'] = Soup
+    if (not Err):
+        if (Res['Status'] == 200):
+            Soup = GetSoup(Res['Data'])
+            Res['Soup'] = Soup
+        else:
+            Res['Err'] = 'Status %s' % (Res['Status'])
     return Res
 
 class TDictDefCall(dict):

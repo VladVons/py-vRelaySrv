@@ -141,17 +141,17 @@
     function Btn_Info(aThis) {
       document.getElementById('Script').value = '';
       document.getElementById('Output').value = '';
-      document.forms["Form"].submit()
+      document.forms["Form"].submit(aThis)
     }
 
     function Btn_Make(aThis) {
       document.getElementById('Output').value = '';
-      document.forms["Form"].requestSubmit()
+      document.forms["Form"].requestSubmit(aThis)
     }
 
     function Btn_Save(aThis) {
       if (window.confirm('Save scheme ?')) {
-        document.forms["Form"].requestSubmit()
+        document.forms["Form"].requestSubmit(aThis)
       }
     }
 
@@ -175,7 +175,7 @@
       <td>
         <button onclick="Btn_GoUrls()">go</button>
         <button onclick="Btn_GetSchemeEmptyWithFlag()">get task</button>
-        <button name="BtnInfo" id="BtnInfo" onclick="Btn_Info()">info</button>
+        <button name="BtnInfo" id="BtnInfo" onclick="Btn_Info(this)">info</button>
         <button onclick="Btn_GetSchemeDone()">example</button>
         <button name="BtnMake" onclick="Btn_Make(this)">make</button>
         <button name="BtnSave" id="BtnSave" onclick="Btn_Save(this)" {{ Data.BtnSaveDisabled }} >save</button>
@@ -190,9 +190,10 @@
           <optgroup label="- top -"></optgroup>
             <option>["app_json", [{"@type": "Product"}]]</option>
             <option>["breadcrumb", [["a"], -1]]</option>
-            <option>["find_all", ["li"]]</option>
+            <option>["find_all", ["a"]]</option>
             <option>["find", ["div", {"class": "content"}]]</option>
             <option>["get", ["src"]]</option>
+            <option>["gets", ["offers.availability"]]</option>
             <option>["image"]</option>
             <option>["list", [1]]</option>
             <option>["price"]</option>
