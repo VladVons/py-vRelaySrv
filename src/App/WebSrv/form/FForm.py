@@ -16,8 +16,11 @@ from ..Session import Session
 class TFormBase(Form):
     Title = ''
 
-    def __init__(self, aRequest: web.Request, aTpl: str, aData: dict = {}):
+    def __init__(self, aRequest: web.Request, aTpl: str, aData: dict = None):
         super().__init__()
+
+        if (aData is None):
+            aData = {}
 
         self.Request = aRequest
         self.Data = TDictDef('', aData)

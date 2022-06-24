@@ -6,9 +6,6 @@ License:     GNU, see LICENSE for more details
 
 
 import asyncio
-#
-from App import ConfApp
-from IncP.Log import Log
 
 
 class TIdle():

@@ -11,7 +11,7 @@ except:
   import uasyncio as asyncio
 #
 from Inc.Log  import Log
-from Inc.Util import UFS, UStr
+from Inc.Util import UFS
 from .HttpLib import ReadHead
 
 #https://github.com/peterhinch/micropython-samples/blob/master/resilient/README.md

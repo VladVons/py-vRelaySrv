@@ -6,9 +6,9 @@ License:     GNU, see LICENSE for more details
 
 
 try:
-  import asyncio
+    import asyncio
 except:
-  import uasyncio as asyncio
+    import uasyncio as asyncio
 #
 from Inc.Util.UStr import SplitPad
 
