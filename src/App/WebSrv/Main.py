@@ -53,7 +53,7 @@ class TForm():
     async def Create(self, aRequest: web.Request, aName: str) -> web.Response:
         FormDir = '%s/%s' % (self.Parent.DirRoot, self.Parent.DirForm)
         if (not os.path.isfile('%s/%s%s' % (FormDir, aName, self.Parent.TplExt))):
-            aName = 'err_404'
+            aName = 'err_code'
 
         for Module, Class in [(aName, 'TForm'), ('FForm', 'TFormBase')]:
             try:
