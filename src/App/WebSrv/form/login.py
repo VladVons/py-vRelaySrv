@@ -8,12 +8,12 @@ from aiohttp import web
 from wtforms.fields import StringField, SubmitField, PasswordField
 from wtforms.validators import DataRequired, Length
 #
-from ..Api import Api
-from ..Session import Session
-from .FForm import TFormBase
 from Inc.DB.DbList import TDbList
 from IncP.Log import Log
 from IncP.Utils import GetNestedKey, FilterKeyErr
+from ..Api import Api
+from ..Session import Session
+from .FForm import TFormBase
 
 
 class TForm(TFormBase):
@@ -24,8 +24,8 @@ class TForm(TFormBase):
     Submit = SubmitField("ok")
 
     async def _Render(self):
-        self.Message = '%s (%s)' % (Session.Data.get('UserName'), Session.Data.get('UserGroup', ''))
-        self.Query = self.Request.query_string
+        self.Data.Message = '%s (%s)' % (Session.Data.get('UserName'), Session.Data.get('UserGroup', ''))
+        self.Data.Query = self.Request.query_string
         if (not self.validate()):
             return
 
@@ -44,7 +44,7 @@ class TForm(TFormBase):
         DblJ = GetNestedKey(DataApi, 'Data.Data')
         Dbl = TDbList().Import(DblJ)
         if (Dbl.IsEmpty()):
-            self.Message = 'Authorization failed for %s' % (self.UserName.data)
+            self.Data.Message = 'Authorization failed for %s' % (self.UserName.data)
             return
 
         UserId = Dbl.Rec.GetField('id')

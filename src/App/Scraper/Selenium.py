@@ -18,7 +18,7 @@ https://sites.google.com/chromium.org/driver/downloads
 # chrome driver all
 https://www.selenium.dev/documentation/webdriver/getting_started/install_drivers/
 #
-#sudo apt install chromium-chromedriver 
+#sudo apt install chromium-chromedriver
 #pip3 install webdriver-manager
 
 
@@ -63,6 +63,9 @@ class TSelenium():
 
 
 class TStarter():
+    def __init__(self):
+        self.IsRun = multiprocessing.Value('i')
+
     def ThreadRun(self, aQueue):
         Obj = TSelenium(self)
         try:
@@ -72,11 +75,10 @@ class TStarter():
         #print('ThreadRun end')
 
     async def ThreadCreate(self, aUrls: list, aCnt: int = 1):
-        self.IsRun = multiprocessing.Value('i')
         self.IsRun.value = True
 
         Queue = multiprocessing.JoinableQueue()
-        [Queue.put(x) for x in aUrls]
+        NotUsed = [Queue.put(x) for x in aUrls]
 
         for i in range(aCnt):
             process = multiprocessing.Process(target = self.ThreadRun, args = [Queue])

@@ -87,10 +87,9 @@ class TMenu():
                 if (Last != '*') or ((Last == '*') and (Val)):
                     break
 
-            Type = type(ValDef).__name__
-            if (Type == 'int'):
+            if (isinstance(ValDef, int)):
                 Val = int(Val)
-            elif (Type == 'float'):
+            elif (isinstance(ValDef, float)):
                 Val = float(Val)
 
             R[Name] = Val

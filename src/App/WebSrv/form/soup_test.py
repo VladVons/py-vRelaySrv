@@ -6,12 +6,12 @@ License:     GNU, see LICENSE for more details
 
 import json
 #
-from .FForm import TFormBase
-from ..Utils import GetUrlInfo
 from IncP.Download import GetSoupUrl
 from IncP.Log import Log
 from IncP.Scheme import TScheme
 from IncP.Utils import TJsonEncoder, FormatJsonStr, FilterKeyErr
+from .FForm import TFormBase
+from ..Utils import GetUrlInfo
 
 
 class TForm(TFormBase):
@@ -29,7 +29,8 @@ class TForm(TFormBase):
             Scheme.Debug = True
             Output = Scheme.Parse(Data.get('Soup')).GetData(['Err', 'Pipe', 'Warn'])
             self.Data.Output = json.dumps(Output,  indent=2, sort_keys=True, ensure_ascii=False, cls=TJsonEncoder)
-            self.Data.Script = FormatJsonStr(self.Data.Script)
+            if (Scheme.IsJson()):
+                self.Data.Script = FormatJsonStr(self.Data.Script)
         except (json.decoder.JSONDecodeError, AttributeError) as E:
             self.Data.Output = str(E.args)
             Log.Print(1, 'x', self.Data.Output, aE=E)

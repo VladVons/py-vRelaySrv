@@ -101,7 +101,7 @@ class TDbFields(dict):
             raise TDbListException('field already exists %s' % (aName))
 
         if (aDef):
-            if (aType != type(aDef)):
+            if (not isinstance(aDef, aType)):
                 raise TDbListException('types mismatch %s, %s' % (aType, aDef))
         else:
             Def = {'str': '', 'int': 0, 'float': 0.0, 'bool': False, 'tuple': (), 'list': [], 'dict': {}, 'set': set()}
@@ -116,11 +116,11 @@ class TDbFields(dict):
             self.Add(*Field)
 
     def AddAuto(self, aFields: list, aData: list):
-        for i in range(len(aFields)):
+        for Idx, Val in enumerate(aFields):
             if (aData):
-                self.Add(aFields[i], type(aData[i]))
+                self.Add(Val, type(aData[Idx]))
             else:
-                self.Add(aFields[i])
+                self.Add(Val)
 
     def Export(self) -> list:
         Items = sorted(self.items(), key = lambda k: k[1][0])
@@ -132,7 +132,7 @@ class TDbFields(dict):
 
     def GetFields(self, aFields: list) -> 'TDbFields':
         if (not aFields):
-           aFields = self.GetList()
+            aFields = self.GetList()
 
         Res = TDbFields()
         for Name in aFields:
@@ -157,7 +157,6 @@ class TDbRec(list):
 
     def Flush(self):
         self.Parent.Data[self.Parent._RecNo] = self.copy()
-        pass
 
     def Init(self):
         Fields = self.Parent.Fields
@@ -173,7 +172,7 @@ class TDbRec(list):
     def SetField(self, aName: str, aValue: object):
         Idx = self.Parent.Fields.GetNo(aName)
         if (self.Parent.Safe):
-            if (type(aValue) != self.Parent.Fields[aName][1]):
+            if (not isinstance(aValue, self.Parent.Fields[aName][1])):
                 raise TDbListException('types mismatch %s, %s' % (type(aValue), self.Parent.Fields[aName]))
         self[Idx] = aValue
 
@@ -181,7 +180,7 @@ class TDbRec(list):
         if (self.Parent.Safe):
             IdxOrd = self.Parent.Fields.IdxOrd
             for Idx, Field in enumerate(aData):
-                if (type(Field) != IdxOrd[Idx][1]):
+                if (not isinstance(Field, IdxOrd[Idx][1])):
                     raise TDbListException('types mismatch %s, %s' % (type(Field), IdxOrd[Idx]))
         super().__init__(aData)
 
@@ -201,14 +200,14 @@ class TDbRec(list):
         return ', '.join(Res)
 
     def SetAsDict(self, aData: dict):
-        [self.SetField(Key, Val) for Key, Val in aData.items()]
+        NotUsed = [self.SetField(Key, Val) for Key, Val in aData.items()]
         self.Flush()
 
     def GetAsTuple(self) -> list:
         return [(Key, self[Val[0]]) for Key, Val in self.Parent.Fields.items()]
 
     def SetAsTuple(self, aData: tuple):
-        [self.SetField(Key, Val) for Key, Val in aData]
+        NotUsed = [self.SetField(Key, Val) for Key, Val in aData]
         self.Flush()
 
 

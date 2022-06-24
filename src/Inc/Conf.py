@@ -30,7 +30,7 @@ class TDictDef(dict):
         return self.get(aName, self.Def)
 
     def Get(self, aName: str) -> object:
-        if (type(self.Def) == dict):
+        if (isinstance(self.Def, dict)):
             return self.get(aName, self.Def.get(aName))
 
     def SetData(self, aData: dict):
@@ -59,6 +59,6 @@ class TConf(TDictDef):
     def Save(self):
         with open(self.File, 'w') as File:
             for K, V in sorted(self.items()):
-                if (type(V) is str):
+                if (isinstance(V, str)):
                     V = "'" + V + "'"
                 File.write('%s = %s\n' % (K, V))

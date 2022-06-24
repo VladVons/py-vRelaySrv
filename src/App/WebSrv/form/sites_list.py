@@ -5,10 +5,11 @@ License:     GNU, see LICENSE for more details
 '''
 
 
-from ..Api import Api
-from .FForm import TFormBase
 from Inc.DB.DbList import TDbList, TDbCond
 from IncP.Utils import GetNestedKey, FilterKeyErr
+from ..Api import Api
+from .FForm import TFormBase
+
 
 class TForm(TFormBase):
     Title = 'Site list'

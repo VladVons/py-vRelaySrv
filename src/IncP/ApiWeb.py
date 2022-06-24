@@ -5,13 +5,13 @@ License:     GNU, see LICENSE for more details
 '''
 
 
-from aiohttp import web
-import aiohttp
 import base64
 import json
 import time
+import aiohttp
+from aiohttp import web
 #
-from Inc.DB.DbList import TDbList, TDbCond
+from Inc.DB.DbList import TDbList
 from IncP.Log import Log
 from IncP.Utils import GetNestedKey
 
@@ -87,12 +87,14 @@ class TApiBase():
         else:
             return True
 
-    async def DoAuthRequest(aUser: str, aPassw: str) -> bool:
-        raise NotImplemented
+    async def DoAuthRequest(self, aUser: str, aPassw: str) -> bool:
+        raise NotImplementedError()
 
 
 class TWebClient():
-    def __init__(self, aAuth: dict = {}):
+    def __init__(self, aAuth: dict = None):
+        if (aAuth is None):
+            aAuth = {}
         self.Auth = aAuth
 
     async def Send(self, aPath: str, aPost: dict = {}):
@@ -105,13 +107,15 @@ class TWebClient():
                     Data = await Response.json()
                     Res = {'Data': Data, 'Status': Response.status, 'Time': round(time.time() - TimeAt, 2)}
         except (aiohttp.ContentTypeError, aiohttp.ClientConnectorError, aiohttp.InvalidURL) as E:
-            ErrMsg = Log.Print(1, 'x', 'Send(). %s' % (Url), aE = E)
-            Res = {'Type': 'Err', 'Data': E, 'Msg': ErrMsg, 'Time': round(time.time() - TimeAt, 2)}
+            Log.Print(1, 'x', 'Send(). %s' % (Url), aE = E)
+            Res = {'Type': 'Err', 'Data': E, 'Msg': Url, 'Time': round(time.time() - TimeAt, 2)}
         return Res
 
 
 class TWebSockClient():
-    def __init__(self, aAuth: dict = {}):
+    def __init__(self, aAuth: dict = None):
+        if (aAuth is None):
+            aAuth = {}
         self.Auth = aAuth
         self.OnMessage = None
 

@@ -73,6 +73,7 @@ class TApi(TApiBase):
             'set_scheme':           {'param': ['scheme', 'trust']}
         }
 
+        self.TableFields = None
         self.Db: TDbApp = None
         self.ApiTask = TApiTask(self)
 

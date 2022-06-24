@@ -14,6 +14,8 @@ from IncP.Utils import GetNestedKey, FilterKeyErr
 
 class TApi(TApiBase):
     def __init__(self):
+        super().__init__()
+
         self.DefMethod = self.DefHandler
         self.WebClient = TWebClient()
 
@@ -31,10 +33,13 @@ class TApi(TApiBase):
 
         Dbl = TDbList().Import(GetNestedKey(DataApi, 'Data.Data'))
         if (Dbl.IsEmpty()):
-            Log.Print(1, 'GetUserConfig() failed for %s' % (User))
+            Log.Print(1, 'e', 'GetUserConfig() failed for %s' % (User))
         else:
             UserId = Dbl.Rec.GetField('id')
             return await self.DefHandler('get_user_config', {'id': UserId})
+
+    async def DoAuthRequest(self, aUser: str, aPassw: str) -> bool:
+        return True
 
 
 Api = TApi()

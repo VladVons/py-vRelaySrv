@@ -7,23 +7,24 @@ License:     GNU, see LICENSE for more details
 
 import json
 import random
+#
+from Inc.DB.DbList import TDbList
 
 
 #--- json ---
 class TJsonEncoder(json.JSONEncoder):
-    def default(self, aObj):
-        Type = type(aObj).__name__
-        if (Type == 'TDbList'):
-            Res = aObj.Export()
-        elif (Type == 'set'):
-            Res = list(aObj)
+    def default(self, o):
+        if (isinstance(o, TDbList)):
+            Res = o.Export()
+        elif (isinstance(o, set)):
+            Res = list(o)
         else:
-            Res = str(aObj)
+            Res = str(o)
         return Res
 
     @staticmethod
     def Dumps(aObj):
-        return json.dumps(aObj, cls=TJsonEncoder)
+        return json.dumps(aObj, cls = TJsonEncoder)
 
 def FormatJsonStr(aScript: str, aPad: int = 2, aChar: str = ' ') -> str:
     Res = []
@@ -58,7 +59,7 @@ def GetNestedKey(aData: dict, aKeys: str, aDef = None) -> object:
 
 def FilterKey(aData: object, aKeys: list, aInstance: list) -> object:
     def _FilterKey(aData: object, aKeys: list, aRes: dict, aPath: str):
-        if (type(aData) == dict):
+        if (isinstance(aData, dict)):
             for Key, Val in aData.items():
                 Path = (aPath + '.' + Key).lstrip('.')
                 _FilterKey(Val, aKeys, aRes, Path)
@@ -76,7 +77,7 @@ def FilterKey(aData: object, aKeys: list, aInstance: list) -> object:
 
 def FilterKeyErr(aData: dict, aAsStr: bool = False) -> list:
     def _FilterKey(aData: object, aRes: list):
-        if (type(aData) == dict):
+        if (isinstance(aData, dict)):
             for Key, Val in aData.items():
                 _FilterKey(Val, aRes)
                 if (Key == 'Type') and (Val == 'Err'):

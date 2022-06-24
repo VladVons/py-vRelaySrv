@@ -5,10 +5,10 @@ License:     GNU, see LICENSE for more details
 '''
 
 
-from .FForm import TFormBase
-from ..Utils import GetUrlInfo
 from IncP.Download import GetSoupUrl
 from IncP.Utils import FilterKeyErr
+from .FForm import TFormBase
+from ..Utils import GetUrlInfo
 
 
 class TForm(TFormBase):

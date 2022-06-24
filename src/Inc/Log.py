@@ -5,8 +5,6 @@ License:     GNU, see LICENSE for more details
 '''
 
 
-import sys
-#
 from .Util.UTime import GetDate, GetTime
 
 
@@ -27,8 +25,8 @@ class TEcho():
                 Arr.append(str(Val))
         return ', '.join(Arr)
 
-    def _Write(self, aMsg: str):
-        raise NotImplementedError
+    async def _Write(self, aMsg: str):
+        raise NotImplementedError()
 
     def Write(self, aArgs: dict):
         if (aArgs.get('aL') <= self.Level) and (aArgs.get('aT') in self.Type):

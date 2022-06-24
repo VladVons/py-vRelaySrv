@@ -118,7 +118,7 @@ class TDb():
 
         self.Buf = bytearray(self.BufFill * self.RecLen)
         self.S.seek(0, 2)
-        for Cnt in range(aCnt):
+        for _ in range(aCnt):
             self.S.write(self.Buf)
         self.RecNo = self.GetSize() - 1
 

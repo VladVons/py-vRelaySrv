@@ -6,12 +6,12 @@ License:     GNU, see LICENSE for more details
 https://github.com/pythontoday/scrap_tutorial
 '''
 
-from bs4 import BeautifulSoup
 import datetime
 import json
 import random
 import re
 import sys
+from bs4 import BeautifulSoup
 #
 from IncP.Python import TPython
 from IncP.SchemeApi import TSchemeApi
@@ -173,7 +173,7 @@ class TSoupScheme():
         i = 0
         while (aObj) and (i < len(aScheme)):
             Scheme = aScheme[i]
-            if (type(Scheme) != list):
+            if (not isinstance(Scheme, list)):
                 self.Err.append('%s->%s (not a list)' % (aPath, Scheme))
                 return
 
@@ -203,8 +203,7 @@ class TSoupScheme():
         return aObj
 
     def _ParseRecurs(self, aSoup, aData: dict, aPath: str) -> dict:
-        Type = type(aData)
-        if (Type == dict):
+        if (isinstance(aData, dict)):
             Res = {}
             for Key, Val in aData.items():
                 if (not Key.startswith('-')):
@@ -215,7 +214,7 @@ class TSoupScheme():
                         Res[Key] = self.ParsePipes(aSoup, Val, Path)
                     else:
                         Res[Key] = self._ParseRecurs(aSoup, Val, Path)
-        elif (Type == list):
+        elif (isinstance(aData, list)):
             if (aData[0].startswith('$')):
                 Res = self.ParseMacro(aData, aPath)
             else:

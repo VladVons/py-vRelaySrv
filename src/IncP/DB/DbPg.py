@@ -8,8 +8,9 @@ pip3 install aiopg
 
 import aiopg
 #
-from .Db import TDb, TDbSql
 from IncP.Log import Log
+from .Db import TDb
+
 
 class TDbPg(TDb):
     def __init__(self, aAuth: dict):
@@ -31,7 +32,7 @@ class TDbPg(TDb):
         return (not self.Pool.closed)
 
     async def GetTables(self) -> tuple:
-        Query = f'''
+        Query = '''
             select
                 table_name
             from
@@ -56,7 +57,7 @@ class TDbPg(TDb):
             '''
         return await self.Fetch(Query)
 
-    async def GetTablesColumns(self, aTable: list = []) -> dict:
+    async def GetTablesColumns(self, aTable: list = None) -> dict:
         if (not aTable):
             Data = await self.GetTables()
             aTable = [x[0] for x in Data[0]]

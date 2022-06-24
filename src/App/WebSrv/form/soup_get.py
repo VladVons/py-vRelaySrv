@@ -6,11 +6,10 @@ License:     GNU, see LICENSE for more details
 
 import json
 #
-from .FForm import TFormBase
 from IncP.Download import GetSoupUrl
-from IncP.Log import Log
-from IncP.Scheme import TSoupScheme, SoupFindParents
+from IncP.Scheme import SoupFindParents
 from IncP.Utils import FilterKeyErr
+from .FForm import TFormBase
 
 
 class TForm(TFormBase):

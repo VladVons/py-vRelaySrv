@@ -50,7 +50,7 @@ class TDbApp(TDbPg):
         await self.Exec(Query)
 
     async def GetDbVersion(self) -> TDbSql:
-        Query = f'''
+        Query = '''
             select
                 current_database() as name,
                 version() as version,
@@ -86,7 +86,7 @@ class TDbApp(TDbPg):
         return await TDbSql(self).Fetch(Query)
 
     async def GetSchemeModerate(self) -> TDbSql:
-        Query = f'''
+        Query = '''
             select
                 id, url, scheme
             from

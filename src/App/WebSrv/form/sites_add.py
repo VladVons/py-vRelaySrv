@@ -8,13 +8,12 @@ Description:
 
 from urllib.parse import urlparse
 #
-from ..Api import Api
-from .FForm import TFormBase
 from Inc.DB.DbList import TDbList, TDbCond
 from IncP.DB.Db import TDbSql
 from IncP.Download import TDownload, CheckHost
-from IncP.Log import Log
 from IncP.Utils import GetNestedKey, FilterKeyErr
+from ..Api import Api
+from .FForm import TFormBase
 
 
 class TForm(TFormBase):
@@ -36,11 +35,12 @@ class TForm(TFormBase):
             Sites.append(Data.scheme + '://' + Data.hostname)
 
         DataApi = await Api.DefHandler('get_sites')
-        DataDbl = GetNestedKey(DataApi, 'Data.Data')
-        if (not DataDbl):
-            self.Data.Output = Log.Print(1, 'e', 'Cant get data from server')
+        Err = FilterKeyErr(DataApi)
+        if (Err):
+            self.Data.Output = Err
             return
 
+        DataDbl = GetNestedKey(DataApi, 'Data.Data')
         Dbl = TDbList().Import(DataDbl)
         Diff = Dbl.GetDiff('url', Sites)
 

@@ -7,7 +7,7 @@ License:     GNU, see LICENSE for more details
 import asyncio
 import json
 #
-from Inc.DB.DbList import TDbList, TDbCond
+from Inc.DB.DbList import TDbList
 from IncP.ApiWeb import TApiBase, TWebClient
 from IncP.Download import TDownload, TDHeaders, GetSoup, GetSoupUrl
 from IncP.Scheme import TScheme
@@ -16,9 +16,13 @@ from IncP.Utils import GetNestedKey, FilterKey, FilterKeyErr
 
 
 class TApiPlugin():
-    def __init__(self, aArgs: dict = {}):
+    def __init__(self, aArgs: dict = None):
+        if (aArgs is None):
+            aArgs = {}
+
         self.Args = aArgs
         self.WebSock = None
+        self.Res = []
 
     async def WebSockSend(self, aData):
         if (self.WebSock):
@@ -30,6 +34,7 @@ class TApiPlugin():
                 await WS.send_json(aData)
 
     async def WebSockInit(self, aPath, aData):
+        self.Res = []
         self.WebSock = aData['ws']
         await asyncio.sleep(0.1)
         await self.WebSockSend({'Data': 'Ask server ' + aPath})
@@ -87,7 +92,6 @@ class get_scheme_test_all(TApiPlugin):
         Dbl = Data.get('Data')
 
         self.Hash = {}
-        self.Res = []
 
         await self.WebSockSend({'Data': 'Check items %s' % len(Dbl)})
         for Rec in Dbl:
@@ -127,7 +131,6 @@ class get_sites_check_file(TApiPlugin):
         Urls = ['%s%s' % (x, File) for x in Dbl.ExportList('url')]
 
         await self.WebSockSend({'Data': 'Check items %s' % len(Dbl)})
-        self.Res = []
         Download = TDownload()
         Download.Opt.update({'Headers': TDHeaders(), 'FakeRead': True, 'OnGet': self.cbOnGet})
         await Download.Gets(Urls)
@@ -193,13 +196,11 @@ class get_sites_grep(TApiPlugin):
             return Data
         Dbl = Data.get('Data')
 
-        self.Size = len(Dbl)
-        await self.WebSockSend({'Data': 'Check items %s' % self.Size})
+        await self.WebSockSend({'Data': 'Check items %s' % len(Dbl)})
 
         File = aData.get('file')
         Urls = ['%s%s' % (x, File) for x in Dbl.ExportList('url')]
 
-        self.Res = []
         self.Filter = aData.get('filter')
         Download = TDownload()
         Download.Opt.update({'Headers': TDHeaders(), 'OnGet': self.cbOnGet, 'Decode': True})

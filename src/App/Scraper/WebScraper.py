@@ -85,7 +85,7 @@ class TWebScraper():
             ('data_size', int),
             ('site_id', int),
             ('status', int),
-            ('timer', float)
+            ('timer', float),
             ('update_date', str),
             ('url_count', int),
             ('url', str),
@@ -100,7 +100,7 @@ class TWebScraper():
 
     async def _DoWorkerStart(self): ...
     async def _DoWorkerEnd(self): ...
-    async def _DoWorkerException(self): ...
+    async def _DoWorkerException(self, aUrl: str, aData): ...
 
     def Wait(self, aEnable: bool):
         if  (aEnable):
@@ -134,7 +134,7 @@ class TWebScraper():
                     self.TotalUrl += 1
                 await self._DoWorkerUrl(Url, Data, Status, UrlDown['Time'])
 
-        await self.SenderProduct.Flush()
+        await self.Sender.Flush()
         await self._DoWorkerEnd()
         Log.Print(1, 'i', '_Worker(). done')
 
@@ -163,7 +163,8 @@ class TWebScraperFull(TWebScraper):
     def IsMimeApp(aUrl: str) -> bool:
         Path = urlparse(aUrl).path
         Ext = os.path.splitext(Path)[1]
-        return Ext in ['.zip', '.rar', '.xml', '.pdf', '.jpg', '.jpeg', '.png', '.gif']
+        Mime = ['.zip', '.rar', '.xml', '.pdf', '.jpg', '.jpeg', '.png', '.gif']
+        return (Ext in Mime)
 
     async def InitRobotFile(self, aUrl: str):
         self.RobotFile = RobotFileParser()
@@ -272,11 +273,12 @@ class TWebScraperUpdate(TWebScraper):
         super().__init__(aParent, aScheme, aSleep)
 
         for Url in aUrls:
-            self.Queue.put_nowait(Url)
+            self.DblQueue.RecAdd([Url])
 
     async def _DoWorkerUrl(self, aUrl: str, aData: str, aStatus: int, aTime: float):
         Soup = GetSoup(aData)
-        Msg = 'status:%d, found:%2d, done:%d, total:%dM, %s ;' % (
+
+        Msg = 'status:%d, done:%d, total:%dM, %s ;' % (
             aStatus, self.TotalUrl, self.TotalData / 1000000, aUrl)
         Log.Print(1, 'i', Msg)
 

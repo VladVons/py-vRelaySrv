@@ -67,7 +67,7 @@ class TDb():
     CntGet = 0
     CntSet = 0
 
-    def Connect(self):
+    async def Connect(self):
         raise NotImplementedError()
 
     async def Close(self):
@@ -137,10 +137,9 @@ class TDb():
     @staticmethod
     def ListToComma(aList: list) -> str:
         if (aList):
-            Type = type(aList[0])
-            if (Type == str):
+            if (isinstance(aList[0], str)):
                 Res = ','.join('"%s"' % i for i in aList)
-            elif (Type == int):
+            elif (isinstance(aList[0], int)):
                 Res = ','.join('%s' % i for i in aList)
         else:
             Res = ''

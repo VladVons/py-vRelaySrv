@@ -4,10 +4,10 @@ Created:     2022.06.21
 License:     GNU, see LICENSE for more details
 '''
 
-from bs4 import BeautifulSoup
 import json
 import operator
 import re
+from bs4 import BeautifulSoup
 #
 from IncP.Utils import GetNestedKey, FilterMatch
 from IncP.ImportInf import GetClass
@@ -98,6 +98,7 @@ class TSchemeApi():
     def __new__(cls):
         raise TypeError('Cant instantiate static class')
 
+    @staticmethod
     def strip(aVal: str) -> str:
         '''
         remove invisible chars
@@ -106,6 +107,7 @@ class TSchemeApi():
 
         return aVal.strip()
 
+    @staticmethod
     def strip_all(aVal: str) -> str:
         '''
         remove all invisible chars
@@ -122,6 +124,7 @@ class TSchemeApi():
         R = Search(aVal, range(len(aVal) - 1, L, -1))
         return aVal[L:R+1]
 
+    @staticmethod
     def length(aVal: object) -> int:
         '''
         get object length
@@ -130,6 +133,7 @@ class TSchemeApi():
 
         return len(aVal)
 
+    @staticmethod
     def list(aVal: list, aIdx: int) -> object:
         '''
         get object from list by index
@@ -139,6 +143,7 @@ class TSchemeApi():
         if (aIdx < len(aVal)):
             return aVal[aIdx]
 
+    @staticmethod
     def split(aVal: str, aDelim: str, aIdx: int = None) -> str:
         '''
         split string by delimiter and get object from list by index
@@ -150,6 +155,7 @@ class TSchemeApi():
             Res = Res[aIdx].strip()
         return Res
 
+    @staticmethod
     def price(aVal: str) -> tuple:
         '''
         get price
@@ -161,6 +167,7 @@ class TSchemeApi():
             Dig = '0'
         return (float(Dig), After.lower())
 
+    @staticmethod
     def stock(aVal: str) -> bool:
         '''
         Get stock availability
@@ -169,6 +176,7 @@ class TSchemeApi():
 
         return InStock.Check(aVal)
 
+    @staticmethod
     def image(aVal: BeautifulSoup) -> str:
         '''
         get image. equal to: find('img').get('src')
@@ -179,6 +187,7 @@ class TSchemeApi():
         if (Obj):
             return Obj.get('src')
 
+    @staticmethod
     def is_equal(aVal: str, aStr: list) -> bool:
         '''
         compare values
@@ -187,6 +196,7 @@ class TSchemeApi():
 
         return (aVal in aStr)
 
+    @staticmethod
     def is_none(aVal: object, aTrue: bool = True) -> bool:
         '''
         check if value is None
@@ -195,6 +205,7 @@ class TSchemeApi():
 
         return ((aVal is None) == aTrue)
 
+    @staticmethod
     def search(aVal: object, aStr: list) -> bool:
         '''
         search any string value from a list
@@ -206,6 +217,7 @@ class TSchemeApi():
                 return True
         return False
 
+    @staticmethod
     def compare(aVal: object, aOp: str, aValue = None) -> bool:
         Func = getattr(operator, aOp, None)
         if (Func):
@@ -214,6 +226,7 @@ class TSchemeApi():
             else:
                 return Func(aVal, aValue)
 
+    @staticmethod
     def dig_lat(aVal: str) -> str:
         '''
         get filtered chars from [0..9], [a..Z], [.-/]
@@ -226,6 +239,7 @@ class TSchemeApi():
                 Res += x
         return Res
 
+    @staticmethod
     def txt2json(aVal: str) -> dict:
         '''
         convert text to json
@@ -234,6 +248,7 @@ class TSchemeApi():
 
         return json.loads(aVal)
 
+    @staticmethod
     def txt2float(aVal: str) -> float:
         '''
         convert text to float
@@ -242,6 +257,7 @@ class TSchemeApi():
 
         return float(aVal.replace(',', ''))
 
+    @staticmethod
     def json2txt(aVal: dict) -> str:
         '''
         convert json to text
@@ -250,6 +266,7 @@ class TSchemeApi():
 
         return json.dumps(aVal, indent=2, sort_keys=True, ensure_ascii=False)
 
+    @staticmethod
     def gets(aVal: dict, aKeys: str) -> dict:
         '''
         multiple get. equal to get('key1').get('key2')
@@ -258,6 +275,7 @@ class TSchemeApi():
 
         return GetNestedKey(aVal, aKeys)
 
+    @staticmethod
     def breadcrumb(aVal: BeautifulSoup, aFind: list, aIdx: int = -1) -> str:
         '''
         equal to find_all() + list()
@@ -269,6 +287,7 @@ class TSchemeApi():
             if (len(Items) > 0):
                return Items[aIdx].text.strip()
 
+    @staticmethod
     def app_json(aVal: BeautifulSoup, aFind: dict = {'@type': 'Product'}) -> dict:
         '''
         searches value in sections <script>application/ld+json</script>
@@ -281,6 +300,7 @@ class TSchemeApi():
             if (Match == aFind):
                 return Data
 
+    @staticmethod
     def lower(aVal: str) -> str:
         '''
         string to lower case
@@ -289,6 +309,7 @@ class TSchemeApi():
 
         return aVal.lower()
 
+    @staticmethod
     def replace(aVal: str, aFind: str, aRepl: str) -> str:
         '''
         replace string
@@ -296,6 +317,7 @@ class TSchemeApi():
         '''
         return aVal.replace(aFind, aRepl)
 
+    @staticmethod
     def translate(aVal: str, aFind: str, aRepl: str, aDel: str = None) -> str:
         '''
         multiple replace string
@@ -303,6 +325,7 @@ class TSchemeApi():
         '''
         return aVal.translate(aFind, aRepl, aDel)
 
+    @staticmethod
     def left(aVal: str, aIdx: int) -> str:
         '''
         get left string part
@@ -311,6 +334,7 @@ class TSchemeApi():
 
         return aVal[:aIdx]
 
+    @staticmethod
     def nop(aVal: object) -> object:
         '''
         no operation. for debug purpose
@@ -318,6 +342,7 @@ class TSchemeApi():
         '''
         return aVal
 
+    @staticmethod
     def sub(aVal: str, aIdx: int, aEnd: int) -> str:
         '''
         get sub string
@@ -326,6 +351,7 @@ class TSchemeApi():
 
         return aVal[aIdx:aEnd]
 
+    @staticmethod
     def unbracket(aVal: str, aPair: str = '()', aIdx: int = None) -> str:
         '''
         ["unbracket", ["()", -1]]
@@ -338,6 +364,7 @@ class TSchemeApi():
                 Res = Res[aIdx].strip()
             return Res
 
+    @staticmethod
     def concat(aVal: str, aStr: str, aRight: bool =  True) -> str:
         '''
         concatinate string to left or right side
@@ -350,6 +377,7 @@ class TSchemeApi():
             Res = aStr + aVal
         return Res
 
+    @staticmethod
     def print(aVal: object, aMsg: str = '') -> object:
         '''
         show value
@@ -359,6 +387,7 @@ class TSchemeApi():
         print(aVal, aMsg)
         return aVal
 
+    @staticmethod
     def help(aVal: object) -> list:
         '''
         show brief help

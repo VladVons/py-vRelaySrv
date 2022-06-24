@@ -5,19 +5,17 @@ License:     GNU, see LICENSE for more details
 '''
 
 
-from bs4 import BeautifulSoup
-from aiohttp_socks import ProxyConnector
-from urllib.parse import urlparse
-import aiohttp
 import asyncio
 import random
 import socket
 import time
+from urllib.parse import urlparse
+import aiohttp
+from bs4 import BeautifulSoup
+from aiohttp_socks import ProxyConnector
 #
 from IncP.Log import Log
 from IncP.Utils import FilterKeyErr
-from Inc.Conf import TDictDef
-
 
 #from fake_useragent import UserAgent
 #self.ua = UserAgent()
@@ -138,12 +136,12 @@ class TDownload():
         if (Res.get('Type') == 'Err'):
             await asyncio.sleep(1)
             E = Res.get('Data')
-            if (type(E) == aiohttp.ClientConnectorError):
+            if (isinstance(E, aiohttp.ClientConnectorError)):
                 Mode = self.Opt['Connector'].Mode
                 self.Opt['Connector'].Mode = 1
                 Res = await self._Get(aUrl)
                 self.Opt['Connector'].Mode = Mode
-            elif (type(E) == aiohttp.ClientConnectorCertificateError):
+            elif (isinstance(E, aiohttp.ClientConnectorCertificateError)):
                 pass
             else:
                 Res = await self._Get(aUrl)

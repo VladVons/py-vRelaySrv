@@ -5,7 +5,8 @@ License:     GNU, see LICENSE for more details
 '''
 
 
-import os, sys
+import os
+import sys
 import platform
 #
 from App import ConfApp
@@ -21,10 +22,7 @@ class TApp():
 
         _, Name = os.path.split(__file__)
         FileLog = '/var/log/py-vRelaySrv/%s.log' % (Name)
-        try:
-            with open(FileLog, 'a') as File:
-                File.writable()
-        except:
+        if (not os.path.exists(FileLog)) or (not os.access(FileLog, os.W_OK)):
             FileLog = '%s.log' % (Name)
         Log.AddEcho(TEchoFile(FileLog))
         print('Log file ' + FileLog)

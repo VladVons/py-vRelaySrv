@@ -4,9 +4,9 @@ Created:     2022.06.19
 License:     GNU, see LICENSE for more details
 '''
 
-from .FForm import TFormBase
-from IncP.ImportInf import GetClassHelp
 import IncP.SchemeApi as SchemeApi
+from IncP.ImportInf import GetClassHelp
+from .FForm import TFormBase
 
 
 class TForm(TFormBase):

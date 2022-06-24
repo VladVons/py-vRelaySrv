@@ -4,7 +4,9 @@
 #pip3 install setuptools wheel
 #pip3 install --upgrade pip
 #pip3 install -r requires.txt
+#pip3 install pylint # syntax checker
 #curl -sS https://bootstrap.pypa.io/get-pip.py | python3.10
+
 
 
 #--- WebSrv

@@ -4,6 +4,8 @@
     <link href="/css/jquery-linedtextarea.css" type="text/css" rel="stylesheet"/>
     <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
     <script src="/js/jquery-linedtextarea.js"></script>
+    <script src="/js/Api.js"></script>
+    <script src="/js/TDbList.js"></script>
     <script src="/js/Forms.js"></script>
     <script>
         $(function() {
@@ -11,6 +13,28 @@
                 selectedLine: 0
             });
         });
+
+        function Btn_GetSchemeDone() {
+            ClearObj('input');
+            ClearObj('textarea');
+
+            HttpRequest(
+                '/api/get_scheme_not_empty',
+                function(aData) {
+                    let Dbl = new TDbList(aData['Data']['Data']);
+                    Dbl.Shuffle();
+                    Dbl.RecNo = 0;
+
+                    let Scheme = Dbl.Rec.GetField('scheme');
+                    document.getElementById('Script').value = Scheme;
+
+                    let SchemeJ = JSON.parse(Scheme);
+                    let Url = SchemeJ['Product']['Info']['Url'][0];
+                    document.getElementById('Url0').value = Url;
+                },
+                {'cnt': 10}
+            );
+        };
 
         function Btn_Url() {
             Script = document.getElementById('Script').value;
@@ -27,7 +51,7 @@
 
         function Btn_Info(aThis) {
             document.getElementById('Output').value = '';
-            document.forms["Form"].submit(aThis)
+            document.forms["Form"].requestSubmit(aThis)
         }
 
     </script>
@@ -37,23 +61,23 @@
 <form name="Form" method="post" action="/form/soup_test" enctype="multipart/form-data">
     <table width="100%">
         <tr>
-            <td>url</td>
-            <td>
-                <button onclick="Btn_Url()">url</button>
-                <button onclick="Btn_GoUrl('Url0')">go</button>
+            <td style="width:50%">
+                <button name="BtnUrl" onclick="Btn_Url()">url</button>
+                <button name="BtnGoUrl" onclick="Btn_GoUrl('Url0')">go</button>
                 <button name="BtnInfo" onclick="Btn_Info(this)">info</button>
+                <button name="BtnGetSchemeDone" onclick="Btn_GetSchemeDone()">example</button>
                 <button name="BtnMake" onclick="Btn_Make(this)">make</button>
-
-                <input type="text" name="Url0" id="Url0" placeholder="Url" style="width:90%" required value="{{ Data.Url0 }}">
+                <input type="text" name="Url0" id="Url0" placeholder="Url" style="width:98%" required value="{{ Data.Url0 }}">
             </td>
+            <td></td>
         </tr>
         <tr>
-            <td>Script</td>
-            <td><textarea name="Script" id="Script" class="lined" rows="30" required>{{ Data.Script }}</textarea></td>
-        </tr>
-        <tr>
-            <td>Output</td>
-            <td><textarea readonly name="Output" id="Output" rows="15">{{ Data.Output }}</textarea></td>
+            <td>
+                <textarea name="Script" id="Script" class="lined" rows="45" required>{{ Data.Script }}</textarea>
+            </td>
+            <td>
+                <textarea readonly name="Output" id="Output" rows="45">{{ Data.Output }}</textarea>
+            </td>
         </tr>
     </table>
 </form>
