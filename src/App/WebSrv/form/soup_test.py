@@ -25,6 +25,9 @@ class TForm(TFormBase):
             return
 
         try:
+            if (r'\n' in self.Data.Script):
+                self.Data.Script = self.Data.Script.encode().decode('unicode_escape').strip('"\n\r')
+
             Scheme = TScheme(self.Data.Script)
             Scheme.Debug = True
             Output = Scheme.Parse(Data.get('Soup')).GetData(['Err', 'Pipe', 'Warn'])

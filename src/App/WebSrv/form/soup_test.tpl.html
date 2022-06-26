@@ -45,6 +45,14 @@
         }
 
         function Btn_Make(aThis) {
+            let Script = document.getElementById('Script').value;
+            if (Script.startsWith('"')) {
+                Script = decodeURIComponent(JSON.parse(Script))
+                document.getElementById('Script').value = Script;
+                ScriptJ = JSON.parse(Script);
+                document.getElementById('Url0').value = ScriptJ['Product']['Info']['Url'][0];
+            }
+
             document.getElementById('Output').value = '';
             document.forms["Form"].requestSubmit(aThis)
         }
@@ -53,7 +61,6 @@
             document.getElementById('Output').value = '';
             document.forms["Form"].requestSubmit(aThis)
         }
-
     </script>
 {% endblock %}
 
