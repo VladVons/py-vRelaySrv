@@ -161,7 +161,7 @@ class TDbRec(list):
     def Init(self):
         Fields = self.Parent.Fields
         Rec = [None] * len(Fields)
-        for Idx in range(len(Fields)):
+        for Idx, _ in enumerate(Fields):
             Rec[Idx] = Fields.IdxOrd[Idx][2]
         super().__init__(Rec)
 

@@ -29,7 +29,7 @@ def GetClass(aClass: object) -> list:
     return [
         GetMethod(getattr(aClass, x))
         for x in dir(aClass)
-        if (not x.startswith('__'))
+        if (not x.startswith('_'))
     ]
 
 def GetClassHelp(aModule: object, aClass: object) -> list:

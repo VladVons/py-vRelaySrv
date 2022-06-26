@@ -181,3 +181,20 @@ class TClass():
 
 #Test_cloudscraper()
 #Test_TDictDef()
+
+
+from IncP.SchemeApi import TSchemeApi
+Str = '  \t \n\rA\xA0  '
+#print(Str.strip())
+
+#Str2 = TSchemeApi.strip(Str)
+#print(Str2, len(Str2))
+
+import re
+#ReSeq_Space = r'[\s]+'
+ReCmp_Strip = re.compile(r'^\s+|\s+$')
+
+#Str2 = re.sub(r'^[\t]\w+\.four', '',  Str)
+#Str2 = re.sub('^\s+|\s+$', '', Str)
+Str2 = ReCmp_Strip.sub('', Str)
+print(Str2, len(Str2))

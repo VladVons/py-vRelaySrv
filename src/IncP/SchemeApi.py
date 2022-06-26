@@ -13,11 +13,14 @@ from IncP.Utils import GetNestedKey, FilterMatch
 from IncP.ImportInf import GetClass
 
 
-_Whitespace = ' \t\n\r\v\f\xA0'
+_Whitespace = ' \t\n\r\v\f\xA0✓'
 _Digits = '0123456789'
 _DigitsDot = _Digits + '.'
 _DigitsDotComma = _Digits + '.,'
 #_XlatEntitles = [('&nbsp;', ' '), ('&lt;', '<'), ('&amp;', '&'), ('&quot;', '"'), ('&apos;', "'")]
+#
+#ReCmp_Strip = re.compile(r'^\s+|\s+$')
+
 
 class TInStock():
     _Match = [
@@ -99,16 +102,27 @@ class TSchemeApi():
         raise TypeError('Cant instantiate static class')
 
     @staticmethod
+    def _text(aVal: BeautifulSoup) -> str:
+        '''
+        equal to text + strip
+        ["text"]
+        '''
+
+        return TSchemeApi.strip(aVal.get_text())
+
+    @staticmethod
     def strip(aVal: str) -> str:
         '''
         remove invisible chars
         ["strip"]
         '''
 
-        return aVal.strip()
+        #return aVal.strip()
+        return aVal.strip(_Whitespace)
+        #return ReCmp_Strip.sub('', aVal)
 
     @staticmethod
-    def strip_all(aVal: str) -> str:
+    def _strip_all(aVal: str) -> str:
         '''
         remove all invisible chars
         ["strip_all"]
@@ -125,7 +139,7 @@ class TSchemeApi():
         return aVal[L:R+1]
 
     @staticmethod
-    def length(aVal: object) -> int:
+    def _length(aVal: object) -> int:
         '''
         get object length
         ["length"]
@@ -218,7 +232,7 @@ class TSchemeApi():
         return False
 
     @staticmethod
-    def compare(aVal: object, aOp: str, aValue = None) -> bool:
+    def _compare(aVal: object, aOp: str, aValue = None) -> bool:
         Func = getattr(operator, aOp, None)
         if (Func):
             if (aValue is None):
@@ -227,7 +241,7 @@ class TSchemeApi():
                 return Func(aVal, aValue)
 
     @staticmethod
-    def dig_lat(aVal: str) -> str:
+    def _dig_lat(aVal: str) -> str:
         '''
         get filtered chars from [0..9], [a..Z], [.-/]
         ["dig_lat"]
@@ -258,7 +272,7 @@ class TSchemeApi():
         return float(aVal.replace(',', ''))
 
     @staticmethod
-    def json2txt(aVal: dict) -> str:
+    def _json2txt(aVal: dict) -> str:
         '''
         convert json to text
         ["json2txt"]
@@ -318,7 +332,7 @@ class TSchemeApi():
         return aVal.replace(aFind, aRepl)
 
     @staticmethod
-    def translate(aVal: str, aFind: str, aRepl: str, aDel: str = None) -> str:
+    def _translate(aVal: str, aFind: str, aRepl: str, aDel: str = None) -> str:
         '''
         multiple replace string
         ["translate", ["abcd", "1234"]]
@@ -335,7 +349,7 @@ class TSchemeApi():
         return aVal[:aIdx]
 
     @staticmethod
-    def nop(aVal: object) -> object:
+    def _nop(aVal: object) -> object:
         '''
         no operation. for debug purpose
         ["nop"]
@@ -378,7 +392,7 @@ class TSchemeApi():
         return Res
 
     @staticmethod
-    def print(aVal: object, aMsg: str = '') -> object:
+    def _print(aVal: object, aMsg: str = '') -> object:
         '''
         show value
         ["print"]
@@ -388,7 +402,7 @@ class TSchemeApi():
         return aVal
 
     @staticmethod
-    def help(aVal: object) -> list:
+    def _help(aVal: object) -> list:
         '''
         show brief help
         ["help"]
@@ -396,4 +410,3 @@ class TSchemeApi():
 
         Data = GetClass(TSchemeApi)
         return [x[2] for x in Data]
-
