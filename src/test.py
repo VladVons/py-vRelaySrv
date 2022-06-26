@@ -181,13 +181,4 @@ class TClass():
 
 #Test_cloudscraper()
 #Test_TDictDef()
-
-
-import json
-with open('test.txt', 'r') as F:
-    Data = F.read()
-Data = Data.encode().decode('unicode_escape').strip(' "\n\r')
-#print(Data)
-
-j1 = json.loads(Data)
-print(j1.get('Product').get('Info'))
+y
