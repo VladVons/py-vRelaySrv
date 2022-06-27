@@ -26,6 +26,7 @@ class TInStock():
     _Match = [
         'http://schema.org/instock',
         'https://schema.org/instock',
+        'instock',
 
         'в наявності на складі',
         'в наявності',
@@ -200,6 +201,18 @@ class TSchemeApi():
         Obj = aVal.find('img')
         if (Obj):
             return Obj.get('src')
+
+    @staticmethod
+    def mpn(aVal: str, aLen: int = 5) -> str:
+        '''
+        check ranges [0..9], [A..Z], [-/] and length >= aLen
+        ["mpn"]
+        '''
+
+        if (len(aVal) >= aLen):
+            Res = [x for x in aVal if ('A' <= x <= 'Z') or (x in '0123456789-/')]
+            if (len(aVal) == len(Res)):
+                return aVal
 
     @staticmethod
     def is_equal(aVal: str, aStr: list) -> bool:

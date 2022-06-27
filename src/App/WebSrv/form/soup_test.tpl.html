@@ -15,6 +15,11 @@
         });
 
         function Btn_GetSchemeDone() {
+            let ScriptH = document.getElementById('Script');
+            if (ScriptH.value && !window.confirm('Load script ?')) {
+                return;
+            }
+
             ClearObj('input');
             ClearObj('textarea');
 
@@ -26,7 +31,7 @@
                     Dbl.RecNo = 0;
 
                     let Scheme = Dbl.Rec.GetField('scheme');
-                    document.getElementById('Script').value = Scheme;
+                    ScriptH.value = Scheme;
 
                     let SchemeJ = JSON.parse(Scheme);
                     let Url = SchemeJ['Product']['Info']['Url'][0];
