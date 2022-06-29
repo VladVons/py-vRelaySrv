@@ -138,9 +138,11 @@ class TSoupScheme():
 
     def ParsePipe(self, aObj, aItem: list, aPath: str) -> object:
         Name = aItem[0]
-        if (Item := SchemeApiExt.get(Name)):
+        if (SchemeApiExt.get(Name)):
+            Item = SchemeApiExt.get(Name)
             aObj = self.ParsePipes(aObj, Item, aPath)
-        elif (Obj := getattr(TSchemeApi, Name, None)):
+        elif (hasattr(TSchemeApi, Name)):
+            Obj = getattr(TSchemeApi, Name, None)
             Param = [aObj]
             if (len(aItem) == 2):
                 Param += aItem[1]
