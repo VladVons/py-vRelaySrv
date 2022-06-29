@@ -14,7 +14,7 @@ import sys
 from bs4 import BeautifulSoup
 #
 from IncP.Python import TPython
-from IncP.SchemeApi import TSchemeApi
+from IncP.SchemeApi import TSchemeApi, SchemeApiExt
 from IncP.Utils import GetNestedKey, FilterKey, FilterKeyErr
 
 
@@ -37,10 +37,15 @@ class TRes():
 
         PrefixData = Obj(self.Scheme)
         if (PrefixData is None):
-            self.Err.append('Empty data returned %s' % Name)
+            self.Err.append('Empty data returned')
             return
 
-        Keys = [Key for Key in dir(self) if (Key.startswith(aPrefix)) and Key != aPrefix]
+        Keys = [
+            Key
+            for Key in dir(self)
+            if (Key.startswith(aPrefix)) and Key != aPrefix
+        ]
+
         for Key in Keys:
             Obj = getattr(self, Key, None)
             Name = Key.replace(aPrefix, '')
@@ -133,8 +138,9 @@ class TSoupScheme():
 
     def ParsePipe(self, aObj, aItem: list, aPath: str) -> object:
         Name = aItem[0]
-        Obj = getattr(TSchemeApi, Name, None)
-        if (Obj):
+        if (Item := SchemeApiExt.get(Name)):
+            aObj = self.ParsePipes(aObj, Item, aPath)
+        elif (Obj := getattr(TSchemeApi, Name, None)):
             Param = [aObj]
             if (len(aItem) == 2):
                 Param += aItem[1]
@@ -192,13 +198,22 @@ class TSoupScheme():
                         for Key, Val in Scheme[1].items()
                         if (not Key.startswith('-') and (Val))
                     }
-                else:
-                    if (Macro.startswith('$')):
-                        aObj = self.Var.get(Macro)
-                        if (not aObj):
+                elif (Macro.startswith('var_')):
+                    if (len(Scheme) == 2) and (isinstance(Scheme[1], list)) and (Scheme[1][0].startswith('$')):
+                        Name = Scheme[1][0]
+                        if (Macro == 'var_set'):
+                            self.Var[Name] = aObj
+                        elif (Macro == 'var_get'):
+                            aObj = self.Var.get(Name)
+                            if (not aObj):
+                                self.Err.append('%s (unknown)' % (aPath))
+                        else:
+                            aObj = None
                             self.Err.append('%s (unknown)' % (aPath))
                     else:
-                        aObj = self.ParsePipe(aObj, Scheme, aPath)
+                        self.Err.append('%s (syntax)' % (aPath))
+                else:
+                    aObj = self.ParsePipe(aObj, Scheme, aPath)
             i += 1
         return aObj
 
@@ -225,6 +240,7 @@ class TSoupScheme():
 
     def Parse(self, aSoup, aData: dict) -> dict:
         self.Clear()
+        self.Var['$root'] = aSoup
         Res = self._ParseRecurs(aSoup, aData, '')
         return Res
 

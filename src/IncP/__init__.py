@@ -5,8 +5,8 @@ License:     GNU, see LICENSE for more details
 '''
 
 
-__version__ = '1.0.23'
-__date__ =  '2022.06.24'
+__version__ = '1.0.24'
+__date__ =  '2022.06.29'
 
 Info = {
     'App' : 'Web scraper',

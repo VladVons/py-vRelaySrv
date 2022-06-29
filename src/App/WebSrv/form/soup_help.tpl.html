@@ -2,17 +2,19 @@
 
 {% block content %}
 <table style="width:100%">
+    {% for KeyInfo, ValInfo in Data.Info.items() %}
     <tr>
-        <th style="width:40%">Name</th>
+        <th height="40" style="width:40%">{{KeyInfo}}</th>
         <th>Description</th>
     </tr>
-    {% for x in Data.SchemeApi %}
+    {% for Key, Val in ValInfo.items() %}
     <tr>
-        <td>{{x[4]}}</td>
+        <td>{{Key}}</td>
         {% autoescape false%}
-        <td>{{x[3].strip().replace('\n', '<br>')}}</td>
+        <td>{{Val.replace('\n', '<br>')}}</td>
         {% endautoescape%}
     </tr>
+    {% endfor %}
     {% endfor %}
 </table>
 {% endblock %}

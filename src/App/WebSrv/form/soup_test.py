@@ -17,11 +17,17 @@ from ..Utils import GetUrlInfo
 class TForm(TFormBase):
     Title = 'Soup test'
 
-    async def BtnMake(self):
+    async def Load(self):
         Data = await GetSoupUrl(self.Data.Url0)
         Err = FilterKeyErr(Data)
         if (Err):
             self.Data.Output = 'Error loading %s, %s' % (self.Data.Url0, Err)
+        else:
+            return Data
+
+    async def BtnMake(self):
+        Data = await self.Load()
+        if (not Data):
             return
 
         try:
@@ -39,14 +45,15 @@ class TForm(TFormBase):
             Log.Print(1, 'x', self.Data.Output, aE=E)
 
     async def BtnInfo(self):
-        Data = await GetSoupUrl(self.Data.Url0)
-        Err = FilterKeyErr(Data)
-        if (Err):
-            self.Data.Output = 'Error loading %s, %s' % (self.Data.Url0, Err)
-            return
+        Data = await self.Load()
+        if (Data):
+            Arr = GetUrlInfo(Data)
+            self.Data.Output = '\n'.join(Arr) + '\n'
 
-        Arr = GetUrlInfo(Data)
-        self.Data.Output = '\n'.join(Arr) + '\n'
+    async def BtnSource(self):
+        Data = await self.Load()
+        if (Data):
+            self.Data.Output = Data.get('Data')
 
     async def _Render(self):
         if (not await self.PostToForm()):
@@ -56,3 +63,5 @@ class TForm(TFormBase):
             await self.BtnMake()
         elif ('BtnInfo' in self.Data):
             await self.BtnInfo()
+        elif ('BtnSource' in self.Data):
+            await self.BtnSource()

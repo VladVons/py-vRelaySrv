@@ -4,6 +4,7 @@ Created:     2022.06.21
 License:     GNU, see LICENSE for more details
 '''
 
+
 import json
 import operator
 import re
@@ -20,16 +21,20 @@ _DigitsDotComma = _Digits + '.,'
 #_XlatEntitles = [('&nbsp;', ' '), ('&lt;', '<'), ('&amp;', '&'), ('&quot;', '"'), ('&apos;', "'")]
 #
 #ReCmp_Strip = re.compile(r'^\s+|\s+$')
+ReCmp_Serial = re.compile(r'[A-Z0-9\-/]{5,}')
 
 
 class TInStock():
-    _Match = [
+    _MatchYes = [
+        # en
         'http://schema.org/instock',
         'https://schema.org/instock',
         'instock',
 
+        # ua
         'в наявності на складі',
         'в наявності',
+        'в кошик',
         'до кошика',
         'додати у кошик',
         'є в наявності',
@@ -40,6 +45,7 @@ class TInStock():
         'товар є в наявності',
         'склад',
 
+        # ru
         'в корзину',
         'в наличии на складе',
         'в наличии',
@@ -53,6 +59,14 @@ class TInStock():
         'товар есть в наличии',
     ]
 
+    _MatchNo = [
+        # ua
+        'немає в наявності',
+
+        # ru
+        'нет в наличии'
+    ]
+
     _Del = [
         ' шт.'
     ]
@@ -60,11 +74,12 @@ class TInStock():
     def __init__(self):
         self.Trans = str.maketrans('', '', _Digits)
 
-    def Check(self, aVal: str) -> bool:
+    def Check(self, aVal: str, aMatch: bool) -> bool:
         aVal = aVal.translate(self.Trans).strip().lower()
         for Item in self._Del:
             aVal = aVal.replace(Item, '')
-        return aVal in self._Match
+        Match = self._MatchYes if (aMatch) else self._MatchNo
+        return aVal in Match
 
 InStock = TInStock()
 
@@ -97,6 +112,17 @@ def DigSplit(aVal: str) -> tuple:
         Digit = Digit.replace('.', '', Dots - 1)
     return (Before, DigDelDecor(Digit), After)
 
+SchemeApiExt = {
+    'image': [
+        ['find', ['img']],
+        ['get', ['src']]
+    ],
+    'image_og': [
+        ['find', ['head']],
+        ['find', ['meta', {'property': 'og:image'}]],
+        ['get', ['content']]
+    ]
+}
 
 class TSchemeApi():
     def __new__(cls):
@@ -183,36 +209,37 @@ class TSchemeApi():
         return (float(Dig), After.lower())
 
     @staticmethod
-    def stock(aVal: str) -> bool:
+    def stock(aVal: str, aPresent: bool = True) -> bool:
         '''
         Get stock availability
         ["stock"]
         '''
 
-        return InStock.Check(aVal)
+        return InStock.Check(aVal, aPresent) == aPresent
 
     @staticmethod
-    def image(aVal: BeautifulSoup) -> str:
+    def serial_check(aVal: str, aLen: int = 5) -> str:
         '''
-        get image. equal to: find('img').get('src')
-        ["image"]
-        '''
-
-        Obj = aVal.find('img')
-        if (Obj):
-            return Obj.get('src')
-
-    @staticmethod
-    def mpn(aVal: str, aLen: int = 5) -> str:
-        '''
-        check ranges [0..9], [A..Z], [-/] and length >= aLen
-        ["mpn"]
+        check ranges [A..Z], [0..9], [-/ ] and length >= aLen
+        ["serial_check"]
         '''
 
         if (len(aVal) >= aLen):
-            Res = [x for x in aVal if ('A' <= x <= 'Z') or (x in '0123456789-/')]
+            Res = [x for x in aVal if ('A' <= x <= 'Z') or (x in '0123456789-/ ')]
             if (len(aVal) == len(Res)):
                 return aVal
+
+    @staticmethod
+    def serial_find(aVal: str, aIdx: int = 0, aMatch: str = '[A-Z0-9\-/]{5,}') -> str:
+        '''
+        get serial number with regex matches
+        ["serial_find", [-1]]
+        '''
+
+        #Res = ReCmp_Serial.findall(aVal)
+        Res = re.findall(aMatch, aVal)
+        if (Res):
+            return Res[aIdx]
 
     @staticmethod
     def is_equal(aVal: str, aStr: list) -> bool:
@@ -221,7 +248,8 @@ class TSchemeApi():
         ["is_equal", ["InStock", "available"]]
         '''
 
-        return (aVal in aStr)
+        if (isinstance(aStr, list)):
+            return (aVal in aStr)
 
     @staticmethod
     def is_none(aVal: object, aTrue: bool = True) -> bool:
@@ -239,10 +267,11 @@ class TSchemeApi():
         ["search", ["InStock", "available"]]
         '''
 
-        for x in aStr:
-            if (aVal.find(x) >= 0):
-                return True
-        return False
+        if (isinstance(aStr, list)):
+            for x in aStr:
+                if (aVal.find(x) >= 0):
+                    return True
+            return False
 
     @staticmethod
     def _compare(aVal: object, aOp: str, aValue = None) -> bool:
@@ -322,10 +351,14 @@ class TSchemeApi():
         '''
         Items = aVal.find_all('script', type='application/ld+json')
         for x in Items:
-            Data = json.loads(x.text)
-            Match = FilterMatch(Data, aFind)
-            if (Match == aFind):
-                return Data
+            Data = json.loads(x.text, strict=False)
+            if (isinstance(Data, list)):
+                Data = Data[0]
+
+            if (isinstance(Data, dict)):
+                Match = FilterMatch(Data, aFind)
+                if (Match == aFind):
+                    return Data
 
     @staticmethod
     def lower(aVal: str) -> str:
@@ -392,7 +425,7 @@ class TSchemeApi():
             return Res
 
     @staticmethod
-    def concat(aVal: str, aStr: str, aRight: bool =  True) -> str:
+    def _concat(aVal: str, aStr: str, aRight: bool =  True) -> str:
         '''
         concatinate string to left or right side
         ["concat", ["hello", true]]
