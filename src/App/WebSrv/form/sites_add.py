@@ -10,10 +10,10 @@ from urllib.parse import urlparse
 #
 from Inc.DB.DbList import TDbList, TDbCond
 from IncP.DB.Db import TDbSql
-from IncP.Download import TDownload, CheckHost
+from IncP.Download import CheckHost
 from IncP.Utils import GetNestedKey, FilterKeyErr
 from ..Api import Api
-from .FForm import TFormBase
+from .FormBase import TFormBase
 
 
 class TForm(TFormBase):
@@ -56,8 +56,6 @@ class TForm(TFormBase):
         Output += list(set(Sites) - Diff[1])
         Output.append('')
 
-        #Data = await TDownload().Gets(Diff[1])
-        #UrlOk = [x.get('Url') for x in Data if (x.get('Status') == 200)]
         UrlOk = [x for x in Diff[1] if CheckHost(x)]
 
         Output.append('New:')

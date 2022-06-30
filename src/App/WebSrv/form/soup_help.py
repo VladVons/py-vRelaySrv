@@ -7,7 +7,7 @@ License:     GNU, see LICENSE for more details
 import IncP.SchemeApi as SchemeApi
 from IncP.SchemeApi import SchemeApiExt
 from IncP.ImportInf import GetClassHelp
-from .FForm import TFormBase
+from .FormBase import TFormBase
 
 
 class TForm(TFormBase):

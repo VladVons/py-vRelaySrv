@@ -1,4 +1,4 @@
-{% extends "Layout.tpl.html" %}
+{% extends "inc/layout.tpl.html" %}
 
 {% block head %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
@@ -93,7 +93,7 @@
 
     function Btn_GetSchemeEmptyWithFlag(aId, aThis) {
         ClearObj('input');
-        ClearObj('textarea');
+          ClearObj('textarea');
 
         document.getElementById('BtnSave').disabled = false;
         document.getElementById('BtnSaveFlag').value = '';
@@ -185,27 +185,8 @@
         <button name="BtnModerate" onclick="Btn_Moderate()">moderate</button>
         {% endif %}
         <br>
-
         <select id="SelHelp" onchange="Sel_Help(this)">
-          <optgroup label="- top -"></optgroup>
-            <option>["app_json", [{"@type": "Product"}]]</option>
-            <option>["breadcrumb", [["a"], -1]]</option>
-            <option>["find_all", ["a"]]</option>
-            <option>["find", ["div", {"class": "content"}]]</option>
-            <option>["get", ["src"]]</option>
-            <option>["gets", ["offers.availability"]]</option>
-            <option>["image"]</option>
-            <option>["list", [1]]</option>
-            <option>["price"]</option>
-            <option>["split", [":", 1]]</option>
-            <option>["stock"]</option>
-            <option>["strip"]</option>
-            <option>["text"]</option>
-            <option>["txt2json"]</option>
-            <option>["var_get", ["$root"]]</option>
-            <option>["var_set", ["$Price"]]</option>
-            <option>["unbracket", ["()", -1]]</option>
-          </optgroup>
+        {% include "inc/soup_help.tpl.html" %}
         </select>
       </td>
     </tr>

@@ -4,7 +4,7 @@ Created:     2022.02.14
 License:     GNU, see LICENSE for more details
 '''
 
-from .FForm import TFormBase
+from .FormBase import TFormBase
 
 
 class TForm(TFormBase):

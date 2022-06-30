@@ -6,7 +6,7 @@ License:     GNU, see LICENSE for more details
 
 
 from ..Session import Session
-from .FForm import TFormBase
+from .FormBase import TFormBase
 
 
 class TForm(TFormBase):

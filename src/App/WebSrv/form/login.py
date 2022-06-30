@@ -13,7 +13,7 @@ from IncP.Log import Log
 from IncP.Utils import GetNestedKey, FilterKeyErr
 from ..Api import Api
 from ..Session import Session
-from .FForm import TFormBase
+from .FormBase import TFormBase
 
 
 class TForm(TFormBase):

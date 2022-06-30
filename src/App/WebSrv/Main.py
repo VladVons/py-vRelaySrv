@@ -55,7 +55,7 @@ class TForm():
         if (not os.path.isfile('%s/%s%s' % (FormDir, aName, self.Parent.TplExt))):
             aName = 'err_code'
 
-        for Module, Class in [(aName, 'TForm'), ('FForm', 'TFormBase')]:
+        for Module, Class in [(aName, 'TForm'), ('FormBase', 'TFormBase')]:
             try:
                 Path = FormDir + '/' + Module
                 Mod = __import__(Path.replace('/', '.'), None, None, [Class])

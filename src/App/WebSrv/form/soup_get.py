@@ -9,7 +9,7 @@ import json
 from IncP.Download import GetSoupUrl
 from IncP.Scheme import SoupFindParents
 from IncP.Utils import FilterKeyErr
-from .FForm import TFormBase
+from .FormBase import TFormBase
 
 
 class TForm(TFormBase):

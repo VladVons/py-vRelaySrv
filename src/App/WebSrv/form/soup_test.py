@@ -10,7 +10,7 @@ from IncP.Download import GetSoupUrl
 from IncP.Log import Log
 from IncP.Scheme import TScheme
 from IncP.Utils import TJsonEncoder, FormatJsonStr, FilterKeyErr
-from .FForm import TFormBase
+from .FormBase import TFormBase
 from ..Utils import GetUrlInfo
 
 

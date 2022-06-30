@@ -19,6 +19,15 @@ function Btn_GetSchemeEmpty() {
     );
 };
 
+function InsertAtCaret(aTextArea, aText) {
+    aTextArea.setRangeText(
+        aText,
+        aTextArea.selectionStart,
+        aTextArea.selectionEnd,
+        'end'
+    );
+}
+
 function ClearObj(aTagName) {
     let Items = document.getElementsByTagName(aTagName);
     for (let i = 0; i < Items.length; i++) {
@@ -36,3 +45,4 @@ function Btn_GoUrl(aField) {
         alert('Url is empty');
     }
 };
+

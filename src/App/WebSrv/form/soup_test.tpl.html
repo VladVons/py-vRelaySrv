@@ -1,4 +1,4 @@
-{% extends "Layout.tpl.html" %}
+{% extends "inc/layout.tpl.html" %}
 
 {% block head %}
     <link href="/css/jquery-linedtextarea.css" type="text/css" rel="stylesheet"/>
@@ -15,10 +15,10 @@
         });
 
         function Btn_GetSchemeDone() {
-            let ScriptH = document.getElementById('Script');
-            if (ScriptH.value && !window.confirm('Load script ?')) {
-                return;
-            }
+            let OutputH = document.getElementById('Output');
+            //if (ScriptH.value && !window.confirm('Load script ?')) {
+            //    return;
+            //}
 
             ClearObj('input');
             ClearObj('textarea');
@@ -31,11 +31,11 @@
                     Dbl.RecNo = 0;
 
                     let Scheme = Dbl.Rec.GetField('scheme');
-                    ScriptH.value = Scheme;
+                    OutputH.value = Scheme;
 
-                    let SchemeJ = JSON.parse(Scheme);
-                    let Url = SchemeJ['Product']['Info']['Url'][0];
-                    document.getElementById('Url0').value = Url;
+                    //let SchemeJ = JSON.parse(Scheme);
+                    //let Url = SchemeJ['Product']['Info']['Url'][0];
+                    //document.getElementById('Url0').value = Url;
                 },
                 {'cnt': 10}
             );
@@ -66,6 +66,27 @@
             document.getElementById('Output').value = '';
             document.forms["Form"].requestSubmit(aThis)
         }
+
+        function Sel_Sample(aThis) {
+            let Val = aThis.options[aThis.selectedIndex].text;
+            let Url = window.location.origin + '/sample/' + Val;
+            fetch(Url).then(function(aResponse) {
+                let OutputH = document.getElementById('Output');
+                if (aResponse.ok) {
+                    aResponse.text().then((aData) => {
+                        OutputH.value = aData;
+                    });
+                } else {
+                    OutputH.value = 'Err ' + Url;
+                };
+            });
+        }
+
+        function Sel_Help(aThis) {
+            let Val = aThis.options[aThis.selectedIndex].text;
+            InsertAtCaret(document.getElementById('Script'), Val);
+        }
+
     </script>
 {% endblock %}
 
@@ -74,12 +95,21 @@
     <table width="100%">
         <tr>
             <td style="width:50%">
-                <button name="BtnUrl" onclick="Btn_Url()">url</button>
                 <button name="BtnGoUrl" onclick="Btn_GoUrl('Url0')">go</button>
+                <button name="BtnUrl" onclick="Btn_Url()">url</button>
                 <button name="BtnInfo" onclick="Btn_Info(this)">info</button>
                 <button name="BtnSource" onclick="Btn_Source(this)">source</button>
-                <button name="BtnGetSchemeDone" onclick="Btn_GetSchemeDone()">example</button>
                 <button name="BtnMake" onclick="Btn_Make(this)">make</button>
+                <button name="BtnGetSchemeDone" onclick="Btn_GetSchemeDone()">example</button>
+                <select id="SelSample" onchange="Sel_Sample(this)">
+                    <optgroup label="- Sample -"></optgroup>
+                      <option>app_json_1.json</option>
+                      <option>schema.org.json</option>
+                    </optgroup>
+                </select>
+                <select id="SelHelp" onchange="Sel_Help(this)">
+                {% include "inc/soup_help.tpl.html" %}
+                </select>
                 <input type="text" name="Url0" id="Url0" placeholder="Url" style="width:98%" required value="{{ Data.Url0 }}">
             </td>
             <td></td>

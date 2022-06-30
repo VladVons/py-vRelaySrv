@@ -8,7 +8,7 @@ License:     GNU, see LICENSE for more details
 from Inc.DB.DbList import TDbList, TDbCond
 from IncP.Utils import GetNestedKey, FilterKeyErr
 from ..Api import Api
-from .FForm import TFormBase
+from .FormBase import TFormBase
 
 
 class TForm(TFormBase):

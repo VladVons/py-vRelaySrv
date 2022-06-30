@@ -7,7 +7,7 @@ License:     GNU, see LICENSE for more details
 
 from IncP.Download import GetSoupUrl
 from IncP.Utils import FilterKeyErr
-from .FForm import TFormBase
+from .FormBase import TFormBase
 from ..Utils import GetUrlInfo
 
 
