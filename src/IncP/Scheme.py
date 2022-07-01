@@ -14,7 +14,7 @@ import sys
 from bs4 import BeautifulSoup
 #
 from IncP.Python import TPython
-from IncP.SchemeApi import TSchemeApi, SchemeApiExt
+from IncP.SchemeApi import TSchemeApi, TSchemeApiExt
 from IncP.Utils import GetNestedKey, FilterKey, FilterKeyErr
 
 
@@ -138,11 +138,15 @@ class TSoupScheme():
 
     def ParsePipe(self, aObj, aItem: list, aPath: str) -> object:
         Name = aItem[0]
-        if (SchemeApiExt.get(Name)):
-            Item = SchemeApiExt.get(Name)
+        if (hasattr(TSchemeApiExt, Name)):
+            Obj = getattr(TSchemeApiExt, Name)
+            if (len(aItem) == 2):
+                Item = Obj(*aItem[1])
+            else:
+                Item = Obj()
             aObj = self.ParsePipes(aObj, Item, aPath)
         elif (hasattr(TSchemeApi, Name)):
-            Obj = getattr(TSchemeApi, Name, None)
+            Obj = getattr(TSchemeApi, Name)
             Param = [aObj]
             if (len(aItem) == 2):
                 Param += aItem[1]

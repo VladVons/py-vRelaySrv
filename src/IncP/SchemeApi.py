@@ -112,17 +112,6 @@ def DigSplit(aVal: str) -> tuple:
         Digit = Digit.replace('.', '', Dots - 1)
     return (Before, DigDelDecor(Digit), After)
 
-SchemeApiExt = {
-    'image': [
-        ['find', ['img']],
-        ['get', ['src']]
-    ],
-    'image_og': [
-        ['find', ['head']],
-        ['find', ['meta', {'property': 'og:image'}]],
-        ['get', ['content']]
-    ]
-}
 
 class TSchemeApi():
     def __new__(cls):
@@ -470,3 +459,30 @@ class TSchemeApi():
 
         Data = GetClass(TSchemeApi)
         return [x[2] for x in Data]
+
+
+class TSchemeApiExt():
+    @staticmethod
+    def image() -> list:
+        return [
+            ['find', ['img']],
+            ['get', ['src']]
+        ]
+
+    @staticmethod
+    def image_og() -> list:
+        return [
+            ['find', ['head']],
+            ['find', ['meta', {'property': 'og:image'}]],
+            ['get', ['content']]
+        ]
+
+    @staticmethod
+    def category_prom(aIdx: int = -2) -> list:
+        return [
+            ['find', ['div', {'class': 'b-breadcrumb'}]],
+            ['get', ['data-crumbs-path']],
+            ['txt2json'],
+            ['list', [aIdx]],
+            ['get', ['name']]
+        ]

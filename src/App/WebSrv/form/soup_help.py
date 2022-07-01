@@ -5,7 +5,6 @@ License:     GNU, see LICENSE for more details
 '''
 
 import IncP.SchemeApi as SchemeApi
-from IncP.SchemeApi import SchemeApiExt
 from IncP.ImportInf import GetClassHelp
 from .FormBase import TFormBase
 
@@ -16,16 +15,19 @@ class TForm(TFormBase):
     async def _Render(self):
         self.Data.Info = {}
 
-        Data = GetClassHelp(SchemeApi, SchemeApi.TSchemeApi)
+        ClassHelp = GetClassHelp(SchemeApi, SchemeApi.TSchemeApi)
         self.Data.Info['Api'] = {
             x[4]: x[3].strip()
-            for x in Data
+            for x in ClassHelp
         }
 
-        self.Data.Info['Macros'] = {
-            Key: '\n'.join([str(x) for x in Val])
-            for Key, Val in SchemeApiExt.items()
-        }
+        ClassHelp = GetClassHelp(SchemeApi, SchemeApi.TSchemeApiExt)
+        ApiExt = {}
+        for x in ClassHelp:
+            Data = getattr(SchemeApi.TSchemeApiExt, x[0])()
+            ApiExt[x[4]] = '\n'.join([str(d) for d in Data])
+        self.Data.Info['ApiExt'] = ApiExt
+
 
         self.Data.Info['Internal'] = {
            '-': 'comment\n["-find", ["div"]]',
@@ -33,7 +35,6 @@ class TForm(TFormBase):
            'as_list': '',
            'as_dict': '',
            '["var_set", ["$Price"]]': 'set current chain value to $Price variable',
-           '["var_get", ["$Price"]]': 'get $Price variable into chain',
-           '["$root"]': 'get root object',
-           'Pipe': 'All chains should start with Pipe\n"Pipe": [...]'
+           '["var_get", ["$root"]]': 'get root chain',
+           'Pipe': 'All chains should start with Pipe\n"PipeA": [...]'
         }
