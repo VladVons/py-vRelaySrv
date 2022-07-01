@@ -14,7 +14,7 @@ from IncP.Utils import GetNestedKey, FilterMatch
 from IncP.ImportInf import GetClass
 
 
-_Whitespace = ' \t\n\r\v\f\xA0✓'
+_Whitespace = ' \t\n\r\v\f\xA0✓→'
 _Digits = '0123456789'
 _DigitsDot = _Digits + '.'
 _DigitsDotComma = _Digits + '.,'
@@ -332,7 +332,7 @@ class TSchemeApi():
         return GetNestedKey(aVal, aKeys)
 
     @staticmethod
-    def breadcrumb(aVal: BeautifulSoup, aFind: list, aIdx: int = -1) -> str:
+    def breadcrumb(aVal: BeautifulSoup, aFind: list, aIdx: int, aChain: bool = True) -> str:
         '''
         equal to find_all() + list()
         ["breadcrumb", [["a"], -1]]
@@ -340,8 +340,14 @@ class TSchemeApi():
 
         if (hasattr(aVal, 'find_all')):
             Items = aVal.find_all(*aFind)
-            if (len(Items) > 0):
-               return Items[aIdx].text.strip()
+            if (Items):
+                if (aChain):
+                    Arr = [TSchemeApi.strip(x.text) for x in Items[:aIdx]]
+                    Arr = [x for x in Arr if (len(x) > 1)]
+                    Res = '/'.join(Arr)
+                else:
+                    Res = Items[aIdx].text.strip()
+                return Res
 
     @staticmethod
     def app_json(aVal: BeautifulSoup, aFind: dict = {'@type': 'Product'}) -> dict:
@@ -349,6 +355,8 @@ class TSchemeApi():
         searches value in sections <script>application/ld+json</script>
         ["app_json", [{"@type": "Product"}]]
         '''
+
+        Res = {}
         Items = aVal.find_all('script', type='application/ld+json')
         for x in Items:
             Data = json.loads(x.text, strict=False)
@@ -356,9 +364,15 @@ class TSchemeApi():
                 Data = Data[0]
 
             if (isinstance(Data, dict)):
-                Match = FilterMatch(Data, aFind)
-                if (Match == aFind):
-                    return Data
+                if (aFind):
+                    Match = FilterMatch(Data, aFind)
+                    if (Match == aFind):
+                        return Data
+                else:
+                    Name = Data.get('@type')
+                    Res[Name] = Data
+        if (len(Res) > 0):
+            return Res
 
     @staticmethod
     def lower(aVal: str) -> str:
@@ -386,7 +400,7 @@ class TSchemeApi():
         return aVal.translate(aFind, aRepl, aDel)
 
     @staticmethod
-    def left(aVal: str, aIdx: int) -> str:
+    def _left(aVal: str, aIdx: int) -> str:
         '''
         get left string part
         ["left", [3]]
@@ -403,7 +417,7 @@ class TSchemeApi():
         return aVal
 
     @staticmethod
-    def sub(aVal: str, aIdx: int, aEnd: int) -> str:
+    def _sub(aVal: str, aIdx: int, aEnd: int) -> str:
         '''
         get sub string
         ["sub", [2, 7]]

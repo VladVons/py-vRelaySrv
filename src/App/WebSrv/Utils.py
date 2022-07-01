@@ -12,7 +12,7 @@ from IncP.SchemeApi import TSchemeApi
 
 def GetUrlInfo(aData: dict) -> list:
     TimeAt = time.time()
-    AppData = TSchemeApi.app_json(aData.get('Soup'))
+    AppData = TSchemeApi.app_json(aData.get('Soup'), None)
     if (AppData):
         AppData = json.dumps(AppData, indent=2, sort_keys=True, ensure_ascii=False)
 
