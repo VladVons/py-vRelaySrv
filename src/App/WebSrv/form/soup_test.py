@@ -11,7 +11,7 @@ from IncP.Log import Log
 from IncP.Scheme import TScheme
 from IncP.Utils import TJsonEncoder, FormatJsonStr, FilterKeyErr
 from .FormBase import TFormBase
-from ..Utils import GetUrlInfo
+from ..Utils import GetUrlInfo, GetApiHelp
 
 
 class TForm(TFormBase):
@@ -37,6 +37,10 @@ class TForm(TFormBase):
             Scheme = TScheme(self.Data.Script)
             Scheme.Debug = True
             Output = Scheme.Parse(Data.get('Soup')).GetData(['Err', 'Pipe', 'Warn'])
+            Unknown = [x for x in Output.get('Err', []) if 'unknown' in x]
+            if (Unknown):
+                Output['Help'] = GetApiHelp()
+
             self.Data.Output = json.dumps(Output,  indent=2, sort_keys=True, ensure_ascii=False, cls=TJsonEncoder)
             if (Scheme.IsJson()):
                 self.Data.Script = FormatJsonStr(self.Data.Script)

@@ -8,6 +8,8 @@ import time
 import json
 #
 from IncP.SchemeApi import TSchemeApi
+import IncP.SchemeApi as SchemeApi
+from IncP.ImportInf import GetClassHelp
 
 
 def GetUrlInfo(aData: dict) -> list:
@@ -23,3 +25,10 @@ def GetUrlInfo(aData: dict) -> list:
         '',
         'App json %s' % (AppData)
     ]
+
+def GetApiHelp():
+    Res = []
+    for Api in [SchemeApi.TSchemeApi, SchemeApi.TSchemeApiExt]:
+        ClassHelp = GetClassHelp(SchemeApi, Api)
+        Res += [x[0] for x in ClassHelp]
+    return sorted(Res)

@@ -46,3 +46,16 @@ function Btn_GoUrl(aField) {
     }
 };
 
+function InsertTab(aThis, aEvent) {
+    if (aEvent.keyCode == 9) {
+        aEvent.preventDefault()
+
+        aThis.setRangeText(
+            '  ',
+            aThis.selectionStart,
+            aThis.selectionStart,
+            'end'
+        );
+    }
+};
+

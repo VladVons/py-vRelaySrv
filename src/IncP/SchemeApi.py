@@ -398,7 +398,7 @@ class TSchemeApi():
         return aVal[:aIdx]
 
     @staticmethod
-    def _nop(aVal: object) -> object:
+    def nop(aVal: object) -> object:
         '''
         no operation. for debug purpose
         ["nop"]
@@ -485,4 +485,14 @@ class TSchemeApiExt():
             ['txt2json'],
             ['list', [aIdx]],
             ['get', ['name']]
+        ]
+    @staticmethod
+    def price_app(aTxt2Float: bool = False) -> list:
+        txt2float = 'txt2float' if (aTxt2Float) else 'nop'
+        return [
+            ["get", ["offers"]],
+            ["as_list", [
+                [["get", ["price"]], [txt2float]],
+                [["get", ["priceCurrency"]]]
+            ]]
         ]

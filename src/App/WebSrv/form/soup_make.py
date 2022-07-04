@@ -14,7 +14,7 @@ from IncP.Utils import TJsonEncoder, FormatJsonStr, FilterKey, FilterKeyErr
 from .FormBase import TFormBase
 from ..Api import Api
 from ..Session import Session
-from ..Utils import GetUrlInfo
+from ..Utils import GetUrlInfo, GetApiHelp
 
 
 _FieldPrefix = 'script_'
@@ -124,6 +124,10 @@ class TForm(TFormBase):
                 Scheme = TScheme(Script)
                 Scheme.Debug = True
                 Output = Scheme.Parse(Data.get('Soup')).GetData(['Err', 'Pipe', 'Warn'])
+                Unknown = [x for x in Output.get('Err', []) if 'unknown' in x]
+                if (Unknown):
+                    Output['Help'] = GetApiHelp()
+
                 self.Data.Output += json.dumps(Output, indent=2, sort_keys=True, ensure_ascii=False, cls=TJsonEncoder) + '\n'
                 self.Data.Script = Script
             except Exception as E:
