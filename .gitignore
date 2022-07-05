@@ -1,6 +1,5 @@
 *.pyc
 *.log
-*.json
 *.deb
 *.bin
 *.zip

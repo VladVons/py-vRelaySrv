@@ -1,0 +1,48 @@
+{
+  "Product": {
+    "Info": {
+      "Author": "vladvons",
+      "Date": "2022-07-01 09:00:00",
+      "Url": [
+        "https://expertonline.com.ua/apple-airpods-2-with-charging-case-mv7n2.html"
+      ]
+    },
+    "Var": {
+    },
+    "Pipe": [
+      ["app_json", [{"@type": "Product"}]],
+      ["as_dict", {
+        "name": [
+          ["get", ["name"]]
+        ],
+        "price": [
+          ["price_app", [false]]
+        ],
+        "price_old": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"class": "product-add-form-wrap"}]],
+          ["find", ["span", {"data-price-type": "oldPrice"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["gets", ["offers.availability"]],
+          ["stock"]
+        ],
+        "image": [
+          ["get", ["image"]]
+        ],
+        "mpn": [
+          ["get", ["name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"class": "breadcrumbs"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
