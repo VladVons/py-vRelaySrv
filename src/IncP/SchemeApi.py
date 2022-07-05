@@ -37,6 +37,7 @@ class TInStock():
         'в кошик',
         'до кошика',
         'додати у кошик',
+        'добавити в корзину',
         'є в наявності',
         'є на складі',
         'купити',
@@ -195,6 +196,10 @@ class TSchemeApi():
         Before, Dig, After = DigSplit(aVal)
         if (not Dig):
             Dig = '0'
+
+        if (not After) and (Before):
+            After = Before
+
         return (float(Dig), After.lower())
 
     @staticmethod
@@ -331,7 +336,8 @@ class TSchemeApi():
             Items = aVal.find_all(*aFind)
             if (Items):
                 if (aChain):
-                    Arr = [TSchemeApi.strip(x.text) for x in Items[:aIdx]]
+                    Items = Items if (aIdx == -1) else Items[:aIdx + 1]
+                    Arr = [TSchemeApi.strip(x.text) for x in Items]
                     Arr = [x for x in Arr if (len(x) > 1)]
                     Res = '/'.join(Arr)
                 else:
@@ -348,7 +354,18 @@ class TSchemeApi():
         Res = {}
         Items = aVal.find_all('script', type='application/ld+json')
         for x in Items:
-            Data = json.loads(x.text, strict=False)
+            Data: str = x.text
+            #Pos1 = Data.find('{')
+            #Pos2 = Data.rfind('}')
+            #if (Pos1 == -1) or (Pos2 == -1):
+            #    continue
+            #Data = Data[Pos1 : Pos2 + 1]
+
+            try:
+                Data = json.loads(Data, strict=False)
+            except ValueError:
+                return None
+
             if (isinstance(Data, list)):
                 Data = Data[0]
 
@@ -492,7 +509,7 @@ class TSchemeApiExt():
         return [
             ["get", ["offers"]],
             ["as_list", [
-                [["get", ["price"]], [txt2float]],
-                [["get", ["priceCurrency"]]]
+                [["gets", ["price"]], [txt2float]],
+                [["gets", ["priceCurrency"]]]
             ]]
         ]
