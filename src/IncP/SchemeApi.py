@@ -219,12 +219,12 @@ class TSchemeApi():
         '''
 
         if (len(aVal) >= aLen):
-            Res = [x for x in aVal if ('A' <= x <= 'Z') or (x in '0123456789-/ ')]
+            Res = [x for x in aVal if ('A' <= x <= 'Z') or (x in '0123456789-/. ')]
             if (len(aVal) == len(Res)):
                 return aVal
 
     @staticmethod
-    def serial_find(aVal: str, aIdx: int = 0, aMatch: str = '[A-Z0-9\-/]{5,}') -> str:
+    def serial_find(aVal: str, aIdx: int = 0, aMatch: str = '[A-Z0-9\-\./]{5,}') -> str:
         '''
         get serial number with regex matches
         ["serial_find", [-1]]
@@ -253,6 +253,17 @@ class TSchemeApi():
         '''
 
         return ((aVal is None) == aTrue)
+
+    @staticmethod
+    def not_none(aVal: list) -> object:
+        '''
+        get first not None item
+        ["not_none"]
+        '''
+
+        for x in aVal:
+            if not (x is None):
+                return x
 
     @staticmethod
     def search(aVal: object, aStr: list) -> bool:
@@ -415,12 +426,24 @@ class TSchemeApi():
         return aVal[:aIdx]
 
     @staticmethod
-    def nop(aVal: object) -> object:
+    def comment(aVal: object, aText: str = '') -> object:
         '''
-        no operation. for debug purpose
-        ["nop"]
+        comment
+        ["comment", ["just comment"]]
         '''
+
+        if (aText):
+            print(aText)
         return aVal
+
+    @staticmethod
+    def none(aVal: object) -> None:
+        '''
+        return None and stop parsing
+        ["none"]
+        '''
+
+        return None
 
     @staticmethod
     def _sub(aVal: str, aIdx: int, aEnd: int) -> str:
@@ -458,13 +481,13 @@ class TSchemeApi():
         return Res
 
     @staticmethod
-    def _print(aVal: object, aMsg: str = '') -> object:
+    def _print(aVal: object) -> object:
         '''
         show value
         ["print"]
         '''
 
-        print(aVal, aMsg)
+        print(aVal)
         return aVal
 
     @staticmethod
@@ -505,11 +528,16 @@ class TSchemeApiExt():
         ]
     @staticmethod
     def price_app(aTxt2Float: bool = False) -> list:
-        txt2float = 'txt2float' if (aTxt2Float) else 'nop'
+        txt2float = ['txt2float'] if (aTxt2Float) else ['comment']
         return [
-            ["get", ["offers"]],
-            ["as_list", [
-                [["gets", ["price"]], [txt2float]],
-                [["gets", ["priceCurrency"]]]
+            ['get', ['offers']],
+            ['as_list', [
+                [
+                    ['gets', ['price']],
+                    txt2float
+                ],
+                [
+                    ['gets', ['priceCurrency']]
+                ]
             ]]
         ]
