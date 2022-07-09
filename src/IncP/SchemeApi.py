@@ -503,14 +503,14 @@ class TSchemeApi():
 
 class TSchemeApiExt():
     @staticmethod
-    def image() -> list:
+    def ext_image() -> list:
         return [
             ['find', ['img']],
             ['get', ['src']]
         ]
 
     @staticmethod
-    def image_og() -> list:
+    def ext_image_og() -> list:
         return [
             ['find', ['head']],
             ['find', ['meta', {'property': 'og:image'}]],
@@ -518,7 +518,7 @@ class TSchemeApiExt():
         ]
 
     @staticmethod
-    def category_prom(aIdx: int = -2) -> list:
+    def ext_category_prom(aIdx: int = -2) -> list:
         return [
             ['find', ['div', {'class': 'b-breadcrumb'}]],
             ['get', ['data-crumbs-path']],
@@ -527,7 +527,7 @@ class TSchemeApiExt():
             ['get', ['name']]
         ]
     @staticmethod
-    def price_app(aTxt2Float: bool = False) -> list:
+    def ext_price_app(aTxt2Float: bool = False) -> list:
         txt2float = ['txt2float'] if (aTxt2Float) else ['comment']
         return [
             ['get', ['offers']],
