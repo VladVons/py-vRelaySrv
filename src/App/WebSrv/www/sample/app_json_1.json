@@ -16,7 +16,7 @@
           ["get", ["name"]]
         ],
         "price": [
-          ["price_app", [false]]
+          ["ext_price_app", [false]]
         ],
         "price_old": [
           ["var_get", ["$root"]],

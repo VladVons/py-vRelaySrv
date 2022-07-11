@@ -28,7 +28,7 @@
           ["stock"]
         ],
         "image": [
-          ["image"]
+          ["ext_image"]
         ],
         "mpn": [
           ["find",["h1",{"class":"product-title"}]],

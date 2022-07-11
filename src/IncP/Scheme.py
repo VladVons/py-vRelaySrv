@@ -199,11 +199,12 @@ class TSoupScheme():
                 elif (Macro == 'as_list'):
                     aObj = [self.ParsePipes(aObj, x, aPath) for x in Scheme[1]]
                 elif (Macro == 'as_dict'):
-                    aObj = {
-                        Key: self.ParsePipes(aObj, Val, aPath + '/' + Key)
-                        for Key, Val in Scheme[1].items()
-                        if (not Key.startswith('-') and (Val))
-                    }
+                    R = {}
+                    for Key, Val in Scheme[1].items():
+                        if (not Key.startswith('-') and (Val)):
+                            R[Key] = self.ParsePipes(aObj, Val, aPath + '/' + Key)
+                            self.Var['$' + Key] =  R[Key]
+                    aObj = R
                 elif (Macro.startswith('var_')):
                     if (len(Scheme) == 2) and (isinstance(Scheme[1], list)) and (Scheme[1][0].startswith('$')):
                         Name = Scheme[1][0]
@@ -327,7 +328,7 @@ def TScheme(aScheme: str):
             return Res
 
         def GetFields(self) -> list:
-            return ['image', 'price', 'price_old', 'name', 'stock', 'mpn', 'category']
+            return ['image', 'price', 'price_old', 'name', 'stock', 'mpn', 'sku', 'category', 'description']
 
         def GetPipe(self) -> dict:
             return {Key.split('.')[-1]: Val for Key, Val in self.Pipe.items()}

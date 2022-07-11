@@ -503,9 +503,10 @@ class TSchemeApi():
 
 class TSchemeApiExt():
     @staticmethod
-    def ext_image() -> list:
+    def ext_image(aIdx: int = 0) -> list:
         return [
-            ['find', ['img']],
+            ['find_all', ['img']],
+            ['list', [aIdx]],
             ['get', ['src']]
         ]
 
@@ -533,11 +534,11 @@ class TSchemeApiExt():
             ['get', ['offers']],
             ['as_list', [
                 [
-                    ['gets', ['price']],
+                    ['get', ['price']],
                     txt2float
                 ],
                 [
-                    ['gets', ['priceCurrency']]
+                    ['get', ['priceCurrency']]
                 ]
             ]]
         ]
