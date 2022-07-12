@@ -40,6 +40,7 @@ class TInStock():
         'добавити в корзину',
         'є в наявності',
         'є на складі',
+        'закінчується',
         'купити',
         'на складі',
         'товар в наявності',
@@ -54,6 +55,7 @@ class TInStock():
         'есть в наличии',
         'есть на складе',
         'есть',
+        'заканчивается',
         'купить',
         'на складе',
         'товар в наличии',
@@ -201,6 +203,18 @@ class TSchemeApi():
             After = Before
 
         return (float(Dig), After.lower())
+
+    @staticmethod
+    def price_find(aVal: str, aCur: str = 'грн') -> list:
+        '''
+        get prices from string using regEx '[\d\.]{2,}\s*' + aCur
+        ["price_find"]
+        '''
+
+        Pattern = r'[\d\.]{2,}\s*' + aCur
+        Res = re.findall(Pattern, aVal)
+        if (Res):
+            return Res
 
     @staticmethod
     def stock(aVal: str, aPresent: bool = True) -> bool:
