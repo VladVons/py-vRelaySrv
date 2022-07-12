@@ -116,6 +116,41 @@ def DigSplit(aVal: str) -> tuple:
     return (Before, DigDelDecor(Digit), After)
 
 
+class TSchemeExt():
+    def __init__(self, aParent):
+        self.Parent = aParent
+
+    def url_pad(self, aVal: str) -> str:
+        '''
+        pad url with host prefix
+        ["url_pad"]
+        '''
+
+        if (not aVal.startswith('http')):
+            aVal = self.Parent.Var.get('$host') + '/' + aVal.strip('/')
+        return aVal
+
+    def var_get(self, aNotUsed: object, aName: str) -> object:
+        '''
+        get variable
+        ["var_get", ["$root"]]
+        '''
+
+        Res = self.Parent.Var.get(aName)
+        if (not Res):
+            self.Parent.Err.append('%s (unknown)' % (aName))
+        return Res
+
+    def var_set(self, aVal: object, aName: str) -> object:
+        '''
+        set current chain value to variable
+        ["var_set", ["$Price"]]
+        '''
+
+        self.Parent.Var[aName] = aVal
+        return aVal
+
+
 class TSchemeApi():
     def __new__(cls):
         raise TypeError('Cant instantiate static class')
@@ -175,6 +210,26 @@ class TSchemeApi():
 
         if (aIdx < len(aVal)):
             return aVal[aIdx]
+
+    @staticmethod
+    def list_sort(aVal: list, aReverse: bool = False) -> list:
+        '''
+        sort list alphabetically
+        ["list_sort", [False]]
+        '''
+
+        if (isinstance(aVal, list)):
+            return sorted(aVal, reverse=aReverse)
+
+    @staticmethod
+    def list_sort_len(aVal: list, aReverse: bool = False) -> list:
+        '''
+        sort string list by length
+        ["list_sort_len", [False]]
+        '''
+
+        if (isinstance(aVal, list)):
+            return sorted(aVal, key=len, reverse=aReverse)
 
     @staticmethod
     def split(aVal: str, aDelim: str, aIdx: int = None) -> str:
@@ -238,16 +293,16 @@ class TSchemeApi():
                 return aVal
 
     @staticmethod
-    def serial_find(aVal: str, aIdx: int = 0, aMatch: str = '[A-Z0-9\-\./]{5,}') -> str:
+    def serial_find(aVal: str, aMatch: str = '[A-Z0-9\-\./]{5,}') -> str:
         '''
         get serial number with regex matches
-        ["serial_find", [-1]]
+        ["serial_find"]
         '''
 
         #Res = ReCmp_Serial.findall(aVal)
         Res = re.findall(aMatch, aVal)
         if (Res):
-            return Res[aIdx]
+            return Res
 
     @staticmethod
     def is_equal(aVal: str, aStr: list) -> bool:
@@ -521,7 +576,8 @@ class TSchemeApiExt():
         return [
             ['find_all', ['img']],
             ['list', [aIdx]],
-            ['get', ['src']]
+            ['get', ['src']],
+            ['url_pad']
         ]
 
     @staticmethod
@@ -556,3 +612,4 @@ class TSchemeApiExt():
                 ]
             ]]
         ]
+

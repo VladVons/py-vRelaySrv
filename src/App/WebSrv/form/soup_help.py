@@ -21,20 +21,23 @@ class TForm(TFormBase):
             for x in ClassHelp
         }
 
+        ClassHelp = GetClassHelp(SchemeApi, SchemeApi.TSchemeExt)
+        self.Data.Info['Ext'] = {
+            x[4]: x[3].strip()
+            for x in ClassHelp
+        }
+
         ClassHelp = GetClassHelp(SchemeApi, SchemeApi.TSchemeApiExt)
-        ApiExt = {}
+        ResApi = {}
         for x in ClassHelp:
             Data = getattr(SchemeApi.TSchemeApiExt, x[0])()
-            ApiExt[x[4]] = '\n'.join([str(d) for d in Data])
-        self.Data.Info['ApiExt'] = ApiExt
-
+            ResApi[x[4]] = '\n'.join([str(d) for d in Data])
+        self.Data.Info['ApiExt'] = ResApi
 
         self.Data.Info['Internal'] = {
            '-': 'comment\n["-find", ["div"]]',
            'as_if': '',
            'as_list': '',
            'as_dict': '',
-           '["var_set", ["$Price"]]': 'set current chain value to $Price variable',
-           '["var_get", ["$root"]]': 'get root chain',
            'Pipe': 'All chains should start with Pipe\n"PipeA": [...]'
         }

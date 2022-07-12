@@ -12,9 +12,10 @@ import random
 import re
 import sys
 from bs4 import BeautifulSoup
+from urllib.parse import urlparse
 #
 from IncP.Python import TPython
-from IncP.SchemeApi import TSchemeApi, TSchemeApiExt
+from IncP.SchemeApi import TSchemeApi, TSchemeApiExt, TSchemeExt
 from IncP.Utils import GetNestedKey, FilterKey, FilterKeyErr
 
 
@@ -113,6 +114,7 @@ class TSoupScheme():
     def __init__(self):
         self.Debug = False
         self.Clear()
+        self.SchemeExt = TSchemeExt(self)
 
     def Clear(self):
         self.Err = []
@@ -137,6 +139,19 @@ class TSoupScheme():
         return Res
 
     def ParsePipe(self, aObj, aItem: list, aPath: str) -> object:
+        def CallPipe(aClass: object):
+            nonlocal aObj, aItem, aPath
+
+            Obj = getattr(aClass, aItem[0])
+            Param = [aObj]
+            if (len(aItem) == 2):
+                Param += aItem[1]
+            try:
+                aObj = Obj(*Param)
+            except Exception as E:
+                self.Err.append('%s->%s %s (exception)' % (aPath, aItem, E))
+                aObj = None
+
         Name = aItem[0]
         if (hasattr(TSchemeApiExt, Name)):
             Obj = getattr(TSchemeApiExt, Name)
@@ -146,15 +161,9 @@ class TSoupScheme():
                 Item = Obj()
             aObj = self.ParsePipes(aObj, Item, aPath)
         elif (hasattr(TSchemeApi, Name)):
-            Obj = getattr(TSchemeApi, Name)
-            Param = [aObj]
-            if (len(aItem) == 2):
-                Param += aItem[1]
-            try:
-                aObj = Obj(*Param)
-            except Exception as E:
-                self.Err.append('%s->%s %s (exception)' % (aPath, aItem, E))
-                return
+            CallPipe(TSchemeApi)
+        elif (hasattr(self.SchemeExt, Name)):
+            CallPipe(self.SchemeExt)
         else:
             if (self.Debug) and (Name == 'find'):
                 if (hasattr(aObj, 'find_all')) and (len(aItem) == 2):
@@ -205,20 +214,6 @@ class TSoupScheme():
                             R[Key] = self.ParsePipes(aObj, Val, aPath + '/' + Key)
                             self.Var['$' + Key] =  R[Key]
                     aObj = R
-                elif (Macro.startswith('var_')):
-                    if (len(Scheme) == 2) and (isinstance(Scheme[1], list)) and (Scheme[1][0].startswith('$')):
-                        Name = Scheme[1][0]
-                        if (Macro == 'var_set'):
-                            self.Var[Name] = aObj
-                        elif (Macro == 'var_get'):
-                            aObj = self.Var.get(Name)
-                            if (not aObj):
-                                self.Err.append('%s (unknown)' % (aPath))
-                        else:
-                            aObj = None
-                            self.Err.append('%s (unknown)' % (aPath))
-                    else:
-                        self.Err.append('%s (syntax)' % (aPath))
                 else:
                     aObj = self.ParsePipe(aObj, Scheme, aPath)
             i += 1
@@ -236,6 +231,9 @@ class TSoupScheme():
                         Res[Key] = self.ParsePipes(aSoup, Val, Path)
                     else:
                         Res[Key] = self._ParseRecurs(aSoup, Val, Path)
+                        if (Key == 'Url'):
+                            UrlData = urlparse(Val[0])
+                            self.Var['$host'] = '%s://%s' % (UrlData.scheme, UrlData.hostname)
         elif (isinstance(aData, list)):
             if (aData[0].startswith('$')):
                 Res = self.ParseMacro(aData, aPath)
