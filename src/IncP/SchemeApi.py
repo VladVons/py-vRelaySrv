@@ -315,13 +315,13 @@ class TSchemeApi():
             return (aVal in aStr)
 
     @staticmethod
-    def is_none(aVal: object, aTrue: bool = True) -> bool:
+    def val2bool(aVal: object) -> bool:
         '''
-        check if value is None
-        ["is_none", false]
+        convert value to boolean
+        ["val2bool"]
         '''
 
-        return ((aVal is None) == aTrue)
+        return not (aVal is None)
 
     @staticmethod
     def not_none(aVal: list) -> object:
@@ -397,7 +397,7 @@ class TSchemeApi():
         return json.dumps(aVal, indent=2, sort_keys=True, ensure_ascii=False)
 
     @staticmethod
-    def gets(aVal: dict, aKeys: str) -> dict:
+    def gets(aVal: dict, aKeys: str) -> object:
         '''
         multiple get. equal to get('key1').get('key2')
         ["gets", ["offers.availability"]]
@@ -585,7 +585,8 @@ class TSchemeApiExt():
         return [
             ['find', ['head']],
             ['find', ['meta', {'property': 'og:image'}]],
-            ['get', ['content']]
+            ['get', ['content']],
+            ['url_pad']
         ]
 
     @staticmethod
@@ -597,6 +598,7 @@ class TSchemeApiExt():
             ['list', [aIdx]],
             ['get', ['name']]
         ]
+
     @staticmethod
     def ext_price_app(aTxt2Float: bool = False) -> list:
         txt2float = ['txt2float'] if (aTxt2Float) else ['comment']

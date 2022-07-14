@@ -146,6 +146,7 @@ class TSoupScheme():
             Param = [aObj]
             if (len(aItem) == 2):
                 Param += aItem[1]
+
             try:
                 aObj = Obj(*Param)
             except Exception as E:
