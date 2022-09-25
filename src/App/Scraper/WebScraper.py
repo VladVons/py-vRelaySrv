@@ -267,7 +267,6 @@ class TWebScraperSitemap(TWebScraper):
                 Res['price_old'], _ = Res.get('price_old', (0.0, ''))
         await self.Sender.Add(Res)
 
-
 class TWebScraperUpdate(TWebScraper):
     def __init__(self, aParent, aScheme: dict, aUrls: list, aSleep: int):
         super().__init__(aParent, aScheme, aSleep)

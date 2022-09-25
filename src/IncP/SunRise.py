@@ -8,7 +8,7 @@ from math import degrees as deg, radians as rad
 from datetime import datetime, time, timezone, timedelta
 
 
-class TSun:
+class TSun():
     """
     Calculate sunrise and sunset based on equations from NOAA
     http://www.srrb.noaa.gov/highlights/sunrise/calcdetails.html
@@ -56,18 +56,20 @@ class TSun:
         Extract information in a suitable format from when,
         a datetime.datetime object.
         """
+
         # datetime days are numbered in the Gregorian calendar
         # while the calculations from NOAA are distibuted as
         # OpenOffice spreadsheets with days numbered from
         # 1/1/1900. The difference are those numbers taken for
         # 18/12/2010
+
         self.day = aWhen.toordinal() - (734124 - 40529)
         t = aWhen.time()
         self.time = (t.hour + t.minute / 60.0 + t.second / 3600.0) / 24.0
 
         self.timezone = 0
         offset = aWhen.utcoffset()
-        if offset is not None:
+        if (not offset is None):
             self.timezone = offset.seconds / 3600.0
 
     def __calc(self):
@@ -78,6 +80,7 @@ class TSun:
         The results are stored in the instance variables
         sunrise_t, sunset_t and solarnoon_t
         """
+
         timezone = self.timezone  # in hours, east is positive
         longitude = self.long     # in decimal degrees, east is positive
         latitude = self.lat      # in decimal degrees, north is positive
@@ -117,6 +120,7 @@ if __name__ == "__main__":
     # Berlin summer time
     tz = timezone(timedelta(hours=3))
     mytz = datetime.now(tz=tz)
+    print(type(mytz))
     s = TSun(mytz, 49.5785, 25.6694)
 
     print()
