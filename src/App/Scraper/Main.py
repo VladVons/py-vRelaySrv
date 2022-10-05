@@ -10,11 +10,12 @@ import asyncio
 import random
 #
 from Inc.DB.DbList import TDbList
+from Inc.Util.UObj import GetNestedKey
 from IncP.ApiWeb import TWebSockClient
 from IncP.DownloadSpeed import TDownloadSpeed
 from IncP.Log import Log
 from IncP.Scheme import TScheme
-from IncP.Utils import FilterKeyErr, GetNestedKey
+from IncP.Utils import FilterKeyErr
 #
 from .Api import Api
 #from .Selenium import TStarter

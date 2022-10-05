@@ -6,7 +6,8 @@ License:     GNU, see LICENSE for more details
 
 
 from Inc.DB.DbList import TDbList, TDbCond
-from IncP.Utils import GetNestedKey, FilterKeyErr
+from Inc.Util.UObj import GetNestedKey
+from IncP.Utils import FilterKeyErr
 from ..Api import Api
 from .FormBase import TFormBase
 

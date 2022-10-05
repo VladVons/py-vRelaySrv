@@ -8,11 +8,12 @@ import asyncio
 import json
 #
 from Inc.DB.DbList import TDbList
+from Inc.Util.UObj import GetNestedKey
 from IncP.ApiWeb import TApiBase, TWebClient
 from IncP.Download import TDownload, TDHeaders, GetSoup, GetSoupUrl
 from IncP.Scheme import TScheme
 from IncP.SchemeApi import TSchemeApi
-from IncP.Utils import GetNestedKey, FilterKey, FilterKeyErr
+from IncP.Utils import FilterKey, FilterKeyErr
 
 
 class TApiPlugin():

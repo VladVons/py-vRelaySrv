@@ -78,8 +78,8 @@ class TDbCond(list):
         self.Add(Func, Dbl.Fields.GetNo(Name), aVal, aRes)
 
     def AddFields(self, aConds: list):
-        for x in aConds:
-            self.AddField(*x)
+        for Row in aConds:
+            self.AddField(*Row)
         return self
 
     def Find(self, aData: list) -> bool:
@@ -112,15 +112,15 @@ class TDbFields(dict):
         self.IdxOrd[Len] = (aName, aType, aDef)
 
     def AddList(self, aFields: list):
-        for Field in aFields:
-            self.Add(*Field)
+        for Row in aFields:
+            self.Add(*Row)
 
     def AddAuto(self, aFields: list, aData: list):
-        for Idx, Val in enumerate(aFields):
+        for Idx, Row in enumerate(aFields):
             if (aData):
-                self.Add(Val, type(aData[Idx]))
+                self.Add(Row, type(aData[Idx]))
             else:
-                self.Add(Val)
+                self.Add(Row)
 
     def Export(self) -> list:
         Items = sorted(self.items(), key = lambda k: k[1][0])
@@ -218,6 +218,7 @@ class TDbList():
         self._RecNo = 0
         self.Safe = True
         self.Fields = None
+        self.ReprLen = 25
         self.Rec = TDbRec(self)
         self.Init(aFields, aData)
 
@@ -245,12 +246,15 @@ class TDbList():
             for i in range(len(self.Fields))
         ]
 
-        for Data in self.Data:
-            for Idx, Val in enumerate(Data):
-                Res[Idx] = max(Res[Idx], len(str(Val)))
+        for Row in self.Data:
+            for Idx, Val in enumerate(Row):
+                Res[Idx] = max(Res[Idx], len(str(Val).strip()))
+        for Idx, _ in enumerate(Res):
+            Res[Idx] = min(Res[Idx], self.ReprLen)
+
         return Res
 
-    def _Repr(self, aMaxLen: int = 20):
+    def _Repr(self):
         FieldsLen = [3] + self._GetMaxLen()
         Fields = ['No'] + self.Fields.GetList()
 
@@ -262,9 +266,14 @@ class TDbList():
 
         Res = []
         Res.append(Format % tuple(Fields))
-        for Idx, Data in enumerate(self.Data):
-            DataTrim = [str(x)[:aMaxLen] for x in Data]
-            Res.append(Format % tuple([Idx] + DataTrim))
+        for Idx, Row in enumerate(self.Data):
+            Trimmed = []
+            for x in Row:
+                x = str(x)
+                if (len(x) > self.ReprLen):
+                    x = x[:self.ReprLen - 3] + '...'
+                Trimmed.append(x)
+            Res.append(Format % tuple([Idx] + Trimmed))
         return '\n'.join(Res)
 
     def _DbExp(self, aData: list, aFields: list) -> 'TDbList':
@@ -327,7 +336,7 @@ class TDbList():
         Returns one field as list
         '''
         FieldNo = self.Fields.GetNo(aField)
-        Res = [D[FieldNo] for D in self.Data]
+        Res = [x[FieldNo] for x in self.Data]
         if (aUniq):
             Res = list(set(Res))
         return Res
@@ -338,7 +347,7 @@ class TDbList():
             Finish = self.GetSize()
 
         if (aFields):
-            FieldsNo = [self.Fields.GetNo(F) for F in aFields]
+            FieldsNo = [self.Fields.GetNo(x) for x in aFields]
         else:
             aFields = self.Fields.GetList()
             FieldsNo = list(range(len(self.Fields)))
@@ -360,9 +369,9 @@ class TDbList():
         Rec = TDbRec(self)
         Rec.Init()
         FieldNo = self.Fields.GetNo(aField)
-        for Val in aData:
+        for Row in aData:
             Arr = Rec.copy()
-            Arr[FieldNo] = Val
+            Arr[FieldNo] = Row
             self.Data.append(Arr)
 
     def ImportDbl(self, aDbl: 'TDbList', aFields: list = [], aCond: TDbCond = None, aRecNo: tuple = (0, -1)):
@@ -417,14 +426,26 @@ class TDbList():
 
     def AddField(self, aFields: list = []):
         self.Fields.AddList(aFields)
-        for Data in self.Data:
+        for Row in self.Data:
             for Field in aFields:
                 Def = self.Fields[Field[0]][2]
-                Data.append(Def)
+                Row.append(Def)
+
+    def DelField(self, aField: str):
+        FieldNo = self.Fields.GetNo(aField)
+        for Row in self.Data:
+            del Row[FieldNo]
+
+        Fields = self.Fields.GetList()
+        Fields.remove(aField)
+        self.Fields = self.Fields.GetFields(Fields)
 
     def Clone(self, aFields: list = [], aCond: TDbCond = None, aRecNo: tuple = (0, -1)) -> 'TDbList':
         Data = self.ExportData(aFields, aCond, aRecNo)
         return self._DbExp(Data, aFields)
+
+    def New(self) -> 'TDbList':
+        return self._DbExp([], [])
 
     def Sort(self, aFields: list, aReverse: bool = False):
         if (len(aFields) == 1):
@@ -471,11 +492,17 @@ class TDbList():
         with open(aFile, 'r') as F:
             Data = json.load(F)
             self.Import(Data)
+            return self
 
-'''
+
 if (__name__ == '__main__'):
     Dbl1 = TDbList( [('User', str), ('Age', int), ('Male', bool, True)] )
     Data = [['User2', 22, True], ['User1', 11, False], ['User3', 33, True], ['User4', 44, True]]
     Dbl1.SetData(Data)
-'''
+
+    Dbl1.DelField('Age')
+    print(Dbl1)
+
+    Dbl2 = Dbl1.New()
+
 

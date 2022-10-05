@@ -11,11 +11,11 @@ import asyncio
 import json
 #
 from Inc.DB.DbList import TDbList, TDbCond
+from Inc.Util.UObj import GetNestedKey
 from IncP.ApiWeb import TApiBase
 from IncP.DB.Db import TDbSql
 from IncP.DB.Scraper_pg import TDbApp
 from IncP.Log import Log, TEchoDb
-from IncP.Utils import GetNestedKey
 
 
 class TApiTask():

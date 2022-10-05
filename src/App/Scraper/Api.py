@@ -6,10 +6,11 @@ License:     GNU, see LICENSE for more details
 
 
 from Inc.DB.DbList import TDbList
+from Inc.Util.UObj import GetNestedKey
 from IncP.ApiWeb import TApiBase
 from IncP.ApiWeb import TWebClient
 from IncP.Log import Log
-from IncP.Utils import GetNestedKey, FilterKeyErr
+from IncP.Utils import FilterKeyErr
 
 
 class TApi(TApiBase):

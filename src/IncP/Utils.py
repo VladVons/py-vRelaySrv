@@ -46,17 +46,6 @@ def FormatJsonStr(aScript: str, aPad: int = 2, aChar: str = ' ') -> str:
 
 
 #--- dict ---
-def GetNestedKey(aData: dict, aKeys: str, aDef = None) -> object:
-    for Key in aKeys.split('.'):
-        if (isinstance(aData, dict)):
-            aData = aData.get(Key)
-            if (aData is None):
-                return aDef
-        else:
-            return aDef
-    return aData
-
-
 def FilterKey(aData: object, aKeys: list, aInstance: list) -> object:
     def _FilterKey(aData: object, aKeys: list, aRes: dict, aPath: str):
         if (isinstance(aData, dict)):

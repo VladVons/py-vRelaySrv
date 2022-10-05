@@ -28,9 +28,10 @@ import re
 #
 from .Api import Api
 from Inc.DB.DbList import TDbList
+from Inc.Util.UObj import GetNestedKey
 from IncP.Download import TDownload, GetSoup
 from IncP.Log import Log
-from IncP.Utils import FilterKeyErr, FilterNone, GetNestedKey
+from IncP.Utils import FilterKeyErr, FilterNone
 
 
 class TSender():

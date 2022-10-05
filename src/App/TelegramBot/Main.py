@@ -14,8 +14,8 @@ from aiogram import Bot, Dispatcher, executor, types
 #
 from App.WebSrv import Api
 from Inc.DB.DbList import TDbList, TDbCond
+from Inc.Util.UObj import GetNestedKey
 from IncP.Log import Log
-from IncP.Utils import GetNestedKey
 
 
 class TMain():

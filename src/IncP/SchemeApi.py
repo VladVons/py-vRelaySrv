@@ -10,7 +10,8 @@ import operator
 import re
 from bs4 import BeautifulSoup
 #
-from IncP.Utils import GetNestedKey, FilterMatch
+from Inc.Util.UObj import GetNestedKey
+from IncP.Utils import FilterMatch
 from IncP.ImportInf import GetClass
 
 

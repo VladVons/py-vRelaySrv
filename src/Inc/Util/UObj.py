@@ -4,11 +4,11 @@ Created:     2020.02.21
 License:     GNU, see LICENSE for more details
 '''
 
+
 def GetTree(aObj, aPrefix: str = '', aDepth: int = 99) -> list:
     Res = []
-
-    Type = type(aObj).__name__
     if (aDepth > 0):
+        Type = type(aObj).__name__
         if (Type == 'dict'):
             for Key in aObj:
                 Data = GetTree(aObj[Key], aPrefix + '/' + Key, aDepth - 1)
@@ -20,4 +20,43 @@ def GetTree(aObj, aPrefix: str = '', aDepth: int = 99) -> list:
         else:
             Data = {'Key': aPrefix, 'Val': aObj}
             Res.append(Data)
+    return Res
+
+def DictJoin(aMaster: dict, aSlave: dict, aDepth: int = 99) -> object:
+    '''
+    DictJoin({3: [1, 2, 3]}, {3: [4]})
+    '''
+    Type = type(aSlave)
+    if (aDepth > 0):
+        if (Type == dict):
+            Res = aMaster
+            for Key, Val in aSlave.items():
+                Tmp = aMaster.get(Key)
+                if (Tmp is None):
+                    Tmp = {} if isinstance(Val, dict) else []
+                Data = DictJoin(Tmp, Val, aDepth - 1)
+                Res[Key] = Data
+        elif (Type == list):
+            Res = aMaster
+            for Val in aSlave:
+                Data = DictJoin(None, Val, aDepth - 1)
+                Res.append(Data)
+        else:
+            Res = aSlave
+        return Res
+
+def GetNestedKey(aData: dict, aKeys: str, aDef = None) -> object:
+    for Key in aKeys.split('.'):
+        if (isinstance(aData, dict)):
+            aData = aData.get(Key)
+            if (aData is None):
+                return aDef
+        else:
+            return aDef
+    return aData
+
+def GetNotNone(aData: dict, aKey: str, aDef: object) -> object:
+    Res = aData.get(aKey, aDef)
+    if (Res is None):
+        Res = aDef
     return Res

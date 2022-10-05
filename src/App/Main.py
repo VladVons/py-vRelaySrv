@@ -13,7 +13,7 @@ from App import ConfApp
 from Inc.Log  import TEchoFile
 from Inc.Plugin import Plugin
 from IncP import Info
-from IncP.Log  import Log, TEchoConsoleEx
+from IncP.Log import Log, TEchoConsoleEx
 
 
 class TApp():
