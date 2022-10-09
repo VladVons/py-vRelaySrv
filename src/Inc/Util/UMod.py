@@ -29,5 +29,5 @@ def DynImport(aPath: str, aClass: str) -> object:
         Mod = __import__(aPath, None, None, [aClass])
         TClass = getattr(Mod, aClass, None)
         return TClass
-    except ModuleNotFoundError:
-        pass
+    except ModuleNotFoundError as E:
+        print(E)

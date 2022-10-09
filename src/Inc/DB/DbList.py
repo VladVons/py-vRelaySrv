@@ -216,6 +216,7 @@ class TDbList():
         self.Tag = 0
         self.Data = []
         self._RecNo = 0
+        self._FindFast = {}
         self.Safe = True
         self.Fields = None
         self.ReprLen = 25
@@ -255,13 +256,13 @@ class TDbList():
         return Res
 
     def _Repr(self):
-        FieldsLen = [3] + self._GetMaxLen()
-        Fields = ['No'] + self.Fields.GetList()
+        FieldsLen = self._GetMaxLen()
+        Fields = self.Fields.GetList()
 
-        Format = [
-            '%' + str(FieldsLen[Idx]) + 's '
-            for Idx, Value in enumerate(Fields)
-        ]
+        Format = []
+        for Idx, (Key, Value) in enumerate(self.Fields.items()):
+            Align = '' if Value[1] in [int, float] else '-'
+            Format.append('%' + Align + str(FieldsLen[Idx]) + 's\t')
         Format = ''.join(Format)
 
         Res = []
@@ -273,7 +274,8 @@ class TDbList():
                 if (len(x) > self.ReprLen):
                     x = x[:self.ReprLen - 3] + '...'
                 Trimmed.append(x)
-            Res.append(Format % tuple([Idx] + Trimmed))
+            Res.append(Format % tuple(Trimmed))
+        Res.append(f'records: {self.GetSize()}')
         return '\n'.join(Res)
 
     def _DbExp(self, aData: list, aFields: list) -> 'TDbList':
@@ -417,12 +419,27 @@ class TDbList():
         for i in range(self._RecNo, self.GetSize()):
             if (aCond.Find(self.Data[i])):
                 return i
+        return -1
 
     def FindField(self, aName: str, aValue) -> int:
         FieldNo = self.Fields.GetNo(aName)
         for i in range(self._RecNo, self.GetSize()):
             if (self.Data[i][FieldNo] == aValue):
                 return i
+        return -1
+
+    def FindFast(self, aField: str, aValue, aStart: int = 0) -> int:
+        if (not self._FindFast.get(aField)):
+            self.FindFastAdd(aField)
+
+        try:
+            Res = self._FindFast[aField].index(aValue, aStart)
+        except ValueError:
+            Res = -1
+        return Res
+
+    def FindFastAdd(self, aField: str):
+        self._FindFast[aField] = self.ExportList(aField)
 
     def AddField(self, aFields: list = []):
         self.Fields.AddList(aFields)
@@ -496,8 +513,8 @@ class TDbList():
 
 
 if (__name__ == '__main__'):
-    Dbl1 = TDbList( [('User', str), ('Age', int), ('Male', bool, True)] )
-    Data = [['User2', 22, True], ['User1', 11, False], ['User3', 33, True], ['User4', 44, True]]
+    Dbl1 = TDbList( [('User', str), ('Age', int), ('Male', bool, True), ('Price', float)] )
+    Data = [['User2', 22, True, 3.14], ['User1', 11, False, 2.12], ['User333333', 33, True, 10.0], ['User4', 44, True, 1.123]]
     Dbl1.SetData(Data)
 
     Dbl1.DelField('Age')

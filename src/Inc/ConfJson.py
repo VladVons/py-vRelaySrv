@@ -1,5 +1,6 @@
 '''
-
+VladVons@gmail.com
+2022.10.04
 '''
 
 
@@ -22,7 +23,7 @@ class TConfJson(dict):
         return self.Join(Data)
 
     def Load(self, aFile: str):
-        with open(aFile, 'r') as File:
+        with open(aFile, 'r', encoding = 'utf-8') as File:
             Data = json.load(File)
             self.Init(Data)
 
