@@ -22,7 +22,7 @@ def GetTree(aObj, aPrefix: str = '', aDepth: int = 99) -> list:
             Res.append(Data)
     return Res
 
-def DictJoin(aMaster: dict, aSlave: dict, aDepth: int = 99) -> object:
+def DictUpdate(aMaster: dict, aSlave: dict, aJoin = False, aDepth: int = 99) -> object:
     '''
     DictJoin({3: [1, 2, 3]}, {3: [4]})
     '''
@@ -34,13 +34,16 @@ def DictJoin(aMaster: dict, aSlave: dict, aDepth: int = 99) -> object:
                 Tmp = aMaster.get(Key)
                 if (Tmp is None):
                     Tmp = {} if isinstance(Val, dict) else []
-                Data = DictJoin(Tmp, Val, aDepth - 1)
+                Data = DictUpdate(Tmp, Val, aJoin, aDepth - 1)
                 Res[Key] = Data
         elif (Type == list):
             Res = aMaster
             for Val in aSlave:
-                Data = DictJoin(None, Val, aDepth - 1)
-                Res.append(Data)
+                Data = DictUpdate(None, Val, aJoin, aDepth - 1)
+                if (aJoin):
+                    Res.append(Data)
+                else:
+                    Res = Data
         else:
             Res = aSlave
         return Res
