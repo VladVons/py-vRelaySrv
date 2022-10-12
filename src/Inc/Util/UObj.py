@@ -22,6 +22,15 @@ def GetTree(aObj, aPrefix: str = '', aDepth: int = 99) -> list:
             Res.append(Data)
     return Res
 
+def GetClassPath(aClass):
+    def GetClassPathRecurs(aInstance: object, aPath: str = '', aDepth: int = 99) -> str:
+        Instance = aInstance.__bases__
+        if ( (Instance) and (aDepth > 0) ):
+            aPath = GetClassPathRecurs(Instance[0], aPath, aDepth - 1)
+        return aPath + '/' + aInstance.__name__
+
+    return GetClassPathRecurs(aClass.__class__)
+
 def DictUpdate(aMaster: dict, aSlave: dict, aJoin = False, aDepth: int = 99) -> object:
     '''
     DictJoin({3: [1, 2, 3]}, {3: [4]})
