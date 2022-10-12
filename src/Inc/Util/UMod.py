@@ -6,6 +6,7 @@ License:     GNU, see LICENSE for more details
 
 import sys
 
+
 def GetImportsLoc() -> set:
     Res = set()
     for Name, Val in globals().items():
