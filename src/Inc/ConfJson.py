@@ -26,6 +26,9 @@ class TConfJson(dict):
                 Res.update(Data)
         return Res
 
+    def GetKey(self, aPath: str, aDef = None) -> object:
+        return GetNestedKey(self, aPath, aDef)
+
     def JoinKeys(self, aKey: list) -> dict:
         Data = [GetNestedKey(self, x, {}) for x in aKey]
         return self._Join(Data)

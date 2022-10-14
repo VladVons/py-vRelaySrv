@@ -2,65 +2,6 @@
 Author:      Vladimir Vons <VladVons@gmail.com>
 Created:     2022.03.24
 License:     GNU, see LICENSE for more details
-
-    Dbl1 = TDbList( [('User', str), ('Age', int), ('Male', bool, True)] )
-    Data = [['User2', 22, True], ['User1', 11, False], ['User3', 33, True]]
-    Dbl1.Safe = True
-    Dbl1.SetData(Data)
-
-    Dbl1.AddField([('Weight', int, 100)])
-
-    Rec = Dbl1.RecAdd()
-    Rec.SetField('User', 'User4')
-    Rec.SetField('Age', 20)
-    Rec.SetField('Male', False)
-    Rec.Flush()
-
-    Dbl1.Data.append(['User5', 30, False])
-    Dbl1.RecAdd(['User6', 40, True])
-    Dbl1.Rec.Flush()
-
-    Dbl1.RecAdd()
-    Dbl1.Rec.SetAsDict({'User': 'User7', 'Age': 45, 'Male': True})
-    Dbl1.Rec.Flush()
-
-    Dbl1.RecNo = 0
-    print()
-    print('GetSize:', Dbl1.GetSize())
-    print('Data:', Dbl1.Data)
-    print('Rec:', Dbl1.Rec)
-    print('Rec.GetAsDict:', Dbl1.Rec.GetAsDict())
-    print('Rec.GetAsTuple:', Dbl1.Rec.GetAsTuple())
-    print('Rec.GetList:', Dbl1.ExportList('User', True))
-
-    Dbl1.SearchAdd('User')
-    RecNo = Dbl1.Search('User', 'User1')
-    if (RecNo >= 0):
-       print(Dbl1.RecGo(RecNo))
-
-    Dbl1.Sort(['User', 'Age'], True)
-    for Idx, Rec in enumerate(Dbl1):
-        print(Idx, Rec.GetField('User'),  Rec[1])
-
-    print()
-    Db3 = Dbl1.Clone(aFields = ['User', 'Age'], aRecNo = (0, 3))
-    Db3.Shuffle()
-    for Idx, Rec in enumerate(Db3):
-        print(Idx, Rec.GetField('User'),  Rec[1])
-
-    Db3.self.RecNo = -2
-    print('Db3.Rec', Db3.Rec)
-
-    print()
-    Cond = TDbCond().AddFields([
-        ['lt', (Dbl1, 'Age'), 40, True],
-        ['eq', (Dbl1, 'Male'), True, True]
-    ])
-    Dbl2 = Dbl1.Clone(aCond=Cond)
-    print(Dbl2)
-
-    Dbl1.Save('Dbl2.json')
-    Dbl1.Load('Dbl2.json')
 '''
 
 
@@ -73,10 +14,10 @@ class TDbListException(Exception): ...
 
 
 # https://blog.boot.dev/computer-science/binary-search-tree-in-python/
-class TBeeTreeSearch():
+class TBeeTree():
     def __init__(self, aData = None):
-        self.Left: TBeeTreeSearch = None
-        self.Right: TBeeTreeSearch = None
+        self.Left: TBeeTree = None
+        self.Right: TBeeTree = None
         self.Data = aData
 
     def InOrder(self, aRes: list = []):
@@ -92,26 +33,19 @@ class TBeeTreeSearch():
         return aRes
 
     def Add(self, aData: tuple):
-        if (not self.Data):
+        if (self.Data is None):
             self.Data = aData
-            return
-
-        if (self.Data == Data):
-            return
-
-        if (aData[0] < self.Data[0]):
-            if (self.Left):
-                self.Left.Add(aData)
-                return
-
-            self.Left = TBeeTreeSearch(aData)
-            return
-
-        if (self.Right):
-            self.Right.Add(aData)
-            return
-
-        self.Right = TBeeTreeSearch(aData)
+        elif (self.Data != aData):
+            if (aData[0] < self.Data[0]):
+                if (self.Left):
+                    self.Left.Add(aData)
+                else:
+                    self.Left = TBeeTree(aData)
+            else:
+                if (self.Right):
+                    self.Right.Add(aData)
+                else:
+                    self.Right = TBeeTree(aData)
 
     def Search(self, aVal):
         if (aVal == self.Data[0]):
@@ -302,8 +236,7 @@ class TDbList():
         self.Tag = 0
         self.Data = []
         self._RecNo = 0
-        self._FindFast = {}
-        self._BTS = {}
+        self._BT = {}
         self.Safe = True
         self.Fields = None
         self.ReprLen = 25
@@ -515,28 +448,22 @@ class TDbList():
                 return i
         return -1
 
-    def FindFast(self, aField: str, aValue, aStart: int = 0) -> int:
-        if (not self._FindFast.get(aField)):
-            raise TDbListException('FindFastAdd("%s") first' % (aField))
+    def Search(self, aField: str, aVal) -> int:
+        if (not aField in self._BT):
+            raise TDbListException('SearchAdd()')
+        return self._BT[aField].Search(aVal)
 
-        try:
-            Res = self._FindFast[aField].index(aValue, aStart)
-        except ValueError:
-            Res = -1
-        return Res
-
-    def FindFastAdd(self, aField: str):
-        self._FindFast[aField] = self.ExportList(aField)
-
-    def SearchAdd(self, aField: str):
-        BTS = TBeeTreeSearch()
+    def SearchAdd(self, aField: str, aAllowEmpty: bool = False):
+        BT = TBeeTree()
         FieldNo = self.Fields.GetNo(aField)
         for RowNo, Row in enumerate(self.Data):
-            BTS.Add((Row[FieldNo], RowNo))
-        self._BTS[aField] = BTS
+            Data = Row[FieldNo]
+            if (Data or aAllowEmpty):
+                BT.Add((Data, RowNo))
+        self._BT[aField] = BT
 
-    def Search(self, aField: str, aVal) -> int:
-        return self._BTS[aField].Search(aVal)
+    def SearchGet(self, aField: str) -> TBeeTree:
+        return self._BT[aField]
 
     def AddField(self, aFields: list = []):
         self.Fields.AddList(aFields)
@@ -607,9 +534,3 @@ class TDbList():
             Data = json.load(F)
             self.Import(Data)
             return self
-
-
-if (__name__ == '__main__'):
-    Dbl1 = TDbList( [('User', str), ('Age', int), ('Male', bool, True), ('Price', float)] )
-    Data = [['User2', 22, True, 3.14], ['User1', 11, False, 2.12], ['User333333', 33, True, 10.0], ['User4', 44, True, 1.123]]
-    Dbl1.SetData(Data)
