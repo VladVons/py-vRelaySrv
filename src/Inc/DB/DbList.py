@@ -20,17 +20,22 @@ class TBeeTree():
         self.Right: TBeeTree = None
         self.Data = aData
 
-    def InOrder(self, aRes: list = []):
+    def _Asc(self, aTrick: list):
         if (self.Left):
-            self.Left.InOrder(aRes)
+            yield from self.Left._Asc(aTrick)
 
         if (self.Data):
-            aRes.append(self.Data[1])
+            if (self.Data[1] == aTrick[0]):
+                aTrick[0] = -1
+            if (aTrick[0] == -1):
+                yield self.Data[1]
 
         if (self.Right):
-            self.Right.InOrder(aRes)
+            yield from self.Right._Asc(aTrick)
 
-        return aRes
+    def Asc(self, aStart: int = -1):
+        PassInByRefTrick = [aStart]
+        yield from self._Asc(PassInByRefTrick)
 
     def Add(self, aData: tuple):
         if (self.Data is None):
@@ -453,7 +458,7 @@ class TDbList():
             raise TDbListException('SearchAdd()')
         return self._BT[aField].Search(aVal)
 
-    def SearchAdd(self, aField: str, aAllowEmpty: bool = False):
+    def SearchAdd(self, aField: str, aAllowEmpty: bool = False) -> TBeeTree:
         BT = TBeeTree()
         FieldNo = self.Fields.GetNo(aField)
         for RowNo, Row in enumerate(self.Data):
@@ -461,6 +466,7 @@ class TDbList():
             if (Data or aAllowEmpty):
                 BT.Add((Data, RowNo))
         self._BT[aField] = BT
+        return BT
 
     def SearchGet(self, aField: str) -> TBeeTree:
         return self._BT[aField]
@@ -534,3 +540,7 @@ class TDbList():
             Data = json.load(F)
             self.Import(Data)
             return self
+
+
+if (__name__ == '__main__'):
+    pass

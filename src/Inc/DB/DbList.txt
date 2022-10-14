@@ -3,9 +3,21 @@ Author:      Vladimir Vons <VladVons@gmail.com>
 Created:     2022.03.24
 License:     GNU, see LICENSE for more details
 
-    Dbl1 = TDbList( [('User', str), ('Age', int), ('Male', bool, True)] )
-    Data = [['User2', 22, True], ['User1', 11, False], ['User3', 33, True], ['User8', 88, False], ['User4', 44, True], ['User5', 55, False],]
-    Dbl1.Safe = True
+    Dbl1 = TDbList([
+        ('User', str),
+        ('Age', int),
+        ('Male', bool, True),
+        ('Price', float)
+    ])
+    Data = [
+        ['User5', 55, True, 5.67],
+        ['User2', 22, True, 2.34],
+        ['User6', 66, True, 6.78],
+        ['User1', 11, False, 1.23],
+        ['User3', 33, True, 3.45],
+        ['User4', 44, True, 4.56],
+        ['User5', 55, True, 5.55]
+    ]
     Dbl1.SetData(Data)
 
     Dbl1.AddField([('Weight', int, 100)])
@@ -33,13 +45,11 @@ License:     GNU, see LICENSE for more details
     print('Rec.GetAsTuple:', Dbl1.Rec.GetAsTuple())
     print('Rec.GetList:', Dbl1.ExportList('User', True))
 
-    Dbl1.SearchAdd('User')
-    RecNo = Dbl1.Search('User', 'User3')
+    BT = Dbl1.SearchAdd('User')
+    RecNo = BT.Search('User3')
     if (RecNo >= 0):
-        Search = Dbl1.SearchGet('User')
-        List = Search.InOrder()
-        for i in List[List.index(RecNo):]:
-           print(Dbl1.RecGo(i))
+        for x in BT.Asc(RecNo):
+            print(x, Dbl1.RecGo(x))
 
     Dbl1.Sort(['User', 'Age'], True)
     for Idx, Rec in enumerate(Dbl1):
