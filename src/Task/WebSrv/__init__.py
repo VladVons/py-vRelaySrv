@@ -2,7 +2,7 @@ from .Api import Api
 
 def Main(aConf) -> tuple:
     from .Main import TWebSrv
-    from App import ConfApp
+    from Task import ConfApp
 
     Api.WebClient.Auth = aConf.SrvAuth
     aConf.Def = ConfApp

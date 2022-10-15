@@ -10,8 +10,8 @@ License:     GNU, see LICENSE for more details
 import asyncio
 import sys
 #
-from App import ConfApp
-from App.Main import TApp
+from Task import ConfApp
+from Task.Main import TApp
 
 
 def Run():

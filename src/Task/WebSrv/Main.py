@@ -80,7 +80,7 @@ class TWebSrv():
     def __init__(self, aConf: dict):
         self.Conf = aConf
 
-        self.DirRoot = 'App/WebSrv'
+        self.DirRoot = 'Task/WebSrv'
         self.DirForm = 'form'
         self.DirDownload = 'download'
         self.Dir3w = 'www'

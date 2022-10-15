@@ -1,2 +1,2 @@
 Debug = False
-Plugins = '-App.TelegramBot App.WebSrv App.ScraperSrv -App.Scraper -App.WebSock -App.Mqtt -App.Idle'
+Plugins = '-Task.TelegramBot Task.WebSrv Task.ScraperSrv -Task.Scraper -Task.WebSock -Task.Mqtt -Task.Idle'

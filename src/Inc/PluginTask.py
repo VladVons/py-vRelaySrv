@@ -19,7 +19,7 @@ from Inc.ConfClass import TConfClass
 from IncP.Log import Log
 
 
-class TPlugin(dict):
+class TPluginTask(dict):
     def Find(self, aKey: str) -> list:
         return [Val[0] for Key, Val in self.items() if aKey in Key]
 
@@ -104,4 +104,4 @@ class TPlugin(dict):
         await asyncio.gather(* Tasks)
 
 
-Plugin = TPlugin()
+Plugin = TPluginTask()

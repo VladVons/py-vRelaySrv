@@ -9,9 +9,9 @@ import os
 import sys
 import platform
 #
-from App import ConfApp
+from Task import ConfApp
 from Inc.Log  import TEchoFile
-from Inc.Plugin import Plugin
+from Inc.PluginTask import Plugin
 from IncP import Info
 from IncP.Log import Log, TEchoConsoleEx
 
