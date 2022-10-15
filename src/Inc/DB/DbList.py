@@ -241,7 +241,7 @@ class TDbList():
         self.Tag = 0
         self.Data = []
         self._RecNo = 0
-        self._BT = {}
+        self.BeeTree = {}
         self.Safe = True
         self.Fields = None
         self.ReprLen = 25
@@ -454,22 +454,19 @@ class TDbList():
         return -1
 
     def Search(self, aField: str, aVal) -> int:
-        if (not aField in self._BT):
+        if (not aField in self.BeeTree):
             raise TDbListException('SearchAdd()')
-        return self._BT[aField].Search(aVal)
+        return self.BeeTree[aField].Search(aVal)
 
     def SearchAdd(self, aField: str, aAllowEmpty: bool = False) -> TBeeTree:
-        BT = TBeeTree()
+        BeeTree = TBeeTree()
         FieldNo = self.Fields.GetNo(aField)
         for RowNo, Row in enumerate(self.Data):
             Data = Row[FieldNo]
             if (Data or aAllowEmpty):
-                BT.Add((Data, RowNo))
-        self._BT[aField] = BT
-        return BT
-
-    def SearchGet(self, aField: str) -> TBeeTree:
-        return self._BT[aField]
+                BeeTree.Add((Data, RowNo))
+        self.BeeTree[aField] = BeeTree
+        return BeeTree
 
     def AddField(self, aFields: list = []):
         self.Fields.AddList(aFields)
