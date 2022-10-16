@@ -15,7 +15,7 @@ from IncP import GetInfo
 from IncP.Log import Log, TEchoConsoleEx
 
 
-class TApp():
+class TTask():
     def __init__(self):
         self.Info = GetInfo()
 

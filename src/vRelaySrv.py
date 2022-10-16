@@ -11,14 +11,14 @@ import asyncio
 from sys import version_info
 #
 from IncP import GetInfo
-from Task.Main import TApp
+from Task.Main import TTask
 
 
 def Run():
     Info = GetInfo()
     PyNeed = (3, 8, 0)
     if (Info['Python'] >= PyNeed):
-        Task = TApp().Run()
+        Task = TTask().Run()
         asyncio.run(Task)
     else:
         print(f'Need python >= {PyNeed}')
