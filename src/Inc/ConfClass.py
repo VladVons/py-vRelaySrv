@@ -25,16 +25,16 @@ class TConfClass(TConf):
         for Item in Items:
             Repl = self.Conf.get(Item)
             if (Repl is None):
-                Log.Print(1, 'e', 'unknown ' + Item)
+                Log.Print(1, 'e', 'unknown %s' % (Item))
             else:
                 Find = Delim + Item + Delim
-                if (not isinstance(Repl), str):
+                if (not isinstance(Repl, str)):
                     Repl = str(Repl).replace("'", '"')
                 aData = aData.replace(Find, Repl)
         return aData
 
     def _Load(self, aFile: str):
-        with open(aFile) as hF:
+        with open(aFile, encoding='utf-8') as hF:
             Data = self._Replace(hF.read())
             try:
                 Data = json.loads(Data)
