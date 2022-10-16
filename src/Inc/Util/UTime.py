@@ -1,8 +1,6 @@
-'''
-Author:      Vladimir Vons <VladVons@gmail.com>
-Created:     2020.02.27
-License:     GNU, see LICENSE for more details
-'''
+# Created: 2020.02.27
+# Author: Vladimir Vons <VladVons@gmail.com>
+# License: GNU, see LICENSE for more details
 
 
 import time

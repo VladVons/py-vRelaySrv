@@ -1,9 +1,8 @@
-'''
-VladVons@gmail.com
-2022.10.04
-'''
+# Creatad: 2022.10.04
+# Author: Vladimir Vons <VladVons@gmail.com>
+# License: GNU, see LICENSE for more details
 
-import os
+
 import json
 from Inc.Util.UObj import GetNestedKey, DictUpdate
 from Inc.UtilP.UFS import GetFiles

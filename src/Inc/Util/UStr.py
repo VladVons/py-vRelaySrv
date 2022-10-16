@@ -1,9 +1,6 @@
-'''
-Author:      Vladimir Vons <VladVons@gmail.com>
-Created:     2020.02.21
-License:     GNU, see LICENSE for more details
-Description:
-'''
+# Created: 2020.02.21
+# Author: Vladimir Vons <VladVons@gmail.com>
+# License: GNU, see LICENSE for more details
 
 
 def SplitPad(aCnt: int, aStr: str, aDelim: str) -> list:
@@ -12,7 +9,6 @@ def SplitPad(aCnt: int, aStr: str, aDelim: str) -> list:
         R.append('')
     return R
 
-'''
 class TDictRepl:
     def __init__(self, aDict: dict = {}):
         self.Dict = aDict
@@ -34,4 +30,3 @@ class TDictRepl:
 
         self.Dict = {}
         return aStr
-'''

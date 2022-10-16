@@ -1,13 +1,10 @@
-'''
-Author: https://github.com/micropython/micropython-lib/tree/master/micropython/umqtt.simple/umqtt
-async fork of umqtt.simple (21 Jun 2017)
-
-alternative: https://github.com/peterhinch/micropython-mqtt
-
-slight changes applied to original code with VladVons comment
-mostly async/await keywords
-2021.02.17, VladVons
-'''
+# Created: 2021.02.17
+# Author: Vladimir Vons <VladVons@gmail.com>
+# License: GNU, see LICENSE for more details
+#
+# Arig: https://github.com/micropython/micropython-lib/tree/master/micropython/umqtt.simple/umqtt
+# async fork of umqtt.simple (21 Jun 2017)
+# alternative: https://github.com/peterhinch/micropython-mqtt
 
 
 import usocket as socket

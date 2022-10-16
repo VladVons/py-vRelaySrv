@@ -1,8 +1,6 @@
-'''
-Author:      Vladimir Vons <VladVons@gmail.com>
-Created:     2021.03.05
-License:     GNU, see LICENSE for more details
-'''
+# Created: 2021.03.05
+# Author: Vladimir Vons <VladVons@gmail.com>
+# License: GNU, see LICENSE for more details
 
 
 import uasyncio as asyncio

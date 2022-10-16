@@ -1,16 +1,13 @@
-'''
-Author:      Vladimir Vons <VladVons@gmail.com>
-Created:     2021.02.15
-License:     GNU, see LICENSE for more details
-
-https://github.com/kipe/pycron
-https://crontab.guru/examples.html
-
-Sec     Min     Hour    Day     Month   DOW
-*       */3     6,8-20  *       *       *
-
-IsNow('* */3 6,8-20 * * 2')
-'''
+# Created: 2021.02.15
+# Author: Vladimir Vons <VladVons@gmail.com>
+# License: GNU, see LICENSE for more details
+#
+# https://github.com/kipe/pycron
+# https://crontab.guru/examples.html
+#
+# Sec     Min     Hour    Day     Month   DOW
+# *       */3     6,8-20  *       *       *
+# IsNow('* */3 6,8-20 * * 2')
 
 
 import time

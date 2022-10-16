@@ -1,8 +1,6 @@
-'''
-Author:      Vladimir Vons <VladVons@gmail.com>
-Created:     2020.02.21
-License:     GNU, see LICENSE for more details
-'''
+# Created: 2020.02.21
+# Author: Vladimir Vons <VladVons@gmail.com>
+# License: GNU, see LICENSE for more details
 
 
 def GetTree(aObj, aPrefix: str = '', aDepth: int = 99) -> list:

@@ -1,13 +1,11 @@
-'''
-Author:      Vladimir Vons <VladVons@gmail.com>
-Created:     2022.04.20
-License:     GNU, see LICENSE for more details
+# Created: 2022.04.20
+# Author: Vladimir Vons <VladVons@gmail.com>
+# License: GNU, see LICENSE for more details
 
-import Inc.Colored as Cl
-Cl.Print('Hello World colored example', Cl.cYellow)
-print(Cl.Format('World', Cl.cBlue))
-print(Cl.fg(Cl.cRed) + 'Hello ' + Cl.fg(Cl.cGreen) + 'World !')
-'''
+# import Inc.Colored as Cl
+# Cl.Print('Hello World colored example', Cl.cYellow)
+# print(Cl.Format('World', Cl.cBlue))
+# print(Cl.fg(Cl.cRed) + 'Hello ' + Cl.fg(Cl.cGreen) + 'World !')
 
 
 cRed = (255, 0, 0)

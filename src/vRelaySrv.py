@@ -8,26 +8,20 @@ License:     GNU, see LICENSE for more details
 
 
 import asyncio
-import sys
+from sys import version_info
 #
-from Task import ConfApp
+from IncP import GetInfo
 from Task.Main import TApp
 
 
 def Run():
-    Task = TApp().Run()
-
-    if (ConfApp.Debug):
-        Loop = asyncio.get_event_loop()
-        Loop.set_debug(True)
-        Loop.slow_callback_duration = 0.01
-        Loop.run_until_complete(Task)
+    Info = GetInfo()
+    PyNeed = (3, 8, 0)
+    if (Info['Python'] >= PyNeed):
+        Task = TApp().Run()
+        asyncio.run(Task)
     else:
-        if (sys.version_info >= (3, 7)):
-            asyncio.run(Task)
-        else:
-            Loop = asyncio.get_event_loop()
-            Loop.run_until_complete(Task)
+        print(f'Need python >= {PyNeed}')
 
 if (__name__ == '__main__'):
     Run()

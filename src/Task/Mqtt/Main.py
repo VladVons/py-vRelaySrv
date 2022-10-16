@@ -12,7 +12,6 @@ import json
 from socket import gethostname
 from gmqtt import Client as MQTTClient
 #
-from Task import ConfApp
 from Inc.Util.UNet import CheckHost
 from IncP.DB.Relay_my import TDbApp
 from IncP.Log import Log

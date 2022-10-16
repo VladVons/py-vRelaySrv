@@ -1,8 +1,6 @@
-'''
-Author:      Vladimir Vons <VladVons@gmail.com>
-Created:     2021.01.30
-License:     GNU, see LICENSE for more details
-'''
+# Created: 2021.01.30
+# Author: Vladimir Vons <VladVons@gmail.com>
+# License: GNU, see LICENSE for more details
 
 
 try:
@@ -25,7 +23,7 @@ class TPluginTask(dict):
 
     def AddTask(self, aModule, aPath: str):
         gc.collect()
-        Log.Print(1, 'i', 'Plugin %s' % (aPath))
+        Log.Print(1, 'i', 'Load task %s' % (aPath))
 
         File = 'Conf/' + aPath.replace('.', '~')
         Conf = TConf(File + '.py')

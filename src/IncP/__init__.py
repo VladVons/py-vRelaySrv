@@ -26,6 +26,6 @@ def GetInfo() -> dict:
         'OS': UName.system,
         'Host': UName.node,
         'User': os.environ.get('USER'),
-        'Python': (sys.version_info.major, sys.version_info.minor),
+        'Python': (sys.version_info.major, sys.version_info.minor, sys.version_info.micro),
     }
     return Res

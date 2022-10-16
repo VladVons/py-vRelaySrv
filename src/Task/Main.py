@@ -8,7 +8,7 @@ License:     GNU, see LICENSE for more details
 import os
 import sys
 #
-from Task import ConfApp
+from Task import ConfTask
 from Inc.Log  import TEchoFile
 from Inc.PluginTask import Plugin
 from IncP import GetInfo
@@ -16,10 +16,11 @@ from IncP.Log import Log, TEchoConsoleEx
 
 
 class TApp():
-    def InitLog(self):
-        Info = GetInfo()
+    def __init__(self):
+        self.Info = GetInfo()
 
-        AppName = Info['App']
+    def InitLog(self):
+        AppName = self.Info['App']
         FileLog = '/var/log/%s/%s.log' % (AppName, AppName)
         if (not os.path.exists(FileLog)) or (not os.access(FileLog, os.W_OK)):
             FileLog = '%s.log' % (AppName)
@@ -31,10 +32,9 @@ class TApp():
     async def Run(self):
         self.InitLog()
 
-        Info = GetInfo()
-        Log.Print(1, 'i', 'Run() %s' % Info)
+        Log.Print(1, 'i', 'Run() %s' % self.Info['App'])
 
-        Plugin.LoadList(ConfApp.get('Plugins'))
+        Plugin.LoadList(ConfTask.get('Plugins', ''))
         try:
             await Plugin.Run()
         except KeyboardInterrupt as E:

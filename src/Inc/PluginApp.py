@@ -1,7 +1,6 @@
-'''
-VladVons@gmail.com
-2022.10.06
-'''
+# Created: 2022.10.06
+# Author: Vladimir Vons <VladVons@gmail.com>
+# License: GNU, see LICENSE for more details
 
 
 import sys
@@ -13,9 +12,10 @@ from IncP.Log import Log
 
 
 class TPluginApp():
-    def __init__(self, aConf: TConfJson):
+    def __init__(self, aConf: TConfJson, aPath: str):
         self.Conf = aConf
         self.Data = {}
+        self.Path = aPath
 
     @staticmethod
     def _Filter(aData: list[str]) -> list:
@@ -24,7 +24,7 @@ class TPluginApp():
     async def Load(self, aName: str, aDepth: int) -> dict:
         if (self.Data.get(aName) is None):
             Tab = '-' * (aDepth + 1)
-            Log.Print(1, 'i', '%sLoad %s' % (Tab, aName))
+            Log.Print(1, 'i', '%sLoad app %s' % (Tab, aName))
 
             Depends = self.Conf.GetKey('Plugin.' + aName + '.Depends', [])
             Depends = self._Filter(Depends)
@@ -33,7 +33,7 @@ class TPluginApp():
                     Log.Print(1, 'i', '%s%s depends on %s' % (Tab, aName, Depend))
                 await self.Load(Depend, aDepth + 1)
 
-            TClass = DynImport('IncP.Plugin.' + aName, 'T' + aName)
+            TClass = DynImport(self.Path + '.' + aName, 'T' + aName)
             if (TClass):
                 TimeStart = time.time()
                 Class = TClass()

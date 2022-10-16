@@ -1,10 +1,9 @@
-'''
-Author:      Vladimir Vons <VladVons@gmail.com>
-Created:     2020.03.08
-License:     GNU, see LICENSE for more details
+# Created: 2020.03.08
+# Author: Vladimir Vons <VladVons@gmail.com>
+# License: GNU, see LICENSE for more details
 
-https://blog.finxter.com/list-to-dict-convert-a-list-into-a-dictionary-in-python
-'''
+# https://blog.finxter.com/list-to-dict-convert-a-list-into-a-dictionary-in-python
+
 
 
 # python Sort dictionary of dictionaries by value

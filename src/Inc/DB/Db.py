@@ -1,8 +1,6 @@
-'''
-Author:      Vladimir Vons <VladVons@gmail.com>
-Created:     2020.03.03
-License:     GNU, see LICENSE for more details
-'''
+# Created: 2020.03.03
+# Author: Vladimir Vons <VladVons@gmail.com>
+# License: GNU, see LICENSE for more details
 
 
 from Inc.Util import UArr
