@@ -23,7 +23,7 @@ class TEcho():
                 Arr.append(str(Val))
         return ', '.join(Arr)
 
-    async def _Write(self, aMsg: str):
+    def _Write(self, aMsg: str):
         raise NotImplementedError()
 
     def Write(self, aArgs: dict):
@@ -43,7 +43,7 @@ class TEchoFile(TEcho):
         self.Name = aName
 
     def _Write(self, aMsg: str):
-        with open(self.Name, 'a+') as F:
+        with open(self.Name, 'a+', encoding='utf-8') as F:
             F.write(aMsg + '\n')
 
 
@@ -61,7 +61,12 @@ class TLog():
         if (not self.FindEcho(Name)):
             self.Echoes.append(aEcho)
 
-    def Print(self, aLevel: int, aType: str, aMsg: str, aData: list = [], aE: Exception = None, aSkipEcho: list = []):
+    def Print(self, aLevel: int, aType: str, aMsg: str, aData: list = None, aE: Exception = None, aSkipEcho: list = None):
+        if (aData is None):
+            aData = []
+        if (aSkipEcho is None):
+            aSkipEcho = []
+
         self.Cnt += 1
         Args = {'aL': aLevel, 'aT': aType, 'aM': aMsg, 'aD': aData, 'aE': aE, 'c': self.Cnt, 'd': GetDate(), 't': GetTime()}
         for Echo in self.Echoes:

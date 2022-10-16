@@ -49,7 +49,7 @@ class TDictDefCall(dict):
     def __getattr__(self, aName: str) -> object:
         Res = self.get(aName)
         if (hasattr(Res, 'Get')):
-           Res = Res.Get()
+            Res = Res.Get()
         return Res
 
 

@@ -26,12 +26,12 @@ import os
 import random
 import re
 #
-from .Api import Api
 from Inc.DB.DbList import TDbList
 from Inc.Util.UObj import GetNestedKey
 from IncP.Download import TDownload, GetSoup
 from IncP.Log import Log
 from IncP.Utils import FilterKeyErr, FilterNone
+from .Api import Api
 
 
 class TSender():
@@ -99,9 +99,14 @@ class TWebScraper():
     async def _DoWorkerUrl(self, aUrl: str, aData, aStatus: int, aTime: float):
         raise NotImplementedError()
 
-    async def _DoWorkerStart(self): ...
-    async def _DoWorkerEnd(self): ...
-    async def _DoWorkerException(self, aUrl: str, aData): ...
+    async def _DoWorkerStart(self):
+        pass
+
+    async def _DoWorkerEnd(self):
+        pass
+
+    async def _DoWorkerException(self, aUrl: str, aData):
+        pass
 
     def Wait(self, aEnable: bool):
         if  (aEnable):
@@ -281,4 +286,3 @@ class TWebScraperUpdate(TWebScraper):
         Msg = 'status:%d, done:%d, total:%dM, %s ;' % (
             aStatus, self.TotalUrl, self.TotalData / 1000000, aUrl)
         Log.Print(1, 'i', Msg)
-

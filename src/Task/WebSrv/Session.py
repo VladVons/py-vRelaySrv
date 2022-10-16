@@ -22,7 +22,7 @@ class TSession():
     async def Update(self, aRequest: web.Request):
         self.Data = await aiohttp_session.get_session(aRequest)
         if (self.Cnt % 5 == 0):
-           await self.UpdateUserConfig()
+            await self.UpdateUserConfig()
         self.Cnt += 1
 
     @staticmethod

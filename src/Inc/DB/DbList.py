@@ -8,7 +8,8 @@ import random
 import operator
 
 
-class TDbListException(Exception): ...
+class TDbListException(Exception):
+    pass
 
 
 # https://blog.boot.dev/computer-science/binary-search-tree-in-python/
@@ -235,7 +236,10 @@ class TDbRec(list):
 
 
 class TDbList():
-    def __init__(self, aFields: list = [], aData: list = None):
+    def __init__(self, aFields: list = None, aData: list = None):
+        if (aFields is None):
+            aFields = []
+
         self.Tag = 0
         self.Data = []
         self._RecNo = 0
@@ -256,10 +260,10 @@ class TDbList():
     def __next__(self):
         if (self._RecNo >= self.GetSize() - 1):
             raise StopIteration
-        else:
-            self._RecNo += 1
-            self._RecInit()
-            return self.Rec
+
+        self._RecNo += 1
+        self._RecInit()
+        return self.Rec
 
     def __repr__(self):
         return self._Repr()
@@ -283,7 +287,7 @@ class TDbList():
         Fields = self.Fields.GetList()
 
         Format = []
-        for Idx, (Key, Value) in enumerate(self.Fields.items()):
+        for Idx, (_Key, Value) in enumerate(self.Fields.items()):
             Align = '' if Value[1] in [int, float] else '-'
             Format.append('%' + Align + str(FieldsLen[Idx]) + 's\t')
         Format = ''.join(Format)
@@ -366,7 +370,12 @@ class TDbList():
             Res = list(set(Res))
         return Res
 
-    def ExportData(self, aFields: list = [], aCond: TDbCond = None, aRecNo: tuple = (0, -1)) -> list:
+    def ExportData(self, aFields: list = None, aCond: TDbCond = None, aRecNo: tuple = None) -> list:
+        if (aFields is None):
+            aFields = []
+        if (aRecNo is None):
+            aRecNo = (0, -1)
+
         Start, Finish = aRecNo
         if (Finish == -1):
             Finish = self.GetSize()
@@ -466,7 +475,10 @@ class TDbList():
         self.BeeTree[aField] = BeeTree
         return BeeTree
 
-    def AddField(self, aFields: list = []):
+    def AddField(self, aFields: list = None):
+        if (aFields is None):
+            aFields = []
+
         self.Fields.AddList(aFields)
         for Row in self.Data:
             for Field in aFields:
@@ -482,7 +494,12 @@ class TDbList():
         Fields.remove(aField)
         self.Fields = self.Fields.GetFields(Fields)
 
-    def Clone(self, aFields: list = [], aCond: TDbCond = None, aRecNo: tuple = (0, -1)) -> 'TDbList':
+    def Clone(self, aFields: list = None, aCond: TDbCond = None, aRecNo: tuple = None) -> 'TDbList':
+        if (aFields is None):
+            aFields = []
+        if (aRecNo is None):
+            aRecNo = (0, -1)
+
         Data = self.ExportData(aFields, aCond, aRecNo)
         return self._DbExp(Data, aFields)
 
@@ -509,7 +526,7 @@ class TDbList():
         self.RecNo = aNo
         return self.Rec
 
-    def RecAdd(self, aData: list = []) -> TDbRec:
+    def RecAdd(self, aData: list = None) -> TDbRec:
         if (aData):
             self.Rec.SetData(aData)
         else:

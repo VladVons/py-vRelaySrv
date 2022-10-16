@@ -11,9 +11,10 @@ from .Db import TDb, TDbFields, TDbField
 class TDblField(TDbField):
     def Struct(self) -> str:
         if (self.Type == 's'):
-            return '%s%s' % (self.Len, 's')
+            Res = '%s%s' % (self.Len, 's')
         else:
-            return '%s%s' % (1, self.Type)
+            Res = '%s%s' % (1, self.Type)
+        return Res
 
     def ValToData(self, aVal) -> bytearray:
         Struct: str = '<' + self.Struct()
@@ -64,7 +65,7 @@ class TDbPack(TDb):
         self.S.write(Data)
 
         self.S.seek(16)
-        for K, V in aFields.Sort():
+        for _K, V in aFields.Sort():
             Data = struct.pack('<11s1s1B3s', V.Name.encode(), V.Type.encode(), V.Len, b'\x00')
             self.S.write(Data)
 
@@ -76,7 +77,7 @@ class TDbPack(TDb):
         Sign, self.HeadLen, self.RecLen, Fields = struct.unpack('<1B1H1H1H', Data[0:1+2+2+2])
         assert (Sign == self.Sign), 'bad signature'
 
-        for i in range(Fields):
+        for _i_ in range(Fields):
             Data = self.S.read(16)
             FName, FType, FLen, X = struct.unpack('<11s1s1B3s', Data)
             Name = FName.split(b'\x00', 1)[0].decode()

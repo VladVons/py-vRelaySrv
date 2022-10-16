@@ -102,7 +102,8 @@ def DigSplit(aVal: str) -> tuple:
     for x in aVal.rstrip('.'):
         if (x in _Whitespace):
             continue
-        elif (After == '') and (x in _DigitsDotComma):
+
+        if (After == '') and (x in _DigitsDotComma):
             if (x == ','):
                 x = '.'
             Digit += x
@@ -131,7 +132,7 @@ class TSchemeExt():
             aVal = self.Parent.Var.get('$host') + '/' + aVal.strip('/')
         return aVal
 
-    def var_get(self, aNotUsed: object, aName: str) -> object:
+    def var_get(self, _aNotUsed: object, aName: str) -> object:
         '''
         get variable
         ["var_get", ["$root"]]
@@ -263,7 +264,7 @@ class TSchemeApi():
     @staticmethod
     def price_find(aVal: str, aCur: str = 'грн') -> list:
         '''
-        get prices from string using regEx '[\d\.]{2,}\s*' + aCur
+        get prices from string using regEx r'[\d\.]{2,}\s*' + aCur
         ["price_find"]
         '''
 
@@ -294,7 +295,7 @@ class TSchemeApi():
                 return aVal
 
     @staticmethod
-    def serial_find(aVal: str, aMatch: str = '[A-Z0-9\-\./]{5,}') -> str:
+    def serial_find(aVal: str, aMatch: str = r'[A-Z0-9\-\./]{5,}') -> str:
         '''
         get serial number with regex matches
         ["serial_find"]
@@ -353,9 +354,10 @@ class TSchemeApi():
         Func = getattr(operator, aOp, None)
         if (Func):
             if (aValue is None):
-                return Func(aVal)
+                Res = Func(aVal)
             else:
-                return Func(aVal, aValue)
+                Res = Func(aVal, aValue)
+            return Res
 
     @staticmethod
     def _dig_lat(aVal: str) -> str:
@@ -426,11 +428,13 @@ class TSchemeApi():
                 return Res
 
     @staticmethod
-    def app_json(aVal: BeautifulSoup, aFind: dict = {'@type': 'Product'}) -> dict:
+    def app_json(aVal: BeautifulSoup, aFind: dict = None) -> dict:
         '''
         searches value in sections <script>application/ld+json</script>
         ["app_json", [{"@type": "Product"}]]
         '''
+        if (aFind is None):
+            aFind = {'@type': 'Product'}
 
         Res = {}
         Items = aVal.find_all('script', type='application/ld+json')
@@ -507,7 +511,7 @@ class TSchemeApi():
         return aVal
 
     @staticmethod
-    def none(aVal: object) -> None:
+    def none(_aVal: object) -> None:
         '''
         return None and stop parsing
         ["none"]
@@ -530,7 +534,7 @@ class TSchemeApi():
         ["unbracket", ["()", -1]]
         '''
 
-        Pattern = '\%s(.*?)\%s' % (aPair[0], aPair[1])
+        Pattern = r'\%s(.*?)\%s' % (aPair[0], aPair[1])
         Res = re.findall(Pattern, aVal)
         if (Res):
             if (aIdx is not None):
@@ -561,7 +565,7 @@ class TSchemeApi():
         return aVal
 
     @staticmethod
-    def _help(aVal: object) -> list:
+    def _help(_aVal: object) -> list:
         '''
         show brief help
         ["help"]

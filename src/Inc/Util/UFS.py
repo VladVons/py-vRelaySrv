@@ -8,9 +8,10 @@ import os
 
 def FileLoad(aName: str, aMode: str = 'r') -> str:
     try:
-        with open(aName, aMode) as F:
+        with open(aName, aMode, encoding='utf-8') as F:
             return F.read()
-    except: pass
+    except:
+        pass
 
 def FileStat(aName: str) -> tuple:
     try:

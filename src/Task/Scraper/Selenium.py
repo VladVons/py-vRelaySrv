@@ -27,15 +27,15 @@ Starter = TStarter()
 Starter.ThreadCreate(Urls, 5)
 '''
 
+import asyncio
+import multiprocessing
+import time
+
 #from selenium.webdriver import Chrome as Browser
 #from selenium.webdriver.chrome.options import Options
 
 from selenium.webdriver.firefox.webdriver import WebDriver as Browser
 from selenium.webdriver.firefox.options import Options
-
-import asyncio
-import multiprocessing
-import time
 
 
 class TSelenium():
@@ -78,9 +78,9 @@ class TStarter():
         self.IsRun.value = True
 
         Queue = multiprocessing.JoinableQueue()
-        NotUsed = [Queue.put(x) for x in aUrls]
+        _NotUsed = [Queue.put(x) for x in aUrls]
 
-        for i in range(aCnt):
+        for _i in range(aCnt):
             process = multiprocessing.Process(target = self.ThreadRun, args = [Queue])
             process.daemon = True
             process.start()

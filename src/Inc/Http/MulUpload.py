@@ -4,9 +4,9 @@
 
 
 try:
-  import asyncio
+    import asyncio
 except:
-  import uasyncio as asyncio
+    import uasyncio as asyncio
 
 
 class TMulUpload():
@@ -32,7 +32,8 @@ class TMulUpload():
         BoundLen = len(Boundary)
 
         ContLen = int(aHead.get('content-length', '0'))
-        FileN = ''; FileH = None
+        FileN = ''
+        FileH = None
         InHead = True
         Len = 0
         while (Len < ContLen):
@@ -59,7 +60,7 @@ class TMulUpload():
                             FileN = Rec.get('filename')
                             if (FileN):
                                 FileN = aPath + '/' + FileN.replace('"', '')
-                                FileH = open(FileN, 'w')
+                                FileH = open(FileN, 'w', encoding='utf-8')
                 else:
                     if (FileH):
                         FileH.write(Line)

@@ -36,7 +36,10 @@ class TApiBase():
         if (Diff):
             return 'param unknown. %s' % Diff
 
-    def PluginAdd(self, aCls: object, aArgs: dict = {}) -> object:
+    def PluginAdd(self, aCls: object, aArgs: dict = None) -> object:
+        if (aArgs is None):
+            aArgs = {}
+
         Name = aCls.__name__
         if (not self.Url.get(Name)):
             Res = aCls(aArgs)
@@ -59,7 +62,7 @@ class TApiBase():
                 Method = self.DefMethod
 
             if (not Method):
-               return {'Type': 'Err', 'Data': 'unknown method %s' % (aPath)}
+                return {'Type': 'Err', 'Data': 'unknown method %s' % (aPath)}
 
         ParamInf = UrlInf.get('param')
         if (ParamInf) and (ParamInf[0] == '*'):
@@ -97,7 +100,10 @@ class TWebClient():
             aAuth = {}
         self.Auth = aAuth
 
-    async def Send(self, aPath: str, aPost: dict = {}):
+    async def Send(self, aPath: str, aPost: dict = None):
+        if (aPost is None):
+            aPost = {}
+
         Auth = aiohttp.BasicAuth(self.Auth.get('User'), self.Auth.get('Password'))
         Url = 'http://%s:%s/%s' % (self.Auth.get('Server'), self.Auth.get('Port'), aPath)
         TimeAt = time.time()
@@ -116,10 +122,15 @@ class TWebSockClient():
     def __init__(self, aAuth: dict = None):
         if (aAuth is None):
             aAuth = {}
+
         self.Auth = aAuth
         self.OnMessage = None
+        self.WS = None
 
-    async def Connect(self, aPath: str, aParam: dict = {}):
+    async def Connect(self, aPath: str, aParam: dict = None):
+        if (aParam is None):
+            aParam = {}
+
         Auth = aiohttp.BasicAuth(self.Auth.get('User'), self.Auth.get('Password'))
         Url = 'http://%s:%s/%s' % (self.Auth.get('Server'), self.Auth.get('Port'), aPath)
         async with aiohttp.ClientSession(auth=Auth) as Session:
@@ -128,7 +139,7 @@ class TWebSockClient():
                     if (Msg.type == aiohttp.WSMsgType.TEXT):
                         Data = json.loads(Msg.data)
                         await self.DoMessage(Data)
-                    elif (Msg.type == aiohttp.WSMsgType.CLOSED) or (Msg.type == aiohttp.WSMsgType.ERROR):
+                    elif (Msg.type in [aiohttp.WSMsgType.CLOSED, aiohttp.WSMsgType.ERROR]):
                         break
 
     async def Close(self):

@@ -1,5 +1,6 @@
-def Main(aConf) -> tuple:
-    from .Main import TScraperSrv
+from .Main import TScraperSrv
 
+
+def Main(aConf) -> tuple:
     Obj = TScraperSrv(aConf)
     return (Obj, Obj.Run(10))

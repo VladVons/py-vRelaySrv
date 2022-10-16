@@ -10,10 +10,10 @@ import re
 
 def ParseFile(aFile: str) -> list:
     Res = []
-    with open(aFile, 'r') as File:
+    with open(aFile, 'r', encoding = 'utf-8') as File:
         Res = []
         for x in File.readlines():
-            Method = re.findall('\s*def\s+(.*?):\s*$', x)
+            Method = re.findall(r'\s*def\s+(.*?):\s*$', x)
             if (Method):
                 Res.append(Method)
     return Res

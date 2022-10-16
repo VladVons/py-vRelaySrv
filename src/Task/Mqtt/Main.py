@@ -24,17 +24,17 @@ class TMqtt():
         self.Conf = aConf
         self.Db = TDbApp(aConf.DbAuth)
 
-    def on_connect(self, client, flags, rc, properties):
+    def on_connect(self, client, _flags, _rc, _properties):
         Msg = {'Data':{'Val':'-1'}}
         client.publish(Name + '/srv', json.dumps(Msg))
 
         client.subscribe(Name + '/#', qos=1)
         Log.Print(1, 'i', 'on_connect')
 
-    def on_disconnect(self, client, packet):
+    def on_disconnect(self, _client, _packet):
         Log.Print(1, 'i', 'on_disconnect')
 
-    async def on_message(self, client, topic, payload, qos, properties):
+    async def on_message(self, _client, _topic, payload, _qos, _properties):
         #Log.Print(1, 'i', 'on_message. topic %s, payload %s, qos %s' % (topic, payload, qos))
         Msg = json.loads(payload.decode('utf-8'))
         Id = Msg.get('Id')

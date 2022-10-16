@@ -39,7 +39,10 @@ class TPython():
         except Exception as E:
             return self.ErrMsg(E, sys.exc_info())
 
-    def Exec(self, aParam: dict = {}) -> object:
+    def Exec(self, aParam: dict = None) -> object:
+        if (aParam is None):
+            aParam = {}
+
         try:
             Out = {}
             Script = self.ByteCode if (self.ByteCode) else self.Script

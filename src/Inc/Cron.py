@@ -18,8 +18,9 @@ def _Parse(aValue: str, aTarget: int) -> bool:
         # *
         if (aValue == '*'):
             return True
+
         # 3-5
-        elif ('-' in Value):
+        if ('-' in Value):
             Start, End = Value.split('-')
             if (int(Start) <= aTarget <= int(End)):
                 return True
@@ -48,7 +49,10 @@ def IsNow(aPattern: str) -> bool:
 
 class TCron():
     #Data = [('* */2 8-13 * * *', 22), ('* * 14-23 * * *', 24)]
-    def __init__(self, aData = []):
+    def __init__(self, aData = None):
+        if (aData is None):
+            aData = []
+
         self.Data = aData
 
     async def Get(self):

@@ -24,7 +24,7 @@ class TApiTask():
         self.Tasks = TDbList( [('SiteId', int), ('StartAt', type(datetime.now())), ('Urls', TDbSql)] )
         self.Lock = asyncio.Lock()
 
-    async def Get(self, aData: dict) -> dict:
+    async def Get(self, _aData: dict) -> dict:
         async with self.Lock:
             ExclId = self.Tasks.ExportList('SiteId')
 
@@ -37,20 +37,20 @@ class TApiTask():
                 #Res['scheme'] = json.loads(Res['scheme'])
                 self.Tasks.RecAdd([Dbl.Rec.GetField('id'), datetime.now(), Dbl])
                 return Res
-            else:
-                Dbl = await self.Parent.Db.GetSitesForUpdate(aExclId=ExclId)
-                if (not Dbl.IsEmpty()):
-                    Dbl.Shuffle()
-                    SiteId = Dbl.Rec.GetField('id')
-                    Res = Dbl.Rec.GetAsDict()
 
-                    Dbl = await self.Parent.Db.GetSiteUrlsForUpdate(SiteId)
-                    Dbl.Tag = 'Update'
-                    Res['Type'] = Dbl.Tag
-                    Res['Urls'] = Dbl.GetData()
+            Dbl = await self.Parent.Db.GetSitesForUpdate(aExclId=ExclId)
+            if (not Dbl.IsEmpty()):
+                Dbl.Shuffle()
+                SiteId = Dbl.Rec.GetField('id')
+                Res = Dbl.Rec.GetAsDict()
 
-                    self.Tasks.RecAdd([SiteId, datetime.now(), Dbl])
-                    return Res
+                Dbl = await self.Parent.Db.GetSiteUrlsForUpdate(SiteId)
+                Dbl.Tag = 'Update'
+                Res['Type'] = Dbl.Tag
+                Res['Urls'] = Dbl.GetData()
+
+                self.Tasks.RecAdd([SiteId, datetime.now(), Dbl])
+                return Res
 
 
 class TApi(TApiBase):
@@ -81,29 +81,29 @@ class TApi(TApiBase):
         Dbl = await self.Db.UserAuth(aUser, aPassw)
         return (not Dbl.IsEmpty())
 
-    async def path_get_hand_shake(self, aPath: str, aData: dict) -> dict:
+    async def path_get_hand_shake(self, _aPath: str, _aData: dict) -> dict:
         return True
 
-    async def path_get_task(self, aPath: str, aData: dict) -> dict:
+    async def path_get_task(self, _aPath: str, aData: dict) -> dict:
         return await self.ApiTask.Get(aData)
 
-    async def path_get_scheme_empty(self, aPath: str, aData: dict) -> dict:
+    async def path_get_scheme_empty(self, _aPath: str, aData: dict) -> dict:
         Dbl = await self.Db.GetScheme(True, aData.get('cnt', 1))
         return Dbl.Export()
 
-    async def path_get_scheme_not_empty(self, aPath: str, aData: dict) -> dict:
+    async def path_get_scheme_not_empty(self, _aPath: str, aData: dict) -> dict:
         Dbl = await self.Db.GetScheme(False, aData.get('cnt', 1))
         return Dbl.Export()
 
-    async def path_get_scheme_mederate(self, aPath: str, aData: dict) -> dict:
+    async def path_get_scheme_mederate(self, _aPath: str, _aData: dict) -> dict:
         Dbl = await self.Db.GetSchemeModerate()
         return Dbl.Export()
 
-    async def path_get_scheme_by_id(self, aPath: str, aData: dict) -> dict:
+    async def path_get_scheme_by_id(self, _aPath: str, aData: dict) -> dict:
         Dbl = await self.Db.GetSiteById(aData.get('id'))
         return Dbl.Export()
 
-    async def path_set_scheme(self, aPath: str, aData: dict) -> dict:
+    async def path_set_scheme(self, _aPath: str, aData: dict) -> dict:
         Scheme = json.loads(aData.get('scheme'))
         Urls = GetNestedKey(Scheme, 'Product.Info.Url')
         if (Urls):
@@ -111,15 +111,15 @@ class TApi(TApiBase):
             Url = UrlInf.scheme + '://' + UrlInf.hostname
             return await self.Db.SetScheme(Url, aData.get('scheme'), aData.get('trust', False))
 
-    async def path_get_sites(self, aPath: str, aData: dict) -> dict:
+    async def path_get_sites(self, _aPath: str, aData: dict) -> dict:
         Dbl = await self.Db.GetSites(aData.get('cnt', -1))
         return Dbl.Export()
 
-    async def path_get_user_id(self, aPath: str, aData: dict) -> dict:
+    async def path_get_user_id(self, _aPath: str, aData: dict) -> dict:
         Dbl = await self.Db.UserAuth(aData.get('login'), aData.get('passw'))
         return Dbl.Export()
 
-    async def path_get_user_config(self, aPath: str, aData: dict) -> dict:
+    async def path_get_user_config(self, _aPath: str, aData: dict) -> dict:
         Conf = {}
 
         UserId = aData.get('id')
@@ -138,13 +138,13 @@ class TApi(TApiBase):
         Dbl = TDbList().ImportPair(Conf, 'name', ('data', str))
         return Dbl.Export()
 
-    async def path_add_sites(self, aPath: str, aData: dict) -> dict:
+    async def path_add_sites(self, _aPath: str, aData: dict) -> dict:
         Data = aData.get('dbl')
         Dbl = TDbSql(self.Db).Import(Data)
         await Dbl.Insert('site')
         return True
 
-    async def path_send_result(self, aPath: str, aData: dict) -> dict:
+    async def path_send_result(self, _aPath: str, aData: dict) -> dict:
         Dbl = TDbList().Import(aData)
         DblFields = Dbl.Fields.GetList()
 

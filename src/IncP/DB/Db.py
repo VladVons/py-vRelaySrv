@@ -102,7 +102,7 @@ class TDb():
             #await Connect.commit()
 
     async def ExecFile(self, aFile: str):
-        with open(aFile, 'r') as File:
+        with open(aFile, 'r', encoding = 'utf-8') as File:
             Query = File.read().strip()
             await self.Exec(Query)
 
@@ -127,11 +127,11 @@ class TDb():
                 return Res
 
     async def FetchWait(self, aSql: str, aTimeout = 5):
-          try:
+        try:
             return await asyncio.wait_for(self.Fetch(aSql), timeout=aTimeout)
-          except asyncio.TimeoutError:
+        except asyncio.TimeoutError:
             pass
-          except Exception as E:
+        except Exception as E:
             Log.Print(1, 'x', 'Exec()', aE = E)
 
     @staticmethod

@@ -6,7 +6,6 @@ License:     GNU, see LICENSE for more details
 
 
 import os
-import sys
 #
 from Task import ConfTask
 from Inc.Log  import TEchoFile

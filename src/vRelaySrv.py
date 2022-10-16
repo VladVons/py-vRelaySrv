@@ -8,7 +8,6 @@ License:     GNU, see LICENSE for more details
 
 
 import asyncio
-from sys import version_info
 #
 from IncP import GetInfo
 from Task.Main import TTask

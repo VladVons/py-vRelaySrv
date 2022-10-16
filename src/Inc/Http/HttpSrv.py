@@ -4,9 +4,9 @@
 
 
 try:
-  import asyncio
+    import asyncio
 except:
-  import uasyncio as asyncio
+    import uasyncio as asyncio
 #
 from IncP.Log  import Log
 from Inc.Util import UFS
@@ -67,7 +67,7 @@ class THttpApi():
 
     @staticmethod
     async def FileToStream(aWriter: asyncio.StreamWriter, aName: str, aMode: str = 'r'):
-        with open(aName, aMode) as F:
+        with open(aName, aMode, encoding='utf-8') as F:
             while True:
                 Data = F.read(512)
                 if (not Data):
@@ -105,7 +105,7 @@ class THttpApi():
         await aWriter.awrite(str(Header))
         await self.FileToStream(aWriter, self.DirRoot + Path, Mode)
 
-    async def DoUrl(self, aReader: asyncio.StreamReader, aWriter: asyncio.StreamWriter, aHead: dict):
+    async def DoUrl(self, _aReader: asyncio.StreamReader, aWriter: asyncio.StreamWriter, aHead: dict):
         await self.LoadFile(aWriter, aHead['path'])
 
     async def CallBack(self, aReader: asyncio.StreamReader, aWriter: asyncio.StreamWriter):

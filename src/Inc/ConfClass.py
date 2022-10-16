@@ -3,7 +3,6 @@
 # License: GNU, see LICENSE for more details
 
 
-import os
 import json
 #
 from IncP.Log import Log
@@ -55,23 +54,23 @@ class TConfClass(TConf):
                 Log.Print(1, 'x', '_Load()', aE = E)
                 print('Data-x', Data)
 
-    '''
-     def _DirList(self, aDir):
-        return [aDir + '/' + File for File in sorted(os.listdir(aDir)) if File.endswith('.json')]
 
-    def Loads(self, aFiles: list, aVars: dict = {}):
-        for File in aFiles:
-            self.Load(File)
+    #  def _DirList(self, aDir):
+    #     return [aDir + '/' + File for File in sorted(os.listdir(aDir)) if File.endswith('.json')]
 
-    def LoadDir(self, aDir: str, aVars: dict = {}):
-        self.Loads(self._DirList(aDir), aVars)
+    # def Loads(self, aFiles: list, aVars: dict = {}):
+    #     for File in aFiles:
+    #         self.Load(File)
 
-    def LoadPlugin(self, aDir: str, aPlugin: list, aVars: dict = {}):
-        DirList = self._DirList(aDir)
-        Files = [DL for DL in DirList if any(P in DL for P in aPlugin)]
-        self.Loads(Files, aVars)
+    # def LoadDir(self, aDir: str, aVars: dict = {}):
+    #     self.Loads(self._DirList(aDir), aVars)
 
-    def Clear(self):
-         for Item in list(self.keys()):
-            del self[Item]
-'''
+    # def LoadPlugin(self, aDir: str, aPlugin: list, aVars: dict = {}):
+    #     DirList = self._DirList(aDir)
+    #     Files = [DL for DL in DirList if any(P in DL for P in aPlugin)]
+    #     self.Loads(Files, aVars)
+
+    # def Clear(self):
+    #      for Item in list(self.keys()):
+    #         del self[Item]
+

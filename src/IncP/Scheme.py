@@ -11,8 +11,8 @@ import json
 import random
 import re
 import sys
-from bs4 import BeautifulSoup
 from urllib.parse import urlparse
+from bs4 import BeautifulSoup
 #
 from Inc.Util.UObj import GetNestedKey
 from IncP.Python import TPython
@@ -254,6 +254,10 @@ class TSoupScheme():
 
 class TSchemePy():
     def __init__(self, aScheme: str):
+        self.Err = None
+        self.Data = None
+        self.Pipe = None
+
         self.Python = TPython(aScheme)
         self.Python.Compile()
         self.Clear()
@@ -277,13 +281,21 @@ class TSchemePy():
 
     def GetUrl(self) -> list:
         #Match = re.search('Url\s*=\s*(.*?)$', self.Scheme, re.DOTALL)
-        Match = re.search("(?P<url>http[s]?://[^\s]+)", self.Python.Script, re.DOTALL)
+        Match = re.search(r'(?P<url>http[s]?://[^\s]+)', self.Python.Script, re.DOTALL)
         if (Match):
             return [Match.group('url')]
+
+    def GetFields(self) -> list:
+        raise NotImplementedError()
 
 
 class TSchemeJson():
     def __init__(self, aScheme: str):
+        self.Err = None
+        self.Data = None
+        self.Pipe = None
+        self.Warn = None
+
         self.Debug = False
         self.Scheme = json.loads(aScheme)
         self.Clear()
@@ -303,6 +315,9 @@ class TSchemeJson():
     def GetUrl(self) -> list:
         return GetNestedKey(self.Scheme, 'Product.Info.Url')
 
+    def GetFields(self) -> list:
+        raise NotImplementedError()
+
 
 def TScheme(aScheme: str):
     if ('aApi.' in aScheme):
@@ -321,7 +336,10 @@ def TScheme(aScheme: str):
             self.Err = []
             self.Warn = []
 
-        def GetData(self, aKeys: list = []) -> dict:
+        def GetData(self, aKeys: list = None) -> dict:
+            if (aKeys is None):
+                aKeys = []
+
             Res = {'Data': self.Data, 'Err': self.Err, 'Pipe': self.Pipe, 'Warn': self.Warn}
             if (aKeys):
                 Res = {Key: Res.get(Key) for Key in aKeys}

@@ -2,15 +2,16 @@
 # Author: Vladimir Vons <VladVons@gmail.com>
 # License: GNU, see LICENSE for more details
 
-
 try:
-  import asyncio
+    import asyncio
 except:
-  import uasyncio as asyncio
+    import uasyncio as asyncio
 
 
 async def CheckHost(aHost: str, aPort: int = 80, aTimeOut: int = 1) -> bool:
     try:
         await asyncio.wait_for(asyncio.open_connection(aHost, aPort), timeout=aTimeOut)
-        return True
-    except: pass
+        Res = True
+    except:
+        Res = False
+    return Res

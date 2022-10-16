@@ -42,17 +42,17 @@ class TScraperSrv():
 
             Res = await Api.Call(Name, Post)
             return web.json_response(Res, dumps=TJsonEncoder.Dumps)
-        else:
-            Res = {'Type': 'Err', 'Data': 'Authorization failed'}
-            return web.json_response(Res, status=403)
+
+        Res = {'Type': 'Err', 'Data': 'Authorization failed'}
+        return web.json_response(Res, status=403)
 
     async def _rWebSock(self, aRequest: web.Request) -> web.WebSocketResponse:
         if (await Api.AuthRequest(aRequest, self.Conf.Get('Auth'))):
             return await self.WebSockSrv.Handle(aRequest)
-        else:
-            WS = web.WebSocketResponse()
-            await WS.prepare(aRequest)
-            await WS.send_json({'Type': 'Err', 'Data': 'Authorization failed'})
+
+        WS = web.WebSocketResponse()
+        await WS.prepare(aRequest)
+        await WS.send_json({'Type': 'Err', 'Data': 'Authorization failed'})
 
     async def Run(self, aSleep: int = 10):
         App = web.Application()

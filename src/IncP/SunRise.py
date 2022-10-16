@@ -14,7 +14,7 @@ class TSun():
     http://www.srrb.noaa.gov/highlights/sunrise/calcdetails.html
     """
 
-    def __init__(self, aTZ, aLat, aLong): 
+    def __init__(self, aTZ, aLat, aLong):
         self.lat = aLat
         self.long = aLong
         self.when = aTZ
@@ -81,14 +81,14 @@ class TSun():
         sunrise_t, sunset_t and solarnoon_t
         """
 
-        timezone = self.timezone  # in hours, east is positive
+        Timezone = self.timezone  # in hours, east is positive
         longitude = self.long     # in decimal degrees, east is positive
         latitude = self.lat      # in decimal degrees, north is positive
 
-        time = self.time  # percentage past midnight, i.e. noon  is 0.5
+        Time = self.time  # percentage past midnight, i.e. noon  is 0.5
         day = self.day     # daynumber 1=1/1/1900
 
-        Jday = day + 2415018.5 + time - timezone / 24  # Julian day
+        Jday = day + 2415018.5 + Time - Timezone / 24  # Julian day
         Jcent = (Jday - 2451545) / 36525    # Julian century
 
         Manom = 357.52911 + Jcent * (35999.05029 - 0.0001537 * Jcent)
@@ -111,7 +111,7 @@ class TSun():
                              tan(rad(latitude)) *
                              tan(rad(declination))))
 
-        self.solarnoon_t = (720 - 4 * longitude - eqtime + timezone * 60) / 1440
+        self.solarnoon_t = (720 - 4 * longitude - eqtime + Timezone * 60) / 1440
         self.sunrise_t = self.solarnoon_t - hourangle * 4 / 1440
         self.sunset_t = self.solarnoon_t + hourangle * 4 / 1440
 
@@ -121,10 +121,10 @@ if __name__ == "__main__":
     tz = timezone(timedelta(hours=3))
     mytz = datetime.now(tz=tz)
     print(type(mytz))
-    s = TSun(mytz, 49.5785, 25.6694)
+    Sun = TSun(mytz, 49.5785, 25.6694)
 
     print()
     print('time zone', tz, datetime.today())
-    print('sunrise:', s.SunRise())
-    print('solar noon:', s.SunNoon())
-    print('sunset:', s.SunSet())
+    print('sunrise:', Sun.SunRise())
+    print('solar noon:', Sun.SunNoon())
+    print('sunset:', Sun.SunSet())

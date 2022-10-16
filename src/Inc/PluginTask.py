@@ -4,9 +4,9 @@
 
 
 try:
-  import asyncio
+    import asyncio
 except:
-  import uasyncio as asyncio
+    import uasyncio as asyncio
 
 import gc
 import os
@@ -39,7 +39,7 @@ class TPluginTask(dict):
                 Class.CC = ConfClass
 
     def LoadDir(self, aDir: str):
-        Files = os.ilistdir(aDir)
+        Files = os.listdir(aDir)
         for Info in Files:
             if (Info[1] & 0x4000): # is dir
                 DirName = Info[0]
@@ -70,7 +70,7 @@ class TPluginTask(dict):
 
     async def _Post(self, aTasks, aOwner, aMsg, aFunc) -> dict:
         R = {}
-        for Key, (Class, Task) in aTasks:
+        for Key, (Class, _Task) in aTasks:
             if (Class != aOwner) and (hasattr(Class, aFunc)):
                 Func = getattr(Class, aFunc)
                 R[Key] = await Func(aOwner, aMsg)

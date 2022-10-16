@@ -20,7 +20,9 @@ class TApi(TApiBase):
         self.DefMethod = self.DefHandler
         self.WebClient = TWebClient()
 
-    async def DefHandler(self, aPath: str, aData: dict = {}) -> dict:
+    async def DefHandler(self, aPath: str, aData: dict = None) -> dict:
+        if (aData is None):
+            aData = {}
         return await self.WebClient.Send('web/' + aPath, aData)
 
     async def GetUserConfig(self):

@@ -4,11 +4,12 @@
 
 
 try:
-  import asyncio
+    import asyncio
 except:
-  import uasyncio as asyncio
+    import uasyncio as asyncio
 
-import sys, select
+import sys
+import select
 
 
 class TKbdTerm():
@@ -41,9 +42,11 @@ class TKbdTerm():
                 if (ord(K) == 10): # enter
                     print()
                     return R
-                elif (ord(K) == 27): # esc
+
+                if (ord(K) == 27): # esc
                     return ''
-                elif (ord(K) == 127): # bs
+
+                if (ord(K) == 127): # bs
                     R = R[:-1]
                 else:
                     R += K

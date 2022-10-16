@@ -52,10 +52,10 @@ class TDb():
     def __next__(self):
         if (self.RecNo >= self.GetSize()):
             raise StopIteration
-        else:
-            self.RecGo(self.RecNo)
-            self.RecNo += 1
-            return self.RecNo - 1
+
+        self.RecGo(self.RecNo)
+        self.RecNo += 1
+        return self.RecNo - 1
 
     def _SeekRecNo(self):
         Ofst: int = self.HeadLen + (self.RecNo * self.RecLen)
@@ -123,7 +123,7 @@ class TDb():
     def Create(self, aName: str, aFields: TDbFields):
         self.Close()
 
-        self.S = open(aName, 'wb+')
+        self.S = open(aName, 'wb+', encoding = 'utf-8')
         self._StructWrite(aFields)
         self._StructRead()
 
@@ -131,7 +131,7 @@ class TDb():
         self.Close()
 
         Mode: str = 'rb' if aROnly else 'rb+'
-        self.S = open(aName, Mode)
+        self.S = open(aName, Mode, encoding = 'utf-8')
 
         #self.HeadLen, self.RecLen
         self._StructRead()

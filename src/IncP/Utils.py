@@ -57,12 +57,12 @@ def FilterKey(aData: object, aKeys: list, aInstance: list) -> object:
                         aRes[Path] = Val
                     elif (aInstance == list):
                         aRes.append(Val)
-    if (aInstance == list) or (aInstance == dict):
-        Res = aInstance()
-        _FilterKey(aData, aKeys, Res, '')
-        return Res
-    else:
+    if (aInstance not in [list, dict]):
         raise ValueError('Must be dict or list')
+
+    Res = aInstance()
+    _FilterKey(aData, aKeys, Res, '')
+    return Res
 
 def FilterKeyErr(aData: dict, aAsStr: bool = False) -> list:
     def _FilterKey(aData: object, aRes: list):

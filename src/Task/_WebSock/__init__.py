@@ -1,5 +1,6 @@
-def Main(aConf) -> tuple:
-    from .Main import TWebSock
+from .Main import TWebSock
 
+
+def Main(aConf) -> tuple:
     Obj = TWebSock(aConf)
     return (Obj, Obj.Run())

@@ -19,29 +19,29 @@ class THyster():
             self.On = False
         return self.On
 
-'''
-    # Plus & Minus
-    def CheckPM(self, aKeep: float, aCur: float) -> bool:
-        if (self.H > 0):
-            if (aCur < aKeep):
-                self.On = True
-            elif (aCur >= aKeep + self.H):
-                self.On = False
-        else:
-            if (aCur > aKeep):
-                self.On = True
-            elif (aCur <= aKeep + self.H):
-                self.On = False
-        return self.On
-'''
 
-'''
-    def CheckMidPM(self, aKeep: float, aCur: float) -> bool:
-        Hyst = abs(self.H)
+    # # Plus & Minus
+    # def CheckPM(self, aKeep: float, aCur: float) -> bool:
+    #     if (self.H > 0):
+    #         if (aCur < aKeep):
+    #             self.On = True
+    #         elif (aCur >= aKeep + self.H):
+    #             self.On = False
+    #     else:
+    #         if (aCur > aKeep):
+    #             self.On = True
+    #         elif (aCur <= aKeep + self.H):
+    #             self.On = False
+    #     return self.On
 
-        if (aCur <= aKeep - Hyst):
-            self.On = self.H > 0
-        elif (aCur >= aKeep + Hyst):
-            self.On = self.H < 0
-        return self.On
-'''
+
+
+    # def CheckMidPM(self, aKeep: float, aCur: float) -> bool:
+    #     Hyst = abs(self.H)
+
+    #     if (aCur <= aKeep - Hyst):
+    #         self.On = self.H > 0
+    #     elif (aCur >= aKeep + Hyst):
+    #         self.On = self.H < 0
+    #     return self.On
+

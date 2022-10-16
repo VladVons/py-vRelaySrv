@@ -1,5 +1,6 @@
-def Main(aConf) -> tuple:
-    from .Main import TMqtt
+from .Main import TMqtt
 
+
+def Main(aConf) -> tuple:
     Obj = TMqtt(aConf)
     return (Obj, Obj.Run())

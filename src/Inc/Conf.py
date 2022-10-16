@@ -8,9 +8,11 @@ import sys
 from .Util.UFS import FileExists
 
 
-def ImportMod(aFile: str, aMod: list = ['*']):
-    #aMod = ['Main']
+def ImportMod(aFile: str, aMod: list = None):
+    if (aMod is None):
+        aMod = ['*']
 
+    #aMod = ['Main']
     #__import__(aPath)
     #Mod = sys.modules.get(aPath)
     return __import__(aFile.replace('/', '.'), None, None, aMod)
@@ -55,7 +57,7 @@ class TConf(TDictDef):
             self[Key] = getattr(Obj, Key, None)
 
     def Save(self):
-        with open(self.File, 'w') as File:
+        with open(self.File, 'w', encoding = 'utf-8') as File:
             for K, V in sorted(self.items()):
                 if (isinstance(V, str)):
                     V = "'" + V + "'"

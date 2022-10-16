@@ -14,6 +14,7 @@ import asyncio
 import io
 import ssl
 import time
+import requests
 #
 from Inc.Http.HttpLib import ReadHead
 
@@ -80,8 +81,6 @@ class TDownload():
         return Res
 
     async def GetSync(self, aUrl: str, aStreamOut) -> int:
-        import requests
-
         Reader = requests.get(aUrl, stream=True)
         Res = 0
         Len = int(Reader.headers.get('content-length', '0'))
@@ -100,6 +99,7 @@ class TDownloadSpeed(TDownload):
     def __init__(self, aMaxDuration = 60):
         super().__init__()
         self.MaxDuration = aMaxDuration
+        self.StartAt = None
 
     def OnBlock(self, aLen: int, aSize: int):
         Duration = time.time() - self.StartAt

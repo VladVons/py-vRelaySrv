@@ -72,8 +72,8 @@ class TForm():
         if (not Session.Data.get('UserId')) and (Name != 'login'):
             Redirect = 'login?url=%s' % (Name)
             raise web.HTTPFound(location = Redirect)
-        else:
-            return await self.Create(aRequest, Name)
+
+        return await self.Create(aRequest, Name)
 
 
 class TWebSrv():
@@ -96,9 +96,9 @@ class TWebSrv():
         File = '%s/%s/%s' % (self.DirRoot, self.DirDownload, Name)
         if (not os.path.exists(File)):
             return web.Response(body='File %s does not exist' % (Name), status=404)
-        else:
-            Headers = {'Content-disposition': 'attachment; filename=%s' % (Name)}
-            return web.Response(body=FileSender(aFile=File), headers=Headers)
+
+        Headers = {'Content-disposition': 'attachment; filename=%s' % (Name)}
+        return web.Response(body=FileSender(aFile=File), headers=Headers)
 
     async def _rApi(self, aRequest: web.Request) -> web.Response:
         Name = aRequest.match_info.get('Name')
@@ -133,10 +133,10 @@ class TWebSrv():
     async def _rWebSock(self, aRequest: web.Request) -> web.WebSocketResponse:
         if (await Api.AuthRequest(aRequest, self.Conf.Get('Auth'))):
             return await self.WebSockSrv.Handle(aRequest)
-        else:
-            WS = web.WebSocketResponse()
-            await WS.prepare(aRequest)
-            await WS.send_json({'Type': 'Err', 'Data': 'Authorization failed'})
+
+        WS = web.WebSocketResponse()
+        await WS.prepare(aRequest)
+        await WS.send_json({'Type': 'Err', 'Data': 'Authorization failed'})
 
     async def Run(self):
         App = web.Application()

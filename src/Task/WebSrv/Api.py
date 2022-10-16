@@ -24,6 +24,7 @@ class TApiPlugin():
         self.Args = aArgs
         self.WebSock = None
         self.Res = []
+        self.Hash = {}
 
     async def WebSockSend(self, aData):
         if (self.WebSock):
@@ -346,7 +347,9 @@ class TApi(TApiBase):
     async def DoAuthRequest(self, aUser: str, aPassw: str):
         return True
 
-    async def DefHandler(self, aPath: str, aData: dict = {}) -> dict:
+    async def DefHandler(self, aPath: str, aData: dict = None) -> dict:
+        if (aData is None):
+            aData = {}
         return await self.WebClient.Send('web/' + aPath, aData)
 
 

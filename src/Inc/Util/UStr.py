@@ -5,7 +5,7 @@
 
 def SplitPad(aCnt: int, aStr: str, aDelim: str) -> list:
     R = aStr.split(aDelim, aCnt - 1)
-    for i in range(aCnt - len(R)):
+    for _i in range(aCnt - len(R)):
         R.append('')
     return R
 

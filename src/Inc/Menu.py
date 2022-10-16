@@ -4,9 +4,9 @@
 
 
 try:
-  import asyncio
+    import asyncio
 except:
-  import uasyncio as asyncio
+    import uasyncio as asyncio
 #
 from Inc.KbdTerm  import TKbdTerm
 from Inc.Util.UArr import SortLD
@@ -60,12 +60,15 @@ class TMenu():
             if (Idx > len(aItems)):
                 await self.WaitMsg('Out of range')
                 continue
-            else:
-                Name, Func, Param = aItems[Idx - 1]
-                if (Func):
-                    await Func(aPath + '/' + Name, Param)
 
-    async def Input(self, aItems: dict, aDef: dict = {}) -> dict:
+            Name, Func, Param = aItems[Idx - 1]
+            if (Func):
+                await Func(aPath + '/' + Name, Param)
+
+    async def Input(self, aItems: dict, aDef: dict = None) -> dict:
+        if (aDef is None):
+            aDef = {}
+
         R = {}
 
         Title, Items = aItems

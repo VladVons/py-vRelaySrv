@@ -36,7 +36,7 @@ class TDbfField(TDbField):
         elif (self.Type == 'F'):
             aVal = float(aVal if aVal != '' else '0.0')
         elif (self.Type == 'L'):
-            aVal = True if aVal == 'T' else False
+            aVal = (aVal == 'T')
         elif (self.Type == 'D'):
             if (aVal == ''):
                 aVal = '20010101'
@@ -67,7 +67,7 @@ class TDbf(TDb):
     def _StructRead(self):
         self.S.seek(0)
         Data = self.S.read(32)
-        Sign, LUpd, RecCnt, self.HeadLen, self.RecLen = struct.unpack('<1B3s1I1H1H', Data[0:1+3+4+2+2])
+        Sign, _LUpd, _RecCnt, self.HeadLen, self.RecLen = struct.unpack('<1B3s1I1H1H', Data[0:1+3+4+2+2])
         assert (Sign == self.Sign), 'bad signature'
 
         self.Fields = TDbfFields()
@@ -79,7 +79,7 @@ class TDbf(TDb):
             if (Data[0] == 0x0D):
                 break
 
-            FName, FType, X, FLen, FLenD = struct.unpack('<11s1s4s1B1B', Data[0:11+1+4+1+1])
+            FName, FType, _X, FLen, FLenD = struct.unpack('<11s1s4s1B1B', Data[0:11+1+4+1+1])
             Name = FName.split(b'\x00', 1)[0].decode()
             self.Fields.Add(Name, FType.decode(), FLen, FLenD)
 

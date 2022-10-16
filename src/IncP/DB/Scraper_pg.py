@@ -11,11 +11,11 @@ from .DbPg import TDbPg
 
 class TDbApp(TDbPg):
     async def InsertUrl(self, aUrl: str, aName: str, aPrice: float, aPriceOld: float, aStock: bool, aImage: str):
-            Query = f'''
-                INSERT INTO url (url, name, price, price_old, on_stock, image)
-                VALUES('{aUrl}', '{aName}', {aPrice}, {aPriceOld}, {aStock}, '{aImage}')
-            '''
-            await self.Exec(Query)
+        Query = f'''
+            INSERT INTO url (url, name, price, price_old, on_stock, image)
+            VALUES('{aUrl}', '{aName}', {aPrice}, {aPriceOld}, {aStock}, '{aImage}')
+        '''
+        await self.Exec(Query)
 
     async def AddLog(self, aType: int, aDescr: str):
         Query = f'''
@@ -144,7 +144,10 @@ class TDbApp(TDbPg):
             '''
         return await TDbSql(self).Fetch(Query)
 
-    async def GetSitesForUpdateFull(self, aExclId: list = [], aLimit: int = 10, aUpdDaysX: float = 1) -> TDbSql:
+    async def GetSitesForUpdateFull(self, aExclId: list = None, aLimit: int = 10, aUpdDaysX: float = 1) -> TDbSql:
+        if (aExclId is None):
+            aExclId = []
+
         ExclId = self.ListToComma(aExclId)
         if (ExclId):
             CondExcl = 'and (not id in(%s))' % ExclId
@@ -168,7 +171,10 @@ class TDbApp(TDbPg):
             '''
         return await TDbSql(self).Fetch(Query)
 
-    async def GetSitesForUpdate(self, aExclId: list = [], aCount: tuple = (0, -1), aLimit: int = 10, aUpdDaysX: float = 1) -> TDbSql:
+    async def GetSitesForUpdate(self, aExclId: list = None, aCount: tuple = (0, -1), aLimit: int = 10, aUpdDaysX: float = 1) -> TDbSql:
+        if (aExclId is None):
+            aExclId = []
+
         ExclId = self.ListToComma(aExclId)
         if (ExclId):
             CondExcl = 'and (not site.id in(%s))' % ExclId

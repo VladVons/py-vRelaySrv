@@ -181,7 +181,7 @@ class TForm(TFormBase):
         HasItems = await self.PostToForm()
         self.Data.Admin = (Session.Data.get('UserGroup') == 'admin')
         if (not HasItems):
-             return
+            return
 
         if ('BtnMake' in self.Data):
             await self.BtnMake()

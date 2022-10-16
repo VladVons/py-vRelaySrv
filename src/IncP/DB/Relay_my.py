@@ -45,12 +45,12 @@ class TDbApp(TDb):
                 (uniq = '{Uniq}') AND
                 (alias = '{Alias}')
         '''.format(Uniq=aUniq, Alias=aAlias)
-        return await self.Fetch(Query, True)
+        return await self.Fetch(Query)
 
     async def InsertDeviceByUniq(self, aUniq: str, aAlias: str, aValue: float):
         Row = await self.GetDeviceByUniq(aUniq, aAlias)
         Res = (Row is not None)
-        if (Row):
+        if (Res):
             Query = '''
                 INSERT INTO devices_val(device_id, val)
                 VALUES(%s, %s)

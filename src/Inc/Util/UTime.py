@@ -6,13 +6,13 @@
 import time
 
 
-'''
-def TimeInRange(aStart, aEnd, aX):
-    if (aStart <= aEnd):
-        return (aStart <= aX <= aEnd)
-    else:
-        return (aStart <= aX) or (aX <= aEnd)
-'''
+
+# def TimeInRange(aStart, aEnd, aX):
+#     if (aStart <= aEnd):
+#         return (aStart <= aX <= aEnd)
+#     else:
+#         return (aStart <= aX) or (aX <= aEnd)
+
 
 def GetDate() -> str:
     lt = time.localtime(time.time())

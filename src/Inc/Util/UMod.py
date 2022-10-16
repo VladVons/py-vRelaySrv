@@ -8,7 +8,7 @@ import sys
 
 def GetImportsLoc() -> set:
     Res = set()
-    for Name, Val in globals().items():
+    for _Name, Val in globals().items():
         Type = type(Val).__name__
         if (Type == 'module'):
             Res.add(Val.__name__)

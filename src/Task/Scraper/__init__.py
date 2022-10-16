@@ -1,7 +1,7 @@
 from .Api import Api
+from .Main import TMain
 
 def Main(aConf) -> tuple:
-    from .Main import TMain
     Api.WebClient.Auth = aConf.SrvAuth
 
     Obj = TMain(aConf)
