@@ -524,14 +524,14 @@ class TDbList():
         return Res
 
     def Save(self, aFile: str, aFormat: bool = False):
-        with open(aFile, 'w') as F:
+        with open(aFile, 'w', encoding = 'utf-8') as F:
             if (aFormat):
                 json.dump(self.Export(), F, indent=2, sort_keys=True, ensure_ascii=False)
             else:
                 json.dump(self.Export(), F)
 
     def Load(self, aFile: str):
-        with open(aFile, 'r') as F:
+        with open(aFile, 'r', encoding = 'utf-8') as F:
             Data = json.load(F)
             self.Import(Data)
             return self
