@@ -9,7 +9,7 @@ from aiohttp_jinja2 import render_template
 from wtforms import Form
 #
 from Inc.Conf import TDictDef
-from IncP import Info
+from IncP import GetInfo
 from IncP.Log import Log
 from ..Session import Session
 
@@ -24,7 +24,7 @@ class TFormBase(Form):
 
         self.Request = aRequest
         self.Data = TDictDef('', aData)
-        self.Info = Info
+        self.Info = GetInfo()
         self.Tpl = aTpl
 
         if (not self.Title):
