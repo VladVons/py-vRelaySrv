@@ -5,7 +5,7 @@
 
 try:
     import asyncio
-except:
+except ModuleNotFoundError:
     import uasyncio as asyncio
 #
 from IncP.Log  import Log

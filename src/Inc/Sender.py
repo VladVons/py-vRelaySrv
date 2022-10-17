@@ -3,8 +3,15 @@
 # License: GNU, see LICENSE for more details
 
 
-import uasyncio as asyncio
-from ucollections import deque
+try:
+    import uasyncio as asyncio
+except ModuleNotFoundError:
+    import asyncio
+
+try:
+    from ucollections import deque
+except ModuleNotFoundError:
+    from collections import deque
 #
 from IncP.Log  import Log
 

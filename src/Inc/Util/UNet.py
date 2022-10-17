@@ -4,7 +4,7 @@
 
 try:
     import asyncio
-except:
+except ModuleNotFoundError:
     import uasyncio as asyncio
 
 
