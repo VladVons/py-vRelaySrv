@@ -33,7 +33,7 @@ class TConfJson(dict):
         return self._Join(Data)
 
     def LoadDir(self, aDir: str):
-        for File in GetFiles(aDir, '.json'):
+        for File in GetFiles(aDir, '.json$'):
             self.LoadFile(File, True)
 
     def LoadFile(self, aFile: str, aJoin: bool = False):
