@@ -27,7 +27,7 @@ class TEcho():
         raise NotImplementedError()
 
     def Write(self, aArgs: dict):
-        if (aArgs.get('aL') <= self.Level) and (aArgs.get('aT') in self.Type):
+        if (aArgs.get('aL', 0) <= self.Level) and (aArgs.get('aT', 'i') in self.Type):
             Msg = self._Format(aArgs)
             self._Write(Msg)
 
@@ -48,9 +48,17 @@ class TEchoFile(TEcho):
 
 
 class TLog():
-    def __init__(self):
+    def __init__(self, aEchoes: list = None):
         self.Cnt    = 0
-        self.Echoes = []
+        if (aEchoes is None):
+            self.Echoes = []
+        else:
+            self.Echoes = aEchoes
+
+    def _Write(self, aData: dict, aSkipEcho: list):
+        for Echo in self.Echoes:
+            if (not Echo.__class__.__name__ in aSkipEcho):
+                Echo.Write(aData)
 
     def FindEcho(self, aClassName: str) -> list:
         #return list(filter(lambda i: (i.__class__.__name__ == aClassName), self.Echoes))
@@ -69,8 +77,7 @@ class TLog():
 
         self.Cnt += 1
         Args = {'aL': aLevel, 'aT': aType, 'aM': aMsg, 'aD': aData, 'aE': aE, 'c': self.Cnt, 'd': GetDate(), 't': GetTime()}
-        for Echo in self.Echoes:
-            if (not Echo.__class__.__name__ in aSkipEcho):
-                Echo.Write(Args)
+        self._Write(Args, aSkipEcho)
+
 
 Log = TLog()
