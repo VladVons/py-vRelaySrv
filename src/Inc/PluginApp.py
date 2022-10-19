@@ -3,6 +3,7 @@
 # License: GNU, see LICENSE for more details
 
 
+import os
 import sys
 import time
 #
@@ -12,10 +13,19 @@ from IncP.Log import Log
 
 
 class TPluginApp():
-    def __init__(self, aConf: TConfJson, aPath: str):
-        self.Conf = aConf
+    def __init__(self):
         self.Data = {}
-        self.Path = aPath
+        self.Conf = {}
+        self.Path = 'Task.Plugin'
+
+    def Init(self, aPlugin: str):
+        Dir, ModName = aPlugin.split('.')
+
+        self.Conf = TConfJson()
+        self.Conf.LoadFiles([f'Conf/{Dir}~{ModName}.json', f'{Dir}/{ModName}.json'])
+        for x in self.Conf.get('DirConf', []):
+            self.Conf.LoadDir(x)
+        self.Path = f'{aPlugin}.Plugin'
 
     @staticmethod
     def _Filter(aData: list[str]) -> list:
