@@ -3,6 +3,7 @@
 # License: GNU, see LICENSE for more details
 
 
+import os
 import json
 from Inc.Util.UObj import GetNestedKey, DictUpdate
 from Inc.UtilP.UFS import GetFiles
@@ -35,6 +36,11 @@ class TConfJson(dict):
     def LoadDir(self, aDir: str):
         for File in GetFiles(aDir, '.json$'):
             self.LoadFile(File, True)
+
+    def LoadFiles(self, aPath: list[str]):
+        for File in aPath:
+            if os.path.exists(File):
+                self.LoadFile(File, True)
 
     def LoadFile(self, aFile: str, aJoin: bool = False):
         Data = self._ReadFile(aFile)
