@@ -1,11 +1,9 @@
-'''
-Author:      Vladimir Vons <VladVons@gmail.com>
-Created:     2022.04.14
-License:     GNU, see LICENSE for more details
+# Created: 2022.04.14
+# Author: Vladimir Vons <VladVons@gmail.com>
+# License: GNU, see LICENSE for more details
 
-UaWebScraper
-UaWebScraperBot
-'''
+# UaWebScraper
+# UaWebScraperBot
 
 
 import asyncio
@@ -14,7 +12,7 @@ from aiogram import Bot, Dispatcher, executor, types
 #
 from Task.WebSrv import Api
 from Inc.DB.DbList import TDbList, TDbCond
-from Inc.Util.UObj import GetNestedKey
+from Inc.Util.Obj import GetNestedKey
 from IncP.Log import Log
 
 

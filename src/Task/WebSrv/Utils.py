@@ -1,15 +1,14 @@
-'''
-Author:      Vladimir Vons <VladVons@gmail.com>
-Created:     2022.06.20
-License:     GNU, see LICENSE for more details
-'''
+# Created: 2022.06.20
+# Author: Vladimir Vons <VladVons@gmail.com>
+# License: GNU, see LICENSE for more details
+
 
 import time
 import json
 #
 from IncP.SchemeApi import TSchemeApi
 import IncP.SchemeApi as SchemeApi
-from IncP.ImportInf import GetClassHelp
+from Inc.Util.Mod import GetClassHelp
 
 
 def GetUrlInfo(aData: dict) -> list:

@@ -3,7 +3,7 @@
 # License: GNU, see LICENSE for more details
 
 
-from .Util.UTime import GetDate, GetTime
+from .Util.Time import GetDate, GetTime
 
 
 class TEcho():

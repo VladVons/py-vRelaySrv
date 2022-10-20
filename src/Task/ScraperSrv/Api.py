@@ -1,8 +1,6 @@
-'''
-Author:      Vladimir Vons <VladVons@gmail.com>
-Created:     2022.03.19
-License:     GNU, see LICENSE for more details
-'''
+# Created: 2022.03.19
+# Author: Vladimir Vons <VladVons@gmail.com>
+# License: GNU, see LICENSE for more details
 
 
 from datetime import datetime
@@ -11,7 +9,7 @@ import asyncio
 import json
 #
 from Inc.DB.DbList import TDbList, TDbCond
-from Inc.Util.UObj import GetNestedKey
+from Inc.Util.Obj import GetNestedKey
 from IncP.ApiWeb import TApiBase
 from IncP.DB.Db import TDbSql
 from IncP.DB.Scraper_pg import TDbApp

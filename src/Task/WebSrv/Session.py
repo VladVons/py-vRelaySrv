@@ -1,15 +1,14 @@
-'''
-Author:      Vladimir Vons <VladVons@gmail.com>
-Created:     2022.06.17
-License:     GNU, see LICENSE for more details
-'''
+# Created: 2022.06.17
+# Author: Vladimir Vons <VladVons@gmail.com>
+# License: GNU, see LICENSE for more details
+
 
 import re
 from aiohttp import web
 import aiohttp_session
 #
 from Inc.DB.DbList import TDbList
-from Inc.Util.UObj import GetNestedKey
+from Inc.Util.Obj import GetNestedKey
 from IncP.Log import Log
 from .Api import Api
 

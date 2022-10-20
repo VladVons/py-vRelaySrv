@@ -1,8 +1,7 @@
-'''
-Author:      Vladimir Vons <VladVons@gmail.com>
-Created:     2022.03.16
-License:     GNU, see LICENSE for more details
-'''
+# Created: 2022.03.16
+# Author: Vladimir Vons <VladVons@gmail.com>
+# License: GNU, see LICENSE for more details
+
 
 import asyncio
 from aiohttp import web

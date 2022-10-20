@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
-
-'''
-Author:      Vladimir Vons <VladVons@gmail.com>
-Created:     2021.02.26
-License:     GNU, see LICENSE for more details
-'''
+#
+# Created: 2021.02.26
+# Author: Vladimir Vons <VladVons@gmail.com>
+# License: GNU, see LICENSE for more details
 
 
 import asyncio

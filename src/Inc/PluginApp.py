@@ -8,7 +8,7 @@ import sys
 import time
 #
 from Inc.ConfJson import TConfJson
-from Inc.Util.UMod import DynImport
+from Inc.Util.Mod import DynImport
 from IncP.Log import Log
 
 

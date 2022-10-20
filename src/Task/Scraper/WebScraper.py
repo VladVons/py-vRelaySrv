@@ -1,20 +1,19 @@
-'''
-VladVons@gmail.com
-2022.02.17
-
-cat /etc/tor/torrc
-ExitNodes {ua}, {ru}, {by}, {su}, {pl}, {md}, {bg} StrictNodes 0
-MaxCircuitDirtiness 1
-
-https://b3rn3d.herokuapp.com/blog/2014/03/05/tor-country-codes
-https://ipinfo.io/json'
-
-https://gist.github.com/DusanMadar/8d11026b7ce0bce6a67f7dd87b999f6b
-torify curl https://brain.com.ua
-torify wget --user-agent=mozilla --output-document=brain-proxy.html https://brain.com.ua
-
-UrlChekIP = 'http://icanhazip.com'
-'''
+# Created: 2022.02.17
+# Author: Vladimir Vons <VladVons@gmail.com>
+# License: GNU, see LICENSE for more details
+#
+# cat /etc/tor/torrc
+# ExitNodes {ua}, {ru}, {by}, {su}, {pl}, {md}, {bg} StrictNodes 0
+# MaxCircuitDirtiness 1
+#
+# https://b3rn3d.herokuapp.com/blog/2014/03/05/tor-country-codes
+# https://ipinfo.io/json'
+#
+# https://gist.github.com/DusanMadar/8d11026b7ce0bce6a67f7dd87b999f6b
+# torify curl https://brain.com.ua
+# torify wget --user-agent=mozilla --output-document=brain-proxy.html https://brain.com.ua
+#
+# UrlChekIP = 'http://icanhazip.com'
 
 
 from urllib.parse import urlparse
@@ -27,7 +26,7 @@ import random
 import re
 #
 from Inc.DB.DbList import TDbList
-from Inc.Util.UObj import GetNestedKey
+from Inc.Util.Obj import GetNestedKey
 from IncP.Download import TDownload, GetSoup
 from IncP.Log import Log
 from IncP.Utils import FilterKeyErr, FilterNone

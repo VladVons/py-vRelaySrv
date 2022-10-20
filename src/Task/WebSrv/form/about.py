@@ -1,8 +1,7 @@
-'''
-Author:      Vladimir Vons <VladVons@gmail.com>
-Created:     2022.02.14
-License:     GNU, see LICENSE for more details
-'''
+# Created: 2022.02.14
+# Author:  Vladimir Vons <VladVons@gmail.com>
+# License: GNU, see LICENSE for more details
+
 
 from .FormBase import TFormBase
 

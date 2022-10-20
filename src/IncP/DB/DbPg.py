@@ -1,10 +1,9 @@
-'''
-Author:      Vladimir Vons <VladVons@gmail.com>
-Created:     2022.02.25
-License:     GNU, see LICENSE for more details
+# Created: 2022.02.25
+# Author: Vladimir Vons <VladVons@gmail.com>
+# License: GNU, see LICENSE for more details
 
-pip3 install aiopg
-'''
+# pip3 install aiopg
+
 
 import aiopg
 #

@@ -1,3 +1,8 @@
+# Created: 2022.02.14
+# Author:  Vladimir Vons <VladVons@gmail.com>
+# License: GNU, see LICENSE for more details
+
+
 from .FormBase import TFormBase
 
 class TForm(TFormBase):

@@ -1,12 +1,10 @@
-'''
-Author:      Vladimir Vons <VladVons@gmail.com>
-Created:     2022.04.14
-License:     GNU, see LICENSE for more details
-'''
+# Created: 2022.04.14
+# Author: Vladimir Vons <VladVons@gmail.com>
+# License: GNU, see LICENSE for more details
 
 
 from Inc.DB.DbList import TDbList, TDbCond
-from Inc.Util.UObj import GetNestedKey
+from Inc.Util.Obj import GetNestedKey
 from IncP.Utils import FilterKeyErr
 from ..Api import Api
 from .FormBase import TFormBase

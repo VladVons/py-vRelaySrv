@@ -1,5 +1,10 @@
+# Created: 2021.02.26
+# Author:  Vladimir Vons <VladVons@gmail.com>
+# License: GNU, see LICENSE for more details
+#
 #https://docs.aiohttp.org/en/stable/web_advanced.html
 #https://docs.aiohttp.org/en/stable/web.html
+
 
 from aiohttp import web
 import aiohttp_jinja2

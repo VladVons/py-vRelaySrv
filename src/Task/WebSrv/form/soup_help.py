@@ -1,11 +1,10 @@
-'''
-Author:      Vladimir Vons <VladVons@gmail.com>
-Created:     2022.06.19
-License:     GNU, see LICENSE for more details
-'''
+# Created: 2022.06.19
+# Author: Vladimir Vons <VladVons@gmail.com>
+# License: GNU, see LICENSE for more details
+
 
 import IncP.SchemeApi as SchemeApi
-from IncP.ImportInf import GetClassHelp
+from Inc.Util.Mod import GetClassHelp
 from .FormBase import TFormBase
 
 

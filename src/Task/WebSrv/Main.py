@@ -1,11 +1,10 @@
-'''
-Author:      Vladimir Vons <VladVons@gmail.com>
-Created:     2021.02.26
-License:     GNU, see LICENSE for more details
+# Created: 2021.02.26
+# Author:  Vladimir Vons <VladVons@gmail.com>
+# License: GNU, see LICENSE for more details
 
-https://github.com/aio-libs/aiohttp
-https://docs.aiohttp.org/en/stable/web_advanced.html#aiohttp-web-app-runners
-'''
+# https://github.com/aio-libs/aiohttp
+# https://docs.aiohttp.org/en/stable/web_advanced.html#aiohttp-web-app-runners
+
 
 import json
 import os

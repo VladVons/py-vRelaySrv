@@ -1,8 +1,6 @@
-'''
-Author:      Vladimir Vons <VladVons@gmail.com>
-Created:     2022.02.18
-License:     GNU, see LICENSE for more details
-'''
+# Created: 2022.02.18
+# Author: Vladimir Vons <VladVons@gmail.com>
+# License: GNU, see LICENSE for more details
 
 
 from .Db import TDbSql

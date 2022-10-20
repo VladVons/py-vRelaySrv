@@ -55,15 +55,15 @@ class TBeeTree():
         if (aVal == self.Data[0]):
             Res = self.Data[1]
         elif (aVal < self.Data[0]):
-            if (not self.Left):
-                Res = -self.Data[1]
-            else:
+            if (self.Left):
                 Res = self.Left.Search(aVal)
-        else:
-            if (not self.Right):
-                Res = -self.Data[1]
             else:
+                Res = -self.Data[1]
+        else:
+            if (self.Right):
                 Res = self.Right.Search(aVal)
+            else:
+                Res = -self.Data[1]
         return Res
 
     def GetMax(self):

@@ -8,7 +8,7 @@ try:
 except ModuleNotFoundError:
     import uasyncio as asyncio
 #
-from Inc.Util.UStr import SplitPad
+from Inc.Util.Str import SplitPad
 
 
 async def ReadHead(aReader: asyncio.StreamReader, aServ = True) -> dict:

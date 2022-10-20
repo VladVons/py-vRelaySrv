@@ -1,15 +1,12 @@
-'''
-Copyright:   Vladimir Vons, UA
-Author:      Vladimir Vons <VladVons@gmail.com>
-Created:     2022.04.10
-License:     GNU, see LICENSE for more details
-Description:
-'''
+# Created: 2022.04.10
+# Author: Vladimir Vons <VladVons@gmail.com>
+# License: GNU, see LICENSE for more details
+
 
 from urllib.parse import urlparse
 #
 from Inc.DB.DbList import TDbList, TDbCond
-from Inc.Util.UObj import GetNestedKey
+from Inc.Util.Obj import GetNestedKey
 from IncP.DB.Db import TDbSql
 from IncP.Download import CheckHost
 from IncP.Utils import FilterKeyErr

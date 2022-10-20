@@ -9,8 +9,8 @@ except ModuleNotFoundError:
     import uasyncio as asyncio
 #
 from Inc.KbdTerm  import TKbdTerm
-from Inc.Util.UArr import SortLD
-from Inc.Util.UObj import GetTree
+from Inc.Util.Arr import SortLD
+from Inc.Util.Obj import GetTree
 
 
 class TMenu():

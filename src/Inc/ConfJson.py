@@ -5,8 +5,8 @@
 
 import os
 import json
-from Inc.Util.UObj import GetNestedKey, DictUpdate
-from Inc.UtilP.UFS import GetFiles
+from Inc.Util.Obj import GetNestedKey, DictUpdate
+from Inc.UtilP.FS import GetFiles
 
 
 class TConfJson(dict):

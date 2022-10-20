@@ -20,7 +20,9 @@ missing-function-docstring|\
 missing-module-docstring|\
 missing-class-docstring|\
 too-few-public-methods|\
+too-many-arguments|\
 too-many-locals|\
+too-many-instance-attributes|\
 line-too-long|\
 superfluous-parens|\
 consider-using-f-string\

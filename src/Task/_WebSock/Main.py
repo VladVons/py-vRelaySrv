@@ -1,10 +1,9 @@
-'''
-Author:      Vladimir Vons <VladVons@gmail.com>
-Created:     2022.04.17
-License:     GNU, see LICENSE for more details
+# Created: 2022.04.17
+# Author: Vladimir Vons <VladVons@gmail.com>
+# License: GNU, see LICENSE for more details
+#
+# see ScraperSrv/Main/TScraperSrv/_rWebSock()
 
-see ScraperSrv/Main/TScraperSrv/_rWebSock()
-'''
 
 import asyncio
 import websockets

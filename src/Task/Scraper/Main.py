@@ -1,8 +1,6 @@
-'''
-Author:      Vladimir Vons <VladVons@gmail.com>
-Created:     2022.02.17
-License:     GNU, see LICENSE for more details
-'''
+# Created: 2022.02.17
+# Author: Vladimir Vons <VladVons@gmail.com>
+# License: GNU, see LICENSE for more details
 
 
 from collections import deque
@@ -10,7 +8,7 @@ import asyncio
 import random
 #
 from Inc.DB.DbList import TDbList
-from Inc.Util.UObj import GetNestedKey
+from Inc.Util.Obj import GetNestedKey
 from IncP.ApiWeb import TWebSockClient
 from IncP.DownloadSpeed import TDownloadSpeed
 from IncP.Log import Log

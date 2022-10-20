@@ -5,7 +5,7 @@
 
 import sys
 #
-from .Util.UFS import FileExists
+from .Util.FS import FileExists
 
 
 def ImportMod(aFile: str, aMod: list = None):

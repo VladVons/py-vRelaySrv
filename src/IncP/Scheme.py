@@ -1,10 +1,9 @@
-'''
-Author:      Vladimir Vons <VladVons@gmail.com>
-Created:     2022.03.01
-License:     GNU, see LICENSE for more details
+# Created: 2022.03.01
+# Author: Vladimir Vons <VladVons@gmail.com>
+# License: GNU, see LICENSE for more details
 
-https://github.com/pythontoday/scrap_tutorial
-'''
+# https://github.com/pythontoday/scrap_tutorial
+
 
 import datetime
 import json
@@ -14,7 +13,7 @@ import sys
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 #
-from Inc.Util.UObj import GetNestedKey
+from Inc.Util.Obj import GetNestedKey
 from IncP.Python import TPython
 from IncP.SchemeApi import TSchemeApi, TSchemeApiExt, TSchemeExt
 from IncP.Utils import FilterKey, FilterKeyErr

@@ -1,31 +1,28 @@
-'''
-Author:      Vladimir Vons <VladVons@gmail.com>
-Created:     2022.04.21
-License:     GNU, see LICENSE for more details
-
+# Created: 2022.04.21
+# Author: Vladimir Vons <VladVons@gmail.com>
+# License: GNU, see LICENSE for more details
+#
 # protected url
-https://intoli.com/blog/not-possible-to-block-chrome-headless/chrome-headless-test.html
-https://www.vindecoderz.com/EN/check-lookup/ZDMMADBMXHB001652
-
+#https://intoli.com/blog/not-possible-to-block-chrome-headless/chrome-headless-test.html
+#https://www.vindecoderz.com/EN/check-lookup/ZDMMADBMXHB001652
+#
 # firefox download driver
 #from selenium.webdriver.firefox.service import Service
 #from webdriver_manager.firefox import GeckoDriverManager as Manager
 #Service(Manager().install())
 #
 # chrome driver
-https://sites.google.com/chromium.org/driver/downloads
+#https://sites.google.com/chromium.org/driver/downloads
 #
 # chrome driver all
-https://www.selenium.dev/documentation/webdriver/getting_started/install_drivers/
+#https://www.selenium.dev/documentation/webdriver/getting_started/install_drivers/
 #
 #sudo apt install chromium-chromedriver
 #pip3 install webdriver-manager
-
-
-Urls = []
-Starter = TStarter()
-Starter.ThreadCreate(Urls, 5)
-'''
+#
+#Urls = []
+#Starter = TStarter()
+#Starter.ThreadCreate(Urls, 5)
 
 import asyncio
 import multiprocessing

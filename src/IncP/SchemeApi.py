@@ -1,8 +1,6 @@
-'''
-Author:      Vladimir Vons <VladVons@gmail.com>
-Created:     2022.06.21
-License:     GNU, see LICENSE for more details
-'''
+# Created: 2022.06.21
+# Author: Vladimir Vons <VladVons@gmail.com>
+# License: GNU, see LICENSE for more details
 
 
 import json
@@ -10,9 +8,9 @@ import operator
 import re
 from bs4 import BeautifulSoup
 #
-from Inc.Util.UObj import GetNestedKey
+from Inc.Util.Obj import GetNestedKey
+from Inc.Util.Mod import GetClass
 from IncP.Utils import FilterMatch
-from IncP.ImportInf import GetClass
 
 
 _Whitespace = ' \t\n\r\v\f\xA0✓→'

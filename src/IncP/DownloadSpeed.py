@@ -1,12 +1,10 @@
-'''
-Author:      Vladimir Vons <VladVons@gmail.com>
-Created:     2022.04.29
-License:     GNU, see LICENSE for more details
+# Created: 2022.04.29
+# Author: Vladimir Vons <VladVons@gmail.com>
+# License: GNU, see LICENSE for more details
 
-Url = 'https://speed.hetzner.de/100MB.bin'
-Url = 'http://212.183.159.230/20MB.zip'
-asyncio.run(TDownloadSpeed(2).Test(Url))
-'''
+# Url = 'https://speed.hetzner.de/100MB.bin'
+# Url = 'http://212.183.159.230/20MB.zip'
+# asyncio.run(TDownloadSpeed(2).Test(Url))
 
 
 from urllib.parse import urlparse

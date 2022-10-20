@@ -1,18 +1,16 @@
-'''
-Copyright:   Vladimir Vons, UA
-Author:      Vladimir Vons <VladVons@gmail.com>
-Created:     2021.02.28
-License:     GNU, see LICENSE for more details
+# Created: 2021.02.28
+# Author: Vladimir Vons <VladVons@gmail.com>
+# License: GNU, see LICENSE for more details
+#
+# pip install paho-mqtt
 
-pip install paho-mqtt
-'''
 
 import asyncio
 import json
 from socket import gethostname
 from gmqtt import Client as MQTTClient
 #
-from Inc.Util.UNet import CheckHost
+from Inc.Util.Net import CheckHost
 from IncP.DB.Relay_my import TDbApp
 from IncP.Log import Log
 

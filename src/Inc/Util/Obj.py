@@ -3,22 +3,30 @@
 # License: GNU, see LICENSE for more details
 
 
-def GetTree(aObj, aPrefix: str = '', aDepth: int = 99) -> list:
-    Res = []
-    if (aDepth > 0):
-        Type = type(aObj).__name__
-        if (Type == 'dict'):
-            for Key in aObj:
-                Data = GetTree(aObj[Key], aPrefix + '/' + Key, aDepth - 1)
-                Res.extend(Data)
-        elif (Type == 'list'):
-            for Obj in aObj:
-                Data = GetTree(Obj, aPrefix, aDepth - 1)
-                Res.extend(Data)
-        else:
-            Data = {'Key': aPrefix, 'Val': aObj}
-            Res.append(Data)
-    return Res
+def GetTree(aObj, aMaxDepth: int = 99):
+    def GetTreeRecurs(aObj, aPrefix: str, aDepth: int):
+        if (aDepth < aMaxDepth):
+            Type = type(aObj)
+            if (Type == dict):
+                yield [True, aPrefix, aObj, aDepth]
+                for Key in aObj:
+                    yield from GetTreeRecurs(aObj[Key], aPrefix + '/' + Key, aDepth + 1)
+            elif (Type in [list, tuple, set]):
+                yield [True, aPrefix, aObj, aDepth]
+                for Obj in aObj:
+                    yield from GetTreeRecurs(Obj, aPrefix, aDepth + 1)
+            elif (Type in [str, int, float, bool]):
+                yield [False, aPrefix, aObj, aDepth]
+            elif (Type.__name__ in ['method']):
+                yield [False, aPrefix + '()', aObj, aDepth]
+            else:
+                ClassName = aPrefix + '/' + aObj.__class__.__name__
+                yield [True, ClassName, aObj, aDepth]
+                for Key in dir(aObj):
+                    if (not Key.startswith('_')):
+                        Obj = getattr(aObj, Key)
+                        yield from GetTreeRecurs(Obj, ClassName + '/' + Key, aDepth + 1)
+    yield from GetTreeRecurs(aObj, '', 0)
 
 def GetClassPath(aClass):
     def GetClassPathRecurs(aInstance: object, aPath: str = '', aDepth: int = 99) -> str:
@@ -31,7 +39,7 @@ def GetClassPath(aClass):
 
 def DictUpdate(aMaster: dict, aSlave: dict, aJoin = False, aDepth: int = 99) -> object:
     '''
-    DictJoin({3: [1, 2, 3]}, {3: [4]})
+    DictJoin({3: [1, 2, 3]}, {3: [4]}) -> {3: [1, 2, 3, 4]}
     '''
     Type = type(aSlave)
     if (aDepth > 0):
@@ -56,6 +64,7 @@ def DictUpdate(aMaster: dict, aSlave: dict, aJoin = False, aDepth: int = 99) -> 
         return Res
 
 def GetNestedKey(aData: dict, aKeys: str, aDef = None) -> object:
+    # more complex https://jmespath.org/examples.html
     for Key in aKeys.split('.'):
         if (isinstance(aData, dict)):
             aData = aData.get(Key)
@@ -70,3 +79,11 @@ def GetNotNone(aData: dict, aKey: str, aDef: object) -> object:
     if (Res is None):
         Res = aDef
     return Res
+
+class TClass():
+    def __init__(self):
+        self.Key = 'MyKey'
+        self.Val = 'MyVal'
+
+    def Print(self):
+        print(111)

@@ -1,13 +1,11 @@
-'''
-Author:      Vladimir Vons <VladVons@gmail.com>
-Created:     2021.02.28
-License:     GNU, see LICENSE for more details
+# Created: 2021.02.28
+# Author: Vladimir Vons <VladVons@gmail.com>
+# License: GNU, see LICENSE for more details
 
-apt install python3-pyodbc unixodbc
-apt install libsqliteodbc odbc-mariadb odbc-postgresql
-cat /etc/odbcinst.ini
-pip3 install aioodbc
-'''
+# apt install python3-pyodbc unixodbc
+# apt install libsqliteodbc odbc-mariadb odbc-postgresql
+# cat /etc/odbcinst.ini
+# pip3 install aioodbc
 
 
 import aioodbc

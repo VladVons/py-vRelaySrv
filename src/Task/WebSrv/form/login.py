@@ -1,15 +1,14 @@
-'''
-Author:      Vladimir Vons <VladVons@gmail.com>
-Created:     2022.05.16
-License:     GNU, see LICENSE for more details
-'''
+# Created: 2022.05.16
+# Author: Vladimir Vons <VladVons@gmail.com>
+# License: GNU, see LICENSE for more details
+
 
 from aiohttp import web
 from wtforms.fields import StringField, SubmitField, PasswordField
 from wtforms.validators import DataRequired, Length
 #
 from Inc.DB.DbList import TDbList
-from Inc.Util.UObj import GetNestedKey
+from Inc.Util.Obj import GetNestedKey
 from IncP.Log import Log
 from IncP.Utils import FilterKeyErr
 from ..Api import Api
