@@ -14,8 +14,7 @@ from ..Session import Session
 
 class TFormBase(Form):
     Title = ''
-
-    def __init__(self, aRequest: web.Request, aTpl: str, aData: dict = None):
+    def __init__(self, aParent, aRequest: web.Request, aTpl: str, aData: dict = None):
         super().__init__()
 
         if (aData is None):
@@ -25,9 +24,10 @@ class TFormBase(Form):
         self.Data = TDictDef('', aData)
         self.Info = GetInfo()
         self.Tpl = aTpl
+        self.Parent = None
 
         if (not self.Title):
-            self.Title = aTpl.split('.')[0]
+            self.Title = self.Tpl.split('.')[0]
 
     async def PostToForm(self):
         self.Data.clear()

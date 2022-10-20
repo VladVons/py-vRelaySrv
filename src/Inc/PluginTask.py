@@ -21,9 +21,9 @@ class TPluginTask(dict):
     def Find(self, aKey: str) -> list:
         return [Val[0] for Key, Val in self.items() if aKey in Key]
 
-    def AddTask(self, aModule, aPath: str):
+    def CreateTask(self, aModule, aPath: str) -> tuple:
         gc.collect()
-        Log.Print(1, 'i', 'Load task %s' % (aPath))
+        Log.Print(1, 'i', 'Add task %s' % (aPath))
 
         File = 'Conf/' + aPath.replace('.', '~')
         Conf = TConf(File + '.py')
@@ -34,9 +34,9 @@ class TPluginTask(dict):
         Arr = aModule.Main(Conf)
         if (Arr):
             Class, AFunc= Arr
-            self[aPath] = (Class, asyncio.create_task(AFunc))
             if (Conf) or (ConfClass):
                 Class.CC = ConfClass
+            return (Class, asyncio.create_task(AFunc))
 
     def LoadDir(self, aDir: str):
         Files = os.listdir(aDir)
@@ -51,9 +51,10 @@ class TPluginTask(dict):
             if (not Module in Skip):
                 self.LoadMod(Module)
 
-    def LoadMod(self, aPath: str):
+    def LoadMod(self, aPath: str, aRegister: bool = True) -> list:
+        Res = []
         if (aPath == '') or (aPath.startswith('-')) or (self.get(aPath)):
-            return
+            return Res
 
         __import__(aPath)
         Mod = sys.modules.get(aPath)
@@ -63,10 +64,15 @@ class TPluginTask(dict):
             for x in Depends.split():
                 if (x):
                     Log.Print(1, 'i', '%s depends on %s' % (aPath, x))
-                    self.LoadMod(x)
-            self.AddTask(Mod, aPath)
+                    Res += self.LoadMod(x)
+            Task = self.CreateTask(Mod, aPath)
+            if (Task):
+                if (aRegister):
+                    self[aPath] = Task
+                Res.append(Task)
         else:
             Log.Print(1, 'i', '%s disabled' % (aPath))
+        return Res
 
     async def _Post(self, aTasks, aOwner, aMsg, aFunc) -> dict:
         R = {}
@@ -98,8 +104,8 @@ class TPluginTask(dict):
             await self.Stop(Key)
 
     async def Run(self):
-        Tasks = [v[1] for v in self.values()]
-        await asyncio.gather(* Tasks)
+        Tasks = [Task for Class, Task in self.values()]
+        await asyncio.gather(*Tasks)
 
 
 Plugin = TPluginTask()

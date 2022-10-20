@@ -62,7 +62,9 @@ class TForm():
                 break
             except ModuleNotFoundError:
                 pass
-        return TClass(aRequest, aName + self.Parent.TplExt)
+        Res = TClass(aRequest, aName + self.Parent.TplExt)
+        Res.Parent = self
+        return Res
 
     async def CreateAuth(self, aRequest: web.Request) -> web.Response:
         Name = aRequest.match_info.get('Name')
