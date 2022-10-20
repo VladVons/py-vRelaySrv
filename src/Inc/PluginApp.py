@@ -3,7 +3,6 @@
 # License: GNU, see LICENSE for more details
 
 
-import os
 import sys
 import time
 #

@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 #
 from Inc.Util.Obj import GetNestedKey
 from Inc.Util.Mod import GetClass
-from IncP.Utils import FilterMatch
+from Inc.UtilP.Misc import FilterMatch
 
 
 _Whitespace = ' \t\n\r\v\f\xA0✓→'

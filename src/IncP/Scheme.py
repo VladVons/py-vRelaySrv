@@ -14,9 +14,9 @@ from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 #
 from Inc.Util.Obj import GetNestedKey
-from IncP.Python import TPython
+from Inc.UtilP.Python import TPython
+from Inc.UtilP.Misc import FilterKey, FilterKeyErr
 from IncP.SchemeApi import TSchemeApi, TSchemeApiExt, TSchemeExt
-from IncP.Utils import FilterKey, FilterKeyErr
 
 
 class TRes():
