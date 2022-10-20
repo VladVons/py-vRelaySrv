@@ -23,3 +23,11 @@ def GetTime() -> str:
     lt = time.localtime(time.time())
     R = '%02d:%02d:%02d' % (lt[3], lt[4], lt[5])
     return R
+
+def DTimeIt(aFunc: callable):
+    def Wrapper(*aArgs, **aK):
+        TimeStart = time.time()
+        Res = aFunc(*aArgs, **aK)
+        print(f'time: {time.time() - TimeStart:.3f}')
+        return Res
+    return Wrapper
