@@ -58,5 +58,8 @@ class TPluginApp():
                 sys.exit(1)
 
     async def Run(self):
+        TimeStart = time.time()
+        Log.Print(1, 'i', 'Start. TPluginApp.Run()')
         for Plugin in self._Filter(self.Conf.get('Plugins', [])):
             await self.Load(Plugin, 0)
+        Log.Print(1, 'i', 'Done. TPluginApp.Run(). Time: %0.2f' % (time.time() - TimeStart))

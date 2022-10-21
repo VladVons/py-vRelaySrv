@@ -21,3 +21,11 @@ def GetFiles(aPath: str, aMask: str = '.*', aDepth: int = 99):
             else:
                 if (re.search(aMask, File)):
                     yield Path
+
+def DirRemove(aPath: str):
+    for File in os.scandir(aPath):
+        if (os.path.isdir(File)):
+            DirRemove(File)
+            os.rmdir(File)
+        else:
+            os.remove(File.path)

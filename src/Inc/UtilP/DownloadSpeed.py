@@ -79,7 +79,7 @@ class TDownload():
         return Res
 
     async def GetSync(self, aUrl: str, aStreamOut) -> int:
-        Reader = requests.get(aUrl, stream=True)
+        Reader = requests.get(aUrl, stream=True, timeout=3)
         Res = 0
         Len = int(Reader.headers.get('content-length', '0'))
         if (Len > 0):
