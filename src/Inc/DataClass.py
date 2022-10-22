@@ -3,6 +3,20 @@
 # License:     GNU, see LICENSE for more details
 
 
+'''
+from DataClass import DataClass
+
+@DataClass
+class TUser():
+    Login: str
+    Passw: str
+    Allow: bool = True
+
+User = TUser(Login = 'MyLogin', Passw = 'MyPassw')
+print(User.__dict__)
+'''
+
+
 def _GetArgs(aCls, aData: dict) -> str:
     Args = []
     for Name, Type in aData.items():
@@ -13,7 +27,7 @@ def _GetArgs(aCls, aData: dict) -> str:
         Args.append(Param)
     return 'self, ' + ', '.join(Args)
 
-def _DDataClass(aCls, aName: str, aData: dict):
+def _Compile(aCls, aName: str, aData: dict):
     Body = []
 
     Wrapper = 'Wrapper'
@@ -34,7 +48,7 @@ def _DDataClass(aCls, aName: str, aData: dict):
 def DataClass(aCls):
     Name = '__init__'
     Annotations = aCls.__dict__.get('__annotations__', {})
-    Data = _DDataClass(aCls, Name, Annotations)
+    Data = _Compile(aCls, Name, Annotations)
     Data.__qualname__ = f'{aCls.__class__.__name__}.{Data.__name__}'
     setattr(aCls, Name, Data)
     return aCls
