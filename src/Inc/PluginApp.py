@@ -21,9 +21,9 @@ class TPluginApp():
         Dir, ModName = aPlugin.split('.')
 
         self.Conf = TConfJson()
-        self.Conf.LoadFiles([f'Conf/{Dir}~{ModName}.json', f'{Dir}/{ModName}.json'])
-        for x in self.Conf.get('DirConf', []):
-            self.Conf.LoadDir(x)
+        self.Conf.LoadList([f'Conf/{Dir}~{ModName}.json', f'{Dir}/{ModName}.json'])
+        Conf = self.Conf.get('Conf', [])
+        self.Conf.LoadList(Conf)
         self.Path = f'{aPlugin}.Plugin'
 
     @staticmethod
@@ -62,4 +62,4 @@ class TPluginApp():
         Log.Print(1, 'i', 'Start. TPluginApp.Run()')
         for Plugin in self._Filter(self.Conf.get('Plugins', [])):
             await self.Load(Plugin, 0)
-        Log.Print(1, 'i', 'Done. TPluginApp.Run(). Time: %0.2f' % (time.time() - TimeStart))
+        Log.Print(1, 'i', 'Finish. TPluginApp.Run(). Time: %0.2f' % (time.time() - TimeStart))

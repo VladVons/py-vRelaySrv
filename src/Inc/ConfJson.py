@@ -34,13 +34,8 @@ class TConfJson(dict):
         return self._Join(Data)
 
     def LoadDir(self, aDir: str):
-        for File in GetFiles(aDir, '.json$'):
+        for File in GetFiles(aDir, '.json$', 0):
             self.LoadFile(File, True)
-
-    def LoadFiles(self, aPath: list[str]):
-        for File in aPath:
-            if os.path.exists(File):
-                self.LoadFile(File, True)
 
     def LoadFile(self, aFile: str, aJoin: bool = False):
         Data = self._ReadFile(aFile)
@@ -49,3 +44,11 @@ class TConfJson(dict):
             self.Init(Data)
         else:
             self.update(Data)
+
+    def LoadList(self, aPath: list[str]):
+        for File in aPath:
+            if os.path.exists(File):
+                if (os.path.isdir(File)):
+                    self.LoadDir(File)
+                else:
+                    self.LoadFile(File, True)

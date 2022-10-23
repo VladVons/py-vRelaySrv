@@ -16,13 +16,20 @@ User = TUser(Login = 'MyLogin', Passw = 'MyPassw')
 print(User.__dict__)
 '''
 
+import sys
+
 
 def _GetArgs(aCls, aData: dict) -> str:
     Args = []
     for Name, Type in aData.items():
-        Param = f'{Name}: {Type.__name__}'
-        Default = getattr(aCls, Name, None)
-        if (Default is not None):
+        if (Type.__module__ == 'builtins'):
+            Param = f'{Name}: {Type.__name__}'
+        else:
+            Param = f'{Name}: {Type.__module__}.{Type.__name__}'
+
+        Uniq = 'q1S4t6G7'
+        Default = getattr(aCls, Name, Uniq)
+        if (Default != Uniq):
             if (Type == str):
                 Default = '"' + Default + '"'
             Param += f' = {Default}'
@@ -41,8 +48,9 @@ def _Compile(aCls, aName: str, aData: dict):
         Body.append(f'  self.{Name} = {Name}')
     Body.append(f' return {aName}')
 
+    Globals = sys.modules[aCls.__module__].__dict__
     Out = {}
-    exec('\n'.join(Body), {}, Out)
+    exec('\n'.join(Body), Globals, Out)
     Res = Out[Wrapper]()
     return Res
 
