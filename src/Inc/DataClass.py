@@ -23,6 +23,8 @@ def _GetArgs(aCls, aData: dict) -> str:
         Param = f'{Name}: {Type.__name__}'
         Default = getattr(aCls, Name, None)
         if (Default is not None):
+            if (Type == str):
+                Default = '"' + Default + '"'
             Param += f' = {Default}'
         Args.append(Param)
     return 'self, ' + ', '.join(Args)

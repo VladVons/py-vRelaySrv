@@ -37,6 +37,7 @@ class TPluginTask(dict):
             if (Conf) or (ConfClass):
                 Class.CC = ConfClass
             return (Class, asyncio.create_task(AFunc))
+        return
 
     def LoadDir(self, aDir: str):
         Files = os.listdir(aDir)
