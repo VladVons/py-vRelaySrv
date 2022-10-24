@@ -1,7 +1,7 @@
-"""
+'''
 Calculate the sunrise, sunset and noon time for a given coordinate.
 http://karthur.org/2021/day-length-calculation-earth-system-models.html
-"""
+'''
 
 from math import cos, sin, acos, asin, tan
 from math import degrees as deg, radians as rad
@@ -9,10 +9,10 @@ from datetime import datetime, time, timezone, timedelta
 
 
 class TSun():
-    """
+    '''
     Calculate sunrise and sunset based on equations from NOAA
     http://www.srrb.noaa.gov/highlights/sunrise/calcdetails.html
-    """
+    '''
 
     def __init__(self, aTZ, aLat, aLong):
         self.lat = aLat
@@ -22,12 +22,13 @@ class TSun():
         self.__calc()
 
     def SunRise(self):
-        """
+        '''
         return the time of sunrise as a datetime.time object
         when is a datetime.datetime object. If none is given
         a local time zone is assumed (including daylight saving
         if present)
-        """
+        '''
+
         return self.__TimeFromDecimalDay(self.sunrise_t)
 
     def SunSet(self):
@@ -38,11 +39,12 @@ class TSun():
 
     @staticmethod
     def __TimeFromDecimalDay(aDay):
-        """
+        '''
         returns a datetime.time object.
 
         day is a decimal day between 0.0 and 1.0, e.g. noon = 0.5
-        """
+        '''
+
         Hours = 24.0 * aDay
         h = int(Hours)
         Minutes = (Hours - h) * 60
@@ -52,10 +54,10 @@ class TSun():
         return time(hour=h, minute=m, second=s)
 
     def __preptime(self, aWhen):
-        """
+        '''
         Extract information in a suitable format from when,
         a datetime.datetime object.
-        """
+        '''
 
         # datetime days are numbered in the Gregorian calendar
         # while the calculations from NOAA are distibuted as
@@ -73,13 +75,13 @@ class TSun():
             self.timezone = offset.seconds / 3600.0
 
     def __calc(self):
-        """
+        '''
         Perform the actual calculations for sunrise, sunset and
         a number of related quantities.
 
         The results are stored in the instance variables
         sunrise_t, sunset_t and solarnoon_t
-        """
+        '''
 
         Timezone = self.timezone  # in hours, east is positive
         longitude = self.long     # in decimal degrees, east is positive
