@@ -6,6 +6,7 @@
 import json
 import random
 import operator
+from types import NoneType
 
 
 class TDbListException(Exception):
@@ -130,6 +131,11 @@ class TDbFields(dict):
     def AddAuto(self, aFields: list, aData: list):
         for Idx, Row in enumerate(aFields):
             if (aData):
+                if (aData[Idx] is None):
+                    Msg = f'TDbFields.AddAuto(). Field {Row} is None'
+                    #raise TDbListException(Msg)
+                    print(Msg)
+                    pass
                 self.Add(Row, type(aData[Idx]))
             else:
                 self.Add(Row)
@@ -139,7 +145,10 @@ class TDbFields(dict):
         return [(Key, Type.__name__, Def) for Key, (No, Type, Def) in Items]
 
     def Import(self, aFields: list):
-        Data = [(Name, type(eval(Type)()), Def) for Name, Type, Def in aFields]
+        Data = [
+            (Name, type(eval(Type)()), Def)
+            for Name, Type, Def in aFields
+        ]
         self.AddList(Data)
 
     def GetFields(self, aFields: list) -> 'TDbFields':

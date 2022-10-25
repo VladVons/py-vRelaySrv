@@ -9,7 +9,6 @@ import aiohttp_session
 #
 from Inc.DB.DbList import TDbList
 from Inc.Util.Obj import DeepGet
-from IncP.Log import Log
 from .Api import Api
 
 
@@ -34,8 +33,8 @@ class TSession():
 
     def CheckUserAccess(self, aUrl: str) -> bool: #//
         Grant = ['/$', '/form/login', '/form/about']
-        Allow = DeepGet(self.Data, 'UserConf.interface_allow', '').split() + Grant
-        Deny = DeepGet(self.Data, 'UserConf.interface_deny', '').split()
+        Allow = self.Data.get('UserConf', {}).get('interface_allow', '').split() + Grant
+        Deny = self.Data.get('UserConf', {}).get('interface_deny', '').split()
         return (self._CheckUserAccess(aUrl, Allow)) and (not self._CheckUserAccess(aUrl, Deny))
 
     async def UpdateUserConfig(self): #//
