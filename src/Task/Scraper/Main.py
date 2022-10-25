@@ -8,7 +8,7 @@ import asyncio
 import random
 #
 from Inc.DB.DbList import TDbList
-from Inc.Util.Obj import GetNestedKey
+from Inc.Util.Obj import DeepGet
 from Inc.UtilP.DownloadSpeed import TDownloadSpeed
 from Inc.UtilP.Misc import FilterKeyErr
 from IncP.ApiWeb import TWebSockClient
@@ -45,7 +45,7 @@ class TMain():
             #continue
 
             DataApi = await Api.DefHandler('get_task')
-            Data = GetNestedKey(DataApi, 'Data.Data')
+            Data = DeepGet(DataApi, 'Data.Data')
             if (Data):
                 Scheme = TScheme(Data['scheme'])
                 Type = Data.get('Type')
@@ -97,7 +97,7 @@ class TMain():
                 if (Err):
                     Log.Print(1, 'e', 'Run() %s' % Err)
                 else:
-                    Dbl = TDbList().Import(GetNestedKey(DataApi, 'Data.Data'))
+                    Dbl = TDbList().Import(DeepGet(DataApi, 'Data.Data'))
                     Conf = Dbl.ExportPair('name', 'data')
                     Workers = int(Conf.get('workers', 0))
                     MaxWorkers = await self.GetMaxWorkers(Workers)

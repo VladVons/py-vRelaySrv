@@ -8,7 +8,7 @@ from wtforms.fields import StringField, SubmitField, PasswordField
 from wtforms.validators import DataRequired, Length
 #
 from Inc.DB.DbList import TDbList
-from Inc.Util.Obj import GetNestedKey
+from Inc.Util.Obj import DeepGet
 from Inc.UtilP.Misc import FilterKeyErr
 from IncP.Log import Log
 from ..Api import Api
@@ -41,7 +41,7 @@ class TForm(TFormBase):
             Log.Print(1, 'e', 'Err: %s' % Err)
             return
 
-        DblJ = GetNestedKey(DataApi, 'Data.Data')
+        DblJ = DeepGet(DataApi, 'Data.Data')
         Dbl = TDbList().Import(DblJ)
         if (Dbl.IsEmpty()):
             self.Data.Message = 'Authorization failed for %s' % (self.UserName.data)

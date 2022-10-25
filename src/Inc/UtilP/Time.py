@@ -17,16 +17,7 @@ class TASleep():
         if (self._Cnt % self.Cnt == 0):
             await asyncio.sleep(self.Sleep)
 
-intervals = (
-    ('weeks', 604800),  # 60 * 60 * 24 * 7
-    ('days', 86400),    # 60 * 60 * 24
-    ('hours', 3600),    # 60 * 60
-    ('minutes', 60),
-    ('seconds', 1),
-)
-
-
-def SecondsToDHMS(aSeconds: int) -> dict:
+def SecondsToDHMS(aSec: int) -> dict:
     Measure = (
         ('days', 60 * 60 * 24),
         ('hours', 60 * 60),
@@ -36,8 +27,12 @@ def SecondsToDHMS(aSeconds: int) -> dict:
 
     Res = {}
     for Key, Val in Measure:
-        Value = int(aSeconds / Val)
+        Value = int(aSec / Val)
         if (Value):
-            aSeconds -= Value * Val
+            aSec -= Value * Val
             Res[Key] = Value
     return Res
+
+def SecondsToDHMS_Str(aSec: int, aPart: int = 2) -> str:
+    Res = [f'{Val} {Key}' for Key, Val in SecondsToDHMS(aSec).items()]
+    return ', '.join(Res[:aPart])

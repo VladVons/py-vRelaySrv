@@ -5,7 +5,7 @@
 
 import os
 import json
-from Inc.Util.Obj import GetNestedKey, DictUpdate
+from Inc.Util.Obj import DeepGet, DictUpdate
 from Inc.UtilP.FS import GetFiles
 
 
@@ -27,10 +27,10 @@ class TConfJson(dict):
         return Res
 
     def GetKey(self, aPath: str, aDef = None) -> object:
-        return GetNestedKey(self, aPath, aDef)
+        return DeepGet(self, aPath, aDef)
 
     def JoinKeys(self, aKey: list) -> dict:
-        Data = [GetNestedKey(self, x, {}) for x in aKey]
+        Data = [DeepGet(self, x, {}) for x in aKey]
         return self._Join(Data)
 
     def LoadDir(self, aDir: str):

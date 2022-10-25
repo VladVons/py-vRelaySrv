@@ -18,11 +18,11 @@ class TTask():
 
     def InitLog(self):
         AppName = self.Info['App']
-        FileLog = '/var/log/%s/%s.log' % (AppName, AppName)
+        FileLog = f'/var/log/{AppName}/{AppName}.log'
         if (not os.path.exists(FileLog)) or (not os.access(FileLog, os.W_OK)):
-            FileLog = '%s.log' % (AppName)
+            FileLog = f'{AppName}.log'
         Log.AddEcho(TEchoFile(FileLog))
-        print('Log file ' + FileLog)
+        print(f'Log file {FileLog}')
 
         Log.AddEcho(TEchoConsoleEx())
 

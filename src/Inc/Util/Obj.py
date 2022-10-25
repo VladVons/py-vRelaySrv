@@ -63,9 +63,9 @@ def DictUpdate(aMaster: dict, aSlave: dict, aJoin = False, aDepth: int = 99) -> 
             Res = aSlave
         return Res
 
-def GetNestedKey(aData: dict, aKeys: str, aDef = None) -> object:
+def DeepGet(aData: dict, aDotKeys: str, aDef = None) -> object:
     # more complex https://jmespath.org/examples.html
-    for Key in aKeys.split('.'):
+    for Key in aDotKeys.split('.'):
         if (isinstance(aData, dict)):
             aData = aData.get(Key)
             if (aData is None):

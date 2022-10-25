@@ -13,7 +13,7 @@ from Task.Main import TTask
 
 def Run():
     Info = GetInfo()
-    PyNeed = (3, 8, 0)
+    PyNeed = (3, 9, 0)
     if (Info['Python'] >= PyNeed):
         Task = TTask().Run()
         asyncio.run(Task)

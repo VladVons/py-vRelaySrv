@@ -26,7 +26,7 @@ import random
 import re
 #
 from Inc.DB.DbList import TDbList
-from Inc.Util.Obj import GetNestedKey
+from Inc.Util.Obj import DeepGet
 from Inc.UtilP.Misc import FilterKeyErr, FilterNone
 from IncP.Download import TDownload, GetSoup
 from IncP.Log import Log
@@ -49,7 +49,7 @@ class TSender():
         if (not self.Dbl.IsEmpty()):
             Data = self.Dbl.Export()
             DataApi = await Api.DefHandler('send_result', Data)
-            if (GetNestedKey(DataApi, 'Data.Data')):
+            if (DeepGet(DataApi, 'Data.Data')):
                 self.Dbl.Empty()
 
 

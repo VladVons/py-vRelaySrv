@@ -6,7 +6,7 @@
 from urllib.parse import urlparse
 #
 from Inc.DB.DbList import TDbList, TDbCond
-from Inc.Util.Obj import GetNestedKey
+from Inc.Util.Obj import DeepGet
 from Inc.UtilP.Misc import FilterKeyErr
 from IncP.DB.Db import TDbSql
 from IncP.Download import CheckHost
@@ -38,7 +38,7 @@ class TForm(TFormBase):
             self.Data.Output = Err
             return
 
-        DataDbl = GetNestedKey(DataApi, 'Data.Data')
+        DataDbl = DeepGet(DataApi, 'Data.Data')
         Dbl = TDbList().Import(DataDbl)
         Diff = Dbl.GetDiff('url', Sites)
 

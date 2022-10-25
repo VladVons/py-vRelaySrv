@@ -9,7 +9,8 @@ import asyncio
 import json
 #
 from Inc.DB.DbList import TDbList, TDbCond
-from Inc.Util.Obj import GetNestedKey
+from Inc.Util.Obj import DeepGet
+from Inc.UtilP.Time import SecondsToDHMS_Str
 from IncP.ApiWeb import TApiBase
 from IncP.DB.Db import TDbSql
 from IncP.DB.Scraper_pg import TDbApp
@@ -103,7 +104,7 @@ class TApi(TApiBase):
 
     async def path_set_scheme(self, _aPath: str, aData: dict) -> dict:
         Scheme = json.loads(aData.get('scheme'))
-        Urls = GetNestedKey(Scheme, 'Product.Info.Url')
+        Urls = DeepGet(Scheme, 'Product.Info.Url')
         if (Urls):
             UrlInf = urlparse(Urls[0])
             Url = UrlInf.scheme + '://' + UrlInf.hostname
@@ -181,8 +182,8 @@ class TApi(TApiBase):
         Rec = Dbl.Rec
         Version = Rec.GetField('version').split()[:2]
         Uptime = Rec.GetField('uptime')
-        Log.Print(1, 'i', 'Server: %s, Uptime: %sd%sh, DbName: %s, DbSize: %sM, Tables %s' %
-            (' '.join(Version), Uptime.days, int(Uptime.seconds/3600), Rec.GetField('name'), round(Rec.GetField('size') / 1000000, 2), Rec.GetField('tables'))
+        Log.Print(1, 'i', 'Server: %s, Uptime: %s, DbName: %s, DbSize: %sM, Tables %s' %
+            (' '.join(Version), SecondsToDHMS_Str(Uptime.seconds), Rec.GetField('name'), round(Rec.GetField('size') / 1000000, 2), Rec.GetField('tables'))
         )
 
         Log.AddEcho(TEchoDb(self.Db))

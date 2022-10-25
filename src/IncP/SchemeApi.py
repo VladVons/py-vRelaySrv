@@ -8,7 +8,7 @@ import operator
 import re
 from bs4 import BeautifulSoup
 #
-from Inc.Util.Obj import GetNestedKey
+from Inc.Util.Obj import DeepGet
 from Inc.Util.Mod import GetClass
 from Inc.UtilP.Misc import FilterMatch
 
@@ -404,7 +404,7 @@ class TSchemeApi():
         ["gets", ["offers.availability"]]
         '''
 
-        return GetNestedKey(aVal, aKeys)
+        return DeepGet(aVal, aKeys)
 
     @staticmethod
     def breadcrumb(aVal: BeautifulSoup, aFind: list, aIdx: int, aChain: bool = True) -> str:

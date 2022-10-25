@@ -8,13 +8,12 @@ import sys
 import time
 import platform
 #
-from Inc.UtilP.Time import SecondsToDHMS
+from Inc.UtilP.Time import SecondsToDHMS_Str
+
+TimeStart = time.time()
 
 
 def GetSysInfo() -> dict:
-    Uptime = SecondsToDHMS(time.monotonic())
-    Uptime = [f'{Val} {Key}' for Key, Val in Uptime.items()]
-
     UName =  platform.uname()
     Res = {
         'App': os.path.basename(sys.argv[0]).rsplit('.')[0],
@@ -22,7 +21,8 @@ def GetSysInfo() -> dict:
         'Host': UName.node,
         'User': os.environ.get('USER'),
         'Python': (sys.version_info.major, sys.version_info.minor, sys.version_info.micro),
-        'Uptime': ', '.join(Uptime),
+        'UptimeSys': SecondsToDHMS_Str(time.monotonic()),
+        'UptimeApp': SecondsToDHMS_Str(time.time() - TimeStart),
         'Now': time.strftime('%Y-%m-%d %H:%M:%S')
     }
     return Res

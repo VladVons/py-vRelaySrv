@@ -13,7 +13,7 @@ import sys
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 #
-from Inc.Util.Obj import GetNestedKey
+from Inc.Util.Obj import DeepGet
 from Inc.UtilP.Python import TPython
 from Inc.UtilP.Misc import FilterKey, FilterKeyErr
 from IncP.SchemeApi import TSchemeApi, TSchemeApiExt, TSchemeExt
@@ -312,7 +312,7 @@ class TSchemeJson():
         return self
 
     def GetUrl(self) -> list:
-        return GetNestedKey(self.Scheme, 'Product.Info.Url')
+        return DeepGet(self.Scheme, 'Product.Info.Url')
 
     def GetFields(self) -> list:
         raise NotImplementedError()

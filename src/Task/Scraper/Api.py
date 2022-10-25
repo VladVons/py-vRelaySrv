@@ -4,7 +4,7 @@
 
 
 from Inc.DB.DbList import TDbList
-from Inc.Util.Obj import GetNestedKey
+from Inc.Util.Obj import DeepGet
 from Inc.UtilP.Misc import FilterKeyErr
 from IncP.ApiWeb import TApiBase
 from IncP.ApiWeb import TWebClient
@@ -32,7 +32,7 @@ class TApi(TApiBase):
             Log.Print(1, 'e', 'Err: %s' % Err)
             return
 
-        Dbl = TDbList().Import(GetNestedKey(DataApi, 'Data.Data'))
+        Dbl = TDbList().Import(DeepGet(DataApi, 'Data.Data'))
         if (Dbl.IsEmpty()):
             Log.Print(1, 'e', 'GetUserConfig() failed for %s' % (User))
         else:

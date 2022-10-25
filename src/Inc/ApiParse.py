@@ -7,14 +7,14 @@
 
 import json
 #
-from Inc.Util import UFS, UStr
+from Inc.Util import FS, Str
 
 
 def QueryToDict(aQuery: str) -> dict:
     R = {}
     for Item in aQuery.split('&'):
         if (Item):
-            Key, Value = UStr.SplitPad(2, Item, '=')
+            Key, Value = Str.SplitPad(2, Item, '=')
             R[Key] = Value
     return R
 
@@ -23,9 +23,9 @@ async def QueryUrl(aPath: str, aQuery: dict) -> str:
     DirCore = 'IncP/Api'
     DirUser = 'Plugin/Api'
 
-    Name, Ext = UStr.SplitPad(2, aPath.split('/')[-1], '.')
+    Name, Ext = Str.SplitPad(2, aPath.split('/')[-1], '.')
     if (Ext == 'py'):
-        if (UFS.FileExists(DirUser + aPath)):
+        if (FS.FileExists(DirUser + aPath)):
             Dir = DirUser
         else:
             Dir = DirCore

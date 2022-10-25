@@ -7,7 +7,7 @@ import asyncio
 import json
 #
 from Inc.DB.DbList import TDbList
-from Inc.Util.Obj import GetNestedKey
+from Inc.Util.Obj import DeepGet
 from Inc.UtilP.Misc import FilterKey, FilterKeyErr
 from IncP.ApiWeb import TApiBase, TWebClient
 from IncP.Download import TDownload, TDHeaders, GetSoup, GetSoupUrl
@@ -57,7 +57,7 @@ class TApiPlugin():
             await self.WebSockSend({'Data': Err})
             return DataApi
 
-        DblJ = GetNestedKey(DataApi, 'Data.Data')
+        DblJ = DeepGet(DataApi, 'Data.Data')
         if (DblJ):
             Res = {'Data': TDbList().Import(DblJ)}
         else:
@@ -313,7 +313,7 @@ class get_scheme_by_id(TApiPlugin):
         DataApi = await self.Args['WebClient'].Send('web/get_scheme_by_id', aData)
         Err = FilterKeyErr(DataApi)
         if (not Err):
-            DblJ = GetNestedKey(DataApi, 'Data.Data')
+            DblJ = DeepGet(DataApi, 'Data.Data')
             Dbl = TDbList().Import(DblJ)
             Scheme = TScheme(Dbl.Rec.GetField('scheme'))
             DataApi['IsJson'] = Scheme.IsJson()
@@ -346,10 +346,10 @@ class TApi(TApiBase):
     async def DoAuthRequest(self, aUser: str, aPassw: str):
         return True
 
-    async def DefHandler(self, aPath: str, aData: dict = None) -> dict:
+    async def DefHandler(self, aPath: str, aData: dict = None) -> dict: #//
         if (aData is None):
             aData = {}
-        return await self.WebClient.Send('web/' + aPath, aData)
+        return await self.WebClient.Send(f'web/{aPath}', aData)
 
 
 Api = TApi()

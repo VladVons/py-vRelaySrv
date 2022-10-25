@@ -10,7 +10,7 @@ import aiohttp
 from aiohttp import web
 #
 from Inc.DB.DbList import TDbList
-from Inc.Util.Obj import GetNestedKey
+from Inc.Util.Obj import DeepGet
 from IncP.Log import Log
 
 
@@ -168,7 +168,7 @@ class TWebSockSrv():
                 if (Msg.type == web.WSMsgType.text):
                     Plugin = aRequest.query.get('plugin')
                     if (Plugin):
-                        Class = GetNestedKey(self.Api.Url, Plugin + '.Class')
+                        Class = DeepGet(self.Api.Url, Plugin + '.Class')
                         if (Class is None):
                             await WS.send_json({'Type': 'Err', 'Data': 'Unknown plugin %s' % (Plugin)})
                         else:

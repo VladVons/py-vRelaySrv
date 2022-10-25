@@ -14,7 +14,8 @@ from ..Session import Session
 
 class TFormBase(Form):
     Title = ''
-    def __init__(self, aParent, aRequest: web.Request, aTpl: str, aData: dict = None):
+
+    def __init__(self, aRequest: web.Request, aTpl: str, aData: dict = None):
         super().__init__()
 
         if (aData is None):

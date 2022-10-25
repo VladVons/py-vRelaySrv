@@ -12,7 +12,7 @@ from aiogram import Bot, Dispatcher, executor, types
 #
 from Task.WebSrv import Api
 from Inc.DB.DbList import TDbList, TDbCond
-from Inc.Util.Obj import GetNestedKey
+from Inc.Util.Obj import DeepGet
 from IncP.Log import Log
 
 
@@ -25,7 +25,7 @@ class TMain():
 
     async def cmd_start(self, message: types.Message):
         DataA = await Api.DefHandler('get_sites')
-        Data = GetNestedKey(DataA, 'Data.Data')
+        Data = DeepGet(DataA, 'Data.Data')
         if (Data):
             Dbl = TDbList().Import(Data)
             Cond = TDbCond().AddFields([ ['eq', (Dbl, 'has_scheme'), True, True]])

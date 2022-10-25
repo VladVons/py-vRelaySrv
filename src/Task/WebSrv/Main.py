@@ -49,29 +49,30 @@ class TForm():
     def __init__(self, aParent: 'TWebSrv'):
         self.Parent = aParent
 
-    async def Create(self, aRequest: web.Request, aName: str) -> web.Response:
-        FormDir = '%s/%s' % (self.Parent.DirRoot, self.Parent.DirForm)
-        if (not os.path.isfile('%s/%s%s' % (FormDir, aName, self.Parent.TplExt))):
+    async def Create(self, aRequest: web.Request, aName: str) -> web.Response: #//
+        DirForm = f'{self.Parent.DirRoot}/{self.Parent.DirForm}'
+        FileTpl = f'{DirForm}/{aName}{self.Parent.TplExt}'
+        if (not os.path.isfile(FileTpl)):
             aName = 'err_code'
 
         for Module, Class in [(aName, 'TForm'), ('FormBase', 'TFormBase')]:
             try:
-                Path = FormDir + '/' + Module
-                Mod = __import__(Path.replace('/', '.'), None, None, [Class])
+                ModuleDot = f'{DirForm}/{Module}'.replace('/', '.')
+                Mod = __import__(ModuleDot, None, None, [Class])
                 TClass = getattr(Mod, Class)
                 break
             except ModuleNotFoundError:
                 pass
-        Res = TClass(aRequest, aName + self.Parent.TplExt)
+        Res = TClass(aRequest, f'{aName}{self.Parent.TplExt}')
         Res.Parent = self
         return Res
 
-    async def CreateAuth(self, aRequest: web.Request) -> web.Response:
+    async def CreateAuth(self, aRequest: web.Request) -> web.Response: #//
         Name = aRequest.match_info.get('Name')
 
         await Session.Update(aRequest)
         if (not Session.Data.get('UserId')) and (Name != 'login'):
-            Redirect = 'login?url=%s' % (Name)
+            Redirect = f'login?url={Name}'
             raise web.HTTPFound(location = Redirect)
 
         return await self.Create(aRequest, Name)

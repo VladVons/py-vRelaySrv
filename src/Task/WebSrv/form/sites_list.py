@@ -4,7 +4,7 @@
 
 
 from Inc.DB.DbList import TDbList, TDbCond
-from Inc.Util.Obj import GetNestedKey
+from Inc.Util.Obj import DeepGet
 from Inc.UtilP.Misc import FilterKeyErr
 from ..Api import Api
 from .FormBase import TFormBase
@@ -20,7 +20,7 @@ class TForm(TFormBase):
             return self.RenderInfo(Err)
 
         DataApi = await Api.DefHandler('get_sites')
-        Data = GetNestedKey(DataApi, 'Data.Data')
+        Data = DeepGet(DataApi, 'Data.Data')
         if (Data):
             Dbl = TDbList().Import(Data)
             self.Data.Sites = Dbl
