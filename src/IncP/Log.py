@@ -4,39 +4,30 @@
 
 
 import asyncio
-import inspect
 import os
 import traceback
 #
-from Inc.Log import TLog, TEcho, TEchoConsole
-
-
-def _GetStack(aStack) -> str:
-    CurDir    = os.getcwd()
-    Dir, File = os.path.split(aStack[1])
-    Path   = Dir.replace(CurDir, '').strip('/') + '/' + File
-    Method = aStack[3]
-    Line   = aStack[2]
-    return '%s %s(), line %s' % (Path, Method, Line)
-
-def _DoExcept():
-    traceback.print_exc()
-    return _GetStack(inspect.stack()[2])
+from Inc.Log import TLog, TEcho, TEchoConsole, TEchoFile
 
 
 class TEchoConsoleEx(TEchoConsole):
-    def ParseE(self, aArgs: dict):
+    def Write(self, aArgs: dict):
         aE = aArgs.get('aE')
         if (aE):
-            aArgs['aD'].append(aE.__class__.__name__)
-            EMsg = _DoExcept()
-            if (EMsg):
-                aArgs['aD'].append(EMsg)
-
-    def Write(self, aArgs: dict):
-        self.ParseE(aArgs)
+            traceback.print_exc()
         super().Write(aArgs)
 
+
+class TEchoFileEx(TEchoFile):
+    def Write(self, aArgs: dict):
+        aE = aArgs.get('aE')
+        if (aE):
+            Lines = traceback.format_exception(aE)
+            Lines.insert(0, aArgs.get('aM'))
+            aArgs['aM'] = '\n'.join(Lines)
+            super().Write(aArgs)
+        else:
+            super().Write(aArgs)
 
 class TEchoDb(TEcho):
     def __init__(self, aDb):

@@ -6,10 +6,9 @@
 import os
 #
 from Task import ConfTask
-from Inc.Log  import TEchoFile
 from Inc.PluginTask import Plugin
 from IncP import GetInfo
-from IncP.Log import Log, TEchoConsoleEx
+from IncP.Log import Log, TEchoConsoleEx, TEchoFileEx
 
 
 class TTask():
@@ -21,7 +20,7 @@ class TTask():
         FileLog = f'/var/log/{AppName}/{AppName}.log'
         if (not os.path.exists(FileLog)) or (not os.access(FileLog, os.W_OK)):
             FileLog = f'{AppName}.log'
-        Log.AddEcho(TEchoFile(FileLog))
+        Log.AddEcho(TEchoFileEx(FileLog))
         print(f'Log file {FileLog}')
 
         Log.AddEcho(TEchoConsoleEx())
@@ -35,7 +34,10 @@ class TTask():
         try:
             await Plugin.Run()
         except KeyboardInterrupt as E:
-            Log.Print(1, 'x', 'Run()', aE = E)
+            Log.Print(1, 'x', 'TTask.Run()', aE = E)
+        except Exception as E:
+            Log.Print(1, 'x', 'TTask.Run()', aE = E)
+            raise E
         finally:
             await Plugin.StopAll()
         Log.Print(1, 'i', 'End')

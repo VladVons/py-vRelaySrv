@@ -66,7 +66,7 @@ def DictUpdate(aMaster: dict, aSlave: dict, aJoin = False, aDepth: int = 99) -> 
 def DeepGet(aData: dict, aDotKeys: str, aDef = None) -> object:
     # more complex https://jmespath.org/examples.html
     for Key in aDotKeys.split('.'):
-        if (isinstance(aData, dict)):
+        if (isinstance(aData, dict)) or (hasattr(aData, 'get')):
             aData = aData.get(Key)
             if (aData is None):
                 return aDef
