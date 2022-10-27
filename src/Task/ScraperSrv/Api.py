@@ -76,7 +76,7 @@ class TApi(TApiBase):
         self.Db: TDbApp = None
         self.ApiTask = TApiTask(self)
 
-    async def DoAuthRequest(self, aUser: str, aPassw: str):
+    async def DoAuthRequest(self, aUser: str, aPassw: str) -> bool:
         Dbl = await self.Db.UserAuth(aUser, aPassw)
         return (not Dbl.IsEmpty())
 

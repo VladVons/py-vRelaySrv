@@ -3,7 +3,7 @@
 # License: GNU, see LICENSE for more details
 
 
-from Inc.Util import UArr
+from Inc.Util.Arr import SortDD
 
 
 class TDbField(dict):
@@ -24,7 +24,7 @@ class TDbFields(dict):
         raise NotImplementedError()
 
     def Sort(self, aName: str = 'No'):
-        return UArr.SortDD(self, aName)
+        return SortDD(self, aName)
 
     def Get(self, aName: str) -> TDbField:
         R = self.get(aName)

@@ -30,11 +30,10 @@ class TMain():
             Dbl = TDbList().Import(Data)
             Cond = TDbCond().AddFields([ ['eq', (Dbl, 'has_scheme'), True, True]])
             Dbl = Dbl.Clone(aFields=['url'], aCond=Cond)
-            DblRepr = Dbl._Repr(35)
 
             #return SendMessage(chat_id=message.chat.id, text='Hi from webhook!', reply_to_message_id=message.message_id)
             await message.reply('Hello from WebScraper bot!')
-            await message.reply(DblRepr)
+            await message.reply(str(Dbl))
 
 
     async def Run(self):

@@ -91,7 +91,7 @@ class TDbf(TDb):
         self.S.write(Data)
 
         self.S.seek(32)
-        for K, V in aFields.Sort():
+        for _K, V in aFields.Sort():
             Data = struct.pack('<11s1s4s1B1B14s', V.Name.encode(), V.Type.encode(), b'\x00', V.Len, V.LenD, b'\x00')
             self.S.write(Data)
         self.S.write(b'\x0D')

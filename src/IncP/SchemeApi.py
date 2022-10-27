@@ -90,7 +90,7 @@ def DigDelDecor(aVal: str) -> str:
 # remove thousands decoration
     Pos = aVal.rfind('.')
     if (len(aVal) - Pos - 1 == 3):
-       aVal = aVal.replace('.', '')
+        aVal = aVal.replace('.', '')
     return aVal
 
 def DigSplit(aVal: str) -> tuple:

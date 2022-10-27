@@ -19,9 +19,10 @@ class TDblField(TDbField):
     def ValToData(self, aVal) -> bytearray:
         Struct: str = '<' + self.Struct()
         if (self.Type == 's'):
-            return struct.pack(Struct, aVal.encode())
+            Res = struct.pack(Struct, aVal.encode())
         else:
-            return struct.pack(Struct, aVal)
+            Res = struct.pack(Struct, aVal)
+        return Res
 
     def DataToVal(self, aVal: bytearray):
         Struct: str = '<' + self.Struct()
@@ -77,8 +78,8 @@ class TDbPack(TDb):
         Sign, self.HeadLen, self.RecLen, Fields = struct.unpack('<1B1H1H1H', Data[0:1+2+2+2])
         assert (Sign == self.Sign), 'bad signature'
 
-        for _i_ in range(Fields):
+        for _i in range(Fields):
             Data = self.S.read(16)
-            FName, FType, FLen, X = struct.unpack('<11s1s1B3s', Data)
+            FName, FType, FLen, _X = struct.unpack('<11s1s1B3s', Data)
             Name = FName.split(b'\x00', 1)[0].decode()
             self.Fields.Add(Name, FType.decode(), FLen)
