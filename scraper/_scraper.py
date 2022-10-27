@@ -1,4 +1,4 @@
-#!/usr/bin/python3 -B
+#!/usr/bin/env python3
 
 import os, sys
 print(os.getcwd())
@@ -9,8 +9,8 @@ import asyncio
 from bs4 import BeautifulSoup
 #
 from IncP.DB.Scraper_pg import TDbApp
-from IncP.Scheme import TSoupScheme, TApi, TScheme
-from IncP.Utils import FormatJsonStr
+from IncP.Scheme import TSoupScheme, TScheme
+from Inc.UtilP.Misc import FormatJsonStr
 
 
 DbAuth = {
@@ -135,9 +135,9 @@ def TestApi():
 
 
 os.system('clear')
-#asyncio.run(SaveScheme('Schemes.txt'))
+asyncio.run(SaveScheme('Schemes_2.txt'))
 #
 #TestPy('megabit.od.ua')
 #TestJson('megabit.od.ua')
-TestBoth('oster.com.ua')
+#TestBoth('oster.com.ua')
 #TestApi()
