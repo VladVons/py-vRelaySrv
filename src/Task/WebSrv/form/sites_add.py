@@ -27,6 +27,7 @@ class TForm(TFormBase):
             return self.RenderInfo(Err)
 
         Sites = []
+        # pylint: disable-next=no-member
         Lines = self.Data.Sites.splitlines()
         for Line in Lines:
             Data = urlparse(Line)

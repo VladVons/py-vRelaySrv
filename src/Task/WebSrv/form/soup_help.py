@@ -2,8 +2,9 @@
 # Author: Vladimir Vons <VladVons@gmail.com>
 # License: GNU, see LICENSE for more details
 
-
+# pylint: disable-next=consider-using-from-import
 import IncP.SchemeApi as SchemeApi
+
 from Inc.Util.Mod import GetClassHelp
 from .FormBase import TFormBase
 

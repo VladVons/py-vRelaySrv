@@ -29,7 +29,7 @@ class TApiPlugin():
         if (self.WebSock):
             Dbl, Id = self.WebSock
             RecNo = Dbl.FindField('Id', Id)
-            if (RecNo is not None):
+            if (RecNo >= 0):
                 Dbl.RecNo = RecNo
                 WS = Dbl.Rec.GetField('WS')
                 await WS.send_json(aData)
@@ -177,6 +177,10 @@ class get_scheme_find(TApiPlugin):
 
 class get_sites_grep(TApiPlugin):
     Param = {'param': ['file', 'filter', 'cnt', 'ws']}
+
+    def __init__(self, aArgs: dict):
+        super().__init__(aArgs)
+        self.Filter = None
 
     async def cbOnGet(self, aUrl: str, aData: dict):
         Err = FilterKeyErr(aData)

@@ -100,6 +100,7 @@ class TWebSrv():
             return web.Response(body='File %s does not exist' % (Name), status=404)
 
         Headers = {'Content-disposition': 'attachment; filename=%s' % (Name)}
+        # pylint: disable-next=no-value-for-parameter
         return web.Response(body=FileSender(aFile=File), headers=Headers)
 
     async def _rApi(self, aRequest: web.Request) -> web.Response:
@@ -169,4 +170,5 @@ class TWebSrv():
 
         Port = self.Conf.get('Port', 8080)
         Log.Print(1, 'i', 'WebSrv on port %s' % (Port))
+        # pylint: disable-next=protected-access
         await web._run_app(App, host = '0.0.0.0', port = Port, shutdown_timeout = 60.0,  keepalive_timeout = 75.0)

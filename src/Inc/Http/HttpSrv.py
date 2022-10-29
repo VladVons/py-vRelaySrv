@@ -9,7 +9,7 @@ except ModuleNotFoundError:
     import uasyncio as asyncio
 #
 from IncP.Log  import Log
-from Inc.Util import UFS
+from Inc.Util import FS
 from .HttpLib import ReadHead
 
 #https://github.com/peterhinch/micropython-samples/blob/master/resilient/README.md
@@ -86,7 +86,7 @@ class THttpApi():
         if (aPath == '/'):
             aPath = self.FIndex
 
-        if (UFS.FileExists(self.DirRoot + aPath)):
+        if (FS.FileExists(self.DirRoot + aPath)):
             Path = aPath
             Code = 200
         else:
@@ -101,7 +101,7 @@ class THttpApi():
             Mode = 'rb'
 
         Header = THeader()
-        Header.Create(Code, Ext, UFS.FileSize(self.DirRoot + Path))
+        Header.Create(Code, Ext, FS.FileSize(self.DirRoot + Path))
         await aWriter.awrite(str(Header))
         await self.FileToStream(aWriter, self.DirRoot + Path, Mode)
 
@@ -118,7 +118,7 @@ class THttpApi():
         try:
             if (Obj):
                 await Obj(aReader, aWriter, Head)
-            elif (UFS.FileExists(self.DirRoot + '/' + Method + '.py')):
+            elif (FS.FileExists(self.DirRoot + '/' + Method + '.py')):
                 Lib = __import__(self.DirRoot + '/' + Method)
                 await Lib.THttpApiEx(self).Query(aReader, aWriter, Head)
             else:

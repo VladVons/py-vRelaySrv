@@ -70,6 +70,7 @@ class TScraperSrv():
         while (True):
             try:
                 Log.Print(1, 'i', 'ScraperSrv on port %s' % (Port))
+                # pylint: disable-next=protected-access
                 await web._run_app(App, host = '0.0.0.0', port = Port, shutdown_timeout = 60.0,  keepalive_timeout = 75.0)
             except Exception as E:
                 await asyncio.sleep(2)

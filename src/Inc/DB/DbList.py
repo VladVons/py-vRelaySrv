@@ -6,7 +6,6 @@
 import json
 import random
 import operator
-from types import NoneType
 
 
 class TDbListException(Exception):
@@ -135,7 +134,6 @@ class TDbFields(dict):
                     Msg = f'TDbFields.AddAuto(). Field {Row} is None'
                     #raise TDbListException(Msg)
                     print(Msg)
-                    pass
                 self.Add(Row, type(aData[Idx]))
             else:
                 self.Add(Row)
@@ -146,6 +144,7 @@ class TDbFields(dict):
 
     def Import(self, aFields: list):
         Data = [
+            # pylint: disable-next=eval-used
             (Name, type(eval(Type)()), Def)
             for Name, Type, Def in aFields
         ]
@@ -417,7 +416,10 @@ class TDbList():
             Arr[FieldNo] = Row
             self.Data.append(Arr)
 
-    def ImportDbl(self, aDbl: 'TDbList', aFields: list = [], aCond: TDbCond = None, aRecNo: tuple = (0, -1)):
+    def ImportDbl(self, aDbl: 'TDbList', aFields: list = None, aCond: TDbCond = None, aRecNo: tuple = (0, -1)):
+        if (aFields is None):
+            aFields = []
+
         self.Data = aDbl.ExportData(aFields, aCond, aRecNo)
         self.Fields = aDbl.Fields.GetFields(aFields)
         self.Tag = aDbl.Tag
@@ -449,7 +451,6 @@ class TDbList():
             self.RecNo = 0
         else:
             self.Empty()
-        return
 
     def GetDiff(self, aField: str, aList: list) -> tuple:
         Set1 = set(self.ExportList(aField))
@@ -524,6 +525,7 @@ class TDbList():
             for Field in aFields:
                 F += 'x[%s],' % self.Fields.GetNo(Field)
             Script = 'self.Data.sort(key=lambda x: (%s), reverse=%s)' % (F, aReverse)
+            # pylint: disable-next=eval-used
             eval(Script)
         self.RecNo = 0
 

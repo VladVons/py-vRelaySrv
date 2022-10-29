@@ -259,9 +259,11 @@ class TSchemePy():
 
         self.Python = TPython(aScheme)
         self.Python.Compile()
+        # pylint: disable-next=no-member
         self.Clear()
 
     def Parse(self, aSoup):
+        # pylint: disable-next=no-member
         self.Clear()
 
         if (aSoup):
@@ -297,9 +299,11 @@ class TSchemeJson():
 
         self.Debug = False
         self.Scheme = json.loads(aScheme)
+        # pylint: disable-next=no-member
         self.Clear()
 
     def Parse(self, aSoup):
+        # pylint: disable-next=no-member
         self.Clear()
         if (aSoup):
             SoupScheme = TSoupScheme()

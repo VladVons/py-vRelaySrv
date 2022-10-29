@@ -44,6 +44,7 @@ class TPython():
         try:
             Out = {}
             Script = self.ByteCode if (self.ByteCode) else self.Script
+            # pylint: disable-next=exec-used
             exec(Script, aParam, Out)
             Res = {'Data': Out.get('Res')}
         except (IndentationError, SyntaxError) as E:

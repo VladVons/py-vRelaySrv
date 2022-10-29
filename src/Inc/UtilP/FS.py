@@ -29,3 +29,6 @@ def DirRemove(aPath: str):
             os.rmdir(File)
         else:
             os.remove(File.path)
+
+def FilesExist(aFiles: list[str]) -> list[int]:
+    return [int(os.path.exists(File)) for File in aFiles]

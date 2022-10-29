@@ -7,6 +7,7 @@ import time
 import json
 #
 from IncP.SchemeApi import TSchemeApi
+# pylint: disable-next=consider-using-from-import
 import IncP.SchemeApi as SchemeApi
 from Inc.Util.Mod import GetClassHelp
 

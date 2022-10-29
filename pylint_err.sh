@@ -23,6 +23,9 @@ too-few-public-methods|\
 too-many-arguments|\
 too-many-locals|\
 too-many-instance-attributes|\
+too-many-public-methods|\
+too-many-branches|\
+too-many-nested-blocks|\
 line-too-long|\
 superfluous-parens|\
 consider-using-f-string\
