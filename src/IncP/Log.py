@@ -3,30 +3,8 @@
 # License: GNU, see LICENSE for more details
 
 
-import asyncio
-import traceback
-#
-from Inc.Log import TLog, TEcho, TEchoConsole, TEchoFile
-
-
-class TEchoConsoleEx(TEchoConsole):
-    def Write(self, aArgs: dict):
-        aE = aArgs.get('aE')
-        if (aE):
-            traceback.print_exc()
-        super().Write(aArgs)
-
-
-class TEchoFileEx(TEchoFile):
-    def Write(self, aArgs: dict):
-        aE = aArgs.get('aE')
-        if (aE):
-            Lines = traceback.format_exception(aE)
-            Lines.insert(0, aArgs.get('aM'))
-            aArgs['aM'] = '\n'.join(Lines)
-            super().Write(aArgs)
-        else:
-            super().Write(aArgs)
+from Inc.Log import TLog
+from Inc.UtilP.Log import TEchoConsoleEx, TEchoFileEx
 
 class TEchoDb(TEcho):
     def __init__(self, aDb):

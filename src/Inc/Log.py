@@ -78,6 +78,3 @@ class TLog():
         self.Cnt += 1
         Args = {'aL': aLevel, 'aT': aType, 'aM': aMsg, 'aD': aData, 'aE': aE, 'c': self.Cnt, 'd': GetDate(), 't': GetTime()}
         self._Write(Args, aSkipEcho)
-
-
-Log = TLog()
