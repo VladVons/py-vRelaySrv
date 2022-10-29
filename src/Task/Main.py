@@ -4,6 +4,7 @@
 
 
 import os
+import argparse
 #
 from Task import ConfTask
 from Inc.PluginTask import Plugin
@@ -25,11 +26,22 @@ class TTask():
 
         Log.AddEcho(TEchoConsoleEx())
 
+    def InitOptions(self):
+        Usage = f'usage: {self.Info["App"]} [options] arg'
+        Parser = argparse.ArgumentParser(usage = Usage)
+        Parser.add_argument('-i', '--Info', help = 'information', action = 'store_true')
+        return Parser.parse_args()
+
     async def Run(self):
         self.InitLog()
 
-        Log.Print(1, 'i', 'Run() %s' % self.Info['App'])
+        Options = self.InitOptions()
+        if (Options.Info):
+            List = [f'{Key:10} {Val}' for Key, Val in self.Info.items()]
+            print('\n'.join(List))
+            return
 
+        Log.Print(1, 'i', 'Run() %s' % self.Info['App'])
         Plugin.LoadList(ConfTask.get('Plugins', ''))
         try:
             await Plugin.Run()
