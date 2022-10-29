@@ -41,27 +41,33 @@ def DictUpdate(aMaster: dict, aSlave: dict, aJoin = False, aDepth: int = 99) -> 
     '''
     DictJoin({3: [1, 2, 3]}, {3: [4]}) -> {3: [1, 2, 3, 4]}
     '''
+
+    if (aDepth <= 0):
+        return
+
     Type = type(aSlave)
-    if (aDepth > 0):
-        if (Type == dict):
-            Res = aMaster
-            for Key, Val in aSlave.items():
-                Tmp = aMaster.get(Key)
-                if (Tmp is None):
-                    Tmp = {} if isinstance(Val, dict) else []
-                Data = DictUpdate(Tmp, Val, aJoin, aDepth - 1)
-                Res[Key] = Data
-        elif (Type == list):
-            Res = aMaster
-            for Val in aSlave:
-                Data = DictUpdate(None, Val, aJoin, aDepth - 1)
-                if (aJoin):
-                    Res.append(Data)
-                else:
-                    Res = Data
-        else:
-            Res = aSlave
-        return Res
+    if (Type == dict):
+        if (aMaster is None):
+            aMaster = {}
+        Res = aMaster
+
+        for Key, Val in aSlave.items():
+            Tmp = aMaster.get(Key)
+            if (Tmp is None):
+                Tmp = {} if isinstance(Val, dict) else []
+            Data = DictUpdate(Tmp, Val, aJoin, aDepth - 1)
+            Res[Key] = Data
+    elif (Type == list):
+        Res = [] if (aMaster is None ) else aMaster
+        for Val in aSlave:
+            Data = DictUpdate(None, Val, aJoin, aDepth - 1)
+            if (aJoin):
+                Res.append(Data)
+            else:
+                Res = Data
+    else:
+        Res = aSlave
+    return Res
 
 def DeepGet(aData: dict, aDotKeys: str, aDef = None) -> object:
     # more complex https://jmespath.org/examples.html
@@ -80,10 +86,5 @@ def GetNotNone(aData: dict, aKey: str, aDef: object) -> object:
         Res = aDef
     return Res
 
-class TClass():
-    def __init__(self):
-        self.Key = 'MyKey'
-        self.Val = 'MyVal'
-
-    def Print(self):
-        print(111)
+def Filter(aData: dict, aKeys: list) -> dict:
+    return {Key: aData[Key] for Key in aKeys }

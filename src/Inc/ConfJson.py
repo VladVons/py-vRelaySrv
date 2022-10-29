@@ -33,11 +33,11 @@ class TConfJson(dict):
         Data = [DeepGet(self, x, {}) for x in aKey]
         return self._Join(Data)
 
-    def LoadDir(self, aDir: str):
+    def LoadDir(self, aDir: str, aJoin: bool = True):
         for File in GetFiles(aDir, '.json$', 0):
-            self.LoadFile(File, True)
+            self.LoadFile(File, aJoin)
 
-    def LoadFile(self, aFile: str, aJoin: bool = False):
+    def LoadFile(self, aFile: str, aJoin: bool = True):
         Data = self._ReadFile(aFile)
         if (aJoin):
             Data = self._Join([self, Data])
@@ -45,10 +45,10 @@ class TConfJson(dict):
         else:
             self.update(Data)
 
-    def LoadList(self, aPath: list[str]):
+    def LoadList(self, aPath: list[str], aJoin: bool = True):
         for File in aPath:
             if os.path.exists(File):
                 if (os.path.isdir(File)):
                     self.LoadDir(File)
                 else:
-                    self.LoadFile(File, True)
+                    self.LoadFile(File, aJoin)

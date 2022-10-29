@@ -20,9 +20,8 @@ class TEchoFileEx(TEchoFile):
     def Write(self, aArgs: dict):
         aE = aArgs.get('aE')
         if (aE):
-            Lines = traceback.format_exc()
-            Lines.insert(0, aArgs.get('aM'))
-            aArgs['aM'] = '\n'.join(Lines)
+            Msg = traceback.format_exc()
+            aArgs['aM'] += '\n' +  Msg
             super().Write(aArgs)
         else:
             super().Write(aArgs)

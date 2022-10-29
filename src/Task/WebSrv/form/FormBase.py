@@ -12,6 +12,7 @@ from IncP import GetInfo
 from IncP.Log import Log
 from ..Session import Session
 
+
 class TFormBase(Form):
     Title = ''
 
@@ -34,7 +35,8 @@ class TFormBase(Form):
         self.Data.clear()
         Post = await self.Request.post()
         for Key, Val in Post.items():
-            self.Data[Key] =  Val.strip()
+            if (isinstance(Val, str)):
+                self.Data[Key] =  Val.strip()
         return bool(Post)
 
     async def Render(self) -> web.Response:
@@ -45,7 +47,7 @@ class TFormBase(Form):
             Res = await self._Render()
             if (Res is None):
                 try :
-                    Res = render_template(self.Tpl, self.Request, {'Data': self.Data, 'Form': self})
+                    Res = self.RenderTemplate()
                 except Exception as E:
                     Msg = 'Render(), %s %s' % (self.Tpl, E)
                     Log.Print(1, 'x', Msg, aE = E)
@@ -54,6 +56,9 @@ class TFormBase(Form):
             Msg = 'Access denied %s %s. Policy interface_allow' % (self.Request.path, Session.Data.get('UserName'))
             Res = self.RenderInfo(Msg)
         return Res
+
+    def RenderTemplate(self):
+        return render_template(self.Tpl, self.Request, {'Data': self.Data, 'Form': self})
 
     def RenderInfo(self, aMsg: str) -> web.Response:
         Data = TDictDef('', {'Info': aMsg})

@@ -15,20 +15,23 @@ class TPluginApp():
     def __init__(self):
         self.Data = {}
         self.Conf = {}
+        self.ConfEx = {}
         self.Path = 'Task.Plugin'
+        self.Dir = 'Conf'
 
     def Init(self, aPlugin: str):
         Dir, ModName = aPlugin.split('.')
 
         self.Conf = TConfJson()
-        self.Conf.LoadList([f'Conf/{Dir}~{ModName}.json', f'{Dir}/{ModName}.json'])
+        self.Conf.LoadList([f'{self.Dir}/{Dir}~{ModName}.json', f'{Dir}/{ModName}.json'])
+
+        ConfInclude = self.Conf.get('Include', [])
+        Files = [f'{self.Dir}/{x}' for x in ConfInclude]
+        self.Conf.LoadList(Files, True)
+
         Conf = self.Conf.get('Conf', [])
         self.Conf.LoadList(Conf)
         self.Path = f'{aPlugin}.Plugin'
-
-    @staticmethod
-    def _Filter(aData: list[str]) -> list:
-        return [x for x in aData if (not x.startswith('-'))]
 
     async def Load(self, aName: str, aDepth: int) -> dict:
         if (self.Data.get(aName) is None):
@@ -36,11 +39,11 @@ class TPluginApp():
             Log.Print(1, 'i', '%sLoad app %s' % (Tab, aName))
 
             Depends = self.Conf.GetKey('Plugin.' + aName + '.Depends', [])
-            Depends = self._Filter(Depends)
             for Depend in Depends:
-                if (self.Data.get(Depend) is None):
-                    Log.Print(1, 'i', '%s%s depends on %s' % (Tab, aName, Depend))
-                await self.Load(Depend, aDepth + 1)
+                if (not Depend.startswith('-')):
+                    if (self.Data.get(Depend) is None):
+                        Log.Print(1, 'i', f'{Tab}{aName} depends on {Depend}')
+                    await self.Load(Depend, aDepth + 1)
 
             TClass = DynImport(self.Path + '.' + aName, 'T' + aName)
             if (TClass):
@@ -51,6 +54,8 @@ class TPluginApp():
                 Class.Name = aName
                 Class.Depth = aDepth
                 Class.Conf = TConfJson(self.Conf.JoinKeys(['Common', 'Plugin.' + aName]))
+                ConfEx = self.ConfEx.get(aName, {})
+                Class.Conf.update(ConfEx)
                 self.Data[aName] = await Class.Run()
                 Log.Print(1, 'i', '%sFinish %s. Time: %0.2f' % (Tab, aName, time.time() - TimeStart))
             else:
@@ -60,6 +65,11 @@ class TPluginApp():
     async def Run(self):
         TimeStart = time.time()
         Log.Print(1, 'i', 'Start. TPluginApp.Run()')
-        for Plugin in self._Filter(self.Conf.get('Plugins', [])):
-            await self.Load(Plugin, 0)
+        for Plugin in self.Conf.get('Plugins', []):
+            if (Plugin.get('Enable', True)):
+                Name = Plugin.get('Name')
+                Param = Plugin.get('Param')
+                if (Param):
+                    Plugin.ConfEx[Name] = Param
+                await self.Load(Name, 0)
         Log.Print(1, 'i', 'Finish. TPluginApp.Run(). Time: %0.2f' % (time.time() - TimeStart))

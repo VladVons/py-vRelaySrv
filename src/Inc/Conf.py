@@ -47,7 +47,7 @@ class TConf(TDictDef):
         for Item in [Name, Name + '_' + sys.platform]:
             File = Item + '.' + Ext
             if (FileExists(File)):
-                self._Load(File)
+                    self._Load(File)
 
     def _Load(self, aFile: str):
         Name, *_ = aFile.split('.')

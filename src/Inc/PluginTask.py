@@ -21,16 +21,19 @@ class TPluginTask(dict):
     def Find(self, aKey: str) -> list:
         return [Val[0] for Key, Val in self.items() if aKey in Key]
 
-    def CreateTask(self, aModule, aPath: str) -> tuple:
-        gc.collect()
-        Log.Print(1, 'i', 'Add task %s' % (aPath))
-
+    def GetConf(self, aPath: str) -> list:
         File = 'Conf/' + aPath.replace('.', '~')
         Conf = TConf(File + '.py')
         Conf.Load()
         ConfClass = TConfClass(File + '.json', Conf)
         ConfClass.Load()
+        return (Conf, ConfClass)
 
+    def CreateTask(self, aModule, aPath: str) -> tuple:
+        gc.collect()
+        Log.Print(1, 'i', 'Add task %s' % (aPath))
+
+        Conf, ConfClass = self.GetConf(aPath)
         Arr = aModule.Main(Conf)
         if (Arr):
             Class, AFunc= Arr

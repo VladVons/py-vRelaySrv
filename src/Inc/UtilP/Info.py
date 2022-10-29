@@ -17,7 +17,7 @@ def GetSysInfo() -> dict:
     UName =  platform.uname()
     Res = {
         'App': os.path.basename(sys.argv[0]).rsplit('.')[0],
-        'OS': UName.system,
+        'OS': f'{UName.system}, {UName.release}, {UName.processor}',
         'Host': UName.node,
         'User': os.environ.get('USER'),
         'Python': (sys.version_info.major, sys.version_info.minor, sys.version_info.micro),
