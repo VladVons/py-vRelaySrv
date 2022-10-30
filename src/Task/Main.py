@@ -18,7 +18,7 @@ class TTask():
         self.Info = GetInfo()
 
     def InitLog(self):
-        AppName = self.Info['App']
+        AppName = self.Info['app_name']
         FileLog = f'/var/log/{AppName}/{AppName}.log'
         if (not os.path.exists(FileLog)) or (not os.access(FileLog, os.W_OK)):
             FileLog = f'{AppName}.log'
@@ -28,7 +28,7 @@ class TTask():
         Log.AddEcho(TEchoConsoleEx())
 
     def InitOptions(self):
-        Usage = f'usage: {self.Info["App"]} [options] arg'
+        Usage = f'usage: {self.Info["app_name"]} [options] arg'
         Parser = argparse.ArgumentParser(usage = Usage)
         Parser.add_argument('-i', '--Info', help = 'information', action = 'store_true')
         return Parser.parse_args()
@@ -42,7 +42,7 @@ class TTask():
             print('\n'.join(List))
             return
 
-        Log.Print(1, 'i', 'Run() %s' % self.Info['App'])
+        Log.Print(1, 'i', 'Run() %s' % self.Info['app_name'])
         Plugin.LoadList(ConfTask.get('Plugins', ''))
         try:
             await Plugin.Run()

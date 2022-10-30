@@ -14,7 +14,7 @@ from Task.Main import TTask
 def Run():
     Info = GetInfo()
     PyNeed = (3, 9, 0)
-    if (Info['Python'] >= PyNeed):
+    if (Info['python'] >= PyNeed):
         Task = TTask().Run()
         asyncio.run(Task)
     else:

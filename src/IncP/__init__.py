@@ -17,11 +17,10 @@ __date__ =  '2022.06.30'
 #//
 def GetInfo() -> dict:
     Res = {
-        'Version' : __version__,
-        'Date': __date__,
-        'Author':  'Vladimir Vons',
-        'Mail': 'VladVons@gmail.com',
-        'Home': 'http://oster.com.ua',
+        'app_ver' : __version__,
+        'app_date': __date__,
+        'author':  'Vladimir Vons, VladVons@gmail.com',
+        'home': 'http://oster.com.ua',
     }
     Res.update(GetSysInfo())
     return Res

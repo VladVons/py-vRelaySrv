@@ -1,5 +1,6 @@
-Port = 8080
-
+SrvConf = {
+    'Port': 8080
+}
 
 SrvAuth = {
     'Server_': '192.168.2.115',

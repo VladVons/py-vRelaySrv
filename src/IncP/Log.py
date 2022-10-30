@@ -2,9 +2,10 @@
 # Author: Vladimir Vons <VladVons@gmail.com>
 # License: GNU, see LICENSE for more details
 
+import asyncio
+#
+from Inc.Log import TLog, TEcho
 
-from Inc.Log import TLog
-from Inc.UtilP.Log import TEchoConsoleEx, TEchoFileEx
 
 class TEchoDb(TEcho):
     def __init__(self, aDb):

@@ -16,14 +16,14 @@ TimeStart = time.time()
 def GetSysInfo() -> dict:
     UName =  platform.uname()
     Res = {
-        'App': os.path.basename(sys.argv[0]).rsplit('.')[0],
-        'OS': f'{UName.system}, {UName.release}, {UName.processor}',
-        'Host': UName.node,
-        'User': os.environ.get('USER'),
-        'Python': (sys.version_info.major, sys.version_info.minor, sys.version_info.micro),
-        'UptimeSys': SecondsToDHMS_Str(time.monotonic()),
-        'UptimeApp': SecondsToDHMS_Str(time.time() - TimeStart),
-        'Now': time.strftime('%Y-%m-%d %H:%M:%S')
+        'app_name': os.path.basename(sys.argv[0]).rsplit('.')[0],
+        'os': f'{UName.system}, {UName.release}, {UName.processor}',
+        'host': UName.node,
+        'user': os.environ.get('USER'),
+        'python': (sys.version_info.major, sys.version_info.minor, sys.version_info.micro),
+        'uptime_sys': SecondsToDHMS_Str(time.monotonic()),
+        'uptime_app': SecondsToDHMS_Str(time.time() - TimeStart),
+        'now': time.strftime('%Y-%m-%d %H:%M:%S')
     }
     return Res
 

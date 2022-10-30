@@ -7,14 +7,11 @@
 
 
 import json
-import os
-from aiohttp import web, streamer
-from aiohttp_session.cookie_storage import EncryptedCookieStorage
-import aiohttp_jinja2
-import aiohttp_session
-import jinja2
+from aiohttp import web
 #
+from Inc.Conf import TConf
 from Inc.UtilP.Misc import FilterKeyErr
+from Inc.WebSrv.WebSrv import TWebSrvBase, TWebSrvConf
 from IncP.ApiWeb import TWebSockSrv
 from IncP.Log import Log
 from .Api import Api
@@ -22,52 +19,14 @@ from .Session import Session
 from .Routes import rErr_404
 
 
-@streamer
-async def FileSender(writer, aFile: str):
-    Len = 2 ** 16
-    with open(aFile, 'rb') as F:
-        Buf = F.read(Len)
-        while (Buf):
-            await writer.write(Buf)
-            Buf = F.read(Len)
+class TWebSrv(TWebSrvBase):
+    def __init__(self, aSrvConf: TWebSrvConf, aConf: TConf):
+        super().__init__(aSrvConf, aConf)
 
-def CreateErroMiddleware(aOverrides):
-    @web.middleware
-    async def ErroMiddleware(request: web.Request, handler):
-        try:
-            return await handler(request)
-        except web.HTTPException as E:
-            Override = aOverrides.get(E.status)
-            if (Override):
-                return await Override(request)
-            raise E
-        #except Exception as E:
-        #    pass
-    return ErroMiddleware
+        self.WebSockSrv = TWebSockSrv()
+        self.WebSockSrv.Api = Api
 
-class TForm():
-    def __init__(self, aParent: 'TWebSrv'):
-        self.Parent = aParent
-
-    async def Create(self, aRequest: web.Request, aName: str) -> web.Response: #//
-        DirForm = f'{self.Parent.DirRoot}/{self.Parent.DirForm}'
-        FileTpl = f'{DirForm}/{aName}{self.Parent.TplExt}'
-        if (not os.path.isfile(FileTpl)):
-            aName = 'err_code'
-
-        for Module, Class in [(aName, 'TForm'), ('FormBase', 'TFormBase')]:
-            try:
-                ModuleDot = f'{DirForm}/{Module}'.replace('/', '.')
-                Mod = __import__(ModuleDot, None, None, [Class])
-                TClass = getattr(Mod, Class)
-                break
-            except ModuleNotFoundError:
-                pass
-        Res = TClass(aRequest, f'{aName}{self.Parent.TplExt}')
-        Res.Parent = self
-        return Res
-
-    async def CreateAuth(self, aRequest: web.Request) -> web.Response: #//
+    async def _FormCreateUser(self, aRequest: web.Request) -> web.Response: #//
         Name = aRequest.match_info.get('Name')
 
         await Session.Update(aRequest)
@@ -75,33 +34,7 @@ class TForm():
             Redirect = f'login?url={Name}'
             raise web.HTTPFound(location = Redirect)
 
-        return await self.Create(aRequest, Name)
-
-
-class TWebSrv():
-    def __init__(self, aConf: dict):
-        self.Conf = aConf
-
-        self.DirRoot = 'Task/WebSrv'
-        self.DirForm = 'form'
-        self.DirDownload = 'download'
-        self.Dir3w = 'www'
-        self.TplExt = '.tpl.html'
-
-        self.Form = TForm(self)
-
-        self.WebSockSrv = TWebSockSrv()
-        self.WebSockSrv.Api = Api
-
-    async def _rDownload(self, aRequest: web.Request) -> web.Response:
-        Name = aRequest.match_info['Name']
-        File = '%s/%s/%s' % (self.DirRoot, self.DirDownload, Name)
-        if (not os.path.exists(File)):
-            return web.Response(body='File %s does not exist' % (Name), status=404)
-
-        Headers = {'Content-disposition': 'attachment; filename=%s' % (Name)}
-        # pylint: disable-next=no-value-for-parameter
-        return web.Response(body=FileSender(aFile=File), headers=Headers)
+        return await self._FormCreate(aRequest, Name)
 
     async def _rApi(self, aRequest: web.Request) -> web.Response:
         Name = aRequest.match_info.get('Name')
@@ -125,14 +58,6 @@ class TWebSrv():
             Res = Res.get('Data')
         return web.json_response(Res)
 
-    async def _rForm(self, aRequest: web.Request) -> web.Response:
-        Form = await self.Form.CreateAuth(aRequest)
-        return await Form.Render()
-
-    async def _rIndex(self, aRequest: web.Request) -> web.Response:
-        Form = await self.Form.Create(aRequest, 'index')
-        return await Form.Render()
-
     async def _rWebSock(self, aRequest: web.Request) -> web.WebSocketResponse:
         if (await Api.AuthRequest(aRequest, self.Conf.Get('Auth'))):
             return await self.WebSockSrv.Handle(aRequest)
@@ -141,34 +66,18 @@ class TWebSrv():
         await WS.prepare(aRequest)
         await WS.send_json({'Type': 'Err', 'Data': 'Authorization failed'})
 
-    async def Run(self):
-        App = web.Application()
-        App.add_routes([
-            web.get('/', self._rIndex),
-            web.post('/api/{Name}', self._rApi),
-            web.get('/form/{Name}', self._rForm),
-            web.post('/form/{Name}', self._rForm),
-            web.get('/download/{Name:.*}', self._rDownload),
-            web.get('/ws/{Name:.*}', self._rWebSock)
-        ])
+    async def RunApp(self):
+        Log.Print(1, 'i', f'WebSrv.RunApp() on port {self.SrvConf.Port}')
 
-        App.router.add_static('/', self.DirRoot + '/' + self.Dir3w, show_index=True, follow_symlinks=True)
-
-        aiohttp_session.setup(App, EncryptedCookieStorage(b'my 32 bytes key. qwertyuiopasdfg'))
-
-        Middleware = CreateErroMiddleware({
+        self.Conf.ErroMiddleware = {
             404: rErr_404
-        })
-        App.middlewares.append(Middleware)
+        }
 
-        aiohttp_jinja2.setup(App, loader=jinja2.FileSystemLoader(self.DirRoot + '/' + self.DirForm))
+        Routes = self._GetDefRoutes()
+        Routes += [
+            web.post('/api/{Name}', self._rApi),
+            web.get('/ws/{Name:.*}', self._rWebSock)
+        ]
+        App = self.CreateApp(Routes)
 
-        #Runner = web.AppRunner(App)
-        #await Runner.setup()
-        #Site = web.TCPSite(Runner, '0.0.0.0', self.Conf.get('Port', 8080))
-        #await Site.start()
-
-        Port = self.Conf.get('Port', 8080)
-        Log.Print(1, 'i', 'WebSrv on port %s' % (Port))
-        # pylint: disable-next=protected-access
-        await web._run_app(App, host = '0.0.0.0', port = Port, shutdown_timeout = 60.0,  keepalive_timeout = 75.0)
+        await self.Run(App)
