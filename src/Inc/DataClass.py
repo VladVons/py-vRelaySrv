@@ -14,10 +14,17 @@ class TUser():
 
 User = TUser(Login = 'MyLogin', Passw = 'MyPassw')
 print(User.__dict__)
+print(User)
 '''
+
 
 import sys
 
+__all__ = ['DataClass']
+
+def _Repr(aCls) -> str:
+    Human = [f'{Key}={Val}'for Key, Val in aCls.__dict__.items()]
+    return aCls.__class__.__name__ + '(' + ', '.join(Human) + ')'
 
 def _GetArgs(aCls, aData: dict) -> str:
     Args = []
@@ -50,6 +57,7 @@ def _Compile(aCls, aName: str, aData: dict):
 
     Globals = sys.modules[aCls.__module__].__dict__
     Out = {}
+    # pylint: disable-next=exec-used
     exec('\n'.join(Body), Globals, Out)
     Res = Out[Wrapper]()
     return Res
@@ -61,4 +69,6 @@ def DataClass(aCls):
     Data = _Compile(aCls, Name, Annotations)
     Data.__qualname__ = f'{aCls.__class__.__name__}.{Data.__name__}'
     setattr(aCls, Name, Data)
+
+    aCls.__repr__ = _Repr
     return aCls

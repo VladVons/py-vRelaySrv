@@ -11,7 +11,7 @@ from aiohttp import web
 #
 from Inc.Conf import TConf
 from Inc.UtilP.Misc import FilterKeyErr
-from Inc.WebSrv.WebSrv import TWebSrvBase, TWebSrvConf
+from Inc.UtilP.WebSrv.WebSrv import TWebSrvBase, TWebSrvConf
 from IncP.ApiWeb import TWebSockSrv
 from IncP.Log import Log
 from .Api import Api

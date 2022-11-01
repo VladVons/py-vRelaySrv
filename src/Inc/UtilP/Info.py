@@ -17,12 +17,12 @@ def GetSysInfo() -> dict:
     UName =  platform.uname()
     Res = {
         'app_name': os.path.basename(sys.argv[0]).rsplit('.')[0],
+        'app_uptime': SecondsToDHMS_Str(time.time() - TimeStart),
         'os': f'{UName.system}, {UName.release}, {UName.processor}',
         'host': UName.node,
         'user': os.environ.get('USER'),
         'python': (sys.version_info.major, sys.version_info.minor, sys.version_info.micro),
-        'uptime_sys': SecondsToDHMS_Str(time.monotonic()),
-        'uptime_app': SecondsToDHMS_Str(time.time() - TimeStart),
+        'uptime': SecondsToDHMS_Str(time.monotonic()),
         'now': time.strftime('%Y-%m-%d %H:%M:%S')
     }
     return Res

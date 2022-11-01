@@ -1,4 +1,4 @@
-from Inc.WebSrv.WebSrv import TWebSrvConf
+from Inc.UtilP.WebSrv.WebSrv import TWebSrvConf
 from Task import ConfTask
 from .Api import Api
 from .Main import TWebSrv

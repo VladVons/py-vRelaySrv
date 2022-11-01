@@ -44,12 +44,16 @@ def CreateErroMiddleware(aOverrides):
 
 class TWebSrvBase():
     def __init__(self, aSrvConf: TWebSrvConf, aConf: TConf):
-        self.SrvConf = aSrvConf
+        self._SrvConf = aSrvConf
         self.Conf = aConf
 
+    @property
+    def SrvConf(self):
+        return self._SrvConf
+
     async def _FormCreate(self, aRequest: web.Request, aName: str) -> web.Response:
-        FormDir = f'{self.SrvConf.DirRoot}/{self.SrvConf.DirForm}'
-        if (not os.path.isfile(f'{FormDir}/{aName}{self.SrvConf.TplExt}')):
+        FormDir = f'{self._SrvConf.DirRoot}/{self._SrvConf.DirForm}'
+        if (not os.path.isfile(f'{FormDir}/{aName}{self._SrvConf.TplExt}')):
             aName = 'err_code'
 
         for Module, Class in [(aName, 'TForm'), ('FormBase', 'TFormBase')]:
@@ -60,7 +64,7 @@ class TWebSrvBase():
                 break
             except ModuleNotFoundError:
                 pass
-        Res = TClass(aRequest, aName + self.SrvConf.TplExt)
+        Res = TClass(aRequest, aName + self._SrvConf.TplExt)
         Res.Parent = self
         return Res
 
@@ -69,7 +73,7 @@ class TWebSrvBase():
 
     async def _rDownload(self, aRequest: web.Request) -> web.Response:
         Name = aRequest.match_info['Name']
-        File = '%s/%s/%s' % (self.SrvConf.DirRoot, self.SrvConf.DirDownload, Name)
+        File = '%s/%s/%s' % (self._SrvConf.DirRoot, self._SrvConf.DirDownload, Name)
         if (not os.path.exists(File)):
             return web.Response(body='File %s does not exist' % (Name), status=404)
 
@@ -94,20 +98,20 @@ class TWebSrvBase():
         ]
 
     def CreateApp(self, aRoutes: list = None) -> web.Application:
-        App = web.Application(client_max_size = self.SrvConf.ClientMaxizeFile)
+        App = web.Application(client_max_size = self._SrvConf.ClientMaxizeFile)
 
         if (not aRoutes):
             aRoutes = self._GetDefRoutes()
         App.add_routes(aRoutes)
 
-        App.router.add_static('/', f'{self.SrvConf.DirRoot}/{self.SrvConf.Dir3w}', show_index=True, follow_symlinks=True)
+        App.router.add_static('/', f'{self._SrvConf.DirRoot}/{self._SrvConf.Dir3w}', show_index=True, follow_symlinks=True)
 
         aiohttp_session.setup(App, EncryptedCookieStorage(b'my 32 bytes key. qwertyuiopasdfg'))
 
-        Middleware = CreateErroMiddleware(self.SrvConf.ErroMiddleware)
+        Middleware = CreateErroMiddleware(self._SrvConf.ErroMiddleware)
         App.middlewares.append(Middleware)
 
-        aiohttp_jinja2.setup(App, loader=jinja2.FileSystemLoader(self.SrvConf.DirRoot + '/' + self.SrvConf.DirForm))
+        aiohttp_jinja2.setup(App, loader=jinja2.FileSystemLoader(self._SrvConf.DirRoot + '/' + self._SrvConf.DirForm))
         return App
 
     async def Run(self, aApp: web.Application):
@@ -117,7 +121,7 @@ class TWebSrvBase():
         Runner = web.AppRunner(aApp)
         try:
             await Runner.setup()
-            Site = web.TCPSite(Runner, host = '0.0.0.0', port = self.SrvConf.Port)
+            Site = web.TCPSite(Runner, host = '0.0.0.0', port = self._SrvConf.Port)
             await Site.start()
             while (True):
                 await asyncio.sleep(60)
