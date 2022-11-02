@@ -25,7 +25,6 @@ class TWebSrvConf():
     Dir3w: str = 'www'
     TplExt: str = '.tpl.html'
     ClientMaxizeFile: int = 1024**2
-    ErroMiddleware: dict = {}
 
 def CreateErroMiddleware(aOverrides):
     @web.middleware
@@ -97,20 +96,19 @@ class TWebSrvBase():
             web.get('/download/{Name:.*}', self._rDownload)
         ]
 
-    def CreateApp(self, aRoutes: list = None) -> web.Application:
+    def CreateApp(self, aRoutes: list = None, aErroMiddleware: dict = None) -> web.Application:
         App = web.Application(client_max_size = self._SrvConf.ClientMaxizeFile)
 
         if (not aRoutes):
             aRoutes = self._GetDefRoutes()
         App.add_routes(aRoutes)
 
+        if (aErroMiddleware):
+            Middleware = CreateErroMiddleware(aErroMiddleware)
+            App.middlewares.append(Middleware)
+
         App.router.add_static('/', f'{self._SrvConf.DirRoot}/{self._SrvConf.Dir3w}', show_index=True, follow_symlinks=True)
-
         aiohttp_session.setup(App, EncryptedCookieStorage(b'my 32 bytes key. qwertyuiopasdfg'))
-
-        Middleware = CreateErroMiddleware(self._SrvConf.ErroMiddleware)
-        App.middlewares.append(Middleware)
-
         aiohttp_jinja2.setup(App, loader=jinja2.FileSystemLoader(self._SrvConf.DirRoot + '/' + self._SrvConf.DirForm))
         return App
 

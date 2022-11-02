@@ -16,7 +16,7 @@ from IncP.ApiWeb import TWebSockSrv
 from IncP.Log import Log
 from .Api import Api
 from .Session import Session
-from .Routes import rErr_404
+from .form.info import TForm
 
 
 class TWebSrv(TWebSrvBase):
@@ -35,6 +35,17 @@ class TWebSrv(TWebSrvBase):
             raise web.HTTPFound(location = Redirect)
 
         return await self._FormCreate(aRequest, Name)
+
+    @staticmethod
+    async def _Err_404(aRequest: web.Request):
+        #https://docs.aiohttp.org/en/stable/web_advanced.html
+        #Routes = web.RouteTableDef()
+
+        Form = TForm(aRequest, 'info.tpl.html')
+        Form.Data['Info'] = 'Page not found'
+        Res = await Form.Render()
+        Res.set_status(404, Form.Data['Info'])
+        return Res
 
     async def _rApi(self, aRequest: web.Request) -> web.Response:
         Name = aRequest.match_info.get('Name')
@@ -69,8 +80,8 @@ class TWebSrv(TWebSrvBase):
     async def RunApp(self):
         Log.Print(1, 'i', f'WebSrv.RunApp() on port {self.SrvConf.Port}')
 
-        self.Conf.ErroMiddleware = {
-            404: rErr_404
+        ErroMiddleware = {
+            404: self._Err_404
         }
 
         Routes = self._GetDefRoutes()
@@ -78,6 +89,7 @@ class TWebSrv(TWebSrvBase):
             web.post('/api/{Name}', self._rApi),
             web.get('/ws/{Name:.*}', self._rWebSock)
         ]
-        App = self.CreateApp(Routes)
+        App = self.CreateApp(Routes, ErroMiddleware)
 
         await self.Run(App)
+1
