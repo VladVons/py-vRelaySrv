@@ -7,7 +7,7 @@
 #pip3 install pylint # syntax checker
 #pip3 install autopep8 # formatter
 #curl -sS https://bootstrap.pypa.io/get-pip.py | python3.10
-
+#
 
 
 #--- WebSrv
