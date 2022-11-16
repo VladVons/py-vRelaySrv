@@ -15,17 +15,18 @@
 # http://www.projectclearwater.org/using-start-stop-daemon-with-the-python-interpreter/
 
 NAME="py-vRelaySrv"
+#
 DESCR="Some description $NAME"
 PIDFILE1="/var/run/$NAME.pid"
 USER="root"
 
 # Read default configuration variable
 ENABLED=1
-SCRYPT="py-vRelaySrv.sh"
+SCRYPT="$NAME.sh"
 WORKDIR="/usr/lib/$NAME"
 ARGS=""
 DEFAULT="/etc/default/$NAME"
-LOG="/var/log/py-vRelaySrv/$NAME.sh.log"
+LOG="/var/log/$NAME.log"
 
 if [ -r $DEFAULT ] ; then
   . $DEFAULT

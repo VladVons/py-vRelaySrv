@@ -1,19 +1,14 @@
 import os
 import asyncio
 from Inc.Conf import TConf
-from Inc.Log  import TLog, Log
 from Inc.DB.DbList import TDbList
 #
 #import cfscrape
 #import cloudscraper
 
 
-def WriteFile(aFile: str, aData: str):
-    with open(aFile, 'w') as F:
-        Data = F.write(aData)
-
 def Test_1():
-    from pympler.asizeof import asizeof 
+    from pympler.asizeof import asizeof
 
     print()
     print('None', asizeof(None))
@@ -25,20 +20,6 @@ def Test_1():
     print('dict', asizeof({'1': 1}))
     print('set', asizeof(set()))
     print('Log', asizeof(TLog))
-
-def Test_2():
-    import speedtest
-    st = speedtest.Speedtest()
-    serv = st.get_best_server()
-    print(serv)
-
-
-    #d_st = st.download()
-    #print('download', int(d_st/10**6))
-    #u_st = st.upload()
-    #print('upload', int(u_st/10**6))
-    #print('done')
-
 
 def Test_3():
     from IncP.SchemeApi import TSchemeApi
@@ -78,7 +59,7 @@ async def TestA_1():
     Dbl = await DbApp.GetUserConf(UserId)
     Res.update(Dbl.ExportPair('name', 'data'))
     print(Res)
-    
+
     Dbl = TDbList().ImportPair(Res, 'Key', ('Val', str))
     print(Dbl)
 
@@ -151,26 +132,6 @@ def Test_TDictDef():
 
     #Data = json.dumps(DictDef)
     #print(Data)
-
-class TClass():
-    def __init__(self, aName):
-        self.Name = aName
-
-    def __enter__(self):
-        print("__enter__()")
-        return self
-
-    def __exit__(self, Type, Value, Trace):
-        print("__exit__()")
-
-    def Print(self):
-        print("Print()", self.Name)
-
-#with TClass('hello') as F:
-#    F.Print()
-#    print("Блок внутри with")
-#    #raise TypeError("Исключение TypeError")
-
 
 #print()
 #asyncio.run(TestA_1())

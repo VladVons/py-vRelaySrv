@@ -13,6 +13,7 @@ import jinja2
 #
 from Inc.Conf import TConf
 from Inc.DataClass import DataClass
+from Inc.UtilP.FS import FilesExist
 from .Common import FileReader
 
 
@@ -45,6 +46,7 @@ class TWebSrvBase():
     def __init__(self, aSrvConf: TWebSrvConf, aConf: TConf):
         self._SrvConf = aSrvConf
         self.Conf = aConf
+        self.DefPage = 'info'
 
     @property
     def SrvConf(self):
@@ -52,10 +54,14 @@ class TWebSrvBase():
 
     async def _FormCreate(self, aRequest: web.Request, aName: str) -> web.Response:
         FormDir = f'{self._SrvConf.DirRoot}/{self._SrvConf.DirForm}'
-        if (not os.path.isfile(f'{FormDir}/{aName}{self._SrvConf.TplExt}')):
-            aName = 'err_code'
 
-        for Module, Class in [(aName, 'TForm'), ('FormBase', 'TFormBase')]:
+        File = f'{FormDir}/{aName}{self._SrvConf.TplExt}'
+        NameTpl = aName if os.path.isfile(File) else self.DefPage
+
+        File = f'{FormDir}/{aName}.py'
+        NameMod = aName if os.path.isfile(File) else self.DefPage
+
+        for Module, Class in [(NameMod, 'TForm'), ('FormBase', 'TFormBase')]:
             try:
                 Path = FormDir + '/' + Module
                 Mod = __import__(Path.replace('/', '.'), None, None, [Class])
@@ -63,7 +69,7 @@ class TWebSrvBase():
                 break
             except ModuleNotFoundError:
                 pass
-        Res = TClass(aRequest, aName + self._SrvConf.TplExt)
+        Res = TClass(aRequest, NameTpl + self._SrvConf.TplExt)
         Res.Parent = self
         return Res
 

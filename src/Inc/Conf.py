@@ -60,5 +60,5 @@ class TConf(TDictDef):
         with open(self.File, 'w', encoding = 'utf-8') as File:
             for K, V in sorted(self.items()):
                 if (isinstance(V, str)):
-                    V = "'" + V + "'"
-                File.write('%s = %s\n' % (K, V))
+                    V = f"'{V}'"
+                File.write(f'{K} = {V}\n')

@@ -178,6 +178,7 @@ class TDbRec(list):
         return aCond.Find(self)
 
     def Flush(self):
+        ## pylint: disable-next=protected-access
         self.Parent.Data[self.Parent._RecNo] = self.copy()
 
     def Init(self):
@@ -217,7 +218,7 @@ class TDbRec(list):
             elif (FType in [int, float]):
                 Val = str(self[FNo])
             else:
-                Val = "'" + str(self[FNo]) + "'"
+                Val = f"'{self[FNo]}'"
             Res.append(Val)
         return ', '.join(Res)
 
@@ -446,8 +447,8 @@ class TDbList():
                 raise TDbListException('fields count mismatch %s and %s' % (len(aData[0]), len(self.Fields)))
 
             if (self.Safe):
-                for Rec in aData:
-                    self.RecAdd(Rec)
+                for x in aData:
+                    self.RecAdd(x)
             else:
                 self.Data = aData
             self.RecNo = 0
