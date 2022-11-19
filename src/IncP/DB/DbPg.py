@@ -7,11 +7,11 @@
 
 import aiopg
 #
+from Inc.UtilP.ADb import TADb
 from IncP.Log import Log
-from .Db import TDb
 
 
-class TDbPg(TDb):
+class TDbPg(TADb):
     def __init__(self, aAuth: dict):
         self.Auth = aAuth
 

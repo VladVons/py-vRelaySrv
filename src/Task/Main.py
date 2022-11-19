@@ -4,6 +4,7 @@
 
 
 import os
+import sys
 import argparse
 #
 from Task import ConfTask
@@ -21,7 +22,7 @@ class TTask():
         AppName = self.Info['app_name']
         FileLog = f'/var/log/{AppName}/{AppName}.log'
         if (not os.path.exists(FileLog)) or (not os.access(FileLog, os.W_OK)):
-            FileLog = f'{AppName}.log'
+            FileLog = sys.argv[0].removesuffix('.py') + '.log'
         Log.AddEcho(TEchoFileEx(FileLog))
         print(f'Log file {FileLog}')
 

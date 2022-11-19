@@ -10,10 +10,10 @@
 
 import aioodbc
 #
-from .Db import TDb
+from Inc.UtilP.ADb import TADb
 
 
-class TDbOdbc(TDb):
+class TDbOdbc(TADb):
     def __init__(self, aAuth: dict):
         self.Auth = aAuth
 

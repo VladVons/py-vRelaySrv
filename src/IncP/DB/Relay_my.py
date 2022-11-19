@@ -8,10 +8,11 @@
 
 import aiomysql
 #
-from .Db import TDb, TDbSql
+from Inc.UtilP.ADb import TADb
+from .Db import TDbSql
 
 
-class TDbApp(TDb):
+class TDbApp(TADb):
     def __init__(self, aAuth: dict):
         self.Auth = aAuth
 
