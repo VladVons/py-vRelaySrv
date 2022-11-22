@@ -11,10 +11,13 @@ from IncP.Log import Log
 
 
 class TADb():
-    Pool = None
-    Debug = False
-    CntGet = 0
-    CntSet = 0
+    def __init__(self, aAuth: dict):
+        self.Auth = aAuth # host, port, db, user, password
+
+        self.Pool = None
+        self.Debug = False
+        self.CntGet = 0
+        self.CntSet = 0
 
     async def Connect(self):
         raise NotImplementedError()
