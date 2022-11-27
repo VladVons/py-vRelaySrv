@@ -23,7 +23,7 @@ import sys
 __all__ = ['DataClass']
 
 def _Repr(aCls) -> str:
-    Human = [f'{Key}={Val}'for Key, Val in aCls.__dict__.items()]
+    Human = [f'{Key}={Val}' for Key, Val in aCls.__dict__.items()]
     return aCls.__class__.__name__ + '(' + ', '.join(Human) + ')'
 
 def _GetArgs(aCls, aData: dict) -> str:
