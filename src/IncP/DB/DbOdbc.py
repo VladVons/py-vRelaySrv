@@ -14,9 +14,6 @@ from Inc.UtilP.ADb import TADb
 
 
 class TDbOdbc(TADb):
-    def __init__(self, aAuth: dict):
-        self.Auth = aAuth
-
     def _GetAuthStr(self, aAuth: dict) -> str:
         R = ''
         for Key, Value in aAuth.items():

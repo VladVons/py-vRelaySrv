@@ -13,9 +13,6 @@ from .Db import TDbSql
 
 
 class TDbApp(TADb):
-    def __init__(self, aAuth: dict):
-        self.Auth = aAuth
-
     async def Connect(self):
         await self.Close()
 

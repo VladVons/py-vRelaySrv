@@ -10,5 +10,6 @@ test/
 local/
 src_arch/
 scraper/
+*.build/
 ProjFiles/
 .secret.txt

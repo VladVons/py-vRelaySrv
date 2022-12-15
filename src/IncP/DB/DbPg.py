@@ -12,9 +12,6 @@ from IncP.Log import Log
 
 
 class TDbPg(TADb):
-    def __init__(self, aAuth: dict):
-        self.Auth = aAuth
-
     async def Connect(self):
         await self.Close()
 
