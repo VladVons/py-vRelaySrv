@@ -6,6 +6,7 @@ sys.path.append('../src')
 
 import time, json
 import asyncio
+import bs4
 from bs4 import BeautifulSoup
 #
 from IncP.DB.Scraper_pg import TDbApp
@@ -70,6 +71,7 @@ def TestJson(aMod: str, aExt: str = '.html'):
     Res = SoupScheme.Parse(Soup, Scheme)
     print(Res)
     print()
+    print(SoupScheme.Err)
     Arr = {}
     Res = DictHoriz(Res, ['Image', 'Price', 'Name', 'Stock', 'MPN'], Arr)
     print(Arr)
@@ -134,10 +136,14 @@ def TestApi():
 
 
 
+
 os.system('clear')
-asyncio.run(SaveScheme('Schemes_2.txt'))
+print(sys.version)
+print(bs4.__file__)
+
+#asyncio.run(SaveScheme('Schemes_2.txt'))
 #
 #TestPy('megabit.od.ua')
-#TestJson('megabit.od.ua')
+TestJson('fozzyshop.ua')
 #TestBoth('oster.com.ua')
 #TestApi()

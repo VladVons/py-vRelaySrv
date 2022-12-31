@@ -358,6 +358,19 @@ class TSchemeApi():
             return Res
 
     @staticmethod
+    def dig(aVal: str) -> str:
+        '''
+        get filtered chars from [0..9]
+        ["dig"]
+        '''
+
+        Arr = []
+        for x in aVal:
+            if ('0' <= x <= '9'):
+                Arr.append(x)
+        return ''.join(Arr)
+
+    @staticmethod
     def _dig_lat(aVal: str) -> str:
         '''
         get filtered chars from [0..9], [a..Z], [.-/]
