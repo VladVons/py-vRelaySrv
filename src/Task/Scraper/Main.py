@@ -13,7 +13,7 @@ from Inc.UtilP.DownloadSpeed import TDownloadSpeed
 from Inc.UtilP.Misc import FilterKeyErr
 from IncP.ApiWeb import TWebSockClient
 from IncP.Log import Log
-from IncP.Scheme import TScheme
+from IncP.Scheme.Scheme import TScheme
 #
 from .Api import Api
 #from .Selenium import TStarter

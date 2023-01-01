@@ -11,8 +11,8 @@ from Inc.Util.Obj import DeepGet
 from Inc.UtilP.Misc import FilterKey, FilterKeyErr
 from IncP.ApiWeb import TApiBase, TWebClient
 from IncP.Download import TDownload, TDHeaders, GetSoup, GetSoupUrl
-from IncP.Scheme import TScheme
-from IncP.SchemeApi import TSchemeApi
+from IncP.Scheme.Scheme import TScheme
+from IncP.Scheme.SchemeApi import TSchemeApi
 
 
 class TApiPlugin():

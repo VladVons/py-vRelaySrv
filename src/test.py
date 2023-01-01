@@ -22,7 +22,7 @@ def Test_1():
     print('Log', asizeof(TLog))
 
 def Test_3():
-    from IncP.SchemeApi import TSchemeApi
+    from IncP.Scheme.SchemeApi import TSchemeApi
     Param = {'Town': 'Ternopil'}
     Script = f'''
 print('Hello1')

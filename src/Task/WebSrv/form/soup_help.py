@@ -3,7 +3,7 @@
 # License: GNU, see LICENSE for more details
 
 # pylint: disable-next=consider-using-from-import
-import IncP.SchemeApi as SchemeApi
+import IncP.Scheme.SchemeApi as SchemeApi
 
 from Inc.Util.Mod import GetClassHelp
 from .FormBase import TFormBase
