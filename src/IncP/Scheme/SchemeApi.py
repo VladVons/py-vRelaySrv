@@ -473,10 +473,29 @@ class TSchemeApi():
 
         Res = []
         for Row in aVal.find_all('tr'):
+            ResTag = []
             Td = Row.find_all('th') + Row.find_all('td')
-            for Col in Td:
-                ColText = Col.text.strip()
-                Res.append(ColText)
+            for xTd in Td:
+                Text = xTd.text.strip()
+                ResTag.append(Text)
+            Res.append(ResTag)
+        return Res
+
+    @staticmethod
+    def table_tag(aVal: BeautifulSoup, aTag: list) -> list:
+        '''
+        parse table
+        ["table_tag", [["dt", "dd"]]]
+        '''
+
+        Res = []
+        Tags = [aVal.find_all(Tag) for Tag in aTag]
+        for Tag in zip(*Tags):
+            ResTag = []
+            for xTag in Tag:
+                Text = xTag.text.strip()
+                ResTag.append(Text)
+            Res.append(ResTag)
         return Res
 
     @staticmethod
