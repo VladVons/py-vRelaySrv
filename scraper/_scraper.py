@@ -2,7 +2,6 @@
 
 import os
 import sys
-#sys.path.append('../src')
 
 #import time
 import json
@@ -10,6 +9,8 @@ import json
 import bs4
 from bs4 import BeautifulSoup
 #
+sys.path.append('../src')
+import src.IncP.Scheme.Scheme
 from IncP.DB.Scraper_pg import TDbApp
 from IncP.Scheme.Scheme import TSoupScheme, TScheme
 from Inc.UtilP.Misc import FormatJsonStr
@@ -145,6 +146,6 @@ print(bs4.__file__)
 #asyncio.run(SaveScheme('Schemes_2.txt'))
 #
 #TestPy('megabit.od.ua')
-TestJson('listex.info')
+TestJson('listex.info-2')
 #TestBoth('oster.com.ua')
 #TestApi()

@@ -456,14 +456,28 @@ class TSchemeApi():
     def find_parent(aVal: BeautifulSoup, aStr: str, aDepth: int = 1) -> object:
         '''
         find parent object by text
-        ["find_parent", ["hello"]]
+        ["find_parent", ["hello", [3]]]
         '''
 
         Items = aVal.findAll(string=re.compile(aStr))
         if (Items):
-            Res1 = SoupGetParentsObj(aVal, Items, aDepth)
-            Res2 = Res1[0][-1]
-            return Res2
+            Res = SoupGetParentsObj(aVal, Items, aDepth)
+            return Res[0][-1]
+
+    @staticmethod
+    def table(aVal: BeautifulSoup) -> list:
+        '''
+        parse table by tr, th+td
+        ["table"]
+        '''
+
+        Res = []
+        for Row in aVal.find_all('tr'):
+            Td = Row.find_all('th') + Row.find_all('td')
+            for Col in Td:
+                ColText = Col.text.strip()
+                Res.append(ColText)
+        return Res
 
     @staticmethod
     def _concat(aVal: str, aStr: str, aRight: bool =  True) -> str:
@@ -502,36 +516,39 @@ class TSchemeApi():
 class TSchemeApiExt():
     @staticmethod
     def ext_image(aIdx: int = 0) -> list:
-        return [
+        Res = [
             ['find_all', ['img']],
             ['list', [aIdx]],
             ['get', ['src']],
             ['url_pad']
         ]
+        return Res
 
     @staticmethod
     def ext_image_og() -> list:
-        return [
+        Res = [
             ['find', ['head']],
             ['find', ['meta', {'property': 'og:image'}]],
             ['get', ['content']],
             ['url_pad']
         ]
+        return Res
 
     @staticmethod
     def ext_category_prom(aIdx: int = -2) -> list:
-        return [
+        Res = [
             ['find', ['div', {'class': 'b-breadcrumb'}]],
             ['get', ['data-crumbs-path']],
             ['txt2json'],
             ['list', [aIdx]],
             ['get', ['name']]
         ]
+        return Res
 
     @staticmethod
     def ext_price_app(aTxt2Float: bool = False) -> list:
         txt2float = ['txt2float'] if (aTxt2Float) else ['comment']
-        return [
+        Res = [
             ['get', ['offers']],
             ['as_list', [
                 [
@@ -543,3 +560,4 @@ class TSchemeApiExt():
                 ]
             ]]
         ]
+        return Res
