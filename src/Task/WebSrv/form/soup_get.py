@@ -7,7 +7,7 @@ import json
 #
 from Inc.UtilP.Misc import FilterKeyErr
 from IncP.Download import GetSoupUrl
-from IncP.Scheme import SoupFindParents
+from IncP.SchemeApi import SoupFindParents
 from .FormBase import TFormBase
 
 

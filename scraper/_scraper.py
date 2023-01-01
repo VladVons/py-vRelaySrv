@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
 
-import os, sys
-print(os.getcwd())
-sys.path.append('../src')
+import os
+import sys
+#sys.path.append('../src')
 
-import time, json
-import asyncio
+#import time
+import json
+#import asyncio
 import bs4
 from bs4 import BeautifulSoup
 #
 from IncP.DB.Scraper_pg import TDbApp
-from IncP.Scheme import TSoupScheme, TScheme
+from IncP.Scheme.Scheme import TSoupScheme, TScheme
 from Inc.UtilP.Misc import FormatJsonStr
 
 
@@ -73,7 +74,7 @@ def TestJson(aMod: str, aExt: str = '.html'):
     print()
     print(SoupScheme.Err)
     Arr = {}
-    Res = DictHoriz(Res, ['Image', 'Price', 'Name', 'Stock', 'MPN'], Arr)
+    DictHoriz(Res, ['Image', 'Price', 'Name', 'Stock', 'MPN'], Arr)
     print(Arr)
 
 def TestPy(aMod: str, aExt: str = '.html'):
@@ -136,14 +137,14 @@ def TestApi():
 
 
 
-
+print(os.getcwd())
 os.system('clear')
 print(sys.version)
 print(bs4.__file__)
-
+#
 #asyncio.run(SaveScheme('Schemes_2.txt'))
 #
 #TestPy('megabit.od.ua')
-TestJson('fozzyshop.ua')
+TestJson('listex.info')
 #TestBoth('oster.com.ua')
 #TestApi()

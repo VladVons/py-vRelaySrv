@@ -11,12 +11,11 @@ import random
 import re
 import sys
 from urllib.parse import urlparse
-from bs4 import BeautifulSoup
 #
 from Inc.Util.Obj import DeepGet
 from Inc.UtilP.Python import TPython
 from Inc.UtilP.Misc import FilterKey, FilterKeyErr
-from IncP.SchemeApi import TSchemeApi, TSchemeApiExt, TSchemeExt
+from .SchemeApi import TSchemeApi, TSchemeApiExt, TSchemeExt
 
 
 class TRes():
@@ -81,34 +80,6 @@ class TApiMacro():
         __import__(aMod)
         Mod = sys.modules.get(aMod)
         return getattr(Mod, aProp, aDef)
-
-
-
-def SoupGetParents(aSoup: BeautifulSoup, aItems: list, aDepth: int = 99) -> list:
-    Res = []
-    for Item in aItems:
-        Depth = aDepth
-        ResLoop = []
-        while (Item) and (Item != aSoup) and (Depth > 0):
-            Attr = getattr(Item, 'attrs', None)
-            if (Attr):
-                ResLoop.append([Item.name, Attr])
-            elif (Item.name):
-                ResLoop.append([Item.name, {}])
-            else:
-                if (type(Item).__name__ == 'Script'):
-                    break
-                ResLoop.append([Item, {}])
-            Depth -= 1
-
-            Item = Item.parent
-        Res.append(ResLoop)
-    return Res
-
-def SoupFindParents(aSoup: BeautifulSoup, aSearch: str) -> list:
-    #Items = aSoup.findAll(string=aSearch)
-    Items = aSoup.findAll(string=re.compile(aSearch))
-    return SoupGetParents(aSoup, Items)
 
 class TSoupScheme():
     def __init__(self):

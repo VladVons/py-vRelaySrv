@@ -11,109 +11,9 @@ from bs4 import BeautifulSoup
 from Inc.Util.Obj import DeepGet
 from Inc.Util.Mod import GetClass
 from Inc.UtilP.Misc import FilterMatch
-
-
-_Whitespace = ' \t\n\r\v\f\xA0✓→'
-_Digits = '0123456789'
-_DigitsDot = _Digits + '.'
-_DigitsDotComma = _Digits + '.,'
-#_XlatEntitles = [('&nbsp;', ' '), ('&lt;', '<'), ('&amp;', '&'), ('&quot;', '"'), ('&apos;', "'")]
-#
-#ReCmp_Strip = re.compile(r'^\s+|\s+$')
-ReCmp_Serial = re.compile(r'[A-Z0-9\-/]{5,}')
-
-
-class TInStock():
-    _MatchYes = [
-        # en
-        'http://schema.org/instock',
-        'https://schema.org/instock',
-        'instock',
-
-        # ua
-        'в наявності на складі',
-        'в наявності',
-        'в кошик',
-        'до кошика',
-        'додати у кошик',
-        'добавити в корзину',
-        'є в наявності',
-        'є на складі',
-        'закінчується',
-        'купити',
-        'на складі',
-        'товар в наявності',
-        'товар є в наявності',
-        'склад',
-
-        # ru
-        'в корзину',
-        'в наличии на складе',
-        'в наличии',
-        'добавить в корзину',
-        'есть в наличии',
-        'есть на складе',
-        'есть',
-        'заканчивается',
-        'купить',
-        'на складе',
-        'товар в наличии',
-        'товар есть в наличии',
-    ]
-
-    _MatchNo = [
-        # ua
-        'немає в наявності',
-
-        # ru
-        'нет в наличии'
-    ]
-
-    _Del = [
-        ' шт.'
-    ]
-
-    def __init__(self):
-        self.Trans = str.maketrans('', '', _Digits)
-
-    def Check(self, aVal: str, aMatch: bool) -> bool:
-        aVal = aVal.translate(self.Trans).strip().lower()
-        for Item in self._Del:
-            aVal = aVal.replace(Item, '')
-        Match = self._MatchYes if (aMatch) else self._MatchNo
-        return aVal in Match
+from .Utils import DigSplit, TInStock, SoupGetParentsObj, StrWhiteSpaces
 
 InStock = TInStock()
-
-
-def DigDelDecor(aVal: str) -> str:
-# remove thousands decoration
-    Pos = aVal.rfind('.')
-    if (len(aVal) - Pos - 1 == 3):
-        aVal = aVal.replace('.', '')
-    return aVal
-
-def DigSplit(aVal: str) -> tuple:
-    Digit = ''
-    Before = ''
-    After = ''
-    for x in aVal.rstrip('.'):
-        if (x in _Whitespace):
-            continue
-
-        if (After == '') and (x in _DigitsDotComma):
-            if (x == ','):
-                x = '.'
-            Digit += x
-        else:
-            if (Digit):
-                After += x
-            else:
-                Before += x
-    Dots = Digit.count('.')
-    if (Dots > 1):
-        Digit = Digit.replace('.', '', Dots - 1)
-    return (Before, DigDelDecor(Digit), After)
 
 
 class TSchemeExt():
@@ -172,7 +72,7 @@ class TSchemeApi():
         '''
 
         #return aVal.strip()
-        return aVal.strip(_Whitespace)
+        return aVal.strip(StrWhiteSpaces)
         #return ReCmp_Strip.sub('', aVal)
 
     @staticmethod
@@ -553,6 +453,19 @@ class TSchemeApi():
             return Res
 
     @staticmethod
+    def find_parent(aVal: BeautifulSoup, aStr: str, aDepth: int = 1) -> object:
+        '''
+        find parent object by text
+        ["find_parent", ["hello"]]
+        '''
+
+        Items = aVal.findAll(string=re.compile(aStr))
+        if (Items):
+            Res1 = SoupGetParentsObj(aVal, Items, aDepth)
+            Res2 = Res1[0][-1]
+            return Res2
+
+    @staticmethod
     def _concat(aVal: str, aStr: str, aRight: bool =  True) -> str:
         '''
         concatinate string to left or right side
@@ -630,4 +543,3 @@ class TSchemeApiExt():
                 ]
             ]]
         ]
-
