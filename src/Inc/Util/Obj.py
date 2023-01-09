@@ -2,6 +2,7 @@
 # Author: Vladimir Vons <VladVons@gmail.com>
 # License: GNU, see LICENSE for more details
 
+import re
 
 def GetTree(aObj, aMaxDepth: int = 99):
     def GetTreeRecurs(aObj, aPrefix: str, aDepth: int):
@@ -80,22 +81,29 @@ def DeepGet(aData: dict, aDotKeys: str, aDef = None) -> object:
     return aData
 
 # more complex https://jmespath.org/examples.html
-def DeepGetMask(aData: dict, aPath: list) -> list:
-    Res = []
-    Dots = aPath.split('.')
-    for Idx, Key in enumerate(Dots):
-        if (isinstance(aData, dict)) or (hasattr(aData, 'get')):
-            if (Key == '*'):
-                for Key1 in aData:
-                    Path = '.'.join(Dots[Idx + 1:])
-                    RecursRes = DeepGetMask(aData.get(Key1), Path)
-                    Res += RecursRes
-            else:
-                aData = aData.get(Key)
-                if (aData is None):
-                    return Res
-    Res.append(aData)
-    return Res
+# DeepGetMask(Data, ['table', '.*duct$', 'foreign_key', '.*', 'table'])
+def DeepGetMask(aData: dict, aMask0: list) -> list:
+    def Recurs(aData: dict, aMask: list, aPath: str) -> list:
+        nonlocal aMask0
+
+        Res = []
+        for PathI, PathK in enumerate(aMask):
+            if (isinstance(aData, dict)) or (hasattr(aData, 'get')):
+                if (any(x in '.*+^$[({' for x in PathK)):
+                    for DataK in aData:
+                        if (re.match(PathK, DataK)):
+                            Mask = aMask[PathI + 1:]
+                            ResRecurs = Recurs(aData.get(DataK), Mask, aPath + DataK + '.')
+                            Res += ResRecurs
+                else:
+                    aPath += PathK + '.'
+                    aData = aData.get(PathK)
+                    if (aData is None):
+                        return Res
+        if (len(aMask0) == aPath.count('.')):
+            Res.append((aPath.rstrip('.'), aData))
+        return Res
+    return Recurs(aData, aMask0, '')
 
 def GetNotNone(aData: dict, aKey: str, aDef: object) -> object:
     Res = aData.get(aKey, aDef)
