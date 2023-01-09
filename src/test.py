@@ -1,144 +1,43 @@
-import os
 import asyncio
-from Inc.Conf import TConf
-from Inc.DB.DbList import TDbList
+import json
 #
-#import cfscrape
-#import cloudscraper
-
-
-def Test_1():
-    from pympler.asizeof import asizeof
-
-    print()
-    print('None', asizeof(None))
-    print('int', asizeof(3))
-    print('float', asizeof(3.14))
-    print('string', asizeof('1'))
-    print('tuple', asizeof((1)))
-    print('list', asizeof([1]))
-    print('dict', asizeof({'1': 1}))
-    print('set', asizeof(set()))
-    print('Log', asizeof(TLog))
-
-def Test_3():
-    from IncP.Scheme.SchemeApi import TSchemeApi
-    Param = {'Town': 'Ternopil'}
-    Script = f'''
-print('Hello1')
-print('Hello2', Param.get('Town'))
-Res = Api.split('1,2,3,4', ',')
-    '''
-    Res = TApi.script(Script, Param)
-    print(Res)
-
+from IncP.DB.DbPg import TDbPg
+from IncP.DB.DbModel import TDbModel
+from Inc.Util.Obj import DeepGet, DeepGetMask
 
 DbAuth = {
-    'Server': '192.168.2.115',
-    'Database': 'scraper1',
-    'User': 'postgres',
-    'Password': '19710819'
+    'Server': 'localhost',
+    'Database': 'shop2',
+    'User': 'admin',
+    'Password': '098iop'
 }
 
-async def TestA_1():
-    from IncP.DB.Scraper_pg import TDbApp
-
-    DbApp = TDbApp(DbAuth)
-    await DbApp.Connect()
-    #Db1 = await DbApp.GetSiteExtById(2)
-
-    UserId = 1
-    DblInfo = await DbApp.GetUserInfo(UserId)
-    GroupId = DblInfo.Rec.GetField('auth_group_id')
-    if (GroupId):
-        Dbl = await DbApp.GetGroupConf(GroupId)
-        Res = Dbl.ExportPair('name', 'data')
-    else:
-        Res = {}
-
-    Dbl = await DbApp.GetUserConf(UserId)
-    Res.update(Dbl.ExportPair('name', 'data'))
-    print(Res)
-
-    Dbl = TDbList().ImportPair(Res, 'Key', ('Val', str))
-    print(Dbl)
-
-    await DbApp.Close()
-
-    #for Idx, Rec in enumerate(Db1):
-    #    print(Rec.GetAsDict())
-
-    #print()
-    #Res = Db1.ExportPair('name', 'data')
-    #print(Res)
-
-
-async def Test_pyppeteer():
-    from pyppeteer import launch
-
-    Url = 'http://oster.com.ua'
-    browser = await launch()
-    page = await browser.newPage()
-    await page.setJavaScriptEnabled(True)
-    await page.goto(Url)
-    await page.screenshot({'path': 'example.png'})
-    page_text = await page.content()
-    await browser.close()
-
-
-async def Test_speed():
-    from IncP.DownloadSpeed import TDownloadSpeed
-    #Url = 'http://212.183.159.230/20MB.zip'
-    Url = 'https://speed.hetzner.de/100MB.bin'
-    await TDownloadSpeed(5).Test(Url)
-
-async def Test_GetUrl():
-    from IncP.Download import TDownload, TDHeaders
-
-    #Url = 'https://didi.ua/robots.txt'
-    Url = 'https://expert24.com.ua/'
-    Download = TDownload()
-    Download.Opt['Headers'] = TDHeaders()
-    Download.Opt['Decode'] = True
-    #Download.FakeRead = True
-    #Download.Timeout = None
-    DataRaw = await Download.Get(Url)
-    Data = DataRaw.get('Data')
-
-    if ('checking your browser' in Data):
-        print('protected')
-
-    #print(Data)
-    #WriteFile('Data1.txt', Data)
+async def Test_01():
+    DBModel = TDbModel('IncP/DB/Model')
+    DBModel.LoadModel('DocSale')
+    for i, x in enumerate(DBModel.Tables):
+        print(i+1, x)
     pass
 
+    #DbApp = TDbPg(DbAuth)
+    #await DbApp.Connect()
 
-def Test_cloudscraper():
-    import cloudscraper
-
-    Url = 'https://didi.ua'
-    scraper = cloudscraper.create_scraper()
-    #scraper = cloudscraper.CloudScraper()
-    print(scraper.get(Url).text)
+    #await DbApp.Close()
 
 
-def Test_TDictDef():
-    import json
-    from Inc.Conf import TDictDef
+#asyncio.run(Test_01())
 
-    DictDef = TDictDef(aData = {'One': 1})
-    print(DictDef)
-    print(DictDef.One, DictDef.Two, DictDef.get('Two'))
 
-    #Data = json.dumps(DictDef)
-    #print(Data)
+with open ('IncP/DB/Model/RefProduct/Meta1.json', 'r') as f:
+    Data = json.load(f)
+#q1 = DeepGet(Data, 'table.ref_product.foreign_key.tenant_id.table')
+#q1 = DeepGet(Data, 'table.*.*.*.table')
 
-#print()
-#asyncio.run(TestA_1())
-#asyncio.run(Test_pyppeteer())
-#asyncio.run(Test_speed())
-#asyncio.run(Test_GetUrl())
-#Test_2()
+#q1 = DeepGetMask(Data, ['table', 'ref_product', 'foreign_key', 'tenant_id', 'table'])
+#q1 = DeepGetMask(Data, 'table.ref_product.foreign_key.tenant_id.table')
+q1 = DeepGetMask(Data, 'table.*.foreign_key.tenant_id.table')
+#q1 = DeepGetMask(Data, 'table.*.foreign_key.*.table')
+#q1 = DeepGetMask(Data, 'table.*.foreign_key.*')
+#q1 = DeepGetMask(Data, ['table', '.*', '.*', '.*', 'table'])
 
-#Test_cloudscraper()
-#Test_TDictDef()
+print(q1)

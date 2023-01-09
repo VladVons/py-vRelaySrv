@@ -146,6 +146,6 @@ print(bs4.__file__)
 #asyncio.run(SaveScheme('Schemes_2.txt'))
 #
 #TestPy('megabit.od.ua')
-TestJson('listex.info-2')
+TestJson('fozzyshop.ua')
 #TestBoth('oster.com.ua')
 #TestApi()

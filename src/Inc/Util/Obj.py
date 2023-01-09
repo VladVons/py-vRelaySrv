@@ -70,7 +70,6 @@ def DictUpdate(aMaster: dict, aSlave: dict, aJoin = False, aDepth: int = 99) -> 
     return Res
 
 def DeepGet(aData: dict, aDotKeys: str, aDef = None) -> object:
-    # more complex https://jmespath.org/examples.html
     for Key in aDotKeys.split('.'):
         if (isinstance(aData, dict)) or (hasattr(aData, 'get')):
             aData = aData.get(Key)
@@ -79,6 +78,24 @@ def DeepGet(aData: dict, aDotKeys: str, aDef = None) -> object:
         else:
             return aDef
     return aData
+
+# more complex https://jmespath.org/examples.html
+def DeepGetMask(aData: dict, aPath: list) -> list:
+    Res = []
+    Dots = aPath.split('.')
+    for Idx, Key in enumerate(Dots):
+        if (isinstance(aData, dict)) or (hasattr(aData, 'get')):
+            if (Key == '*'):
+                for Key1 in aData:
+                    Path = '.'.join(Dots[Idx + 1:])
+                    RecursRes = DeepGetMask(aData.get(Key1), Path)
+                    Res += RecursRes
+            else:
+                aData = aData.get(Key)
+                if (aData is None):
+                    return Res
+    Res.append(aData)
+    return Res
 
 def GetNotNone(aData: dict, aKey: str, aDef: object) -> object:
     Res = aData.get(aKey, aDef)

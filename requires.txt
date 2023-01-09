@@ -41,6 +41,10 @@ html.parser
 aiohttp
 aiopg
 
+#--- small ORM (SQLAlchemy alternatives)
+#peewee
+
+
 #--- TelegramBot
 aiogram
 

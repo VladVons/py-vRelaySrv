@@ -1,0 +1,20 @@
+{
+    "table": {
+        "ref_product": {
+            "column": {
+                "id1":           {"type": "serial"},
+                "enabled":      {"type": "boolean", "value": "default true"},
+                "model":        {"type": "varchar(16)"},
+                "code":         {"type": "varchar(10)"},
+                "is_service":   {"type": "boolean", "value": "default false"},
+                "tenant_id":    {"type": "integer"}
+            },
+            "primary_key": [
+                "id2"
+            ],
+            "foreign_key": {
+                "tenant_id":   {"table": "ref_tenant", "column": "id3"}
+            }
+        }
+    }
+}

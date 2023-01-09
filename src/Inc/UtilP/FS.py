@@ -7,20 +7,24 @@ import os
 import re
 
 
-def GetFiles(aPath: str, aMask: str = '.*', aDepth: int = 99):
+def GetFiles(aPath: str, aMask: str = '.*', aType: str = 'f', aDepth: int = 99):
     '''
     iterator function
-    for x in GetFiles('/etc', '.bin$')
+    aMask - regExp mask
+    aType: f - file, d - directory
+    aDepth: max recursion depth
+    for x in GetFiles('/etc', '.bin$', 'fd')
     '''
+
     if (os.path.exists(aPath)):
         for File in sorted(os.listdir(aPath)):
             Path = aPath + '/' + File
-            if (os.path.isdir(Path)) and (not os.path.islink(Path)):
-                if (aDepth >= 0):
-                    yield from GetFiles(Path, aMask, aDepth - 1)
-            else:
-                if (re.search(aMask, File)):
-                    yield Path
+            Type = 'd' if (os.path.isdir(Path)) and (not os.path.islink(Path)) else 'f'
+            if (Type == 'd') and (aDepth >= 0):
+                yield from GetFiles(Path, aMask, aType, aDepth - 1)
+
+            if (Type in aType) and (re.search(aMask, File)):
+                yield Path
 
 def DirRemove(aPath: str):
     for File in os.scandir(aPath):
