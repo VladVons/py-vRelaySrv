@@ -41,7 +41,9 @@ with open ('IncP/DB/Model/RefProduct/Meta1.json', 'r') as f:
 #q1 = DeepGetMask(Data, ['table', 'ref_product', '.*', 'tenant_id', 'table'])
 #q1 = DeepGetMask(Data, ['table', '.*duct$', '.*', '.*', 'table'])
 #q1 = DeepGetMask(Data, ['table', '*', '*', '*', 'table'])
+#q1 = DeepGetMask(Data, ['^table', '^ref', '.*', 'tenant_id', 'table'])
 q1 = DeepGetMask(Data, ['^table', '^ref', '.*', 'tenant_id', 'table'])
+
 
 # s = 'ww[4w'
 # chars = '.*[(+'
@@ -49,5 +51,5 @@ q1 = DeepGetMask(Data, ['^table', '^ref', '.*', 'tenant_id', 'table'])
 #     print('Found')
 # else:
 #     print('Not Found')
-
-print(q1)
+for x in q1:
+    print(x)

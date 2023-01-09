@@ -82,17 +82,17 @@ def DeepGet(aData: dict, aDotKeys: str, aDef = None) -> object:
 
 # more complex https://jmespath.org/examples.html
 # DeepGetMask(Data, ['table', '.*duct$', 'foreign_key', '.*', 'table'])
-def DeepGetMask(aData: dict, aMask0: list) -> list:
-    def Recurs(aData: dict, aMask: list, aPath: str) -> list:
-        nonlocal aMask0
+def DeepGetMask(aData0: dict, aRegEx0: list) -> list:
+    def Recurs(aData: dict, aRegEx: list, aPath: str) -> list:
+        nonlocal aRegEx0
 
         Res = []
-        for PathI, PathK in enumerate(aMask):
+        for PathI, PathK in enumerate(aRegEx):
             if (isinstance(aData, dict)) or (hasattr(aData, 'get')):
                 if (any(x in '.*+^$[({' for x in PathK)):
                     for DataK in aData:
                         if (re.match(PathK, DataK)):
-                            Mask = aMask[PathI + 1:]
+                            Mask = aRegEx[PathI + 1:]
                             ResRecurs = Recurs(aData.get(DataK), Mask, aPath + DataK + '.')
                             Res += ResRecurs
                 else:
@@ -100,10 +100,10 @@ def DeepGetMask(aData: dict, aMask0: list) -> list:
                     aData = aData.get(PathK)
                     if (aData is None):
                         return Res
-        if (len(aMask0) == aPath.count('.')):
+        if (len(aRegEx0) == aPath.count('.')):
             Res.append((aPath.rstrip('.'), aData))
         return Res
-    return Recurs(aData, aMask0, '')
+    return Recurs(aData0, aRegEx0, '')
 
 def GetNotNone(aData: dict, aKey: str, aDef: object) -> object:
     Res = aData.get(aKey, aDef)
