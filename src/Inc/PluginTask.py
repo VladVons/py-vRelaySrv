@@ -9,18 +9,14 @@ except ModuleNotFoundError:
     import uasyncio as asyncio
 
 import gc
-import os
-import sys
 #
 from Inc.Conf import TConf
 from Inc.ConfClass import TConfClass
+from Inc.Plugin import TPlugin
 from IncP.Log import Log
 
 
-class TPluginTask(dict):
-    def Find(self, aKey: str) -> list:
-        return [Val[0] for Key, Val in self.items() if aKey in Key]
-
+class TPluginTask(TPlugin):
     def GetConf(self, aPath: str) -> list:
         File = 'Conf/' + aPath.replace('.', '~')
         Conf = TConf(File + '.py')
@@ -29,7 +25,7 @@ class TPluginTask(dict):
         ConfClass.Load()
         return (Conf, ConfClass)
 
-    def CreateTask(self, aModule, aPath: str) -> tuple:
+    def _Create(self, aModule, aPath: str) -> tuple:
         gc.collect()
         Log.Print(1, 'i', 'Add task %s' % (aPath))
 
@@ -41,42 +37,6 @@ class TPluginTask(dict):
                 Class.CC = ConfClass
             return (Class, asyncio.create_task(AFunc))
         return
-
-    def LoadDir(self, aDir: str):
-        Files = os.listdir(aDir)
-        for Info in Files:
-            if (Info[1] & 0x4000): # is dir
-                DirName = Info[0]
-                self.LoadMod(aDir.replace('/', '.') + '.' + DirName)
-
-    def LoadList(self, aModules: str, aSkip: str = ''):
-        Skip = aSkip.split()
-        for Module in aModules.split():
-            if (not Module in Skip):
-                self.LoadMod(Module)
-
-    def LoadMod(self, aPath: str, aRegister: bool = True) -> list:
-        Res = []
-        if (aPath == '') or (aPath.startswith('-')) or (self.get(aPath)):
-            return Res
-
-        __import__(aPath)
-        Mod = sys.modules.get(aPath)
-        Enable = getattr(Mod, 'Enable', True)
-        if (Enable):
-            Depends = getattr(Mod, 'Depends', '')
-            for x in Depends.split():
-                if (x):
-                    Log.Print(1, 'i', '%s depends on %s' % (aPath, x))
-                    Res += self.LoadMod(x)
-            Task = self.CreateTask(Mod, aPath)
-            if (Task):
-                if (aRegister):
-                    self[aPath] = Task
-                Res.append(Task)
-        else:
-            Log.Print(1, 'i', '%s disabled' % (aPath))
-        return Res
 
     async def _Post(self, aTasks, aOwner, aMsg, aFunc) -> dict:
         R = {}
@@ -110,6 +70,3 @@ class TPluginTask(dict):
     async def Run(self):
         Tasks = [Task for Class, Task in self.values()]
         await asyncio.gather(*Tasks)
-
-
-Plugin = TPluginTask()

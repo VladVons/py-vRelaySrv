@@ -7,7 +7,7 @@ import os
 import json
 import random
 #
-from Inc.DB.DbList import TDbList
+from Inc.Db.DbList import TDbList
 
 
 #--- json ---

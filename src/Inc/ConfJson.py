@@ -34,7 +34,7 @@ class TConfJson(dict):
         return self._Join(Data)
 
     def LoadDir(self, aDir: str, aJoin: bool = True):
-        for File in GetFiles(aDir, '.json$', 0):
+        for File in GetFiles(aDir, '.json$', aDepth = 0):
             self.LoadFile(File, aJoin)
 
     def LoadFile(self, aFile: str, aJoin: bool = True):

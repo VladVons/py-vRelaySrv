@@ -81,27 +81,33 @@ def DeepGet(aData: dict, aDotKeys: str, aDef = None) -> object:
     return aData
 
 # more complex https://jmespath.org/examples.html
-# DeepGetMask(Data, ['table', '.*duct$', 'foreign_key', '.*', 'table'])
-def DeepGetMask(aData0: dict, aRegEx0: list) -> list:
+# Data = {'table': {'ref_product': {'foreign_key': {'tenant_id': {'table': 'x'}}}}}
+# DeepGetRe(Data, ['^table', '.*_lang', '.*', '.*_id$', '.*'])
+def DeepGetRe(aData0: dict, aRegEx0: list, aWithPath: bool = True) -> list:
+    IsRegEx = '.*+^$[({'
+    Delim = '.'
+
     def Recurs(aData: dict, aRegEx: list, aPath: str) -> list:
-        nonlocal aRegEx0
+        nonlocal aRegEx0, aWithPath
 
         Res = []
-        for PathI, PathK in enumerate(aRegEx):
+        for RegExI, RegExK in enumerate(aRegEx):
             if (isinstance(aData, dict)) or (hasattr(aData, 'get')):
-                if (any(x in '.*+^$[({' for x in PathK)):
+                if (any(x in IsRegEx for x in RegExK)):
                     for DataK in aData:
-                        if (re.match(PathK, DataK)):
-                            Mask = aRegEx[PathI + 1:]
-                            ResRecurs = Recurs(aData.get(DataK), Mask, aPath + DataK + '.')
-                            Res += ResRecurs
+                        if (re.match(RegExK, DataK)):
+                            Mask = aRegEx[RegExI + 1:]
+                            Res += Recurs(aData.get(DataK), Mask, aPath + DataK + Delim)
                 else:
-                    aPath += PathK + '.'
-                    aData = aData.get(PathK)
+                    aPath += RegExK + Delim
+                    aData = aData.get(RegExK)
                     if (aData is None):
                         return Res
-        if (len(aRegEx0) == aPath.count('.')):
-            Res.append((aPath.rstrip('.'), aData))
+        if (len(aRegEx0) == aPath.count(Delim)):
+            if (aWithPath):
+                Res.append((aData, aPath.rstrip(Delim)))
+            else:
+                Res.append(aData)
         return Res
     return Recurs(aData0, aRegEx0, '')
 

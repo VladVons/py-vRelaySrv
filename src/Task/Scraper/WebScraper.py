@@ -25,7 +25,7 @@ import os
 import random
 import re
 #
-from Inc.DB.DbList import TDbList
+from Inc.Db.DbList import TDbList
 from Inc.Util.Obj import DeepGet
 from Inc.UtilP.Misc import FilterKeyErr, FilterNone
 from IncP.Download import TDownload, GetSoup

@@ -3,7 +3,7 @@
 # License: GNU, see LICENSE for more details
 
 
-from Inc.DB.DbList import TDbList
+from Inc.Db.DbList import TDbList
 from Inc.Util.Obj import DeepGet
 from Inc.UtilP.Misc import FilterKeyErr
 from IncP.ApiWeb import TApiBase

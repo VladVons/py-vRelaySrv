@@ -8,12 +8,12 @@ from urllib.parse import urlparse
 import asyncio
 import json
 #
-from Inc.DB.DbList import TDbList, TDbCond
+from Inc.Db.DbList import TDbList, TDbCond
 from Inc.Util.Obj import DeepGet
 from Inc.UtilP.Time import SecondsToDHMS_Str
+from Inc.UtilP.Db.DbSql import TDbSql
+from IncP.Db.Scraper_pg import TDbApp
 from IncP.ApiWeb import TApiBase
-from IncP.DB.Db import TDbSql
-from IncP.DB.Scraper_pg import TDbApp
 from IncP.Log import Log, TEchoDb
 
 
@@ -183,7 +183,7 @@ class TApi(TApiBase):
         Version = Rec.GetField('version').split()[:2]
         Uptime = Rec.GetField('uptime')
         Log.Print(1, 'i', 'Server: %s, Uptime: %s, DbName: %s, DbSize: %sM, Tables %s' %
-            (' '.join(Version), SecondsToDHMS_Str(Uptime.seconds), Rec.GetField('name'), round(Rec.GetField('size') / 1000000, 2), Rec.GetField('tables'))
+            (' '.join(Version), SecondsToDHMS_Str(Uptime.seconds), Rec.GetField('db_name'), round(Rec.GetField('size') / 1000000, 2), Rec.GetField('tables'))
         )
 
         Log.AddEcho(TEchoDb(self.Db))

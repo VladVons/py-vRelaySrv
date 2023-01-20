@@ -7,7 +7,7 @@ from collections import deque
 import asyncio
 import random
 #
-from Inc.DB.DbList import TDbList
+from Inc.Db.DbList import TDbList
 from Inc.Util.Obj import DeepGet
 from Inc.UtilP.DownloadSpeed import TDownloadSpeed
 from Inc.UtilP.Misc import FilterKeyErr

@@ -7,8 +7,7 @@ import os
 import sys
 import argparse
 #
-from Task import ConfTask
-from Inc.PluginTask import Plugin
+from Task import ConfTask, Plugin
 from Inc.UtilP.Log import TEchoConsoleEx, TEchoFileEx
 from IncP import GetInfo
 from IncP.Log import Log
