@@ -70,8 +70,8 @@ def DictUpdate(aMaster: dict, aSlave: dict, aJoin = False, aDepth: int = 99) -> 
         Res = aSlave
     return Res
 
-def DeepGet(aData: dict, aDotKeys: str, aDef = None) -> object:
-    for Key in aDotKeys.split('.'):
+def DeepGetByList(aData: dict, aKeys: list, aDef = None) -> object:
+    for Key in aKeys:
         if (isinstance(aData, dict)) or (hasattr(aData, 'get')):
             aData = aData.get(Key)
             if (aData is None):
@@ -79,6 +79,9 @@ def DeepGet(aData: dict, aDotKeys: str, aDef = None) -> object:
         else:
             return aDef
     return aData
+
+def DeepGet(aData: dict, aDotKeys: str, aDef = None) -> object:
+    return DeepGetByList(aData, aDotKeys.split('.'), aDef)
 
 # more complex https://jmespath.org/examples.html
 # Data = {'table': {'ref_product': {'foreign_key': {'tenant_id': {'table': 'x'}}}}}
@@ -110,6 +113,18 @@ def DeepGetRe(aData0: dict, aRegEx0: list, aWithPath: bool = True) -> list:
                 Res.append(aData)
         return Res
     return Recurs(aData0, aRegEx0, '')
+
+def DeepSetByList(aData: dict, aKeys: list, aValue: object) -> dict:
+    for Key in aKeys[:-1]:
+        Data = aData.get(Key)
+        if (Data is None):
+            aData[Key] = Data = {}
+        aData = Data
+    aData[aKeys[-1]] = aValue
+    return aData
+
+def DeepSet(aData: dict, aDotKeys: str, aValue: object) -> dict:
+    return DeepSetByList(aData, aDotKeys.split('.'), aValue)
 
 def GetNotNone(aData: dict, aKey: str, aDef: object) -> object:
     Res = aData.get(aKey, aDef)

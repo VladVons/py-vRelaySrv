@@ -6,14 +6,13 @@
 
 
 import asyncio
-#import psycopg2.extras
 #
 from Inc.Db.DbList import TDbList, TDbFields
-from IncP.Log import Log
+from Inc.UtilP.Db.ADb import TADb
 
 
 class TDbSql(TDbList):
-    def __init__(self, aADb):
+    def __init__(self, aADb: TADb):
         super().__init__()
         self._Db = aADb
 
@@ -37,9 +36,14 @@ class TDbSql(TDbList):
         self.SetData(aData[0])
         return self
 
-    async def Fetch(self, aQuery: str) -> 'TDbSql':
-        Data = await self._Db.Fetch(aQuery)
-        return self.ImportDb(Data)
+    async def Exec(self, aQuery: str, aCursor = None) -> 'TDbSql':
+        if (aCursor):
+            Data = await self._Db.ExecCur(aCursor, aQuery)
+        else:
+            Data = await self._Db.Exec(aQuery)
+
+        if (Data):
+            return self.ImportDb(Data)
 
     async def Insert(self, aTable: str):
         Query = self._GetInsertStr(aTable)

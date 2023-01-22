@@ -49,7 +49,7 @@ class TEchoFile(TEcho):
 
 class TLog():
     def __init__(self, aEchoes: list = None):
-        self.Cnt    = 0
+        self.Cnt = 0
         if (aEchoes is None):
             self.Echoes = []
         else:

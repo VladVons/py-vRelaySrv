@@ -41,7 +41,7 @@ class TDbApp(TADb):
                 (uniq = '{Uniq}') AND
                 (alias = '{Alias}')
         '''.format(Uniq=aUniq, Alias=aAlias)
-        return await self.Fetch(Query)
+        return await self.Exec(Query)
 
     async def InsertDeviceByUniq(self, aUniq: str, aAlias: str, aValue: float):
         Row = await self.GetDeviceByUniq(aUniq, aAlias)

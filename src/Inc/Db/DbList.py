@@ -194,17 +194,22 @@ class TDbRec(list):
 
     def SetField(self, aName: str, aValue: object):
         Idx = self.Parent.Fields.GetNo(aName)
-        if (self.Parent.Safe):
+        if (self.Parent.OptSafe):
             if (not isinstance(aValue, self.Parent.Fields[aName][1])):
                 raise TDbListException('types mismatch %s, %s' % (type(aValue), self.Parent.Fields[aName]))
         self[Idx] = aValue
 
     def SetData(self, aData: list):
-        if (self.Parent.Safe):
+        if (self.Parent.OptSafe):
+            if (isinstance(aData, tuple)):
+                aData = list(aData)
+
             IdxOrd = self.Parent.Fields.IdxOrd
-            for Idx, Field in enumerate(aData):
-                if (not isinstance(Field, IdxOrd[Idx][1])):
-                    raise TDbListException('types mismatch %s, %s' % (type(Field), IdxOrd[Idx]))
+            for Idx, FieldD in enumerate(aData):
+                if (FieldD is None) and (self.Parent.OptSafeConvert):
+                    aData[Idx] = IdxOrd[Idx][2]
+                elif (not isinstance(FieldD, IdxOrd[Idx][1])):
+                    raise TDbListException('types mismatch %s, %s' % (type(FieldD), IdxOrd[Idx]))
         super().__init__(aData)
 
     def GetAsDict(self) -> dict:
@@ -255,11 +260,12 @@ class TDbList():
         self.Data = []
         self._RecNo = 0
         self.BeeTree = {}
-        self.Safe = True
         self.Fields = None
-        self.ReprLen = 25
         self.Rec = TDbRec(self)
         self.Init(aFields, aData)
+        self.OptSafe = True
+        self.OptSafeConvert = True
+        self.OptReprLen = 25
 
     def __len__(self):
         return self.GetSize()
@@ -289,7 +295,7 @@ class TDbList():
             for Idx, Val in enumerate(Row):
                 Res[Idx] = max(Res[Idx], len(str(Val).strip()))
         for Idx, _ in enumerate(Res):
-            Res[Idx] = min(Res[Idx], self.ReprLen)
+            Res[Idx] = min(Res[Idx], self.OptReprLen)
 
         return Res
 
@@ -309,8 +315,8 @@ class TDbList():
             Trimmed = []
             for x in Row:
                 x = str(x)
-                if (len(x) > self.ReprLen):
-                    x = x[:self.ReprLen - 3] + '...'
+                if (len(x) > self.OptReprLen):
+                    x = x[:self.OptReprLen - 3] + '...'
                 Trimmed.append(x)
             Res.append(Format % tuple(Trimmed))
         Res.append(f'records: {self.GetSize()}')
@@ -446,7 +452,7 @@ class TDbList():
             if (len(aData[0]) != len(self.Fields)):
                 raise TDbListException('fields count mismatch %s and %s' % (len(aData[0]), len(self.Fields)))
 
-            if (self.Safe):
+            if (self.OptSafe):
                 for x in aData:
                     self.RecAdd(x)
             else:

@@ -67,7 +67,7 @@ class TDbApp(TDbPg):
             limit
                 {aLimit}
             '''
-        return await TDbSql(self).Fetch(Query)
+        return await TDbSql(self).Exec(Query)
 
     async def GetSchemeModerate(self) -> TDbSql:
         Query = '''
@@ -81,7 +81,7 @@ class TDbApp(TDbPg):
             order by
                 id
             '''
-        return await TDbSql(self).Fetch(Query)
+        return await TDbSql(self).Exec(Query)
 
     async def GetSiteById(self, aId: int) -> TDbSql:
         Query = f'''
@@ -92,7 +92,7 @@ class TDbApp(TDbPg):
             where
                 (id = {aId})
             '''
-        return await TDbSql(self).Fetch(Query)
+        return await TDbSql(self).Exec(Query)
 
     async def GetSiteExtById(self, aId: int) -> TDbSql:
         Query = f'''
@@ -104,7 +104,7 @@ class TDbApp(TDbPg):
                 (enabled) and
                 (site_id = {aId})
             '''
-        return await TDbSql(self).Fetch(Query)
+        return await TDbSql(self).Exec(Query)
 
     async def GetSites(self, aLimit: int = -1) -> TDbSql:
         Limit = ''
@@ -126,7 +126,7 @@ class TDbApp(TDbPg):
                 url
             {Limit}
             '''
-        return await TDbSql(self).Fetch(Query)
+        return await TDbSql(self).Exec(Query)
 
     async def GetSitesForUpdateFull(self, aExclId: list = None, aLimit: int = 10, aUpdDaysX: float = 1) -> TDbSql:
         if (aExclId is None):
@@ -153,7 +153,7 @@ class TDbApp(TDbPg):
             limit
                 {aLimit}
             '''
-        return await TDbSql(self).Fetch(Query)
+        return await TDbSql(self).Exec(Query)
 
     async def GetSitesForUpdate(self, aExclId: list = None, aCount: tuple = (0, -1), aLimit: int = 10, aUpdDaysX: float = 1) -> TDbSql:
         if (aExclId is None):
@@ -198,7 +198,7 @@ class TDbApp(TDbPg):
             limit
                 {aLimit}
             '''
-        return await TDbSql(self).Fetch(Query)
+        return await TDbSql(self).Exec(Query)
 
     async def GetSiteUrlsForUpdate(self, aSiteId: int, aLimit: int = 10, aOnlyProduct: bool = False) -> TDbSql:
         if (aOnlyProduct):
@@ -224,7 +224,7 @@ class TDbApp(TDbPg):
             limit
                 {aLimit}
             '''
-        return await TDbSql(self).Fetch(Query)
+        return await TDbSql(self).Exec(Query)
 
 ### --- user --- ###
     async def UserAuth(self, aLogin: str, aPassw: str) -> TDbSql:
@@ -242,7 +242,7 @@ class TDbApp(TDbPg):
                 (auth.login = '{aLogin}') and
                 (auth.passw = '{aPassw}')
             '''
-        return await TDbSql(self).Fetch(Query)
+        return await TDbSql(self).Exec(Query)
 
     async def GetUserInfo(self, aId: int) -> TDbSql:
         Query = f'''
@@ -253,7 +253,7 @@ class TDbApp(TDbPg):
             where
                 (id = {aId})
             '''
-        return await TDbSql(self).Fetch(Query)
+        return await TDbSql(self).Exec(Query)
 
     async def GetUserConf(self, aId) -> TDbSql:
         Query = f'''
@@ -265,7 +265,7 @@ class TDbApp(TDbPg):
                 (enabled) and
                 (auth_id = {aId})
             '''
-        return await TDbSql(self).Fetch(Query)
+        return await TDbSql(self).Exec(Query)
 
     async def GetGroupConf(self, aId) -> TDbSql:
         Query = f'''
@@ -277,4 +277,4 @@ class TDbApp(TDbPg):
                 (enabled) and
                 (auth_group_id = {aId})
             '''
-        return await TDbSql(self).Fetch(Query)
+        return await TDbSql(self).Exec(Query)
