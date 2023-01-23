@@ -10,29 +10,12 @@ from .DbSql import TDbSql
 class TDbMeta():
     def __init__(self, aDb: TDbPg):
         self.Db = aDb
-        self.Tables = {}
-        self.Foreign = {}
-
-    async def InitForeign(self):
-        self.Foreign = {}
-        Dbl = await self.Db.GetForeignKeys()
-        for Rec in Dbl:
-            Value = [Rec.GetField('table_name_f'), Rec.GetField('column_name_f')]
-            DeepSetByList(self.Foreign, [Rec.GetField('table_name'), Rec.GetField('column_name')], Value)
+        self.Foreign = TForeign(self)
+        self.Table = TTable(self)
 
     async def Init(self):
-        await self.InitForeign()
-
-        #self.Tables = await self.Db.GetTables()
-        #Q2 = await self.Db.GetTableColumns()
-        # Q3 = await self.Db.GetIndexes('ref_product')
-        # Q4 = await self.Db.GetPrimaryKeys('ref_product')
-        # Q6 = await self.Db.GetDbVersion('ref_product')
-
-        #Q21 = await self.Db.GetForeignKeys('ref_product')
-        #Q22 = await self.Db.GetForeignKeys('ref_product')
-
-        pass
+        await self.Foreign.Init()
+        await self.Table.Init()
 
     async def Insert(self, aTable: str, aData: dict = None, aReturning: list[str] = None, aCursor = None):
         Returning = 'returning ' + ','.join(aReturning) if aReturning else ''
@@ -51,3 +34,34 @@ class TDbMeta():
             {Returning}
         '''
         return await TDbSql(self.Db).Exec(Query, aCursor)
+
+
+class TMeta():
+    def __init__(self, aParent: TDbMeta):
+        self.Parent = aParent
+        self.Data = {}
+
+class TForeign(TMeta):
+    async def Init(self):
+        self.Data = {}
+        Dbl = await self.Parent.Db.GetForeignKeys()
+        for Rec in Dbl:
+            Key = (Rec.GetField('table_name'), Rec.GetField('column_name'))
+            Value = (Rec.GetField('table_name_f'), Rec.GetField('column_name_f'))
+            DeepSetByList(self.Data, Key, Value)
+
+    def Find(self, aTable: str, aMasters: dict, aMasterId: dict):
+        Res = {}
+        Data = self.Data.get(aTable, {})
+        for Key, Val in Data.items():
+            if (Val[0] in aMasters):
+                Res[Key] = aMasterId.get(Val[0])
+        return Res
+
+class TTable(TMeta):
+    async def Init(self):
+        self.Data = {}
+        Dbl = await self.Parent.Db.GetTableColumns()
+        for Rec in Dbl:
+            Key = (Rec.GetField('table_name'), Rec.GetField('column_name'))
+            DeepSetByList(self.Data, Key, Rec.GetField('column_type'))

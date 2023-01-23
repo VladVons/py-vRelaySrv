@@ -53,7 +53,7 @@ class TDbPg(TADb):
             '''
         return await TDbSql(self).Exec(Query)
 
-    async def GetTableColumns(self, aTable: str = '') -> TDbSql:
+    async def GetTableColumns(self, aTable: str = '', aSchema: str = 'public') -> TDbSql:
         CondTable = f"and table_name = '{aTable}'" if (aTable) else ''
 
         Query = f'''
@@ -64,7 +64,7 @@ class TDbPg(TADb):
             from
                 information_schema.columns
             where
-                table_schema = 'public'
+                table_schema = '{aSchema}'
                 {CondTable}
             order by
                 table_name,
