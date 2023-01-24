@@ -14,8 +14,8 @@ class TConfJson(dict):
         super().__init__(aData)
 
     def _ReadFile(self, aFile: str) -> dict:
-        with open(aFile, 'r', encoding = 'utf-8') as File:
-            return json.load(File)
+        with open(aFile, 'r', encoding = 'utf-8') as F:
+            return json.load(F)
 
     @staticmethod
     def _Join(aDict: list) -> dict:

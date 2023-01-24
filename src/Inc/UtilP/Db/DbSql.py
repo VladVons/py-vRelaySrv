@@ -5,8 +5,6 @@
 # Based on aioodbc, aiomysql, aiopg
 
 
-import asyncio
-#
 from Inc.Db.DbList import TDbList, TDbFields
 from Inc.UtilP.Db.ADb import TADb
 
@@ -15,6 +13,7 @@ class TDbSql(TDbList):
     def __init__(self, aADb: TADb):
         super().__init__()
         self._Db = aADb
+        self.Err = None
 
     def _GetFields(self, aFields: list, aData: list) -> TDbFields:
         Res = TDbFields()
@@ -31,9 +30,9 @@ class TDbSql(TDbList):
         self.RecNo = aRecNo
         return 'update %s set %s' % (aTable, self.Rec.GetAsSql())
 
-    def ImportDb(self, aData: tuple) -> 'TDbSql':
-        self.Fields = self._GetFields(aData[1], aData[0])
-        self.SetData(aData[0])
+    def ImportDb(self, aData: list, aFields: list) -> 'TDbSql':
+        self.Fields = self._GetFields(aFields, aData)
+        self.SetData(aData)
         return self
 
     async def Exec(self, aQuery: str, aCursor = None) -> 'TDbSql':
@@ -42,8 +41,8 @@ class TDbSql(TDbList):
         else:
             Data = await self._Db.Exec(aQuery)
 
-        if (Data):
-            return self.ImportDb(Data)
+        if ('data' in Data):
+            return self.ImportDb(Data['data'], Data['fields'])
 
     async def Insert(self, aTable: str):
         Query = self._GetInsertStr(aTable)

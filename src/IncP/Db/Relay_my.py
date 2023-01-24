@@ -56,7 +56,7 @@ class TDbApp(TADb):
 
     async def GetDeviceValHourly(self, aId, aBegin, aEnd):
         #GetDeviceValHourly(5, datetime.date.today() - datetime.timedelta(days=7), datetime.datetime.now())
-        Query = '''
+        Query = f'''
             SELECT
                 COUNT(*) Count,
                 CONCAT(Year(create_date), ':', LPad(MONTH(create_date), 2, 0), ':', LPad(DAY(create_date), 2, 0), ' ', LPad(HOUR(create_date), 2, 0)) As Date,
@@ -64,27 +64,27 @@ class TDbApp(TADb):
             FROM
                 devices_val
             WHERE
-                (device_id = {Id}) AND
-                (create_date BETWEEN '{Begin}' AND '{End}')
+                (device_id = {aId}) AND
+                (create_date BETWEEN '{aBegin}' AND '{aEnd}')
             GROUP BY
                 Date
             ORDER BY
                 Date
-        '''.format(Id=aId, Begin=aBegin, End=aEnd)
-        return await TDbSql(self).Load(Query)
+        '''
+        return await TDbSql(self).Exec(Query)
 
     async def GetDeviceCount(self, aBegin, aEnd):
-        Query = '''
+        Query = f'''
             SELECT
                 COUNT(*) Count,
                 device_id AS Device
             FROM
                 devices_val
             WHERE
-                (create_date BETWEEN '{Begin}' AND '{End}')
+                (create_date BETWEEN '{aBegin}' AND '{aEnd}')
             GROUP BY
                 Device
             ORDER BY
                 Device
-        '''.format(Begin=aBegin, End=aEnd)
-        return await TDbSql(self).Load(Query)
+        '''
+        return await TDbSql(self).Exec(Query)

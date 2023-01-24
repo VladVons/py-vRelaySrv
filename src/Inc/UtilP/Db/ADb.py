@@ -4,7 +4,7 @@
 
 # Based on aioodbc, aiomysql, aiopg
 
-
+import time
 import asyncio
 #
 from IncP.Log import Log
@@ -27,37 +27,38 @@ class TADb():
             await self.Pool.wait_closed()
             self.Pool = None
 
-    async def ExecCur(self, aCursor, aSql: str):
+    async def ExecCur(self, aCursor, aSql: str) -> dict:
+        TimeAt = time.time()
+
         self.Cnt += 1
         if (self.Debug):
             print('Cnt', self.Cnt)
             print(aSql)
 
+        Res = {}
         try:
             await aCursor.execute(aSql)
             if (aCursor.description):
-                Data = await aCursor.fetchall()
-                Fields = [x.name for x in aCursor.description]
-                Res = (Data, Fields)
-            else:
-                Res = ()
+                Res['data'] = await aCursor.fetchall()
+                Res['fields'] = [x.name for x in aCursor.description]
         except Exception as E:
-            Log.Print(1, 'x', 'Exec() %s' % (aSql), aE=E, aSkipEcho=['TEchoDb'])
-            await asyncio.sleep(1)
-            Res = None
+            Res['err'] = str(E).split('\n')
+            Log.Print(1, 'x', 'ExecCur() %s' % (aSql), aE=E, aSkipEcho=['TEchoDb'])
+
+        Res['time'] = round(time.time() - TimeAt, 5)
         return Res
 
-    async def Exec(self, aSql: str) -> tuple:
+    async def Exec(self, aSql: str) -> dict:
         async with self.Pool.acquire() as Connect:
             async with Connect.cursor() as Cursor:
                 return await self.ExecCur(Cursor, aSql)
 
-    async def ExecFile(self, aFile: str) -> tuple:
-        with open(aFile, 'r', encoding = 'utf-8') as File:
-            Query = File.read().strip()
+    async def ExecFile(self, aFile: str) -> dict:
+        with open(aFile, 'r', encoding = 'utf-8') as F:
+            Query = F.read().strip()
             return await self.Exec(Query)
 
-    async def ExecWait(self, aSql: str, aTimeout = 5) -> tuple:
+    async def ExecWait(self, aSql: str, aTimeout = 5) -> dict:
         try:
             return await asyncio.wait_for(self.Exec(aSql), timeout=aTimeout)
         except asyncio.TimeoutError:

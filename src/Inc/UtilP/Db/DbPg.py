@@ -60,7 +60,8 @@ class TDbPg(TADb):
             select
                 table_name,
                 column_name,
-                udt_name as column_type
+                udt_name as column_type,
+                is_nullable as is_null
             from
                 information_schema.columns
             where

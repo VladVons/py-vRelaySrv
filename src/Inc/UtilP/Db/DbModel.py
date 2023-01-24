@@ -10,6 +10,5 @@ class TDbModel(TPlugin):
         self.DbMeta = aDbMeta
 
     def _Create(self, aMod: object, aPath: str) -> object:
-        Res = aMod.TMain()
-        Res.DbMeta = self.DbMeta
+        Res = aMod.TMain(self.DbMeta, self.Dir + '/' + aPath)
         return Res

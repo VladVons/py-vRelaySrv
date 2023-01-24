@@ -2,7 +2,8 @@
 # Author: Vladimir Vons <VladVons@gmail.com>
 # License: GNU, see LICENSE for more details
 
-from Inc.Util.Obj import DeepSetByList
+
+from Inc.Util.Obj import DeepSetByList, DeepGet
 from .DbPg import TDbPg
 from .DbSql import TDbSql
 
@@ -47,15 +48,15 @@ class TForeign(TMeta):
         Dbl = await self.Parent.Db.GetForeignKeys()
         for Rec in Dbl:
             Key = (Rec.GetField('table_name'), Rec.GetField('column_name'))
-            Value = (Rec.GetField('table_name_f'), Rec.GetField('column_name_f'))
+            Value = {'table': Rec.GetField('table_name_f'), 'column': Rec.GetField('column_name_f')}
             DeepSetByList(self.Data, Key, Value)
 
-    def Find(self, aTable: str, aMasters: dict, aMasterId: dict):
+    def FindMaster(self, aTable: str, aMasters: dict, aMasterId: dict):
         Res = {}
         Data = self.Data.get(aTable, {})
         for Key, Val in Data.items():
-            if (Val[0] in aMasters):
-                Res[Key] = aMasterId.get(Val[0])
+            if (Val['table'] in aMasters):
+                Res[Key] = aMasterId.get(Val['table'])
         return Res
 
 class TTable(TMeta):
@@ -64,4 +65,8 @@ class TTable(TMeta):
         Dbl = await self.Parent.Db.GetTableColumns()
         for Rec in Dbl:
             Key = (Rec.GetField('table_name'), Rec.GetField('column_name'))
-            DeepSetByList(self.Data, Key, Rec.GetField('column_type'))
+            Value = {'type': Rec.GetField('column_type'), 'null': Rec.GetField('is_null')}
+            DeepSetByList(self.Data, Key, Value)
+
+    def Get(self, aPath: str) -> object:
+        return DeepGet(self.Data, aPath)

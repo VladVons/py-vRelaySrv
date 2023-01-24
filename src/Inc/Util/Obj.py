@@ -70,6 +70,52 @@ def DictUpdate(aMaster: dict, aSlave: dict, aJoin = False, aDepth: int = 99) -> 
         Res = aSlave
     return Res
 
+# more complex https://jmespath.org/examples.html
+# Data = {'table': {'ref_product': {'foreign_key': {'tenant_id': {'table': 'x'}}}}}
+# DeepGetRe(Data, ['^table', '.*_lang', '.*', '.*_id$', '.*'])
+def DeepGetsRe(aObj, aKeys: list, aWithPath: bool = True) -> list:
+    RegExSign = '.*+^$[({'
+
+    def Recurs(aObj, aKeys: list, aPath: str) -> list:
+        Res = []
+        if (aKeys):
+            Type = type(aObj)
+            if (Type == dict):
+                Key = aKeys[0]
+                if (any(x in RegExSign for x in Key)):
+                    for xKey in aObj:
+                        if (re.match(Key, xKey)):
+                            Res += Recurs(aObj.get(xKey), aKeys[1:], f'{aPath}.{xKey}')
+                else:
+                    Val = aObj.get(Key)
+                    if (not Val is None):
+                        Res += Recurs(Val, aKeys[1:], f'{aPath}.{Key}')
+            elif (Type in [list, tuple, set]):
+                for Idx, Val in enumerate(aObj):
+                    Res += Recurs(Val, aKeys, f'{aPath}[{Idx}]')
+        else:
+            if (aWithPath):
+                Res.append((aObj, aPath.lstrip('.')))
+            else:
+                Res.append(aObj)
+        return Res
+    return Recurs(aObj, aKeys, '')
+
+def DeepGets(aObj, aKeys: list) -> list:
+    Res = []
+    if (aKeys):
+        Type = type(aObj)
+        if (Type == dict):
+            Val = aObj.get(aKeys[0])
+            if (not Val is None):
+                Res += DeepGets(Val, aKeys[1:])
+        elif (Type in [list, tuple, set]):
+            for Val in aObj:
+                Res += DeepGets(Val, aKeys)
+    else:
+        Res.append(aObj)
+    return Res
+
 def DeepGetByList(aData: dict, aKeys: list, aDef = None) -> object:
     for Key in aKeys:
         if (isinstance(aData, dict)) or (hasattr(aData, 'get')):
@@ -82,37 +128,6 @@ def DeepGetByList(aData: dict, aKeys: list, aDef = None) -> object:
 
 def DeepGet(aData: dict, aDotKeys: str, aDef = None) -> object:
     return DeepGetByList(aData, aDotKeys.split('.'), aDef)
-
-# more complex https://jmespath.org/examples.html
-# Data = {'table': {'ref_product': {'foreign_key': {'tenant_id': {'table': 'x'}}}}}
-# DeepGetRe(Data, ['^table', '.*_lang', '.*', '.*_id$', '.*'])
-def DeepGetRe(aData0: dict, aRegEx0: list, aWithPath: bool = True) -> list:
-    IsRegEx = '.*+^$[({'
-    Delim = '.'
-
-    def Recurs(aData: dict, aRegEx: list, aPath: str) -> list:
-        nonlocal aRegEx0, aWithPath
-
-        Res = []
-        for RegExI, RegExK in enumerate(aRegEx):
-            if (isinstance(aData, dict)) or (hasattr(aData, 'get')):
-                if (any(x in IsRegEx for x in RegExK)):
-                    for DataK in aData:
-                        if (re.match(RegExK, DataK)):
-                            Mask = aRegEx[RegExI + 1:]
-                            Res += Recurs(aData.get(DataK), Mask, aPath + DataK + Delim)
-                else:
-                    aPath += RegExK + Delim
-                    aData = aData.get(RegExK)
-                    if (aData is None):
-                        return Res
-        if (len(aRegEx0) == aPath.count(Delim)):
-            if (aWithPath):
-                Res.append((aData, aPath.rstrip(Delim)))
-            else:
-                Res.append(aData)
-        return Res
-    return Recurs(aData0, aRegEx0, '')
 
 def DeepSetByList(aData: dict, aKeys: list, aValue: object) -> dict:
     for Key in aKeys[:-1]:

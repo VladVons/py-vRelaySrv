@@ -1,7 +1,7 @@
 import os
 import json
 #
-from Inc.Util.Obj import DeepGet, DeepGetRe
+from Inc.Util.Obj import DeepGet, DeepGetsRe
 from Inc.UtilP.FS import GetFiles
 
 
@@ -77,7 +77,7 @@ class TDbMeta():
             File = f'{Dir}/Meta.json'
             with open(File, 'r', encoding='UTF8') as F:
                 self.Data[Name] = json.load(F)
-            Items = DeepGetRe(self.Data[Name], ['table', '.*', 'foreign_key', '.*', 'table'])
+            Items = DeepGetsRe(self.Data[Name], ['table', '.*', 'foreign_key', '.*', 'table'])
             for Foreign, Path in Items:
                 Master = Path.split('.')[1]
                 self.Refers[Foreign] = self.Refers.get(Foreign, []) + [Master]
