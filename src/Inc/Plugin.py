@@ -14,7 +14,7 @@ class TPlugin(dict):
         super().__init__()
         self.Dir = aDir
 
-    def _Create(self, aMod: object, aPath: str) -> object:
+    def _Create(self, aModule: object, aPath: str) -> object:
         raise NotImplementedError()
 
     def Find(self, aKey: str) -> list:

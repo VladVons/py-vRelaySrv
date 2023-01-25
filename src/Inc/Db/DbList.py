@@ -152,7 +152,7 @@ class TDbFields(dict):
         ]
         self.AddList(Data)
 
-    def GetFields(self, aFields: list) -> 'TDbFields':
+    def GetFields(self, aFields: list[str]) -> 'TDbFields':
         if (not aFields):
             aFields = self.GetList()
 
@@ -322,15 +322,31 @@ class TDbList():
         Res.append(f'records: {self.GetSize()}')
         return '\n'.join(Res)
 
-    def _DbExp(self, aData: list, aFields: list) -> 'TDbList':
+    def _DbExp(self, aData: list, aFields: list[str], aFieldsNew: list[list] = None) -> 'TDbList':
         Res = TDbList()
         Res.Fields = self.Fields.GetFields(aFields)
+        if (aFieldsNew):
+            Res.Fields.AddList(aFieldsNew)
         Res.Data = aData
         return Res
 
     def _RecInit(self):
         if (not self.IsEmpty()):
             self.Rec.SetData(self.Data[self._RecNo])
+
+    def _Group(self, aFieldsUniq: list[str], aFieldsSum: list[str]) -> dict:
+        Res = {}
+
+        FieldsNoUniq = [self.Fields.GetNo(x) for x in aFieldsUniq]
+        FieldsNoSum = [self.Fields.GetNo(x) for x in aFieldsSum]
+
+        for Row in self.Data:
+            FKey = tuple(Row[x] for x in FieldsNoUniq)
+            if (FKey not in Res):
+                Res[FKey] = []
+            FSum = [Row[x] for x in FieldsNoSum]
+            Res[FKey].append(FSum)
+        return Res
 
     @property
     def RecNo(self):
@@ -513,7 +529,7 @@ class TDbList():
         Fields.remove(aField)
         self.Fields = self.Fields.GetFields(Fields)
 
-    def Clone(self, aFields: list = None, aCond: TDbCond = None, aRecNo: tuple = None) -> 'TDbList':
+    def Clone(self, aFields: list[str] = None, aCond: TDbCond = None, aRecNo: tuple = None) -> 'TDbList':
         if (aFields is None):
             aFields = []
         if (aRecNo is None):
@@ -522,10 +538,25 @@ class TDbList():
         Data = self.ExportData(aFields, aCond, aRecNo)
         return self._DbExp(Data, aFields)
 
+    def Group(self, aFieldsUniq: list[str], aFieldsSum: list[str] = None) -> 'TDbList':
+        if (aFieldsSum is None):
+            aFieldsSum = []
+
+        Grouped = self._Group(aFieldsUniq, aFieldsSum)
+        Data = []
+        for Key, Val in Grouped.items():
+            ZipVal = zip(*Val)
+            Row = list(Key) + [sum(i) for i in ZipVal] + [len(Val)]
+            Data.append(Row)
+
+        # FieldsSum = [(Key + '_Sum', Val[1]) for Key, Val in self.Fields.GetFields(aFieldsSum).items()]
+        # return self._DbExp(Data, aFieldsUniq, FieldsSum + [('Count', int)])
+        return self._DbExp(Data, aFieldsUniq + aFieldsSum, [('Count', int)])
+
     def New(self) -> 'TDbList':
         return self._DbExp([], [])
 
-    def Sort(self, aFields: list, aReverse: bool = False):
+    def Sort(self, aFields: list[str], aReverse: bool = False) -> 'TDbList':
         if (len(aFields) == 1):
             FieldNo = self.Fields.GetNo(aFields[0])
             self.Data.sort(key=lambda x: (x[FieldNo]), reverse=aReverse)
@@ -537,6 +568,7 @@ class TDbList():
             # pylint: disable-next=eval-used
             eval(Script)
         self.RecNo = 0
+        return self
 
     def Shuffle(self):
         random.shuffle(self.Data)

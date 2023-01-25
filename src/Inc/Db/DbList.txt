@@ -36,6 +36,9 @@ License:     GNU, see LICENSE for more details
     Dbl1.Rec.SetAsDict({'User': 'User7', 'Age': 45, 'Male': True})
     Dbl1.Rec.Flush()
 
+    Dbl2 = Dbl1.Group(['User'], ['Price'])
+    print(Dbl2)
+
     Dbl1.RecNo = 0
     print()
     print('GetSize:', Dbl1.GetSize())

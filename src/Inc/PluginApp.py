@@ -12,18 +12,19 @@ from IncP.Log import Log
 
 
 class TPluginApp():
-    def __init__(self):
+    def __init__(self, aDir: str):
         self.Data = {}
         self.Conf = {}
         self.ConfEx = {}
         self.Path = 'Task.Plugin'
-        self.Dir = 'Conf'
+        self.Dir = aDir
 
     def Init(self, aPlugin: str):
         Dir, ModName = aPlugin.split('.')
 
         self.Conf = TConfJson()
-        self.Conf.LoadList([f'{self.Dir}/{Dir}~{ModName}.json', f'{Dir}/{ModName}.json'])
+        Files = [f'{self.Dir}/{Dir}~{ModName}.json', f'{Dir}/{ModName}.json']
+        self.Conf.LoadList(Files)
 
         ConfInclude = self.Conf.get('Include', [])
         Files = [f'{self.Dir}/{x}' for x in ConfInclude]
