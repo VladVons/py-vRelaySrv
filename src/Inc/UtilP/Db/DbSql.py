@@ -35,12 +35,13 @@ class TDbSql(TDbList):
         self.SetData(aData)
         return self
 
-    async def Exec(self, aQuery: str, aCursor = None) -> 'TDbSql':
-        if (aCursor):
-            Data = await self._Db.ExecCur(aCursor, aQuery)
-        else:
-            Data = await self._Db.Exec(aQuery)
+    async def Exec(self, aQuery: str) -> 'TDbSql':
+        Data = await self._Db.Exec(aQuery)
+        if ('data' in Data):
+            return self.ImportDb(Data['data'], Data['fields'])
 
+    async def ExecCur(self, aCursor, aQuery: str) -> 'TDbSql':
+        Data = await self._Db.ExecCur(aCursor, aQuery)
         if ('data' in Data):
             return self.ImportDb(Data['data'], Data['fields'])
 

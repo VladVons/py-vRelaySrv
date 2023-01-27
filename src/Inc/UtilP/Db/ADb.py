@@ -28,22 +28,27 @@ class TADb():
             self.Pool = None
 
     async def ExecCur(self, aCursor, aSql: str) -> dict:
-        TimeAt = time.time()
-
         self.Cnt += 1
         if (self.Debug):
             print('Cnt', self.Cnt)
             print(aSql)
 
         Res = {}
+        await aCursor.execute(aSql)
+        if (aCursor.description):
+            Data = await aCursor.fetchall()
+            Fields = [x.name for x in aCursor.description]
+            Res = {'data': Data, 'fields': Fields}
+        return Res
+
+    async def ExecCurTry(self, aCursor, aSql: str) -> dict:
+        TimeAt = time.time()
+
         try:
-            await aCursor.execute(aSql)
-            if (aCursor.description):
-                Res['data'] = await aCursor.fetchall()
-                Res['fields'] = [x.name for x in aCursor.description]
+            Res = await self.ExecCur(aCursor, aSql)
         except Exception as E:
-            Res['err'] = str(E).split('\n')
-            Log.Print(1, 'x', 'ExecCur() %s' % (aSql), aE=E, aSkipEcho=['TEchoDb'])
+            Res = {'err': str(E).split('\n', maxsplit = 1)[0]}
+            Log.Print(1, 'x', 'ExecCurTry() %s' % (aSql), aE=E, aSkipEcho=['TEchoDb'])
 
         Res['time'] = round(time.time() - TimeAt, 5)
         return Res
@@ -51,7 +56,7 @@ class TADb():
     async def Exec(self, aSql: str) -> dict:
         async with self.Pool.acquire() as Connect:
             async with Connect.cursor() as Cursor:
-                return await self.ExecCur(Cursor, aSql)
+                return await self.ExecCurTry(Cursor, aSql)
 
     async def ExecFile(self, aFile: str) -> dict:
         with open(aFile, 'r', encoding = 'utf-8') as F:
@@ -64,7 +69,7 @@ class TADb():
         except asyncio.TimeoutError:
             pass
         except Exception as E:
-            Log.Print(1, 'x', 'Exec()', aE = E)
+            Log.Print(1, 'x', 'ExecWait()', aE = E)
 
     @staticmethod
     def ListToComma(aList: list) -> str:

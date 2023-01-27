@@ -5,6 +5,14 @@
 from .DbErr import TDbListException
 
 
+class TDbField():
+    def __init__(self, aName: str, aType: object, aDef: object = None):
+        self.Name = aName
+        self.Type = aType
+        self.Def = aDef
+        self.No = 0
+
+
 class TDbFields(dict):
     def __init__(self, aFields: tuple = ()):
         super().__init__()
@@ -12,20 +20,23 @@ class TDbFields(dict):
         self.IdxOrd = {}
         self.AddList(aFields)
 
-    def Add(self, aName: str, aType: type = str, aDef = None):
-        if (self.get(aName)):
-            raise TDbListException('field already exists %s' % (aName))
+    def AddField(self, aField: TDbField):
+        if (self.get(aField.Name)):
+            raise TDbListException('field already exists %s' % (aField.Name))
 
-        if (aDef):
-            if (not isinstance(aDef, aType)):
-                raise TDbListException('types mismatch %s, %s' % (aType, aDef))
+        if (aField.Def):
+            if (not isinstance(aField.Def, aField.Type)):
+                raise TDbListException('types mismatch %s, %s' % (aField.Type, aField.Def))
         else:
             Def = {'str': '', 'int': 0, 'float': 0.0, 'bool': False, 'tuple': (), 'list': [], 'dict': {}, 'set': set()}
-            aDef = Def.get(aType.__name__, object)
+            aField.Def = Def.get(aField.Type.__name__, object)
 
         Len = len(self)
-        self[aName] = (Len, aType, aDef)
-        self.IdxOrd[Len] = (aName, aType, aDef)
+        self[aField.Name] = (Len, aField.Type, aField.Def)
+        self.IdxOrd[Len] = (aField.Name, aField.Type, aField.Def)
+
+    def Add(self, aName: str, aType: type = str, aDef = None):
+        self.AddField(TDbField(aName, aType, aDef))
 
     def AddList(self, aFields: list):
         for Row in aFields:

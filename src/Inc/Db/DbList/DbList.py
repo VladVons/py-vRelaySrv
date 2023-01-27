@@ -56,6 +56,7 @@ class TDbList():
         for Row in self.Data:
             for Idx, Val in enumerate(Row):
                 Res[Idx] = max(Res[Idx], len(str(Val).strip()))
+
         for Idx, _ in enumerate(Res):
             Res[Idx] = min(Res[Idx], self.OptReprLen)
 

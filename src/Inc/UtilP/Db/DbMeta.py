@@ -3,7 +3,7 @@
 # License: GNU, see LICENSE for more details
 
 
-from Inc.Util.Obj import DeepSetByList, DeepGet
+from Inc.Util.Obj import DeepSetByList, DeepGetByList, DeepGet
 from .DbPg import TDbPg
 from .DbSql import TDbSql
 
@@ -34,39 +34,68 @@ class TDbMeta():
             {Values}
             {Returning}
         '''
-        return await TDbSql(self.Db).Exec(Query, aCursor)
+        return await TDbSql(self.Db).ExecCur(aCursor, Query)
 
 
 class TMeta():
     def __init__(self, aParent: TDbMeta):
         self.Parent = aParent
-        self.Data = {}
 
 class TForeign(TMeta):
+    def __init__(self, aParent: TDbMeta):
+        super().__init__(aParent)
+        self.TableColumn = {}
+        self.TableId = {}
+
     async def Init(self):
-        self.Data = {}
+        self.TableColumn = {}
+        self.TableId = {}
+
         Dbl = await self.Parent.Db.GetForeignKeys()
         for Rec in Dbl:
-            Key = (Rec.GetField('table_name'), Rec.GetField('column_name'))
-            Value = {'table': Rec.GetField('table_name_f'), 'column': Rec.GetField('column_name_f')}
-            DeepSetByList(self.Data, Key, Value)
+            Table = Rec.GetField('table_name')
+            Column = Rec.GetField('column_name')
+            TableF = Rec.GetField('table_name_f')
+            ColumnF = Rec.GetField('column_name_f')
 
-    def FindMaster(self, aTable: str, aMasters: dict, aMasterId: dict):
+            Key = (Table, Column)
+            self.TableColumn[Key] = (TableF, ColumnF)
+
+            Key = (TableF, ColumnF)
+            self.TableId[Key] = self.TableId.get(Key, {}) | {Table: Column}
+
+    def GetColumnVal(self, aTable: str, aTableId: tuple):
         Res = {}
-        Data = self.Data.get(aTable, {})
-        for Key, Val in Data.items():
-            if (Val['table'] in aMasters):
-                Res[Key] = aMasterId.get(Val['table'])
+        if (aTableId):
+            Column = self.TableId[(aTableId[0], 'id')].get(aTable)
+            if (Column):
+                Res[Column] = aTableId[1]
         return Res
 
+
+
 class TTable(TMeta):
+    def __init__(self, aParent: TDbMeta):
+        super().__init__(aParent)
+        self.Data = {}
+        self.Require = {}
+
     async def Init(self):
         self.Data = {}
+        self.Require = {}
+
         Dbl = await self.Parent.Db.GetTableColumns()
         for Rec in Dbl:
-            Key = (Rec.GetField('table_name'), Rec.GetField('column_name'))
-            Value = {'type': Rec.GetField('column_type'), 'null': Rec.GetField('is_null')}
+            Table = Rec.GetField('table_name')
+            Column = Rec.GetField('column_name')
+            Key = (Table, Column)
+            Value = {'type': Rec.GetField('column_type'), 'null': Rec.GetField('is_null').lower()}
             DeepSetByList(self.Data, Key, Value)
+
+            if (Value['null'] == 'no') and (Column != 'id'):
+                if (Table not in self.Require):
+                    self.Require[Table] = []
+                self.Require[Table] += [Column]
 
     def Get(self, aPath: str) -> object:
         return DeepGet(self.Data, aPath)
