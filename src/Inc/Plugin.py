@@ -20,8 +20,8 @@ class TPlugin(dict):
     def Find(self, aKey: str) -> list:
         return [Val[0] for Key, Val in self.items() if aKey in Key]
 
-    def LoadMod(self, aPath: str, aRegister: bool = True) -> list:
-        Res = []
+    def LoadMod(self, aPath: str, aRegister: bool = True) -> dict:
+        Res = {}
         if (not aPath) or (aPath.startswith('-')) or (self.get(aPath)):
             return Res
 
@@ -34,13 +34,12 @@ class TPlugin(dict):
             for x in Depends.split():
                 if (x):
                     Log.Print(1, 'i', '%s depends on %s' % (aPath, x))
-                    Res += self.LoadMod(x)
-
+                    Res.update(self.LoadMod(x))
             Obj = self._Create(Mod, aPath)
             if (Obj):
                 if (aRegister):
                     self[aPath] = Obj
-                Res.append(Obj)
+                Res[aPath] = Obj
         else:
             Log.Print(1, 'i', '%s disabled' % (aPath))
         return Res
