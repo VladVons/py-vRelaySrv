@@ -33,6 +33,8 @@ def DynImport(aPath: str, aClass: str) -> object: #//
     except ModuleNotFoundError as E:
         print(E)
 
+#---
+
 def ParseFile(aFile: str) -> list: #//
     Res = []
     with open(aFile, 'r', encoding = 'utf-8') as File:
