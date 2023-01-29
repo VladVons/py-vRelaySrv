@@ -7,9 +7,8 @@
 
 import aiopg
 #
-from Inc.UtilP.Db.ADb import TADb
-from Inc.UtilP.Db.DbSql import TDbSql
 from IncP.Log import Log
+from .ADb import TADb, TDbSql, TDbExecPool
 
 
 class TDbPg(TADb):
@@ -51,7 +50,7 @@ class TDbPg(TADb):
             order by
                 table_name
             '''
-        return await TDbSql(self).Exec(Query)
+        return await TDbExecPool(self.Pool).Exec(Query)
 
     async def GetTableColumns(self, aTable: str = '', aSchema: str = 'public') -> TDbSql:
         CondTable = f"and table_name = '{aTable}'" if (aTable) else ''
@@ -71,7 +70,7 @@ class TDbPg(TADb):
                 table_name,
                 column_name
             '''
-        return await TDbSql(self).Exec(Query)
+        return await TDbExecPool(self.Pool).Exec(Query)
 
     async def GetIndexes(self, aTable: str = '', aSchema: str = 'public') -> TDbSql:
         CondTable = f"and t.relname = '{aTable}'" if (aTable) else ''
@@ -105,7 +104,7 @@ class TDbPg(TADb):
                 idx.indisunique desc,
                 i.relname
         '''
-        return await TDbSql(self).Exec(Query)
+        return await TDbExecPool(self.Pool).Exec(Query)
 
     async def GetPrimaryKeys(self, aTable: str = '', aSchema: str = 'public') -> TDbSql:
         CondTable = f"and tc.table_name = '{aTable}'" if (aTable) else ''
@@ -126,7 +125,7 @@ class TDbPg(TADb):
                 tc.table_schema = '{aSchema}'
                 {CondTable}
         '''
-        return await TDbSql(self).Exec(Query)
+        return await TDbExecPool(self.Pool).Exec(Query)
 
     async def GetForeignKeys(self, aTable: str = '', aSchema: str = 'public') -> TDbSql:
         CondTable = f"and tc.table_name = '{aTable}'" if (aTable) else ''
@@ -154,7 +153,7 @@ class TDbPg(TADb):
                 and tc.table_schema = '{aSchema}'
                 {CondTable}
             '''
-        return await TDbSql(self).Exec(Query)
+        return await TDbExecPool(self.Pool).Exec(Query)
 
     async def GetDbVersion(self, aSchema: str = 'public') -> TDbSql:
         Query = f'''
@@ -173,4 +172,4 @@ class TDbPg(TADb):
                         and (table_schema = '{aSchema}')
                 ) as tables
             '''
-        return await TDbSql(self).Exec(Query)
+        return await TDbExecPool(self.Pool).Exec(Query)

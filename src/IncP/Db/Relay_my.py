@@ -8,8 +8,7 @@
 
 import aiomysql
 #
-from Inc.UtilP.Db.ADb import TADb
-from Inc.UtilP.Db.DbSql import TDbSql
+from Inc.UtilP.Db.ADb import TADb, TDbSql, TDbExecPool
 
 
 class TDbApp(TADb):
@@ -28,9 +27,9 @@ class TDbApp(TADb):
         Query = '''
             INSERT INTO log(type_id, descr) VALUES({Type}, "{Descr}")
         '''.format(Type=aType, Descr=aDescr)
-        await self.Exec(Query)
+        await TDbExecPool(self.Pool).Exec(Query)
 
-    async def GetDeviceByUniq(self, aUniq: str, aAlias: str):
+    async def GetDeviceByUniq(self, aUniq: str, aAlias: str) -> TDbSql:
         Query = '''
             SELECT
                 id
@@ -41,9 +40,9 @@ class TDbApp(TADb):
                 (uniq = '{Uniq}') AND
                 (alias = '{Alias}')
         '''.format(Uniq=aUniq, Alias=aAlias)
-        return await self.Exec(Query)
+        return await TDbExecPool(self.Pool).Exec(Query)
 
-    async def InsertDeviceByUniq(self, aUniq: str, aAlias: str, aValue: float):
+    async def InsertDeviceByUniq(self, aUniq: str, aAlias: str, aValue: float) -> TDbSql:
         Row = await self.GetDeviceByUniq(aUniq, aAlias)
         Res = (Row is not None)
         if (Res):
@@ -51,10 +50,10 @@ class TDbApp(TADb):
                 INSERT INTO devices_val(device_id, val)
                 VALUES(%s, %s)
             ''' % (Row[0], aValue)
-            await self.Exec(Query)
+            await TDbExecPool(self.Pool).Exec(Query)
             return True
 
-    async def GetDeviceValHourly(self, aId, aBegin, aEnd):
+    async def GetDeviceValHourly(self, aId, aBegin, aEnd) -> TDbSql:
         #GetDeviceValHourly(5, datetime.date.today() - datetime.timedelta(days=7), datetime.datetime.now())
         Query = f'''
             SELECT
@@ -71,9 +70,9 @@ class TDbApp(TADb):
             ORDER BY
                 Date
         '''
-        return await TDbSql(self).Exec(Query)
+        return await TDbExecPool(self.Pool).Exec(Query)
 
-    async def GetDeviceCount(self, aBegin, aEnd):
+    async def GetDeviceCount(self, aBegin, aEnd) -> TDbSql:
         Query = f'''
             SELECT
                 COUNT(*) Count,
@@ -87,4 +86,4 @@ class TDbApp(TADb):
             ORDER BY
                 Device
         '''
-        return await TDbSql(self).Exec(Query)
+        return await TDbExecPool(self.Pool).Exec(Query)

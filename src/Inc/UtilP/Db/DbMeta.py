@@ -3,9 +3,9 @@
 # License: GNU, see LICENSE for more details
 
 
-from Inc.Util.Obj import DeepSetByList, DeepGetByList, DeepGet
+from Inc.Util.Obj import DeepSetByList, DeepGet
+from .ADb import TDbSql, TDbExecCurs, ListToComma
 from .DbPg import TDbPg
-from .DbSql import TDbSql
 
 
 class TDbMeta():
@@ -18,12 +18,12 @@ class TDbMeta():
         await self.Foreign.Init()
         await self.Table.Init()
 
-    async def Insert(self, aTable: str, aData: dict = None, aReturning: list[str] = None, aCursor = None):
+    async def Insert(self, aTable: str, aData: dict = None, aReturning: list[str] = None, aCursor = None) -> TDbSql:
         Returning = 'returning ' + ','.join(aReturning) if aReturning else ''
 
         if (aData):
             Fields = '(%s)' % ', '.join(aData.keys())
-            Values = 'values (%s)' % self.Db.ListToComma(aData.values())
+            Values = 'values (%s)' % ListToComma(aData.values())
         else:
             Fields = ''
             Values = 'default values'
@@ -34,8 +34,16 @@ class TDbMeta():
             {Values}
             {Returning}
         '''
-        return await TDbSql(self.Db).ExecCur(aCursor, Query)
+        return await TDbExecCurs(aCursor).Exec(Query)
 
+    async def Delete(self, aTable: str, aWhere: str, aCursor = None) -> TDbSql:
+        Where = f'where {aWhere}' if aWhere else ''
+
+        Query = f'''
+            delete from {aTable}
+            {Where}
+        '''
+        return await TDbExecCurs(aCursor).Exec(Query)
 
 class TMeta():
     def __init__(self, aParent: TDbMeta):

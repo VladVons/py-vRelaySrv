@@ -12,5 +12,3 @@ def Main(aConf) -> tuple:
     SrvConf = TWebSrvConf(**SrvConf)
     Obj = TWebSrv(SrvConf, aConf)
     return (Obj, Obj.RunApp())
-
-

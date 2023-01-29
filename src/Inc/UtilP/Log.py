@@ -5,7 +5,7 @@
 
 import traceback
 #
-from Inc.Log import TLog, TEchoConsole, TEchoFile
+from Inc.Log import TEchoConsole, TEchoFile
 
 
 class TEchoConsoleEx(TEchoConsole):

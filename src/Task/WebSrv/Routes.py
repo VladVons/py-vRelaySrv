@@ -23,4 +23,3 @@ async def rTest(aRequest: web.Request):
     Context = {'name': 'pink_' + Name + ' + ' + Page}
     Response  = aiohttp_jinja2.render_template('about.tpl.html', aRequest, Context)
     return Response
-

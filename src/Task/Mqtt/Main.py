@@ -11,6 +11,7 @@ from socket import gethostname
 from gmqtt import Client as MQTTClient
 #
 from Inc.Util.Net import CheckHost
+from Inc.UtilP.Db.ADb import TDbExecPool
 from IncP.Db.Relay_my import TDbApp
 from IncP.Log import Log
 
@@ -48,7 +49,7 @@ class TMqtt():
 
     async def Run(self):
         await self.Db.Connect()
-        await self.Db.ExecFile('IncP/DB/Relay_my.sql')
+        await TDbExecPool(self.Db.Pool).ExecFile('IncP/DB/Relay_my.sql')
 
         Client = MQTTClient('%s-srv-%s' % (Name, gethostname()))
         Client.on_message = self.on_message

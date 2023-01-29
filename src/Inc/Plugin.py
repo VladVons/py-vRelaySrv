@@ -34,7 +34,8 @@ class TPlugin(dict):
             for x in Depends.split():
                 if (x):
                     Log.Print(1, 'i', '%s depends on %s' % (aPath, x))
-                    Res.update(self.LoadMod(x))
+                    ResF = self.LoadMod(x)
+                    Res.update(ResF)
             Obj = self._Create(Mod, aPath)
             if (Obj):
                 if (aRegister):

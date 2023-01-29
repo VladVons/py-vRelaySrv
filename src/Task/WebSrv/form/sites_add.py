@@ -8,7 +8,7 @@ from urllib.parse import urlparse
 from Inc.Db.DbList import TDbList, TDbCond
 from Inc.Util.Obj import DeepGet
 from Inc.UtilP.Misc import FilterKeyErr
-from Inc.UtilP.Db.DbSql import TDbSql
+from Inc.UtilP.Db.ADb import TDbSql
 from IncP.Download import CheckHost
 from ..Api import Api
 from .FormBase import TFormBase

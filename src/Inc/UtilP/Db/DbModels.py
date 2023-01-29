@@ -1,7 +1,5 @@
 from Inc.Plugin import TPlugin
 from Inc.UtilP.Db.DbMeta import TDbMeta
-#from Inc.UtilP.Db.DbSql import TDbSql
-#from IncP.Log import Log
 
 
 class TDbModels(TPlugin):

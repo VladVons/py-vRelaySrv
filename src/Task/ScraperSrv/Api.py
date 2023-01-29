@@ -11,7 +11,7 @@ import json
 from Inc.Db.DbList import TDbList, TDbCond
 from Inc.Util.Obj import DeepGet
 from Inc.UtilP.Time import SecondsToDHMS_Str
-from Inc.UtilP.Db.DbSql import TDbSql
+from Inc.UtilP.Db.ADb import TDbSql, TDbExecPool
 from IncP.Db.Scraper_pg import TDbApp
 from IncP.ApiWeb import TApiBase
 from IncP.Log import Log, TEchoDb
@@ -139,8 +139,8 @@ class TApi(TApiBase):
 
     async def path_add_sites(self, _aPath: str, aData: dict) -> dict:
         Data = aData.get('dbl')
-        Dbl = TDbSql(self.Db).Import(Data)
-        await Dbl.Insert('site')
+        Query = TDbSql().Import(Data).GetSqlInsert('site')
+        await TDbExecPool(self.Db.Pool).Exec(Query)
         return True
 
     async def path_send_result(self, _aPath: str, aData: dict) -> dict:
@@ -149,8 +149,9 @@ class TApi(TApiBase):
 
         TableFields = self.TableFields['url']
         Fields = [x for x in DblFields if (x in TableFields)]
-        DblS = TDbSql(self.Db).ImportDbl(Dbl, Fields)
-        IDs = await DblS.InsertUpdate('url', 'url')
+        DblS = TDbSql().ImportDbl(Dbl, Fields)
+        Query = DblS.GetSqlInsertUpdate('url', 'url')
+        IDs = await TDbExecPool(self.Db.Pool).Exec(Query)
 
         TableFields = self.TableFields['product']
         Fields = [x for x in DblFields if (x in TableFields)]
@@ -167,7 +168,8 @@ class TApi(TApiBase):
         ])
         DblS = TDbSql(self.Db).ImportDbl(DblS, aCond=Cond)
         if (not DblS.IsEmpty()):
-            await DblS.Insert('product')
+            Query = DblS.GetSqlInsert('product')
+            await TDbExecPool(self.Db.Pool).Exec(Query)
 
         return True
 

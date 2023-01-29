@@ -3,26 +3,26 @@
 # License: GNU, see LICENSE for more details
 
 
-from Inc.UtilP.Db.DbSql import TDbSql
+from Inc.UtilP.Db.ADb import TDbSql, TDbExecPool, ListToComma
 from Inc.UtilP.Db.DbPg import TDbPg
 
 
 class TDbApp(TDbPg):
-    async def InsertUrl(self, aUrl: str, aName: str, aPrice: float, aPriceOld: float, aStock: bool, aImage: str):
+    async def InsertUrl(self, aUrl: str, aName: str, aPrice: float, aPriceOld: float, aStock: bool, aImage: str) -> TDbSql:
         Query = f'''
             INSERT INTO url (url, name, price, price_old, on_stock, image)
             VALUES('{aUrl}', '{aName}', {aPrice}, {aPriceOld}, {aStock}, '{aImage}')
         '''
-        await self.Exec(Query)
+        await TDbExecPool(self.Pool).Exec(Query)
 
     async def AddLog(self, aType: int, aDescr: str):
         Query = f'''
             INSERT INTO log(type_id, descr)
             VALUES ({aType}, '{aDescr}')
             '''
-        await self.Exec(Query)
+        await TDbExecPool(self.Pool).Exec(Query)
 
-    async def UpdateFreeTask(self, aId: int):
+    async def UpdateFreeTask(self, aId: int) -> TDbSql:
         Query = '''
             UPDATE
                 sites
@@ -32,9 +32,9 @@ class TDbApp(TDbPg):
                 id=%d;
             COMMIT
             ''' % (aId)
-        await self.Exec(Query)
+        await TDbExecPool(self.Pool).Exec(Query)
 
-    async def SetScheme(self, aUrl: str, aScheme: str, aModerated: bool):
+    async def SetScheme(self, aUrl: str, aScheme: str, aModerated: bool) -> TDbSql:
         Query = f'''
             update
                 site
@@ -45,7 +45,7 @@ class TDbApp(TDbPg):
             where
                 (url = '{aUrl}')
             '''
-        await self.Exec(Query)
+        await TDbExecPool(self.Pool).Exec(Query)
 
     async def GetScheme(self, aEmpty: bool = False, aLimit: int = 10) -> TDbSql:
         if (aEmpty):
@@ -67,7 +67,7 @@ class TDbApp(TDbPg):
             limit
                 {aLimit}
             '''
-        return await TDbSql(self).Exec(Query)
+        return await TDbExecPool(self.Pool).Exec(Query)
 
     async def GetSchemeModerate(self) -> TDbSql:
         Query = '''
@@ -81,7 +81,7 @@ class TDbApp(TDbPg):
             order by
                 id
             '''
-        return await TDbSql(self).Exec(Query)
+        return await TDbExecPool(self.Pool).Exec(Query)
 
     async def GetSiteById(self, aId: int) -> TDbSql:
         Query = f'''
@@ -92,7 +92,7 @@ class TDbApp(TDbPg):
             where
                 (id = {aId})
             '''
-        return await TDbSql(self).Exec(Query)
+        return await TDbExecPool(self.Pool).Exec(Query)
 
     async def GetSiteExtById(self, aId: int) -> TDbSql:
         Query = f'''
@@ -104,7 +104,7 @@ class TDbApp(TDbPg):
                 (enabled) and
                 (site_id = {aId})
             '''
-        return await TDbSql(self).Exec(Query)
+        return await TDbExecPool(self.Pool).Exec(Query)
 
     async def GetSites(self, aLimit: int = -1) -> TDbSql:
         Limit = ''
@@ -126,13 +126,13 @@ class TDbApp(TDbPg):
                 url
             {Limit}
             '''
-        return await TDbSql(self).Exec(Query)
+        return await TDbExecPool(self.Pool).Exec(Query)
 
     async def GetSitesForUpdateFull(self, aExclId: list = None, aLimit: int = 10, aUpdDaysX: float = 1) -> TDbSql:
         if (aExclId is None):
             aExclId = []
 
-        ExclId = self.ListToComma(aExclId)
+        ExclId = ListToComma(aExclId)
         if (ExclId):
             CondExcl = 'and (not id in(%s))' % ExclId
         else:
@@ -153,13 +153,13 @@ class TDbApp(TDbPg):
             limit
                 {aLimit}
             '''
-        return await TDbSql(self).Exec(Query)
+        return await TDbExecPool(self.Pool).Exec(Query)
 
     async def GetSitesForUpdate(self, aExclId: list = None, aCount: tuple = (0, -1), aLimit: int = 10, aUpdDaysX: float = 1) -> TDbSql:
         if (aExclId is None):
             aExclId = []
 
-        ExclId = self.ListToComma(aExclId)
+        ExclId = ListToComma(aExclId)
         if (ExclId):
             CondExcl = 'and (not site.id in(%s))' % ExclId
         else:
@@ -198,7 +198,7 @@ class TDbApp(TDbPg):
             limit
                 {aLimit}
             '''
-        return await TDbSql(self).Exec(Query)
+        return await TDbExecPool(self.Pool).Exec(Query)
 
     async def GetSiteUrlsForUpdate(self, aSiteId: int, aLimit: int = 10, aOnlyProduct: bool = False) -> TDbSql:
         if (aOnlyProduct):
@@ -224,7 +224,7 @@ class TDbApp(TDbPg):
             limit
                 {aLimit}
             '''
-        return await TDbSql(self).Exec(Query)
+        return await TDbExecPool(self.Pool).Exec(Query)
 
 ### --- user --- ###
     async def UserAuth(self, aLogin: str, aPassw: str) -> TDbSql:
@@ -242,7 +242,7 @@ class TDbApp(TDbPg):
                 (auth.login = '{aLogin}') and
                 (auth.passw = '{aPassw}')
             '''
-        return await TDbSql(self).Exec(Query)
+        return await TDbExecPool(self.Pool).Exec(Query)
 
     async def GetUserInfo(self, aId: int) -> TDbSql:
         Query = f'''
@@ -253,7 +253,7 @@ class TDbApp(TDbPg):
             where
                 (id = {aId})
             '''
-        return await TDbSql(self).Exec(Query)
+        return await TDbExecPool(self.Pool).Exec(Query)
 
     async def GetUserConf(self, aId) -> TDbSql:
         Query = f'''
@@ -265,7 +265,7 @@ class TDbApp(TDbPg):
                 (enabled) and
                 (auth_id = {aId})
             '''
-        return await TDbSql(self).Exec(Query)
+        return await TDbExecPool(self.Pool).Exec(Query)
 
     async def GetGroupConf(self, aId) -> TDbSql:
         Query = f'''
@@ -277,4 +277,4 @@ class TDbApp(TDbPg):
                 (enabled) and
                 (auth_group_id = {aId})
             '''
-        return await TDbSql(self).Exec(Query)
+        return await TDbExecPool(self.Pool).Exec(Query)
