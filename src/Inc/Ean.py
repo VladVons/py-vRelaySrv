@@ -13,6 +13,10 @@ class TEan():
         self.Code = aCode
         self.Len = 0
 
+    def Init(self, aCode: str) -> 'TEan':
+        self.Code = aCode
+        return self
+
     def Get(self) -> str:
         return '%s%s' % (self.Code[:-1], self.GetCrc())
 
@@ -24,7 +28,8 @@ class TEan():
         return Crc
 
     def Check(self) -> bool:
-        return  (self.Len == 0 or self.Len == len(self.Code)) and \
+        return  (self.Code) and \
+                (self.Len == 0 or self.Len == len(self.Code)) and \
                 (self.Code.isdigit()) and \
                 (self.Code[-1] == str(self.GetCrc()))
 
