@@ -85,11 +85,11 @@ class TForeign(TMeta):
 class TTable(TMeta):
     def __init__(self, aParent: TDbMeta):
         super().__init__(aParent)
-        self.Data = {}
+        self.Column = {}
         self.Require = {}
 
     async def Init(self):
-        self.Data = {}
+        self.Column = {}
         self.Require = {}
 
         Dbl = await self.Parent.Db.GetTableColumns()
@@ -98,7 +98,7 @@ class TTable(TMeta):
             Column = Rec.GetField('column_name')
             Key = (Table, Column)
             Value = {'type': Rec.GetField('column_type'), 'null': Rec.GetField('is_null').lower()}
-            DeepSetByList(self.Data, Key, Value)
+            DeepSetByList(self.Column, Key, Value)
 
             if (Value['null'] == 'no') and (Column != 'id'):
                 if (Table not in self.Require):
@@ -106,4 +106,4 @@ class TTable(TMeta):
                 self.Require[Table] += [Column]
 
     def Get(self, aPath: str) -> object:
-        return DeepGet(self.Data, aPath)
+        return DeepGet(self.Column, aPath)
