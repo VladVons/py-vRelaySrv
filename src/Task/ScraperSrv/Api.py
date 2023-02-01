@@ -8,10 +8,10 @@ from urllib.parse import urlparse
 import asyncio
 import json
 #
-from Inc.Db.DbList import TDbList, TDbCond
+from Inc.Db.DbList import TDbList, TDbCond, TDbSql
 from Inc.Util.Obj import DeepGet
 from Inc.UtilP.Time import SecondsToDHMS_Str
-from Inc.UtilP.Db.ADb import TDbSql, TDbExecPool
+from Inc.UtilP.Db.ADb import TDbExecPool
 from IncP.Db.Scraper_pg import TDbApp
 from IncP.ApiWeb import TApiBase
 from IncP.Log import Log, TEchoDb

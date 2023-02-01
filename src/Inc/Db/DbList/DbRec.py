@@ -55,12 +55,10 @@ class TDbRec(list):
     def GetAsSql(self) -> str:
         Res = []
         for _, (FNo, FType, _) in self.Parent.Fields.items():
-            if (FType == bool):
-                Val = str(self[FNo])
-            elif (FType in [int, float]):
-                Val = str(self[FNo])
-            else:
+            if (isinstance(FType, str)):
                 Val = f"'{self[FNo]}'"
+            else:
+                Val = str(self[FNo])
             Res.append(Val)
         return ', '.join(Res)
 

@@ -6,6 +6,10 @@
 # Code13 = '4820192681810'
 # Ean13 = TEan13(Code13)
 # print(Code13, Ean13.Check())
+# Ean = TEan()
+# print(Code8, Ean.Init(Code8).Check())
+# print(Code13, Ean.Init(Code13).Check())
+
 
 
 class TEan():

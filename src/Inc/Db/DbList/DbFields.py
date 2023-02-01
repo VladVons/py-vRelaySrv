@@ -53,9 +53,13 @@ class TDbFields(dict):
             else:
                 self.Add(Row)
 
-    def Export(self) -> list:
-        Items = sorted(self.items(), key = lambda k: k[1][0])
-        return [(Key, Type.__name__, Def) for Key, (No, Type, Def) in Items]
+    def Export(self, aWithType: bool = True) -> list:
+        if (aWithType):
+            Items = sorted(self.items(), key = lambda k: k[1][0])
+            Res = [(Key, Type.__name__, Def) for Key, (No, Type, Def) in Items]
+        else:
+            Res = [Key for Key in self]
+        return Res
 
     def Import(self, aFields: list):
         Data = [

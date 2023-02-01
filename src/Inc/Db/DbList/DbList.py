@@ -189,11 +189,11 @@ class TDbList():
             Data = [[Val[i] for i in FieldsNo] for Val in self.Data[Start:Finish]]
         return Data
 
-    def Export(self) -> dict:
+    def Export(self, aWithType: bool = True) -> dict:
         '''
         Returns all data in a simple dict for future import
         '''
-        return {'Data': self.Data, 'Head': self.Fields.Export(), 'Tag': self.Tag}
+        return {'Data': self.Data, 'Head': self.Fields.Export(aWithType), 'Tag': self.Tag}
 
     def ImportList(self, aField: str, aData: list):
         Rec = TDbRec(self)
@@ -204,7 +204,7 @@ class TDbList():
             Arr[FieldNo] = Row
             self.Data.append(Arr)
 
-    def ImportDbl(self, aDbl: 'TDbList', aFields: list = None, aCond: TDbCond = None, aRecNo: tuple = (0, -1)):
+    def ImportDbl(self, aDbl: 'TDbList', aFields: list = None, aCond: TDbCond = None, aRecNo: tuple = (0, -1)) -> 'TDbList':
         if (aFields is None):
             aFields = []
 
@@ -213,16 +213,23 @@ class TDbList():
         self.Tag = aDbl.Tag
         return self
 
-    def ImportPair(self, aData: dict, aKeyName: str, aFieldValue: tuple):
+    def ImportPair(self, aData: dict, aKeyName: str, aFieldValue: tuple) -> 'TDbList':
         self.Fields = TDbFields([(aKeyName, str), aFieldValue])
         self.Data = [[Key, Val] for Key, Val in aData.items()]
         return self
 
-    def Import(self, aData: dict):
+    def Import(self, aData: dict) -> 'TDbList':
         self.Tag = aData.get('Tag')
-        self.Data = aData.get('Data')
+        self.Data = aData.get('Data', [])
+
         self.Fields = TDbFields()
-        self.Fields.Import(aData.get('Head'))
+        Head = aData.get('Head')
+        if (isinstance(Head[0], list)):
+            self.Fields.Import(Head)
+        elif (self.Data):
+            self.Fields.AddAuto(Head, self.Data[0])
+        else:
+            raise TDbListException('Cant auto import empty data')
         self.RecNo = 0
         return self
 
@@ -362,7 +369,7 @@ class TDbList():
             else:
                 json.dump(self.Export(), F)
 
-    def Load(self, aFile: str):
+    def Load(self, aFile: str) -> 'TDbList':
         with open(aFile, 'r', encoding = 'utf-8') as F:
             Data = json.load(F)
             self.Import(Data)

@@ -8,7 +8,7 @@ import time
 import asyncio
 #
 from IncP.Log import Log
-from Inc.Db.DbList import TDbList, TDbFields
+from Inc.Db.DbList import TDbSql
 
 
 def ListToComma(aList: list) -> str:
@@ -35,44 +35,6 @@ class TADb():
             self.Pool = None
 
 
-class TDbSql(TDbList):
-    def _GetFields(self, aFields: list, aData: list) -> TDbFields:
-        Res = TDbFields()
-        Data = aData[0] if (aData) else None
-        Res.AddAuto(aFields, Data)
-        return Res
-
-    def ImportDb(self, aData: list, aFields: list) -> TDbList:
-        self.Fields = self._GetFields(aFields, aData)
-        self.SetData(aData)
-        return self
-
-    def GetSqlInsert(self, aTable: str) -> str:
-        Fields = [Val[0] for Key, Val in self.Fields.IdxOrd.items()]
-        Values = [Rec.GetAsSql() for Rec in self]
-        return 'insert into %s (%s) values (%s)' % (aTable, ', '.join(Fields), '), ('.join(Values))
-
-    def GetSqlUpdate(self, aTable: str, aRecNo: int = 0) -> str:
-        self.RecNo = aRecNo
-        return 'update %s set %s' % (aTable, self.Rec.GetAsSql())
-
-    def GetSqlInsertUpdate(self, aTable: str, aUniqField: str) -> str:
-        Insert = self.GetSqlInsert(aTable)
-        Set = [
-            '%s = excluded.%s' % (Key, Key)
-            for Key in self.Fields
-            if (Key != aUniqField)
-        ]
-        Set = ', '.join(Set)
-
-        return f'''
-            {Insert}
-            on conflict ({aUniqField}) do update
-            set {Set}
-            returning id;
-        '''
-
-
 class TDbExec():
     Debug = False
 
@@ -84,16 +46,6 @@ class TDbExec():
         if ('data' in Data):
             Res = TDbSql()
             return Res.ImportDb(Data['data'], Data['fields'])
-
-    @staticmethod
-    def ListToComma(aList: list) -> str:
-        Res = []
-        for x in aList:
-            if (isinstance(x, str)):
-                Res.append(f"'{x}'")
-            else:
-                Res.append(str(x))
-        return ', '.join(Res)
 
     async def ExecCurTry(self, aCursor, aSql: str) -> dict:
         TimeAt = time.time()

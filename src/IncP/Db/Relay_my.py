@@ -8,7 +8,8 @@
 
 import aiomysql
 #
-from Inc.UtilP.Db.ADb import TADb, TDbSql, TDbExecPool
+from Inc.Db.DbList import TDbSql
+from Inc.UtilP.Db.ADb import TADb, TDbExecPool
 
 
 class TDbApp(TADb):

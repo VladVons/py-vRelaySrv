@@ -2,8 +2,8 @@
 # Author: Vladimir Vons <VladVons@gmail.com>
 # License: GNU, see LICENSE for more details
 
-
-from Inc.UtilP.Db.ADb import TDbSql, TDbExecPool, ListToComma
+from Inc.Db.DbList import TDbSql
+from Inc.UtilP.Db.ADb import TDbExecPool, ListToComma
 from Inc.UtilP.Db.DbPg import TDbPg
 
 

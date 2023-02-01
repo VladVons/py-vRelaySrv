@@ -3,7 +3,8 @@ from psycopg2.errorcodes import (
     UNIQUE_VIOLATION,
     NOT_NULL_VIOLATION,
     UNDEFINED_COLUMN,
-    FOREIGN_KEY_VIOLATION
+    FOREIGN_KEY_VIOLATION,
+    SYNTAX_ERROR
 )
 from psycopg2 import errors
 #
@@ -30,7 +31,8 @@ class TDbModel():
                         errors.lookup(UNIQUE_VIOLATION),
                         errors.lookup(NOT_NULL_VIOLATION),
                         errors.lookup(UNDEFINED_COLUMN),
-                        errors.lookup(FOREIGN_KEY_VIOLATION)
+                        errors.lookup(FOREIGN_KEY_VIOLATION),
+                        errors.lookup(SYNTAX_ERROR)
                     ) as E:
                         Res = {'err': str(E).split('\n', maxsplit = 1)[0]}
                         Log.Print(1, 'x', 'TransDecor()', aE=E, aSkipEcho=['TEchoDb'])
@@ -49,80 +51,69 @@ class TDbModel():
             Res = json.load(F)
         return Res
 
-    def _CheckConf(self, aData: dict) -> str:
-        def Recurs(aData) -> str:
-            nonlocal Table, Columns, Require
-
-            Res = ''
-            if (isinstance(aData, list)):
-                if (Table == self.Master):
-                    Res = 'columns cant be a list in master'
-                else:
-                    for x in aData:
-                        Res = Recurs(x)
-                        if (Res):
-                            break
-            else:
-                RowColumns = set(aData.keys())
-                Diff = Require - RowColumns
-                if (Diff):
-                    Res = f'requires fields {Diff}'
-
-                Diff = RowColumns - Columns
-                if (Diff):
-                    Res = f'unknown columns {Diff}'
-            return Res
+    def _CheckData(self, aData: dict) -> list[str]:
+        Res = []
 
         ConfRequire = self.Conf.get('require', [])
         Diff = set(ConfRequire) - set(aData.keys())
         if (Diff):
-            return f'require {Diff}'
+            Res.append(f'require {Diff}')
 
         ConfAllow = self.Conf.get('allow', [])
         ConfDeny = self.Conf.get('deny', [])
         Depends = self.DbMeta.Foreign.TableId.get((self.Master, 'id'), {})
 
         if (self.Master) and (self.Master not in aData):
-            aData[self.Master] = {}
+            aData[self.Master] = [{}]
 
         for Table, Data in aData.items():
-            if (self.Master) and (Table != self.Master):
-                if (Depends) and (Table not in Depends):
-                    return f'table {Table} not depends on {self.Master}'
+            if (self.Master):
+                if (Table == self.Master):
+                    if (len(Data) > 1):
+                        Res.append(f'{Table} rows must be 1')
+                else:
+                    if (Depends) and (Table not in Depends):
+                        Res.append(f'{Table} not depends on {self.Master}')
 
             if (ConfAllow) and (Table not in ConfAllow):
-                return f'table {Table} is not allowed'
+                Res.append(f'{Table} is not allowed')
 
             if (Table in ConfDeny):
-                return f'table {Table} denied'
+                Res.append(f'{Table} denied')
 
             Columns = set(self.DbMeta.Table.Column.get(Table, []))
             Require = set(self.DbMeta.Table.Require.get(Table, []))
             Depend = Depends.get(Table)
             if (Depend):
                 Require.remove(Depend)
-            Res = Recurs(Data)
-            if (Res):
-                return f'table {Table} {Res}'
+
+            for xData in Data:
+                RowColumns = set(xData.keys())
+                Diff = Require - RowColumns
+                if (Diff):
+                    Res.append(f'{Table} requires fields {Diff}')
+
+                Diff = RowColumns - Columns
+                if (Diff):
+                    Res.append(f'{Table} unknown columns {Diff}')
+        return Res
 
     async def _Add(self, aData: dict, aCursor = None) -> dict:
-        Err = self._CheckConf(aData)
+        Err = self._CheckData(aData)
         if (Err):
-            return {'err': Err}
+            return {'err': ', '.join(Err)}
 
         ResId = []
         if (self.Master):
-            Dbl = await self.DbMeta.Insert(self.Master, aData.get(self.Master, {}), aReturning = ['id'], aCursor = aCursor)
+            Dbl = await self.DbMeta.Insert(self.Master, aData.get(self.Master)[0], aReturning = ['id'], aCursor = aCursor)
             ResId = [self.Master, Dbl.Rec.GetField('id')]
 
-        for Table, Data in aData.items():
-            if (Table not in self.Master):
-                ForeignVal = self.DbMeta.Foreign.GetColumnVal(Table, ResId)
-                if (isinstance(Data, list)):
-                    for x in Data:
-                        await self.DbMeta.Insert(Table, x | ForeignVal, aCursor = aCursor)
-                elif (isinstance(Data, dict)):
-                    await self.DbMeta.Insert(Table, Data | ForeignVal, aCursor = aCursor)
+        for TableK, DataV in aData.items():
+            if (TableK not in self.Master):
+                ForeignVal = self.DbMeta.Foreign.GetColumnVal(TableK, ResId)
+                for x in DataV:
+                    x.update(ForeignVal)
+                await self.DbMeta.Insert(TableK, DataV, aCursor = aCursor)
         return {'id': ResId}
 
     async def _Del(self, aId: int, aCursor = None) -> dict:

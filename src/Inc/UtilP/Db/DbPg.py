@@ -8,7 +8,8 @@
 import aiopg
 #
 from IncP.Log import Log
-from .ADb import TADb, TDbSql, TDbExecPool
+from Inc.Db.DbList import TDbSql
+from .ADb import TADb, TDbExecPool
 
 
 class TDbPg(TADb):

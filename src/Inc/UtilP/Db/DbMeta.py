@@ -4,7 +4,8 @@
 
 
 from Inc.Util.Obj import DeepSetByList, DeepGet
-from .ADb import TDbSql, TDbExecCurs, ListToComma
+from Inc.Db.DbList import TDbSql
+from .ADb import TDbExecCurs, ListToComma
 from .DbPg import TDbPg
 
 
@@ -18,16 +19,22 @@ class TDbMeta():
         await self.Foreign.Init()
         await self.Table.Init()
 
-    async def Insert(self, aTable: str, aData: dict = None, aReturning: list[str] = None, aCursor = None) -> TDbSql:
-        Returning = 'returning ' + ','.join(aReturning) if aReturning else ''
-
+    async def Insert(self, aTable: str, aData: dict|list = None, aReturning: list[str] = None, aCursor = None) -> TDbSql:
         if (aData):
-            Fields = '(%s)' % ', '.join(aData.keys())
-            Values = 'values (%s)' % ListToComma(aData.values())
+            if (isinstance(aData, dict)):
+                Fields = '(%s)' % ', '.join(aData.keys())
+                Values = 'values (%s)' % ListToComma(aData.values())
+            elif (isinstance(aData, list)):
+                Fields = '(%s)' % ', '.join(aData[0].keys())
+                Values = [ListToComma(x.values()) for x in aData]
+                Values = 'values (' + '), ('.join(Values) + ')'
+            else:
+                return {'err': 'invalid data type'}
         else:
             Fields = ''
             Values = 'default values'
 
+        Returning = 'returning ' + ','.join(aReturning) if aReturning else ''
         Query = f'''
             insert into {aTable}
             {Fields}
