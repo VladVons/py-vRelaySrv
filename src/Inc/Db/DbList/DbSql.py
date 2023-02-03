@@ -10,25 +10,14 @@ from .DbList import TDbList
 class TDbSql(TDbList):
     Table = ''
 
-    def _GetFields(self, aFields: list, aData: list) -> TDbFields:
-        Res = TDbFields()
-        Data = aData[0] if (aData) else None
-        Res.AddAuto(aFields, Data)
-        return Res
-
     def Export(self, aWithType: bool = True) -> dict:
         Res = super().Export(aWithType)
         Res['Table'] = self.Table
         return Res
 
-    def Import(self, aData: dict) -> 'TDbSql':
-        super().Import(aData)
+    def Import(self, aData: dict, aWithType: bool = True) -> 'TDbSql':
+        super().Import(aData, aWithType)
         self.Table = aData.get('Table')
-        return self
-
-    def ImportDb(self, aData: list, aFields: list) -> TDbList:
-        self.Fields = self._GetFields(aFields, aData)
-        self.SetData(aData)
         return self
 
     def GetSqlInsert(self, aTable: str, aReturning: list[str] = None) -> str:

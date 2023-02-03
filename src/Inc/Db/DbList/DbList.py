@@ -195,6 +195,14 @@ class TDbList():
         '''
         return {'Data': self.Data, 'Head': self.Fields.Export(aWithType), 'Tag': self.Tag}
 
+    def ImportAutoFields(self, aData: list, aFields: list[str]) -> 'TDbList':
+        if (not aData):
+            raise TDbListException('Cant auto import empty data')
+
+        self.Data = aData
+        self.Fields.AddAuto(aFields, aData[0])
+        return self
+
     def ImportList(self, aField: str, aData: list):
         Rec = TDbRec(self)
         Rec.Init()
@@ -218,18 +226,16 @@ class TDbList():
         self.Data = [[Key, Val] for Key, Val in aData.items()]
         return self
 
-    def Import(self, aData: dict) -> 'TDbList':
+    def Import(self, aData: dict, aWithType: bool = True) -> 'TDbList':
         self.Tag = aData.get('Tag')
-        self.Data = aData.get('Data', [])
-
-        self.Fields = TDbFields()
         Head = aData.get('Head')
-        if (isinstance(Head[0], list)):
+        self.Fields = TDbFields()
+
+        if (aWithType):
+            self.Data = aData.get('Data', [])
             self.Fields.Import(Head)
-        elif (self.Data):
-            self.Fields.AddAuto(Head, self.Data[0])
         else:
-            raise TDbListException('Cant auto import empty data')
+            self.ImportAutoFields(aData.get('Data'), Head)
         self.RecNo = 0
         return self
 
