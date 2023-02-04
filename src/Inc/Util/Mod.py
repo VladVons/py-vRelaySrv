@@ -72,21 +72,21 @@ def GetClassHelp(aModule: object, aClass: object) -> list[str]: #//
 #---
 #http://www.qtrac.eu/pyclassmulti.html
 
-def Decor_AddMethods(aMethods: list):
-    def Wraper(aClass):
+def DAddMethods(aMethods: list):
+    def Decor(aClass):
         for Method in aMethods:
             setattr(aClass, Method.__name__, Method)
         return aClass
-    return Wraper
+    return Decor
 
-def Decor_AddModules(aModules: list):
-    def Wraper(aClass):
+def DAddModules(aModules: list):
+    def Decor(aClass):
         for Module in aModules:
             for Method in dir(Module):
                 if (not Method.endswith('__')):
                     Obj = getattr(Module, Method)
                     setattr(aClass, Method, Obj)
             return aClass
-    return Wraper
+    return Decor
 
 #---

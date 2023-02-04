@@ -20,7 +20,7 @@ class TDbModel():
         self.Master = self.Conf.get('master', '')
 
     @staticmethod
-    def _TransDecor(aFunc):
+    def _DTransaction(aFunc):
         async def Wrapper(self, aData, *_aArgs):
             async with self.DbMeta.Db.Pool.acquire() as Connect:
                 async with Connect.cursor() as Cursor:
@@ -35,7 +35,7 @@ class TDbModel():
                         errors.lookup(SYNTAX_ERROR)
                     ) as E:
                         Res = {'err': str(E).split('\n', maxsplit = 1)[0]}
-                        Log.Print(1, 'x', 'TransDecor()', aE=E, aSkipEcho=['TEchoDb'])
+                        Log.Print(1, 'x', '_DTransaction()', aE=E, aSkipEcho=['TEchoDb'])
 
                     if (Res) and ('err' in Res):
                         #TransStat = await Connect.get_transaction_status()
@@ -126,11 +126,11 @@ class TDbModel():
                 await self.DbMeta.Delete(Table, f'{Column} = {aId}', aCursor)
         await self.DbMeta.Delete(self.Master, f'id = {aId}', aCursor)
 
-    @_TransDecor
+    @_DTransaction
     async def _AddTD(self, aData: dict, aCursor = None) -> dict:
         return await self._Add(aData, aCursor)
 
-    @_TransDecor
+    @_DTransaction
     async def _AddListTD(self, aData: list, aCursor = None) -> list:
         Res = []
         for xData in aData:
@@ -138,11 +138,11 @@ class TDbModel():
             Res.append(ResF)
         return Res
 
-    @_TransDecor
+    @_DTransaction
     async def _DelTD(self, aId: int, aCursor = None) -> dict:
         return await self._Del(aId, aCursor)
 
-    @_TransDecor
+    @_DTransaction
     async def _DelListTD(self, aId: list[int], aCursor = None) -> list:
         Res = []
         for xId in aId:

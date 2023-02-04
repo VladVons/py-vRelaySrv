@@ -76,8 +76,7 @@ class TInStock():
         Match = self._MatchYes if (aMatch) else self._MatchNo
         return aVal in Match
 
-def DigDelDecor(aVal: str) -> str:
-# remove thousands decoration
+def DigDelThousands(aVal: str) -> str:
     Pos = aVal.rfind('.')
     if (len(aVal) - Pos - 1 == 3):
         aVal = aVal.replace('.', '')
@@ -103,7 +102,7 @@ def DigSplit(aVal: str) -> tuple:
     Dots = Digit.count('.')
     if (Dots > 1):
         Digit = Digit.replace('.', '', Dots - 1)
-    return (Before, DigDelDecor(Digit), After)
+    return (Before, DigDelThousands(Digit), After)
 
 def SoupGetParents(aSoup: BeautifulSoup, aItems: list, aDepth: int = 99) -> list:
     Res = []
