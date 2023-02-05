@@ -221,7 +221,7 @@ class TSchemeApi():
         ["val2bool"]
         '''
 
-        return not (aVal is None)
+        return (aVal is not None)
 
     @staticmethod
     def not_none(aVal: list) -> object:
@@ -231,7 +231,7 @@ class TSchemeApi():
         '''
 
         for x in aVal:
-            if not (x is None):
+            if (x is not None):
                 return x
 
     @staticmethod

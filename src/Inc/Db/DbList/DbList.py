@@ -3,87 +3,32 @@
 # License: GNU, see LICENSE for more details
 
 
-import json
-import random
-#
-from .BeeTree import TBeeTree
+from .DbBase import TDbBase
 from .DbCond import TDbCond
 from .DbErr import TDbListException
 from .DbFields import TDbFields
 from .DbRec import TDbRec
 
 
-class TDbList():
+class TDbList(TDbBase):
     def __init__(self, aFields: list = None, aData: list = None):
+        super().__init__()
+
+        self.Fields = None
         if (aFields is None):
             aFields = []
 
-        self.Tag = 0
-        self.Data = []
-        self._RecNo = 0
-        self.BeeTree = {}
-        self.Fields = None
-        self.Rec = TDbRec(self)
-        self.Init(aFields, aData)
         self.OptSafe = True
         self.OptSafeConvert = True
-        self.OptReprLen = 25
 
-    def __len__(self):
-        return self.GetSize()
+        self.Rec = TDbRec(self)
+        self.Init(aFields, aData)
 
-    def __iter__(self):
-        self._RecNo = -1
-        return self
+    def _GetFieldNo(self, aField: str) -> int:
+        return self.Fields.GetNo(aField)
 
-    def __next__(self):
-        if (self._RecNo >= self.GetSize() - 1):
-            raise StopIteration
-
-        self._RecNo += 1
-        self._RecInit()
-        return self.Rec
-
-    def __repr__(self):
-        return self._Repr()
-
-    def _GetMaxLen(self) -> list:
-        Res = [
-            len(self.Fields.IdxOrd[i][0])
-            for i in range(len(self.Fields))
-        ]
-
-        for Row in self.Data:
-            for Idx, Val in enumerate(Row):
-                Res[Idx] = max(Res[Idx], len(str(Val).strip()))
-
-        for Idx, _ in enumerate(Res):
-            Res[Idx] = min(Res[Idx], self.OptReprLen)
-
-        return Res
-
-    def _Repr(self):
-        FieldsLen = self._GetMaxLen()
-        Fields = self.Fields.GetList()
-
-        Format = []
-        for Idx, (_Key, Value) in enumerate(self.Fields.items()):
-            Align = '' if Value[1] in [int, float] else '-'
-            Format.append('%' + Align + str(FieldsLen[Idx]) + 's\t')
-        Format = ''.join(Format)
-
-        Res = []
-        Res.append(Format % tuple(Fields))
-        for Idx, Row in enumerate(self.Data):
-            Trimmed = []
-            for x in Row:
-                x = str(x)
-                if (len(x) > self.OptReprLen):
-                    x = x[:self.OptReprLen - 3] + '...'
-                Trimmed.append(x)
-            Res.append(Format % tuple(Trimmed))
-        Res.append(f'records: {self.GetSize()}')
-        return '\n'.join(Res)
+    def _GetFields(self) -> list[str]:
+        return self.Fields.keys()
 
     def _DbExp(self, aData: list, aFields: list[str], aFieldsNew: list[list] = None) -> 'TDbList':
         Res = TDbList()
@@ -93,37 +38,10 @@ class TDbList():
         Res.Data = aData
         return Res
 
-    def _RecInit(self):
+    def _RecInit(self) -> TDbRec:
         if (not self.IsEmpty()):
             self.Rec.SetData(self.Data[self._RecNo])
-
-    def _Group(self, aFieldsUniq: list[str], aFieldsSum: list[str]) -> dict:
-        Res = {}
-
-        FieldsNoUniq = [self.Fields.GetNo(x) for x in aFieldsUniq]
-        FieldsNoSum = [self.Fields.GetNo(x) for x in aFieldsSum]
-
-        for Row in self.Data:
-            FKey = tuple(Row[x] for x in FieldsNoUniq)
-            if (FKey not in Res):
-                Res[FKey] = []
-            FSum = [Row[x] for x in FieldsNoSum]
-            Res[FKey].append(FSum)
-        return Res
-
-    @property
-    def RecNo(self):
-        return self._RecNo
-
-    @RecNo.setter
-    def RecNo(self, aNo: int):
-        if (self.IsEmpty()):
-            self._RecNo = 0
-        else:
-            if (aNo < 0):
-                aNo = self.GetSize() + aNo
-            self._RecNo = min(aNo, self.GetSize() - 1)
-        self._RecInit()
+        return self.Rec
 
     def Init(self, aFields: list, aData: list = None):
         self.Fields = TDbFields()
@@ -135,36 +53,8 @@ class TDbList():
         self.Fields.Add(*aField)
         self.ImportList(aField[0], aData)
 
-    def GetSize(self) -> int:
-        return len(self.Data)
-
-    def IsEmpty(self) -> bool:
-        return (self.GetSize() == 0)
-
-    def Empty(self):
-        self.Data = []
-        self._RecNo = 0
-
-    def ExportPair(self, aFieldKey: str, aFieldVal: str) -> dict:
-        '''
-        Returns two binded fields as key:val
-        '''
-        KeyNo = self.Fields.GetNo(aFieldKey)
-        ValNo = self.Fields.GetNo(aFieldVal)
-        return {x[KeyNo]: x[ValNo] for x in self.Data}
-
     def ExportDict(self) -> list:
         return [Rec.GetAsDict() for Rec in self]
-
-    def ExportList(self, aField: str, aUniq = False) -> list:
-        '''
-        Returns one field as list
-        '''
-        FieldNo = self.Fields.GetNo(aField)
-        Res = [x[FieldNo] for x in self.Data]
-        if (aUniq):
-            Res = list(set(Res))
-        return Res
 
     def ExportData(self, aFields: list = None, aCond: TDbCond = None, aRecNo: tuple = None) -> list:
         if (aFields is None):
@@ -189,11 +79,11 @@ class TDbList():
             Data = [[Val[i] for i in FieldsNo] for Val in self.Data[Start:Finish]]
         return Data
 
-    def Export(self, aWithType: bool = True) -> dict:
+    def Export(self) -> dict:
         '''
         Returns all data in a simple dict for future import
         '''
-        return {'Data': self.Data, 'Head': self.Fields.Export(aWithType), 'Tag': self.Tag}
+        return {'Data': self.Data, 'Head': self.Fields.Export(), 'Tag': self.Tag}
 
     def ImportAutoFields(self, aData: list, aFields: list[str]) -> 'TDbList':
         if (not aData):
@@ -201,6 +91,7 @@ class TDbList():
 
         self.Data = aData
         self.Fields.AddAuto(aFields, aData[0])
+        self.RecNo = 0
         return self
 
     def ImportList(self, aField: str, aData: list):
@@ -226,16 +117,11 @@ class TDbList():
         self.Data = [[Key, Val] for Key, Val in aData.items()]
         return self
 
-    def Import(self, aData: dict, aWithType: bool = True) -> 'TDbList':
+    def Import(self, aData: dict) -> 'TDbList':
         self.Tag = aData.get('Tag')
-        Head = aData.get('Head')
         self.Fields = TDbFields()
-
-        if (aWithType):
-            self.Data = aData.get('Data', [])
-            self.Fields.Import(Head)
-        else:
-            self.ImportAutoFields(aData.get('Data'), Head)
+        self.Data = aData.get('Data', [])
+        self.Fields.Import(aData.get('Head'))
         self.RecNo = 0
         return self
 
@@ -253,39 +139,6 @@ class TDbList():
         else:
             self.Empty()
 
-    def GetDiff(self, aField: str, aList: list) -> tuple:
-        Set1 = set(self.ExportList(aField))
-        Set2 = set(aList)
-        return (Set1 - Set2, Set2 - Set1)
-
-    def Find(self, aCond: TDbCond) -> int:
-        for i in range(self._RecNo, self.GetSize()):
-            if (aCond.Find(self.Data[i])):
-                return i
-        return -1
-
-    def FindField(self, aName: str, aValue) -> int:
-        FieldNo = self.Fields.GetNo(aName)
-        for i in range(self._RecNo, self.GetSize()):
-            if (self.Data[i][FieldNo] == aValue):
-                return i
-        return -1
-
-    def Search(self, aField: str, aVal) -> int:
-        if (not aField in self.BeeTree):
-            raise TDbListException('SearchAdd()')
-        return self.BeeTree[aField].Search(aVal)
-
-    def SearchAdd(self, aField: str, aAllowEmpty: bool = False) -> TBeeTree:
-        BeeTree = TBeeTree()
-        FieldNo = self.Fields.GetNo(aField)
-        for RowNo, Row in enumerate(self.Data):
-            Data = Row[FieldNo]
-            if (Data or aAllowEmpty):
-                BeeTree.Add((Data, RowNo))
-        self.BeeTree[aField] = BeeTree
-        return BeeTree
-
     def AddField(self, aFields: list = None):
         if (aFields is None):
             aFields = []
@@ -297,12 +150,7 @@ class TDbList():
                 Row.append(Def)
 
     def DelField(self, aField: str):
-        FieldNo = self.Fields.GetNo(aField)
-        for Row in self.Data:
-            del Row[FieldNo]
-
-        Fields = self.Fields.GetList()
-        Fields.remove(aField)
+        Fields = super().DelField(aField)
         self.Fields = self.Fields.GetFields(Fields)
 
     def Clone(self, aFields: list[str] = None, aCond: TDbCond = None, aRecNo: tuple = None) -> 'TDbList':
@@ -332,24 +180,6 @@ class TDbList():
     def New(self) -> 'TDbList':
         return self._DbExp([], [])
 
-    def Sort(self, aFields: list[str], aReverse: bool = False) -> 'TDbList':
-        if (len(aFields) == 1):
-            FieldNo = self.Fields.GetNo(aFields[0])
-            self.Data.sort(key=lambda x: (x[FieldNo]), reverse=aReverse)
-        else:
-            F = ''
-            for Field in aFields:
-                F += 'x[%s],' % self.Fields.GetNo(Field)
-            Script = 'self.Data.sort(key=lambda x: (%s), reverse=%s)' % (F, aReverse)
-            # pylint: disable-next=eval-used
-            eval(Script)
-        self.RecNo = 0
-        return self
-
-    def Shuffle(self):
-        random.shuffle(self.Data)
-        self.RecNo = 0
-
     def RecGo(self, aNo: int) -> TDbRec:
         self.RecNo = aNo
         return self.Rec
@@ -367,20 +197,3 @@ class TDbList():
         Res = TDbRec(self)
         Res.SetData(self.Data.pop(aRecNo))
         return Res
-
-    def Save(self, aFile: str, aFormat: bool = False):
-        with open(aFile, 'w', encoding = 'utf-8') as F:
-            if (aFormat):
-                json.dump(self.Export(), F, indent=2, sort_keys=True, ensure_ascii=False)
-            else:
-                json.dump(self.Export(), F)
-
-    def Load(self, aFile: str) -> 'TDbList':
-        with open(aFile, 'r', encoding = 'utf-8') as F:
-            Data = json.load(F)
-            self.Import(Data)
-            return self
-
-
-if (__name__ == '__main__'):
-    pass

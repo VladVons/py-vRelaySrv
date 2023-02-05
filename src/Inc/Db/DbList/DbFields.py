@@ -12,7 +12,6 @@ class TDbField():
         self.Def = aDef
         self.No = 0
 
-
 class TDbFields(dict):
     def __init__(self, aFields: tuple = ()):
         super().__init__()
