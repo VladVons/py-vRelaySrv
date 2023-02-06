@@ -44,4 +44,3 @@ class THyster():
     #     elif (aCur >= aKeep + Hyst):
     #         self.On = self.H < 0
     #     return self.On
-

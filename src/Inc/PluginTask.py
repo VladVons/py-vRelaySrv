@@ -18,7 +18,7 @@ from IncP.Log import Log
 
 class TPluginTask(TPlugin):
     def GetConf(self, aPath: str) -> list:
-        File = 'Conf/' + aPath.replace('.', '~')
+        File = '%s/%s~%s' % (self.DirConf, self.Dir, aPath.replace('.', '~'))
         Conf = TConf(File + '.py')
         Conf.Load()
         ConfClass = TConfClass(File + '.json', Conf)

@@ -10,9 +10,10 @@ from IncP.Log import Log
 
 
 class TPlugin(dict):
-    def __init__(self, aDir: str = ''):
+    def __init__(self, aDirMod: str = '', aDirConf: str = ''):
         super().__init__()
-        self.Dir = aDir
+        self.Dir = aDirMod
+        self.DirConf = aDirConf
 
     def _Create(self, aModule: object, aPath: str) -> object:
         raise NotImplementedError()

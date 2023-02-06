@@ -8,7 +8,7 @@ from urllib.parse import urlparse
 import asyncio
 import json
 #
-from Inc.Db.DbList import TDbList, TDbCond, TDbSql
+from Inc.Db.DbList import TDbListSafe, TDbCond, TDbSql
 from Inc.Util.Obj import DeepGet
 from Inc.UtilP.Time import SecondsToDHMS_Str
 from Inc.UtilP.Db.ADb import TDbExecPool
@@ -20,7 +20,7 @@ from IncP.Log import Log, TEchoDb
 class TApiTask():
     def __init__(self, aParent: 'TApi'):
         self.Parent = aParent
-        self.Tasks = TDbList( [('SiteId', int), ('StartAt', type(datetime.now())), ('Urls', TDbSql)] )
+        self.Tasks = TDbListSafe( [('SiteId', int), ('StartAt', type(datetime.now())), ('Urls', TDbSql)] )
         self.Lock = asyncio.Lock()
 
     async def Get(self, _aData: dict) -> dict:
@@ -134,7 +134,7 @@ class TApi(TApiBase):
                 Data = Dbl.ExportPair('name', 'data')
                 if (Data):
                     Conf.update(Data)
-        Dbl = TDbList().ImportPair(Conf, 'name', ('data', str))
+        Dbl = TDbListSafe().ImportPair(Conf, 'name', ('data', str))
         return Dbl.Export()
 
     async def path_add_sites(self, _aPath: str, aData: dict) -> dict:
@@ -144,7 +144,7 @@ class TApi(TApiBase):
         return True
 
     async def path_send_result(self, _aPath: str, aData: dict) -> dict:
-        Dbl = TDbList().Import(aData)
+        Dbl = TDbListSafe().Import(aData)
         DblFields = Dbl.Fields.GetList()
 
         TableFields = self.TableFields['url']

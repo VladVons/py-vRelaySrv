@@ -19,20 +19,6 @@ class TDbBase():
         self.BeeTree = {}
         self.OptReprLen = 25
 
-    @property
-    def RecNo(self):
-        return self._RecNo
-
-    @RecNo.setter
-    def RecNo(self, aNo: int):
-        if (self.IsEmpty()):
-            self._RecNo = 0
-        else:
-            if (aNo < 0):
-                aNo = self.GetSize() + aNo
-            self._RecNo = min(aNo, self.GetSize() - 1)
-        self._RecInit()
-
     def __len__(self):
         return self.GetSize()
 
@@ -50,7 +36,10 @@ class TDbBase():
     def __repr__(self):
         return self._Repr()
 
-    def _RecInit(self):
+    def _DbExp(self, aData: list, aFields: list[str], aFieldsNew: list[list] = None) -> 'TDbBase':
+        raise NotImplementedError()
+
+    def _RecInit(self) -> object:
         raise NotImplementedError()
 
     def _GetFieldNo(self, aField: str) -> int:
@@ -113,6 +102,15 @@ class TDbBase():
             Res[FKey].append(FSum)
         return Res
 
+    def Clone(self, aFields: list[str] = None, aCond: TDbCond = None, aRecNo: tuple = None) -> 'TDbBase':
+        if (aFields is None):
+            aFields = []
+        if (aRecNo is None):
+            aRecNo = (0, -1)
+
+        Data = self.ExportData(aFields, aCond, aRecNo)
+        return self._DbExp(Data, aFields)
+
     def DelField(self, aField: str) -> list[str]:
         FieldNo = self._GetFieldNo(aField)
         for Row in self.Data:
@@ -125,6 +123,24 @@ class TDbBase():
     def GetSize(self) -> int:
         return len(self.Data)
 
+    def Group(self, aFieldsUniq: list[str], aFieldsSum: list[str] = None) -> 'TDbBase':
+        if (aFieldsSum is None):
+            aFieldsSum = []
+
+        Grouped = self._Group(aFieldsUniq, aFieldsSum)
+        Data = []
+        for Key, Val in Grouped.items():
+            ZipVal = zip(*Val)
+            Row = list(Key) + [sum(i) for i in ZipVal] + [len(Val)]
+            Data.append(Row)
+
+        # FieldsSum = [(Key + '_Sum', Val[1]) for Key, Val in self.Fields.GetFields(aFieldsSum).items()]
+        # return self._DbExp(Data, aFieldsUniq, FieldsSum + [('Count', int)])
+        return self._DbExp(Data, aFieldsUniq + aFieldsSum, [('Count', int)])
+
+    def Import(self, aData: dict) -> 'TDbBase':
+        raise NotImplementedError()
+
     def IsEmpty(self) -> bool:
         return (self.GetSize() == 0)
 
@@ -132,16 +148,31 @@ class TDbBase():
         self.Data = []
         self._RecNo = 0
 
-    def Import(self, aData: dict) -> 'TDbBase':
-        raise NotImplementedError()
-
     def Export(self) -> dict:
         raise NotImplementedError()
 
-    def GetDiff(self, aField: str, aList: list) -> tuple:
-        Set1 = set(self.ExportList(aField))
-        Set2 = set(aList)
-        return (Set1 - Set2, Set2 - Set1)
+    def ExportData(self, aFields: list = None, aCond: TDbCond = None, aRecNo: tuple = None) -> list:
+        if (aFields is None):
+            aFields = []
+        if (aRecNo is None):
+            aRecNo = (0, -1)
+
+        Start, Finish = aRecNo
+        if (Finish == -1):
+            Finish = self.GetSize()
+
+        if (aFields):
+            FieldsNo = [self._GetFieldNo(x) for x in aFields]
+        else:
+            aFields = self._GetFields()
+            FieldsNo = list(range(len(aFields)))
+
+        if (aCond):
+            Data = [[Val[i] for i in FieldsNo] for Val in self.Data[Start:Finish] if aCond.Find(Val)]
+        else:
+            #return [list(map(i.__getitem__, FieldsNo)) for i in self.Data[Start:Finish]]
+            Data = [[Val[i] for i in FieldsNo] for Val in self.Data[Start:Finish]]
+        return Data
 
     def ExportList(self, aField: str, aUniq = False) -> list:
         '''
@@ -161,6 +192,11 @@ class TDbBase():
         ValNo = self._GetFieldNo(aFieldVal)
         return {x[KeyNo]: x[ValNo] for x in self.Data}
 
+    def GetDiff(self, aField: str, aList: list) -> tuple:
+        Set1 = set(self.ExportList(aField))
+        Set2 = set(aList)
+        return (Set1 - Set2, Set2 - Set1)
+
     def FindField(self, aName: str, aValue) -> int:
         FieldNo = self._GetFieldNo(aName)
         for i in range(self._RecNo, self.GetSize()):
@@ -174,11 +210,28 @@ class TDbBase():
                 return i
         return -1
 
-    def Load(self, aFile: str) -> 'TDbData':
+    def Load(self, aFile: str) -> 'TDbBase':
         with open(aFile, 'r', encoding = 'utf-8') as F:
             Data = json.load(F)
             self.Import(Data)
             return self
+
+    def New(self) -> 'TDbBase':
+        return self._DbExp([], [])
+
+    @property
+    def RecNo(self):
+        return self._RecNo
+
+    @RecNo.setter
+    def RecNo(self, aNo: int):
+        if (self.IsEmpty()):
+            self._RecNo = 0
+        else:
+            if (aNo < 0):
+                aNo = self.GetSize() + aNo
+            self._RecNo = min(aNo, self.GetSize() - 1)
+        self._RecInit()
 
     def Save(self, aFile: str, aFormat: bool = False):
         with open(aFile, 'w', encoding = 'utf-8') as F:
@@ -202,6 +255,10 @@ class TDbBase():
         self.BeeTree[aField] = BeeTree
         return BeeTree
 
+    def Shuffle(self):
+        random.shuffle(self.Data)
+        self.RecNo = 0
+
     def Sort(self, aFields: list[str], aReverse: bool = False) -> 'TDbBase':
         if (len(aFields) == 1):
             FieldNo = self._GetFieldNo(aFields[0])
@@ -215,7 +272,3 @@ class TDbBase():
             eval(Script)
         self.RecNo = 0
         return self
-
-    def Shuffle(self):
-        random.shuffle(self.Data)
-        self.RecNo = 0

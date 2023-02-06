@@ -5,7 +5,7 @@
 
 from urllib.parse import urlparse
 #
-from Inc.Db.DbList import TDbList, TDbCond, TDbSql
+from Inc.Db.DbList import TDbListSafe, TDbCond, TDbSql
 from Inc.Util.Obj import DeepGet
 from Inc.UtilP.Misc import FilterKeyErr
 from IncP.Download import CheckHost
@@ -39,7 +39,7 @@ class TForm(TFormBase):
             return
 
         DataDbl = DeepGet(DataApi, 'Data.Data')
-        Dbl = TDbList().Import(DataDbl)
+        Dbl = TDbListSafe().Import(DataDbl)
         Diff = Dbl.GetDiff('url', Sites)
 
         Cond = TDbCond().AddFields([ ['eq', (Dbl, 'has_scheme'), True, True]])

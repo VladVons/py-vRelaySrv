@@ -9,7 +9,7 @@ import time
 import aiohttp
 from aiohttp import web
 #
-from Inc.Db.DbList import TDbList
+from Inc.Db.DbList import TDbListSafe
 from Inc.Util.Obj import DeepGet
 from IncP.Log import Log
 
@@ -154,7 +154,7 @@ class TWebSockClient():
 
 class TWebSockSrv():
     def __init__(self):
-        self.DblWS = TDbList([('WS', web.WebSocketResponse), ('Id', str)])
+        self.DblWS = TDbListSafe([('WS', web.WebSocketResponse), ('Id', str)])
         self.Api = None
 
     async def Handle(self, aRequest: web.Request) -> web.WebSocketResponse:

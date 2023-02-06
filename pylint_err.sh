@@ -28,7 +28,8 @@ too-many-branches|\
 too-many-nested-blocks|\
 line-too-long|\
 superfluous-parens|\
-consider-using-f-string\
+consider-using-f-string|\
+broad-except\
 "
     echo "Creating $File ..."
     #time pylint --recursive=y ./src > $File

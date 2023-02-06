@@ -44,8 +44,7 @@ class TDbExec():
     async def _ExecToDbl(self, aSql: str) -> TDbSql:
         Data = await self._Exec(aSql)
         if ('data' in Data):
-            Res = TDbSql()
-            return Res.ImportAutoFields(Data['data'], Data['fields'])
+            return TDbSql(Data['fields'], Data['data'])
 
     async def ExecCurTry(self, aCursor, aSql: str) -> dict:
         TimeAt = time.time()

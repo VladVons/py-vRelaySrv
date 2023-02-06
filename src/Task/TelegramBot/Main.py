@@ -11,7 +11,7 @@ from aiogram.dispatcher.webhook import SendMessage
 from aiogram import Bot, Dispatcher, executor, types
 #
 from Task.WebSrv import Api
-from Inc.Db.DbList import TDbList, TDbCond
+from Inc.Db.DbList import TDbListSafe, TDbCond
 from Inc.Util.Obj import DeepGet
 from IncP.Log import Log
 
@@ -27,7 +27,7 @@ class TMain():
         DataA = await Api.DefHandler('get_sites')
         Data = DeepGet(DataA, 'Data.Data')
         if (Data):
-            Dbl = TDbList().Import(Data)
+            Dbl = TDbListSafe().Import(Data)
             Cond = TDbCond().AddFields([ ['eq', (Dbl, 'has_scheme'), True, True]])
             Dbl = Dbl.Clone(aFields=['url'], aCond=Cond)
 

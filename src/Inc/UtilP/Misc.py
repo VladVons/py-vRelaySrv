@@ -7,13 +7,13 @@ import os
 import json
 import random
 #
-from Inc.Db.DbList import TDbList
+from Inc.Db.DbList import TDbListSafe
 
 
 #--- json ---
 class TJsonEncoder(json.JSONEncoder):
     def default(self, o):
-        if (isinstance(o, TDbList)):
+        if (isinstance(o, TDbListSafe)):
             Res = o.Export()
         elif (isinstance(o, set)):
             Res = list(o)

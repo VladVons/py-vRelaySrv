@@ -35,9 +35,8 @@ class TDbPg(TADb):
 
         Res = {}
         for Table in aTable:
-            Data = await self.GetTableColumns(Table)
-            Names = [x[0] for x in Data[0]]
-            Res[Table] = Names
+            Dbl = await self.GetTableColumns(Table)
+            Res[Table] = Dbl.ExportList('column_name')
         return Res
 
     async def GetTables(self, aSchema: str = 'public') -> TDbSql:

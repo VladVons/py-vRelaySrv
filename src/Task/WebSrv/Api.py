@@ -6,7 +6,7 @@
 import asyncio
 import json
 #
-from Inc.Db.DbList import TDbList
+from Inc.Db.DbList import TDbListSafe
 from Inc.Util.Obj import DeepGet
 from Inc.UtilP.Misc import FilterKey, FilterKeyErr
 from IncP.ApiWeb import TApiBase, TWebClient
@@ -59,7 +59,7 @@ class TApiPlugin():
 
         DblJ = DeepGet(DataApi, 'Data.Data')
         if (DblJ):
-            Res = {'Data': TDbList().Import(DblJ)}
+            Res = {'Data': TDbListSafe().Import(DblJ)}
         else:
             Res = {'Type': 'Err', 'Data': 'Err ' + aPath}
             await self.WebSockSend(Res)
@@ -318,7 +318,7 @@ class get_scheme_by_id(TApiPlugin):
         Err = FilterKeyErr(DataApi)
         if (not Err):
             DblJ = DeepGet(DataApi, 'Data.Data')
-            Dbl = TDbList().Import(DblJ)
+            Dbl = TDbListSafe().Import(DblJ)
             Scheme = TScheme(Dbl.Rec.GetField('scheme'))
             DataApi['IsJson'] = Scheme.IsJson()
             DataApi['Url'] = Scheme.GetUrl()[0]

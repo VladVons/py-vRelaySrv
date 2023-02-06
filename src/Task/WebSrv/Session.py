@@ -7,7 +7,7 @@ import re
 from aiohttp import web
 import aiohttp_session
 #
-from Inc.Db.DbList import TDbList
+from Inc.Db.DbList import TDbListSafe
 from Inc.Util.Obj import DeepGet
 from .Api import Api
 
@@ -43,7 +43,7 @@ class TSession():
             DataApi = await Api.DefHandler('get_user_config', {'id': UserId})
             DblJ = DeepGet(DataApi, 'Data.Data')
             if (DblJ):
-                Conf = TDbList().Import(DblJ).ExportPair('name', 'data')
+                Conf = TDbListSafe().Import(DblJ).ExportPair('name', 'data')
                 self.Data['UserConf'] = Conf
 
 Session = TSession()

@@ -3,23 +3,10 @@
 # License: GNU, see LICENSE for more details
 
 
-from .DbFields import TDbFields
 from .DbList import TDbList
 
 
 class TDbSql(TDbList):
-    Table = ''
-
-    def Export(self, aWithType: bool = True) -> dict:
-        Res = super().Export(aWithType)
-        Res['Table'] = self.Table
-        return Res
-
-    def Import(self, aData: dict, aWithType: bool = True) -> 'TDbSql':
-        super().Import(aData, aWithType)
-        self.Table = aData.get('Table')
-        return self
-
     def GetSqlInsert(self, aTable: str, aReturning: list[str] = None) -> str:
         if (self.GetSize() > 0):
             Fields = [Val[0] for Key, Val in self.Fields.IdxOrd.items()]

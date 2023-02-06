@@ -25,7 +25,7 @@ import os
 import random
 import re
 #
-from Inc.Db.DbList import TDbList
+from Inc.Db.DbList import TDbListSafe
 from Inc.Util.Obj import DeepGet
 from Inc.UtilP.Misc import FilterKeyErr, FilterNone
 from IncP.Download import TDownload, GetSoup
@@ -34,7 +34,7 @@ from .Api import Api
 
 
 class TSender():
-    def __init__(self, aParent: 'TWebScraper', aDbl: TDbList, aMaxSize: int = 1):
+    def __init__(self, aParent: 'TWebScraper', aDbl: TDbListSafe, aMaxSize: int = 1):
         self.Parent = aParent
         self.MaxSize = aMaxSize
         self.Dbl = aDbl
@@ -68,9 +68,9 @@ class TWebScraper():
         self.Download = TDownload()
         self.Download.Opt.update({'Decode': True})
 
-        self.DblQueue = TDbList( [('Url', str)] )
+        self.DblQueue = TDbListSafe( [('Url', str)] )
 
-        Dbl = TDbList([
+        Dbl = TDbListSafe([
             # product
             ('category', str),
             ('image', str),

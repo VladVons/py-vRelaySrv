@@ -7,7 +7,7 @@ from collections import deque
 import asyncio
 import random
 #
-from Inc.Db.DbList import TDbList
+from Inc.Db.DbList import TDbListSafe
 from Inc.Util.Obj import DeepGet
 from Inc.UtilP.DownloadSpeed import TDownloadSpeed
 from Inc.UtilP.Misc import FilterKeyErr
@@ -97,7 +97,7 @@ class TMain():
                 if (Err):
                     Log.Print(1, 'e', 'Run() %s' % Err)
                 else:
-                    Dbl = TDbList().Import(DeepGet(DataApi, 'Data.Data'))
+                    Dbl = TDbListSafe().Import(DeepGet(DataApi, 'Data.Data'))
                     Conf = Dbl.ExportPair('name', 'data')
                     Workers = int(Conf.get('workers', 0))
                     MaxWorkers = await self.GetMaxWorkers(Workers)

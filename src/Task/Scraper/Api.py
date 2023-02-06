@@ -3,7 +3,7 @@
 # License: GNU, see LICENSE for more details
 
 
-from Inc.Db.DbList import TDbList
+from Inc.Db.DbList import TDbListSafe
 from Inc.Util.Obj import DeepGet
 from Inc.UtilP.Misc import FilterKeyErr
 from IncP.ApiWeb import TApiBase
@@ -32,7 +32,7 @@ class TApi(TApiBase):
             Log.Print(1, 'e', 'Err: %s' % Err)
             return
 
-        Dbl = TDbList().Import(DeepGet(DataApi, 'Data.Data'))
+        Dbl = TDbListSafe().Import(DeepGet(DataApi, 'Data.Data'))
         if (Dbl.IsEmpty()):
             Log.Print(1, 'e', 'GetUserConfig() failed for %s' % (User))
         else:

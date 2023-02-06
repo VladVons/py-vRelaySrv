@@ -7,7 +7,7 @@ from aiohttp import web
 from wtforms.fields import StringField, SubmitField, PasswordField
 from wtforms.validators import DataRequired, Length
 #
-from Inc.Db.DbList import TDbList
+from Inc.Db.DbList import TDbListSafe
 from Inc.Util.Obj import DeepGet
 from Inc.UtilP.Misc import FilterKeyErr
 from IncP.Log import Log
@@ -42,7 +42,7 @@ class TForm(TFormBase):
             return
 
         DblJ = DeepGet(DataApi, 'Data.Data')
-        Dbl = TDbList().Import(DblJ)
+        Dbl = TDbListSafe().Import(DblJ)
         if (Dbl.IsEmpty()):
             self.Data.Message = 'Authorization failed for %s' % (self.UserName.data)
             return

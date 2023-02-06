@@ -3,7 +3,7 @@
 # License: GNU, see LICENSE for more details
 
 
-from Inc.Db.DbList import TDbList, TDbCond
+from Inc.Db.DbList import TDbListSafe, TDbCond
 from Inc.Util.Obj import DeepGet
 from Inc.UtilP.Misc import FilterKeyErr
 from ..Api import Api
@@ -22,7 +22,7 @@ class TForm(TFormBase):
         DataApi = await Api.DefHandler('get_sites')
         Data = DeepGet(DataApi, 'Data.Data')
         if (Data):
-            Dbl = TDbList().Import(Data)
+            Dbl = TDbListSafe().Import(Data)
             self.Data.Sites = Dbl
 
             Cond = TDbCond().AddFields([ ['eq', (Dbl, 'has_scheme'), True, True]])

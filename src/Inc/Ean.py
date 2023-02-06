@@ -26,8 +26,8 @@ class TEan():
 
     def GetCrc(self) -> int:
         Code = self.Code[:-1]
-        Even = sum([int(x) for x in Code[0::2]])
-        Odd = sum([int(x) for x in Code[1::2]])
+        Even = sum(map(int, Code[0::2]))
+        Odd = sum(map(int, Code[1::2]))
         Crc = (10 - ((Even + Odd * 3) % 10)) % 10
         return Crc
 
