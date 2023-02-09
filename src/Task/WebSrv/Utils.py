@@ -20,8 +20,8 @@ def GetUrlInfo(aData: dict) -> list:
         AppData = json.dumps(AppData, indent=2, sort_keys=True, ensure_ascii=False)
 
     return [
-        'Source size %s' % len(aData.get('Data')),
-        'Download time %.2f' % (aData['Time']),
+        'Source size %s' % len(aData.get('data')),
+        'Download time %.2f' % (aData['time']),
         'Parse time %.2f' % (time.time() - TimeAt),
         '',
         'App json %s' % (AppData)

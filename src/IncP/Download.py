@@ -32,15 +32,15 @@ def GetSoup(aData: str) -> BeautifulSoup:
 
 async def GetSoupUrl(aUrl: str) -> BeautifulSoup:
     Download = TDownload()
-    Download.Opt.update({'Headers': TDHeaders(), 'Decode': True})
+    Download.Opt.update({'Headers': TDHeaders(), 'decode': True})
     Res = await Download.Get(aUrl)
     Err = FilterKeyErr(Res)
     if (not Err):
-        if (Res['Status'] == 200):
-            Soup = GetSoup(Res['Data'])
-            Res['Soup'] = Soup
+        if (Res['status'] == 200):
+            Soup = GetSoup(Res['data'])
+            Res['soup'] = Soup
         else:
-            Res['Err'] = 'Status %s' % (Res['Status'])
+            Res['err'] = 'Status %s' % (Res['status'])
     return Res
 
 class TDictDefCall(dict):
@@ -123,22 +123,22 @@ class TDownload():
                         Data = await Response.read()
                         if (self.Opt.Decode):
                             Data = Data.decode(errors='ignore')
-                    Res = {'Data': Data, 'Status': Response.status, 'Time': round(time.time() - TimeAt, 2)}
+                    Res = {'data': Data, 'status': Response.status, 'time': round(time.time() - TimeAt, 2)}
         except (aiohttp.ClientConnectorError, aiohttp.ClientError, aiohttp.InvalidURL, asyncio.TimeoutError) as E:
             Log.Print(1, 'x', '_Get(). %s' % (aUrl), aE = E)
-            Res = {'Type': 'Err', 'Data': E, 'Status': -1, 'Time': round(time.time() - TimeAt, 2)}
+            Res = {'type': 'err', 'data': E, 'status': -1, 'time': round(time.time() - TimeAt, 2)}
         return Res
 
     async def Get(self, aUrl: str) -> dict:
         Res = await self._Get(aUrl)
-        if (Res.get('Type') == 'Err'):
+        if (Res.get('type') == 'err'):
             await asyncio.sleep(1)
-            E = Res.get('Data')
+            E = Res.get('data')
             if (isinstance(E, aiohttp.ClientConnectorError)):
-                Mode = self.Opt['Connector'].Mode
-                self.Opt['Connector'].Mode = 1
+                Mode = self.Opt['connector'].Mode
+                self.Opt['connector'].Mode = 1
                 Res = await self._Get(aUrl)
-                self.Opt['Connector'].Mode = Mode
+                self.Opt['connector'].Mode = Mode
             elif (isinstance(E, aiohttp.ClientConnectorCertificateError)):
                 pass
             else:

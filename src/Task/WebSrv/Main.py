@@ -27,10 +27,10 @@ class TWebSrv(TWebSrvBase):
         self.WebSockSrv.Api = Api
 
     async def _FormCreateUser(self, aRequest: web.Request) -> web.Response: #//
-        Name = aRequest.match_info.get('Name')
+        Name = aRequest.match_info.get('name')
 
         await Session.Update(aRequest)
-        if (not Session.Data.get('UserId')) and (Name != 'login'):
+        if (not Session.Data.get('user_id')) and (Name != 'login'):
             Redirect = f'login?url={Name}'
             raise web.HTTPFound(location = Redirect)
 
@@ -42,19 +42,19 @@ class TWebSrv(TWebSrvBase):
         #Routes = web.RouteTableDef()
 
         Form = TForm(aRequest, 'info.tpl.html')
-        Form.Data['Info'] = 'Page not found'
+        Form.Data['info'] = 'Page not found'
         Res = await Form.Render()
-        Res.set_status(404, Form.Data['Info'])
+        Res.set_status(404, Form.Data['info'])
         return Res
 
     async def _rApi(self, aRequest: web.Request) -> web.Response:
-        Name = aRequest.match_info.get('Name')
+        Name = aRequest.match_info.get('name')
         Post = await aRequest.text()
         if (Post):
             try:
                 Param = json.loads(Post)
             except Exception as E:
-                return web.json_response({'Type': 'Err', 'Data': E})
+                return web.json_response({'type': 'err', 'data': E})
         else:
             Param = {}
 
@@ -64,18 +64,18 @@ class TWebSrv(TWebSrvBase):
         Res = await Api.Call(Name, Param)
         Err = FilterKeyErr(Res)
         if (Err):
-            Log.Print(1, 'e', 'TWebSrv._rApi() %s' % (Res.get('Data')))
+            Log.Print(1, 'e', 'TWebSrv._rApi() %s' % (Res.get('data')))
         else:
-            Res = Res.get('Data')
+            Res = Res.get('data')
         return web.json_response(Res)
 
     async def _rWebSock(self, aRequest: web.Request) -> web.WebSocketResponse:
-        if (await Api.AuthRequest(aRequest, self.Conf.Get('Auth'))):
+        if (await Api.AuthRequest(aRequest, self.Conf.Get('auth'))):
             return await self.WebSockSrv.Handle(aRequest)
 
         WS = web.WebSocketResponse()
         await WS.prepare(aRequest)
-        await WS.send_json({'Type': 'Err', 'Data': 'Authorization failed'})
+        await WS.send_json({'type': 'err', 'data': 'Authorization failed'})
 
     async def RunApp(self):
         Log.Print(1, 'i', f'WebSrv.RunApp() on port {self.SrvConf.Port}')

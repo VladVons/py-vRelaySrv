@@ -9,10 +9,10 @@ from .DbList import TDbList
 class TDbSql(TDbList):
     def GetSqlInsert(self, aTable: str, aReturning: list[str] = None) -> str:
         if (self.GetSize() > 0):
-            Fields = [Val[0] for Key, Val in self.Fields.IdxOrd.items()]
-            Fields = ', '.join(Fields)
+            Fields = self.GetFields()
+            Fields = '(%s)' % (', '.join(Fields))
             Values = [Rec.GetAsSql() for Rec in self]
-            Values = '), ('.join(Values)
+            Values = 'values(%s)' % ('), ('.join(Values))
         else:
             Fields = ''
             Values = 'default values'
@@ -33,7 +33,7 @@ class TDbSql(TDbList):
         Insert = self.GetSqlInsert(aTable)
         Set = [
             '%s = excluded.%s' % (Key, Key)
-            for Key in self.Fields
+            for Key in self.GetFields()
             if (Key != aUniqField)
         ]
         Set = ', '.join(Set)

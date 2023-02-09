@@ -9,6 +9,7 @@ from psycopg2.errorcodes import (
 from psycopg2 import errors
 #
 from IncP.Log import Log
+from Inc.Db.DbList import TDbSql
 from .DbMeta import TDbMeta
 from .ADb import TDbExecCurs, TDbExecPool
 
@@ -53,7 +54,6 @@ class TDbModel():
 
     def _CheckData(self, aData: dict) -> list[str]:
         ResErr = []
-        ResNomad = {}
 
         ConfRequire = self.Conf.get('require', [])
         Diff = set(ConfRequire) - set(aData.keys())
@@ -64,13 +64,10 @@ class TDbModel():
         ConfDeny = self.Conf.get('deny', [])
         Depends = self.DbMeta.Foreign.TableId.get((self.Master, 'id'), {})
 
-        if (self.Master) and (self.Master not in aData):
-            aData[self.Master] = [{}]
-
         for Table, Data in aData.items():
             if (self.Master):
                 if (Table == self.Master):
-                    if (len(Data) > 1):
+                    if (len(Data.get('data', [])) > 1):
                         ResErr.append(f'{Table} rows must be 1')
                 else:
                     if (Depends) and (Table not in Depends):
@@ -81,45 +78,29 @@ class TDbModel():
 
             if (Table in ConfDeny):
                 ResErr.append(f'{Table} denied')
-
-            Columns = set(self.DbMeta.Table.Column.get(Table, []))
-            Require = set(self.DbMeta.Table.Require.get(Table, []))
-            Depend = Depends.get(Table)
-            if (Depend):
-                Require.remove(Depend)
-
-            NomadCnt = {}
-            for xData in Data:
-                for x in xData:
-                    NomadCnt[x] = NomadCnt.get(x, 0) + 1
-
-                RowColumns = set(xData.keys())
-                Diff = Require - RowColumns
-                if (Diff):
-                    ResErr.append(f'{Table} requires fields {Diff}')
-
-                Diff = RowColumns - Columns
-                if (Diff):
-                    ResErr.append(f'{Table} unknown columns {Diff}')
-            ResNomad[Table] = [Key for Key, Val in NomadCnt.items() if (Val != len(Data))]
-        return {'err': ResErr, 'nomad': ResNomad}
+        return ResErr
 
     async def _Add(self, aData: dict, aCursor = None) -> dict:
-        DataF = self._CheckData(aData)
-        if ('err' in DataF):
-            return {'err': ', '.join(DataF['err'])}
+        Err = self._CheckData(aData)
+        if (Err):
+            return {'err': ', '.join(Err)}
 
         ResId = []
+        DblIn = TDbSql()
         if (self.Master):
-            Dbl = await self.DbMeta.Insert(self.Master, aData.get(self.Master)[0], aReturning = ['id'], aCursor = aCursor)
+            DblIn.Import(aData.get(self.Master))
+            Query = DblIn.GetSqlInsert(self.Master, ['id'])
+            Dbl = await TDbExecCurs(aCursor).Exec(Query)
             ResId = [self.Master, Dbl.Rec.GetField('id')]
 
         for TableK, DataV in aData.items():
             if (TableK not in self.Master):
+                DblIn.Import(DataV)
                 ForeignVal = self.DbMeta.Foreign.GetColumnVal(TableK, ResId)
-                for x in DataV:
-                    x.update(ForeignVal)
-                await self.DbMeta.Insert(TableK, DataV, aCursor = aCursor)
+                if (ForeignVal):
+                    DblIn.AddFields(ForeignVal.keys(), ForeignVal.values())
+                Query = DblIn.GetSqlInsert(TableK)
+                await self.DbMeta.Insert(TableK, Query, aCursor = aCursor)
         return {'id': ResId}
 
     async def _Del(self, aId: int, aCursor = None) -> dict:

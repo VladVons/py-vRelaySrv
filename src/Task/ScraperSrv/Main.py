@@ -20,7 +20,7 @@ class TScraperSrv():
         #self.WebSockSrv.Api = Api
 
     async def cbOnStartup(self, aApp: web.Application):
-        aApp['Conf'] = self.Conf
+        aApp['conf'] = self.Conf
 
         await Api.DbInit(self.Conf.DbAuth)
         yield
@@ -33,7 +33,7 @@ class TScraperSrv():
         #await self.WebSockServer.SendAll({'hello': 111}, '/ws/test')
         if (await Api.AuthRequest(aRequest, self.Conf.Auth)):
             #Conf = aRequest.app.get('Conf')
-            Name = aRequest.match_info.get('Name')
+            Name = aRequest.match_info.get('name')
             Post = await aRequest.json()
 
             # ToDo. Test for safety
@@ -42,7 +42,7 @@ class TScraperSrv():
             Res = await Api.Call(Name, Post)
             return web.json_response(Res, dumps=TJsonEncoder.Dumps)
 
-        Res = {'Type': 'Err', 'Data': 'Authorization failed'}
+        Res = {'type': 'err', 'data': 'Authorization failed'}
         return web.json_response(Res, status=403)
 
     async def _rWebSock(self, aRequest: web.Request) -> web.WebSocketResponse:
@@ -51,7 +51,7 @@ class TScraperSrv():
 
         WS = web.WebSocketResponse()
         await WS.prepare(aRequest)
-        await WS.send_json({'Type': 'Err', 'Data': 'Authorization failed'})
+        await WS.send_json({'type': 'err', 'data': 'Authorization failed'})
 
     async def Run(self, aSleep: int = 10):
         App = web.Application()

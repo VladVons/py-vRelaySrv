@@ -24,11 +24,11 @@ class TMailSmtp():
 
 @DataClass
 class TMailSend():
-    To: str
-    Subject: str
-    From: str
-    Body: str = ''
-    File: list[str] = []
+    mail_to: str
+    mail_subject: str
+    mail_from: str
+    mail_body: str = ''
+    file: list[str] = []
     Data: dict = {}
     Lock: asyncio.Lock = None
 
@@ -39,13 +39,13 @@ class TMail():
 
     async def Send(self, aData: TMailSend):
         EMsg = MIMEMultipart()
-        EMsg['From'] = aData.From
-        EMsg['To'] = ', '.join(aData.To)
-        EMsg['Subject'] = aData.Subject
-        if (aData.Body):
-            EMsg.attach(MIMEText(aData.Body))
+        EMsg['From'] = aData.mail_from
+        EMsg['To'] = ', '.join(aData.mail_to)
+        EMsg['Subject'] = aData.mail_subject
+        if (aData.mail_body):
+            EMsg.attach(MIMEText(aData.mail_body))
 
-        for File in aData.File:
+        for File in aData.file:
             with open(File, 'rb') as F:
                 Part = MIMEApplication(F.read(), Name=os.path.basename(File))
                 Part['Content-Disposition'] = 'attachment; filename="%s"' % os.path.basename(File)

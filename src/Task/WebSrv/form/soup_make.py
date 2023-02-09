@@ -122,10 +122,10 @@ class TForm(TFormBase):
             try:
                 Scheme = TScheme(Script)
                 Scheme.Debug = True
-                Output = Scheme.Parse(Data.get('Soup')).GetData(['Err', 'Pipe', 'Warn'])
-                Unknown = [x for x in Output.get('Err', []) if 'unknown' in x]
+                Output = Scheme.Parse(Data.get('soup')).GetData(['err', 'pipe', 'warn'])
+                Unknown = [x for x in Output.get('err', []) if 'unknown' in x]
                 if (Unknown):
-                    Output['Help'] = GetApiHelp()
+                    Output['help'] = GetApiHelp()
 
                 self.Data.Output += json.dumps(Output, indent=2, sort_keys=True, ensure_ascii=False, cls=TJsonEncoder) + '\n'
                 self.Data.Script = Script
@@ -147,9 +147,9 @@ class TForm(TFormBase):
             return
 
         Scheme = TScheme(Script).Parse(Data.get('Soup'))
-        Output = Scheme.GetData(['Err'])
-        if (Output.get('Err')):
-            self.Data.Output = 'Error pharser: %s' % Output.get('Err')
+        Output = Scheme.GetData(['err'])
+        if (Output.get('err')):
+            self.Data.Output = 'Error pharser: %s' % Output.get('err')
             return
 
         RequiredKey = ['name', 'price']
@@ -172,13 +172,13 @@ class TForm(TFormBase):
             self.Data.Output = 'Error loading %s, %s, %s' % (self.Data.Url0, Err, Data.get('Msg'))
             return
 
-        self.Data.Output = Data.get('Data')
+        self.Data.Output = Data.get('data')
         Arr = GetUrlInfo(Data)
         self.Data.Script = '\n'.join(Arr) + '\n'
 
     async def _Render(self):
         HasItems = await self.PostToForm()
-        self.Data.Admin = (Session.Data.get('UserGroup') == 'admin')
+        self.Data.Admin = (Session.Data.get('user_group') == 'admin')
         if (not HasItems):
             return
 

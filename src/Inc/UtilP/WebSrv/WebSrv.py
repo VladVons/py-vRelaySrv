@@ -76,7 +76,7 @@ class TWebSrvBase():
         raise NotImplementedError()
 
     async def _rDownload(self, aRequest: web.Request) -> web.Response:
-        Name = aRequest.match_info['Name']
+        Name = aRequest.match_info['name']
         File = '%s/%s/%s' % (self._SrvConf.DirRoot, self._SrvConf.DirDownload, Name)
         if (not os.path.exists(File)):
             return web.Response(body='File %s does not exist' % (Name), status=404)

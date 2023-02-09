@@ -10,7 +10,9 @@ def SplitPad(aCnt: int, aStr: str, aDelim: str) -> list:
     return R
 
 class TDictRepl:
-    def __init__(self, aDict: dict = {}):
+    def __init__(self, aDict: dict = None):
+        if (aDict is None):
+            aDict = {}
         self.Dict = aDict
 
     def Parse(self, aStr: str) -> str:
@@ -30,3 +32,22 @@ class TDictRepl:
 
         self.Dict = {}
         return aStr
+
+def ToFloat(aVal: str) -> float:
+    if (not aVal):
+        aVal = 0
+    elif (isinstance(aVal, str)):
+        aVal = aVal.replace(',', '.').replace(' ', '')
+
+    try:
+        aVal = float(aVal)
+    except ValueError:
+        aVal = 0.0
+    return aVal
+
+def ToInt(aVal: str) -> int:
+    if (not aVal):
+        aVal = 0
+    else:
+        aVal = int(aVal)
+    return aVal

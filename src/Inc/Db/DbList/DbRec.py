@@ -33,9 +33,24 @@ class TDbRec():
             self.SetField(Key, Val)
         return self
 
-    def SetAsRec(self, aRec: 'TDbRec', aFields: list) -> 'TDbRec':
+    def SetAsList(self, aData: list) -> 'TDbRec':
+        Diff = len(aData) - len(self.Fields)
+        if (Diff != 0):
+            if (Diff < 0):
+                aData += [None] * abs(Diff)
+            else:
+                aData = aData[:-Diff]
+        # pylint: disable-next=unnecessary-dunder-call
+        self.Data.__init__(aData)
+
+    def SetAsRec(self, aRec: 'TDbRec', aFields: list[str]) -> 'TDbRec':
         for Field in aFields:
             self.SetField(Field, aRec.GetField(Field))
+        return self
+
+    def SetAsRecTo(self, aRec: 'TDbRec', aFields: dict):
+        for From, To in aFields.items():
+            self.SetField(To, aRec.GetField(From))
         return self
 
     def SetAsTuple(self, aData: tuple) -> 'TDbRec':

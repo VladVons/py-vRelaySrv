@@ -243,11 +243,11 @@ class TSchemePy():
             Res = self.Python.Exec(Param)
             Err = FilterKeyErr(Res)
             if (Err):
-                self.Err = Res.get('Data')
+                self.Err = Res.get('data')
             else:
-                Data = Res.get('Data')
-                self.Data = Data.get('Data', {})
-                self.Err = Data.get('Err', [])
+                Data = Res.get('data')
+                self.Data = Data.get('data', {})
+                self.Err = Data.get('err', [])
 
                 self.Pipe = FilterKey(self.Data, self.GetFields(), dict)
         return self
@@ -315,7 +315,7 @@ def TScheme(aScheme: str):
             if (aKeys is None):
                 aKeys = []
 
-            Res = {'Data': self.Data, 'Err': self.Err, 'Pipe': self.Pipe, 'Warn': self.Warn}
+            Res = {'data': self.Data, 'err': self.Err, 'pipe': self.Pipe, 'warn': self.Warn}
             if (aKeys):
                 Res = {Key: Res.get(Key) for Key in aKeys}
             return Res

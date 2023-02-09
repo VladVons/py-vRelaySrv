@@ -35,8 +35,8 @@ class TForm(TFormBase):
 
             Scheme = TScheme(self.Data.Script)
             Scheme.Debug = True
-            Output = Scheme.Parse(Data.get('Soup')).GetData(['Err', 'Pipe', 'Warn'])
-            Unknown = [x for x in Output.get('Err', []) if 'unknown' in x]
+            Output = Scheme.Parse(Data.get('Soup')).GetData(['err', 'pipe', 'warn'])
+            Unknown = [x for x in Output.get('err', []) if 'unknown' in x]
             if (Unknown):
                 Output['Help'] = GetApiHelp()
 
@@ -56,7 +56,7 @@ class TForm(TFormBase):
     async def BtnSource(self):
         Data = await self.Load()
         if (Data):
-            self.Data.Output = Data.get('Data')
+            self.Data.Output = Data.get('data')
 
     async def _Render(self):
         if (not await self.PostToForm()):

@@ -39,6 +39,6 @@ _InitLog()
 DirConf = f'Conf/{Options.Conf}'
 ConfTask = TConf(f'{DirConf}/Task.py')
 ConfTask.Load()
-ConfTask.Def = {'Env_EmailPassw': GetEnvWithWarn('Env_EmailPassw', Log)}
+ConfTask.Def = {'env_email_passw': GetEnvWithWarn('env_email_passw', Log)}
 
 Plugin = TPluginTask('Task', DirConf)

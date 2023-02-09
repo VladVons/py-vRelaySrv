@@ -26,11 +26,11 @@ class TPluginApp():
         Files = [f'{self.Dir}/{Dir}~{ModName}.json', f'{Dir}/{ModName}.json']
         self.Conf.LoadList(Files)
 
-        ConfInclude = self.Conf.get('Include', [])
+        ConfInclude = self.Conf.get('include', [])
         Files = [f'{self.Dir}/{x}' for x in ConfInclude]
         self.Conf.LoadList(Files, True)
 
-        Conf = self.Conf.get('Conf', [])
+        Conf = self.Conf.get('conf', [])
         self.Conf.LoadList(Conf)
         self.Path = f'{aPlugin}.Plugin'
 
@@ -39,7 +39,7 @@ class TPluginApp():
             Tab = '-' * (aDepth + 1)
             Log.Print(1, 'i', '%sLoad app %s' % (Tab, aName))
 
-            Depends = self.Conf.GetKey('Plugin.' + aName + '.Depends', [])
+            Depends = self.Conf.GetKey('plugin.' + aName + '.depends', [])
             for Depend in Depends:
                 if (not Depend.startswith('-')):
                     if (self.Data.get(Depend) is None):
@@ -54,7 +54,7 @@ class TPluginApp():
                 Class.Depends = Depends
                 Class.Name = aName
                 Class.Depth = aDepth
-                Class.Conf = TConfJson(self.Conf.JoinKeys(['Common', 'Plugin.' + aName]))
+                Class.Conf = TConfJson(self.Conf.JoinKeys(['common', 'plugin.' + aName]))
                 ConfEx = self.ConfEx.get(aName, {})
                 Class.Conf.update(ConfEx)
                 self.Data[aName] = await Class.Run()
@@ -66,10 +66,10 @@ class TPluginApp():
     async def Run(self):
         TimeStart = time.time()
         Log.Print(1, 'i', 'Start. TPluginApp.Run()')
-        for Plugin in self.Conf.get('Plugins', []):
-            if (Plugin.get('Enable', True)):
-                Name = Plugin.get('Name')
-                Param = Plugin.get('Param')
+        for Plugin in self.Conf.get('plugins', []):
+            if (Plugin.get('enable', True)):
+                Name = Plugin.get('name')
+                Param = Plugin.get('param')
                 if (Param):
                     Plugin.ConfEx[Name] = Param
                 await self.Load(Name, 0)

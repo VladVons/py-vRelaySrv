@@ -29,9 +29,9 @@ class TPlugin(dict):
         Path = self.Dir.replace('/', '.') + '.' + aPath
         __import__(Path)
         Mod = sys.modules.get(Path)
-        Enable = getattr(Mod, 'Enable', True)
+        Enable = getattr(Mod, 'enable', True)
         if (Enable):
-            Depends = getattr(Mod, 'Depends', '')
+            Depends = getattr(Mod, 'depends', '')
             for x in Depends.split():
                 if (x):
                     Log.Print(1, 'i', '%s depends on %s' % (aPath, x))

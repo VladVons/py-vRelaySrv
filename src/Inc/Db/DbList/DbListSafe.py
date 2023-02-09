@@ -24,12 +24,6 @@ class TDbListSafe(TDbBase):
         self.Rec = TDbRecSafe(self)
         self.Init(aFields, aData)
 
-    def _GetFieldNo(self, aField: str) -> int:
-        return self.Fields.GetNo(aField)
-
-    def _GetFields(self) -> list[str]:
-        return self.Fields.keys()
-
     def _DbExp(self, aData: list, aFields: list[str], aFieldsNew: list[list] = None) -> 'TDbListSafe':
         Res = self.__class__()
         Res.Fields = self.Fields.GetFields(aFields)
@@ -43,20 +37,40 @@ class TDbListSafe(TDbBase):
             self.Rec.SetData(self.Data[self._RecNo])
         return self.Rec
 
+    def AddFields(self, aFields: list = None):
+        if (aFields is None):
+            aFields = []
+
+        self.Fields.AddList(aFields)
+        for Row in self.Data:
+            for Field in aFields:
+                Def = self.Fields[Field[0]][2]
+                Row.append(Def)
+
+    def DelField(self, aField: str):
+        Fields = super().DelField(aField)
+        self.Fields = self.Fields.GetFields(Fields)
+
     def Export(self) -> dict:
         '''
         Returns all data in a simple dict for future import
         '''
-        return {'Data': self.Data, 'Head': self.Fields.Export(), 'Tag': self.Tag}
+        return {'data': self.Data, 'head': self.Fields.Export(), 'tag': self.Tag}
 
     def ExportDict(self) -> list:
         return [Rec.GetAsDict() for Rec in self]
 
+    def GetFieldNo(self, aField: str) -> int:
+        return self.Fields.GetNo(aField)
+
+    def GetFields(self) -> list[str]:
+        return self.Fields.keys()
+
     def Import(self, aData: dict) -> 'TDbListSafe':
-        self.Tag = aData.get('Tag')
+        self.Tag = aData.get('tag')
         self.Fields = TDbFields()
-        self.Data = aData.get('Data', [])
-        self.Fields.Import(aData.get('Head'))
+        self.Data = aData.get('data', [])
+        self.Fields.Import(aData.get('head'))
         self.RecNo = 0
         return self
 
@@ -102,34 +116,6 @@ class TDbListSafe(TDbBase):
         self.Fields.Add(*aField)
         self.ImportList(aField[0], aData)
 
-    def SetData(self, aData: list):
-        if (aData):
-            if (len(aData[0]) != len(self.Fields)):
-                raise TDbListException('fields count mismatch %s and %s' % (len(aData[0]), len(self.Fields)))
-
-            if (self.OptSafe):
-                for x in aData:
-                    self.RecAdd(x)
-            else:
-                self.Data = aData
-            self.RecNo = 0
-        else:
-            self.Empty()
-
-    def AddField(self, aFields: list = None):
-        if (aFields is None):
-            aFields = []
-
-        self.Fields.AddList(aFields)
-        for Row in self.Data:
-            for Field in aFields:
-                Def = self.Fields[Field[0]][2]
-                Row.append(Def)
-
-    def DelField(self, aField: str):
-        Fields = super().DelField(aField)
-        self.Fields = self.Fields.GetFields(Fields)
-
     def RecGo(self, aNo: int) -> TDbRecSafe:
         self.RecNo = aNo
         return self.Rec
@@ -144,6 +130,21 @@ class TDbListSafe(TDbBase):
         return self.Rec
 
     def RecPop(self, aRecNo: int = -1) -> TDbRecSafe:
-        Res = TDbRec(self)
+        Res = TDbRecSafe(self)
         Res.SetData(self.Data.pop(aRecNo))
         return Res
+
+    def SetData(self, aData: list):
+        if (aData):
+            if (len(aData[0]) != len(self.Fields)):
+                raise TDbListException('rows and fields count mismatch (%s and %s)' % (len(aData[0]), len(self.Fields)))
+
+            if (self.OptSafe):
+                for x in aData:
+                    self.RecAdd(x)
+            else:
+                self.Data = aData
+            self.RecNo = 0
+        else:
+            self.Empty()
+

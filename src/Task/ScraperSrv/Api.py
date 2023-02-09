@@ -20,19 +20,19 @@ from IncP.Log import Log, TEchoDb
 class TApiTask():
     def __init__(self, aParent: 'TApi'):
         self.Parent = aParent
-        self.Tasks = TDbListSafe( [('SiteId', int), ('StartAt', type(datetime.now())), ('Urls', TDbSql)] )
+        self.Tasks = TDbListSafe( [('site_id', int), ('start_at', type(datetime.now())), ('urls', TDbSql)] )
         self.Lock = asyncio.Lock()
 
     async def Get(self, _aData: dict) -> dict:
         async with self.Lock:
-            ExclId = self.Tasks.ExportList('SiteId')
+            ExclId = self.Tasks.ExportList('site_id')
 
             Dbl = await self.Parent.Db.GetSitesForUpdateFull(aExclId=ExclId, aUpdDaysX=2)
             if (not Dbl.IsEmpty()):
-                Dbl.Tag = 'Full'
+                Dbl.Tag = 'full'
                 Dbl.Shuffle()
                 Res = Dbl.Rec.GetAsDict()
-                Res['Type'] = Dbl.Tag
+                Res['type'] = Dbl.Tag
                 #Res['scheme'] = json.loads(Res['scheme'])
                 self.Tasks.RecAdd([Dbl.Rec.GetField('id'), datetime.now(), Dbl])
                 return Res
@@ -44,9 +44,9 @@ class TApiTask():
                 Res = Dbl.Rec.GetAsDict()
 
                 Dbl = await self.Parent.Db.GetSiteUrlsForUpdate(SiteId)
-                Dbl.Tag = 'Update'
-                Res['Type'] = Dbl.Tag
-                Res['Urls'] = Dbl.GetData()
+                Dbl.Tag = 'update'
+                Res['type'] = Dbl.Tag
+                Res['urls'] = Dbl.GetData()
 
                 self.Tasks.RecAdd([SiteId, datetime.now(), Dbl])
                 return Res
@@ -157,7 +157,7 @@ class TApi(TApiBase):
         Fields = [x for x in DblFields if (x in TableFields)]
         DblS = TDbSql(self.Db).ImportDbl(Dbl, Fields)
 
-        DblS.AddField([('url_id', int)])
+        DblS.AddFields([('url_id', int)])
         for Idx, Rec in enumerate(DblS):
             Id = IDs[0][Idx][0]
             Rec.SetField('url_id', Id)

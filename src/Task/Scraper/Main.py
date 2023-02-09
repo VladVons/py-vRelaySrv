@@ -41,22 +41,22 @@ class TMain():
             #Log.Print(1, 'i', '_Worker(). Ready for task. Id %d, wait %d sec' % (aTaskId, Wait))
             await asyncio.sleep(Wait)
 
-            #await self.WebSock.Send({'Data': 'Hellow from client. Id %s' % aTaskId})
+            #await self.WebSock.Send({'data': 'Hellow from client. Id %s' % aTaskId})
             #continue
 
             DataApi = await Api.DefHandler('get_task')
             Data = DeepGet(DataApi, 'Data.Data')
             if (Data):
                 Scheme = TScheme(Data['scheme'])
-                Type = Data.get('Type')
-                if (Type == 'Full'):
+                Type = Data.get('type')
+                if (Type == 'full'):
                     if (Data['sitemap']):
                         Scraper = TWebScraperSitemap(self, Scheme, Data['url'], Data['id'], Data['sleep'])
                     else:
                         Scraper = TWebScraperFull(self, Scheme, Data['url'], Data['id'], Data['sleep'])
-                elif (Type == 'Update'):
-                    Scraper = TWebScraperUpdate(self, Scheme, Data['Urls'], Data['sleep'])
-                elif (Type == 'UpdateSelenium'):
+                elif (Type == 'update'):
+                    Scraper = TWebScraperUpdate(self, Scheme, Data['urls'], Data['sleep'])
+                elif (Type == 'update_selenium'):
                     #await TStarter().ThreadCreate(Data['Urls'])
                     continue
                 else:
@@ -74,9 +74,9 @@ class TMain():
         return [x.GetInfo() for x in self.Scrapers]
 
     async def GetMaxWorkers(self, aWorkers) -> int:
-        Res = self.Conf.get('MaxWorkers', aWorkers)
+        Res = self.Conf.get('max_workers', aWorkers)
         if (not Res):
-            Url = self.Conf.get('SpeedTestUrl')
+            Url = self.Conf.get('speed_test_url')
             if (Url):
                 Speed = await TDownloadSpeed(2).Test(Url)
                 Res = round(Speed / 5)
@@ -97,7 +97,7 @@ class TMain():
                 if (Err):
                     Log.Print(1, 'e', 'Run() %s' % Err)
                 else:
-                    Dbl = TDbListSafe().Import(DeepGet(DataApi, 'Data.Data'))
+                    Dbl = TDbListSafe().Import(DeepGet(DataApi, 'data.data'))
                     Conf = Dbl.ExportPair('name', 'data')
                     Workers = int(Conf.get('workers', 0))
                     MaxWorkers = await self.GetMaxWorkers(Workers)

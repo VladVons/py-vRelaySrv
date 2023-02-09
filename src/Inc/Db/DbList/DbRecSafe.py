@@ -39,6 +39,9 @@ class TDbRecSafe(list):
 
     def SetData(self, aData: list):
         if (self.Parent.OptSafe):
+            if (len(aData) != len(self.Parent.Fields)):
+                raise TDbListException('fields count mismatch %s, %s' % (len(aData), len(self.Parent.Fields)))
+
             if (isinstance(aData, tuple)):
                 aData = list(aData)
 
@@ -67,6 +70,11 @@ class TDbRecSafe(list):
         for Key, Val in aData.items():
             self.SetField(Key, Val)
         return self
+
+    def SetAsList(self, aData: list) -> 'TDbRec':
+        if (len(aData) - len(self.Parent.Fields)):
+            raise TDbListException('rows and fields count mismatch (%s and %s)' % (len(aData), len(self.Parent.Fields)))
+        super().__init__(aData)
 
     def GetAsTuple(self) -> list:
         return [(Key, self[Val[0]]) for Key, Val in self.Parent.Fields.items()]

@@ -24,7 +24,7 @@ class TMqtt():
         self.Db = TDbApp(aConf.DbAuth)
 
     def on_connect(self, client, _flags, _rc, _properties):
-        Msg = {'Data':{'Val':'-1'}}
+        Msg = {'data':{'val':'-1'}}
         client.publish(Name + '/srv', json.dumps(Msg))
 
         client.subscribe(Name + '/#', qos=1)
@@ -37,7 +37,7 @@ class TMqtt():
         #Log.Print(1, 'i', 'on_message. topic %s, payload %s, qos %s' % (topic, payload, qos))
         Msg = json.loads(payload.decode('utf-8'))
         Id = Msg.get('Id')
-        Data = Msg.get('Data')
+        Data = Msg.get('data')
         Ok = False
         if (Id) and (Data):
             Ok = await self.Db.InsertDeviceByUniq(Id, Data.get('Owner'), Data.get('Val'))

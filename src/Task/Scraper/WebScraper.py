@@ -130,14 +130,14 @@ class TWebScraper():
             UrlDown = await self.Download.Get(Url)
             Err = FilterKeyErr(UrlDown)
             if (Err):
-                await self._DoWorkerException(Url, UrlDown.get('Data'))
+                await self._DoWorkerException(Url, UrlDown.get('data'))
             else:
-                Data = UrlDown['Data']
-                Status = UrlDown['Status']
+                Data = UrlDown['data']
+                Status = UrlDown['status']
                 if (Status == 200):
                     self.TotalData += len(Data)
                     self.TotalUrl += 1
-                await self._DoWorkerUrl(Url, Data, Status, UrlDown['Time'])
+                await self._DoWorkerUrl(Url, Data, Status, UrlDown['time'])
 
         await self.Sender.Flush()
         await self._DoWorkerEnd()
@@ -175,8 +175,8 @@ class TWebScraperFull(TWebScraper):
         self.RobotFile = RobotFileParser()
         UrlDown = await self.Download.Get(aUrl)
         Err = FilterKeyErr(UrlDown)
-        if (not Err) and (UrlDown['Status'] == 200):
-            Data = UrlDown['Data'].decode().splitlines()
+        if (not Err) and (UrlDown['status'] == 200):
+            Data = UrlDown['data'].decode().splitlines()
             self.RobotFile.parse(Data)
         else:
             self.RobotFile.allow_all = True
@@ -222,8 +222,8 @@ class TWebScraperSitemap(TWebScraper):
         UrlDown = await self.Download.Get(aUrl)
         Err = FilterKeyErr(UrlDown)
         if (not Err):
-            Data = UrlDown['Data']
-            Status = UrlDown['Status']
+            Data = UrlDown['data']
+            Status = UrlDown['status']
             if (Status == 200):
                 if (aUrl.endswith('.xml.gz')):
                     Data = gzip.decompress(Data)

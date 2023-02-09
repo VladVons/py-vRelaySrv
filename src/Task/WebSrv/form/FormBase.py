@@ -58,11 +58,11 @@ class TFormBase(Form):
         return Res
 
     def RenderTemplate(self):
-        return render_template(self.Tpl, self.Request, {'Data': self.Data, 'Form': self})
+        return render_template(self.Tpl, self.Request, {'data': self.Data, 'form': self})
 
     def RenderInfo(self, aMsg: str) -> web.Response:
-        Data = TDictDef('', {'Info': aMsg})
-        return render_template('info.tpl.html', self.Request, {'Data': Data, 'Form': self})
+        Data = TDictDef('', {'info': aMsg})
+        return render_template('info.tpl.html', self.Request, {'data': Data, 'form': self})
 
     async def _Render(self):
         #print('_Render() not implemented for %s' % (self.Tpl))

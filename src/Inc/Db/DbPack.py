@@ -44,7 +44,7 @@ class TDblFields(TDbFields):
         Len: int = struct.calcsize('<%s%s' % (aLen, aType))
 
         R = TDblField()
-        R.update({'Name': aName, 'Type': aType, 'Len': Len, 'No': len(self), 'Ofst': self.Len})
+        R.update({'name': aName, 'type': aType, 'len': Len, 'no': len(self), 'ofst': self.Len})
         self[aName] = R
         self.Len += Len
         return R

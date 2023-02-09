@@ -17,11 +17,11 @@ class TPython():
         if (aInfo):
             tb = traceback.extract_tb(aInfo[2])[-1]
             if (tb.filename):
-                Res = {'Type': 'Err', 'Data': EName, 'LineNo': tb.lineno, 'Line': tb.line, 'File': tb.filename}
+                Res = {'type': 'err', 'data': EName, 'line_no': tb.lineno, 'line': tb.line, 'file': tb.filename}
             else:
-                Res = {'Type': 'Err', 'Data': EName, 'LineNo': tb.lineno, 'Line': self.GetLine(tb.lineno - 1)}
+                Res = {'type': 'err', 'data': EName, 'line_no': tb.lineno, 'line': self.GetLine(tb.lineno - 1)}
         else:
-            Res = {'Type': 'Err', 'Data': EName, 'LineNo': aE.lineno, 'Line': self.GetLine(aE.lineno - 1)}
+            Res = {'type': 'err', 'data': EName, 'line_no': aE.lineno, 'line': self.GetLine(aE.lineno - 1)}
         return Res
 
     def GetLine(self, aIdx: int) -> str:
@@ -46,7 +46,7 @@ class TPython():
             Script = self.ByteCode if (self.ByteCode) else self.Script
             # pylint: disable-next=exec-used
             exec(Script, aParam, Out)
-            Res = {'Data': Out.get('Res')}
+            Res = {'data': Out.get('res')}
         except (IndentationError, SyntaxError) as E:
             Res = self.ErrMsg(E)
         except Exception as E:

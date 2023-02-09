@@ -48,7 +48,7 @@ class TApiBase():
     async def Call(self, aPath: str, aParam: dict) -> dict:
         UrlInf = self.Url.get(aPath)
         if (not UrlInf):
-            return {'Type': 'Err', 'Data': 'unknown url %s' % (aPath)}
+            return {'type': 'err', 'data': 'unknown url %s' % (aPath)}
 
         MethodName = self.GetMethodName(aPath)
         Method = getattr(self, MethodName, None)
@@ -60,7 +60,7 @@ class TApiBase():
                 Method = self.DefMethod
 
             if (not Method):
-                return {'Type': 'Err', 'Data': 'unknown method %s' % (aPath)}
+                return {'type': 'err', 'data': 'unknown method %s' % (aPath)}
 
         ParamInf = UrlInf.get('param')
         if (ParamInf) and (ParamInf[0] == '*'):
@@ -69,14 +69,14 @@ class TApiBase():
         ErrMsg = self.CheckParam(aParam, ParamInf)
         if (ErrMsg):
             Log.Print(1, 'e', ErrMsg)
-            Res = {'Type': 'Err', 'Data': ErrMsg}
+            Res = {'type': 'err', 'data': ErrMsg}
         else:
             try:
                 Data = await Method(aPath, aParam)
             except Exception as E:
                 Data = None
                 Log.Print(1, 'x', 'Call()', aE = E)
-            Res = {'Data': Data}
+            Res = {'data': Data}
         return Res
 
     async def AuthRequest(self, aRequest: web.Request, aAuth: bool = True) -> bool:
@@ -109,10 +109,10 @@ class TWebClient():
             async with aiohttp.ClientSession(auth=Auth) as Session:
                 async with Session.post(Url, json=aPost) as Response:
                     Data = await Response.json()
-                    Res = {'Data': Data, 'Status': Response.status, 'Time': round(time.time() - TimeAt, 2)}
+                    Res = {'data': Data, 'status': Response.status, 'time': round(time.time() - TimeAt, 2)}
         except (aiohttp.ContentTypeError, aiohttp.ClientConnectorError, aiohttp.InvalidURL) as E:
             Log.Print(1, 'x', 'Send(). %s' % (Url), aE = E)
-            Res = {'Type': 'Err', 'Data': E, 'Msg': Url, 'Time': round(time.time() - TimeAt, 2)}
+            Res = {'type': 'err', 'data': E, 'msg': Url, 'time': round(time.time() - TimeAt, 2)}
         return Res
 
 
@@ -170,16 +170,16 @@ class TWebSockSrv():
                     if (Plugin):
                         Class = DeepGet(self.Api.Url, Plugin + '.Class')
                         if (Class is None):
-                            await WS.send_json({'Type': 'Err', 'Data': 'Unknown plugin %s' % (Plugin)})
+                            await WS.send_json({'type': 'err', 'data': 'Unknown plugin %s' % (Plugin)})
                         else:
                             Data = Msg.json()
-                            Param = Data.get('Param', {})
+                            Param = Data.get('param', {})
                             Param['ws'] = (self.DblWS, Param.get('ws'))
                             await Class.Exec(Plugin, Param)
         except Exception as E:
             Log.Print(1, 'x', 'AddHandler()', aE=E)
         finally:
             self.DblWS.RecNo = 0
-            RecNo = self.DblWS.FindField('WS', WS)
+            RecNo = self.DblWS.FindField('ws', WS)
             self.DblWS.RecPop(RecNo)
         return WS

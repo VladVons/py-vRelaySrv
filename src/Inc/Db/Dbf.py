@@ -51,7 +51,7 @@ class TDbfFields(TDbFields):
 
         R: TDbfField = TDbfField()
         aLen = R._DefLen(aType, aLen)
-        R.update({'Name': aName, 'Type': aType, 'Len': aLen, 'No': len(self), 'Ofst': self.Len, 'LenD': aLenD})
+        R.update({'name': aName, 'type': aType, 'len': aLen, 'no': len(self), 'ofst': self.Len, 'len_d': aLenD})
         self[aName] = R
         self.Len += aLen
         return R

@@ -68,10 +68,10 @@ def FilterKeyErr(aData: dict, aAsStr: bool = False) -> list:
         if (isinstance(aData, dict)):
             for Key, Val in aData.items():
                 _FilterKey(Val, aRes)
-                if (Key == 'Type') and (Val == 'Err'):
-                    aRes.append(aData.get('Data'))
-                elif (Key == 'Err'):
-                    aRes.append(aData.get('Err'))
+                if (Key == 'type') and (Val == 'err'):
+                    aRes.append(aData.get('data'))
+                elif (Key == 'err'):
+                    aRes.append(aData.get('err'))
 
     Res = []
     _FilterKey(aData, Res)
