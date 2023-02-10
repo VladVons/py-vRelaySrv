@@ -23,7 +23,7 @@ class TDbFields(dict):
     def Add(self, aName: str, aType: str, aLen: int):
         raise NotImplementedError()
 
-    def Sort(self, aName: str = 'No'):
+    def Sort(self, aName: str = 'no'):
         return SortDD(self, aName)
 
     def Get(self, aName: str) -> TDbField:

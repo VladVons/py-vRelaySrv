@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %}
-<form method="post" action="/form/login?{{Data.Query}}">
+<form method="post" action="/form/login?{{Data.query}}">
     <div class="login">
         <div class="login-screen">
             <div class="app-title">
@@ -19,7 +19,7 @@
                 {{ Form.Password(class='login-field') }}
                 </div>
                 <div class="control-group">
-                    {{ Data.Message }}
+                    {{ Data.message }}
                 </div>
                 {{ Form.Submit(class="btn") }}
                 <br>

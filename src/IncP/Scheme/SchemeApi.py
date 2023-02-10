@@ -342,10 +342,10 @@ class TSchemeApi():
     def app_json(aVal: BeautifulSoup, aFind: dict = None) -> dict:
         '''
         searches value in sections <script>application/ld+json</script>
-        ["app_json", [{"@type": "Product"}]]
+        ["app_json", [{"@type": "product"}]]
         '''
         if (aFind is None):
-            aFind = {'@type': 'Product'}
+            aFind = {'@type': 'product'}
 
         Res = {}
         Items = aVal.find_all('script', type='application/ld+json')

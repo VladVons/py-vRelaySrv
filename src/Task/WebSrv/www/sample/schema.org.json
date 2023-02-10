@@ -1,16 +1,16 @@
 {
-  "Product": {
-    "Info": {
-      "Author": "vladvons",
-      "Date": "2022-07-01 09:00:00",
-      "Url": [
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-07-01 09:00:00",
+      "url": [
         "https://kokos.com.ua/samsung-phones/11470/"
       ],
-      "Comment": ""
+      "comment": ""
     },
-    "Var": {
+    "var": {
     },
-    "Pipe": [
+    "pipe": [
       ["find",["section",{"itemtype":"https://schema.org/Product"}]],
       ["as_dict", {
         "name": [

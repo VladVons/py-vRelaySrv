@@ -1,7 +1,7 @@
 {% extends "inc/layout.tpl.html" %}
 
 {% block content %}
-<form name="FormParse" method="post" action="/form/sites_add" enctype="multipart/form-data">
+<form name="form_parse" method="post" action="/form/sites_add" enctype="multipart/form-data">
     <table style="width:100%">
         <tr>
             <th></th>
@@ -10,11 +10,11 @@
         <tr>
         <tr>
             <td>Sites</td>
-            <td><textarea name="Sites" rows="40">{{ Data.Sites }}</textarea> </td>
-            <td><textarea readonly name="Output" rows="40">{{ Data.Output }}</textarea> </td>
+            <td><textarea name="sites" rows="40">{{ Data.sites }}</textarea> </td>
+            <td><textarea readonly name="output" rows="40">{{ Data.output }}</textarea> </td>
         <tr>
         <tr>
-            <td colspan="3" style="text-align:center"><input type="submit" name="BtnOk" value="OK" class="btn"></td>
+            <td colspan="3" style="text-align:center"><input type="submit" name="btn_ok" value="ok" class="btn"></td>
         </tr>
     </table>
 </form>

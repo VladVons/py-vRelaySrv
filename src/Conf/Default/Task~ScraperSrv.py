@@ -1,10 +1,10 @@
-Port = 8081
+port = 8081
 
-DbAuth = {
-    'Server': '192.168.2.115',
-    'Database': 'scraper1',
-    'User': 'postgres',
-    'Password': '19710819'
+db_auth = {
+    'server': '192.168.2.115',
+    'database': 'scraper1',
+    'user': 'postgres',
+    'password': '19710819'
 }
 
-Auth = not True
+auth = not True

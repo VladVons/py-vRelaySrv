@@ -1,14 +1,14 @@
-MaxWorkers = 1
+max_workers = 1
 
-SpeedTestUrl='https://speed.hetzner.de/100MB.bin'
+speed_test_url='https://speed.hetzner.de/100MB.bin'
 
-Proxy = ['socks5://localhost:9050']
+proxy = ['socks5://localhost:9050']
 
-SrvAuth = {
-    'Server': 'localhost',
-    'Port': 8081,
-    'User': 'user01',
-    'Password': '2010'
+srv_auth = {
+    'server': 'localhost',
+    'port': 8081,
+    'user': 'user01',
+    'password': '2010'
 }
 
-Auth = not True
+auth = not True

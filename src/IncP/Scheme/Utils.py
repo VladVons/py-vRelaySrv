@@ -116,7 +116,7 @@ def SoupGetParents(aSoup: BeautifulSoup, aItems: list, aDepth: int = 99) -> list
             elif (Item.name):
                 ResLoop.append([Item.name, {}])
             else:
-                if (type(Item).__name__ == 'Script'):
+                if (type(Item).__name__ == 'script'):
                     break
                 ResLoop.append([Item, {}])
             Depth -= 1

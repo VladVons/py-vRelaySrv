@@ -19,7 +19,7 @@ class TTask():
             return
 
         Log.Print(1, 'i', 'Run() %s' % self.Info['app_name'])
-        Plugins = ConfTask.get('Plugins', '')
+        Plugins = ConfTask.get('plugins', '')
         Plugin.LoadList(Plugins)
         try:
             await Plugin.Run()

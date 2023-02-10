@@ -18,23 +18,23 @@ class TForm(TFormBase):
         if (not await self.PostToForm()) or (not self.Data.get('BtnOk')):
             return
 
-        Url = self.Data.Url0
+        Url = self.Data.url0
         Data = await GetSoupUrl(Url)
         Err = FilterKeyErr(Data)
         if (Err):
-            self.Data.Output = 'Error loading %s, %s' % (Url, Err)
+            self.Data.output = 'Error loading %s, %s' % (Url, Err)
             return
 
         try:
-            self.Data.Output = ''
-            if (self.Data.Path):
-                Path = '[%s]' % self.Data.Path
+            self.Data.output = ''
+            if (self.Data.path):
+                Path = '[%s]' % self.Data.path
                 Path = json.loads(Path)
 
-            x11 = SoupFindParents(Data.get('Soup'), self.Data.Find)
+            x11 = SoupFindParents(Data.get('soup'), self.Data.find)
             for x1 in x11:
                 for x in reversed(x1):
-                    self.Data.Output += json.dumps(x, ensure_ascii=False) + '\n'
-                self.Data.Output += '\n'
+                    self.Data.output += json.dumps(x, ensure_ascii=False) + '\n'
+                self.Data.output += '\n'
         except (json.decoder.JSONDecodeError, AttributeError) as E:
-            self.Data.Output = str(E.args)
+            self.Data.output = str(E.args)

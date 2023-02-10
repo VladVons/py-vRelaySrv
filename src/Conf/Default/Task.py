@@ -1,2 +1,2 @@
-Debug = False
-Plugins = '-TelegramBot WebSrv ScraperSrv -Scraper -WebSock -Mqtt -Idle'
+debug = False
+plugins = '-TelegramBot WebSrv ScraperSrv -Scraper -WebSock -Mqtt -Idle'

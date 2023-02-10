@@ -28,7 +28,7 @@ class TApiPlugin():
     async def WebSockSend(self, aData):
         if (self.WebSock):
             Dbl, Id = self.WebSock
-            RecNo = Dbl.FindField('Id', Id)
+            RecNo = Dbl.FindField('id', Id)
             if (RecNo >= 0):
                 Dbl.RecNo = RecNo
                 WS = Dbl.Rec.GetField('WS')
@@ -104,10 +104,10 @@ class get_scheme_test_all(TApiPlugin):
             #break
 
         Download = TDownload()
-        Download.Opt.update({'Headers': TDHeaders(), 'OnGet': self.cbOnGet, 'Decode': True})
+        Download.Opt.update({'headers': TDHeaders(), 'on_get': self.cbOnGet, 'decode': True})
         await Download.Gets(self.Hash.keys())
 
-        await self.WebSockSend({'data': 'Done'})
+        await self.WebSockSend({'data': 'done'})
         return {'data': self.Res}
 
 
@@ -136,7 +136,7 @@ class get_sites_check_file(TApiPlugin):
         Download.Opt.update({'headers': TDHeaders(), 'fake_read': True, 'on_get': self.cbOnGet})
         await Download.Gets(Urls)
 
-        await self.WebSockSend({'data': 'Done'})
+        await self.WebSockSend({'data': 'done'})
         return {'data': self.Res}
 
 
@@ -211,7 +211,7 @@ class get_sites_grep(TApiPlugin):
         Download.Opt.update({'headers': TDHeaders(), 'on_get': self.cbOnGet, 'decode': True})
         await Download.Gets(Urls)
 
-        await self.WebSockSend({'data': 'Done'})
+        await self.WebSockSend({'data': 'done'})
         return {'data': self.Res}
 
 
@@ -251,7 +251,7 @@ class get_sites_app_json(TApiPlugin):
         Download.Opt.update({'headers': TDHeaders(), 'on_get': self.cbOnGet, 'decode': True})
         await Download.Gets(Urls)
 
-        await self.WebSockSend({'data': 'Done'})
+        await self.WebSockSend({'data': 'done'})
         return {'data': self.Res}
 
 
@@ -297,7 +297,7 @@ class set_scheme(TApiPlugin):
         if (Err):
             return {'type': 'err', 'data': 'Error loading %s, %s' % (Url, Err)}
 
-        Scheme.Parse(Data.get('Soup'))
+        Scheme.Parse(Data.get('soup'))
         if (Scheme.Err):
             Res = {'type': 'err', 'data': Scheme.Err}
         else:
@@ -314,14 +314,14 @@ class get_scheme_by_id(TApiPlugin):
         if (Err):
             return Err
 
-        DataApi = await self.Args['WebClient'].Send('web/get_scheme_by_id', aData)
+        DataApi = await self.Args['web_client'].Send('web/get_scheme_by_id', aData)
         Err = FilterKeyErr(DataApi)
         if (not Err):
-            DblJ = DeepGet(DataApi, 'Data.Data')
+            DblJ = DeepGet(DataApi, 'data.data')
             Dbl = TDbListSafe().Import(DblJ)
             Scheme = TScheme(Dbl.Rec.GetField('scheme'))
-            DataApi['IsJson'] = Scheme.IsJson()
-            DataApi['Url'] = Scheme.GetUrl()[0]
+            DataApi['is_json'] = Scheme.IsJson()
+            DataApi['url'] = Scheme.GetUrl()[0]
         return DataApi
 
 
@@ -338,14 +338,14 @@ class TApi(TApiBase):
         self.DefMethod = self.DefHandler
         self.WebClient = TWebClient()
 
-        self.PluginAdd(get_scheme_find, {'WebClient': self.WebClient})
-        self.PluginAdd(get_scheme_test_all, {'WebClient': self.WebClient})
+        self.PluginAdd(get_scheme_find, {'web_client': self.WebClient})
+        self.PluginAdd(get_scheme_test_all, {'web_client': self.WebClient})
         self.PluginAdd(get_scheme_test)
-        self.PluginAdd(get_scheme_by_id, {'WebClient': self.WebClient})
-        self.PluginAdd(get_sites_check_file, {'WebClient': self.WebClient})
-        self.PluginAdd(get_sites_grep, {'WebClient': self.WebClient})
-        self.PluginAdd(get_sites_app_json, {'WebClient': self.WebClient})
-        self.PluginAdd(set_scheme, {'WebClient': self.WebClient})
+        self.PluginAdd(get_scheme_by_id, {'web_client': self.WebClient})
+        self.PluginAdd(get_sites_check_file, {'web_client': self.WebClient})
+        self.PluginAdd(get_sites_grep, {'web_client': self.WebClient})
+        self.PluginAdd(get_sites_app_json, {'web_client': self.WebClient})
+        self.PluginAdd(set_scheme, {'web_client': self.WebClient})
 
     async def DoAuthRequest(self, aUser: str, aPassw: str):
         return True

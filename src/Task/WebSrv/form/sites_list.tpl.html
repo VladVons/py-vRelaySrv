@@ -12,10 +12,10 @@
 <script src="/js/TDbList.js"></script>
 <script>
     function Btn_Get(aId, aThis) {
-        document.getElementById('Output').value = '';
+        document.getElementById('output').value = '';
 
         Color = aThis.style.background;
-        let Items = document.getElementsByName('BtnGet');
+        let Items = document.getElementsByName('btn_get');
         for (let i = 0; i < Items.length; i++) {
             Items[i].style.background = Color;
         }
@@ -26,10 +26,10 @@
             function(aData) {
                 console.log('aData', aData);
 
-                let Dbl = new TDbList(aData['Data']['Data']);
+                let Dbl = new TDbList(aData['data']['data']);
                 let Scheme = Dbl.Rec.GetField('scheme');
-                document.getElementById('Script').value = Scheme;
-                document.getElementById('Url0').value = aData['Url'];
+                document.getElementById('script').value = Scheme;
+                document.getElementById('url0').value = aData['url'];
             },
             {'id': aId}
         );
@@ -37,7 +37,7 @@
 
     function Btn_Test(aId, aThis) {
         StartAt = Date.now();
-        let Output = document.getElementById('Output')
+        let Output = document.getElementById('output')
         Output.value = '';
 
         HttpRequest(
@@ -49,12 +49,12 @@
                 let Duration = (Date.now() - StartAt) / 1000;
                 aThis.textContent = Duration.toFixed(2);
             },
-            {'scheme': document.getElementById('Script').value}
+            {'scheme': document.getElementById('script').value}
         );
     };
 
     function Btn_SetScheme(aId, aUrl) {
-        let Script = document.getElementById('Script').value;
+        let Script = document.getElementById('script').value;
         if (Script.trim().length < 0) {
             window.alert('Script is empty');
             return;
@@ -68,7 +68,7 @@
             '/api/set_scheme',
             function(aData) {
                 console.log('aData', aData);
-                let Msg = aData['Type'] == 'Err' ? 'Err: ' + aData['Data'] : 'Saved';
+                let Msg = aData['type'] == 'err' ? 'err: ' + aData['data'] : 'saved';
                 window.alert(Msg + ' ' + aUrl);
             },
             {'scheme': Script}
@@ -81,8 +81,8 @@
 <table style="width:100%">
     <tr>
         <td colspan="2">
-            <button onclick="Btn_GoUrl('Url0')">go</button>
-            <input type="text" name="Url0" id="Url0" style="width:90%">
+            <button onclick="Btn_GoUrl('url0')">go</button>
+            <input type="text" name="url0" id="url0" style="width:90%">
         </td>
     </tr>
     <tr>
@@ -90,19 +90,19 @@
             <div class="tableFixHead">
                 <table style="width:100%">
                     <tr>
-                        <th>{{Data.CntScheme}}<br>{{Data.Sites.GetSize()}}</th>
+                        <th>{{Data.cnt_scheme}}<br>{{Data.sites.GetSize()}}</th>
                         <th style="width: 70%">Url</th>
                         <th>Get</th>
                         <th>Test</th>
                         <th>Set</th>
                     </tr>
-                    {% for Rec in Data.Sites %}
+                    {% for Rec in Data.sites %}
                     <tr class="trEven">
                         <td>{{loop.index}}</td>
                         <td><a href="{{ Rec.GetField('url') }}">{{ Rec.GetField('url') }}</a></td>
                         <td>
                             {% if Rec.GetField('has_scheme') %}
-                            <button name="BtnGet" onclick="Btn_Get({{ Rec.GetField('id') }}, this)">get</button>
+                            <button name="btn_get" onclick="btn_get({{ Rec.GetField('id') }}, this)">get</button>
                             {% endif %}
                         </td>
                         <td>
@@ -119,10 +119,10 @@
             </div>
         </td>
         <td style="width: 30%">
-            <textarea name="Script" id="Script" rows="40">{{ Data.Script }}</textarea>
+            <textarea name="script" id="script" rows="40">{{ Data.script }}</textarea>
         </td>
         <td style="width: 30%">
-            <textarea readonly name="Output" id="Output" rows="40">{{ Data.Output }}</textarea>
+            <textarea readonly name="output" id="output" rows="40">{{ Data.output }}</textarea>
         </td>
     </tr>
 </table>>

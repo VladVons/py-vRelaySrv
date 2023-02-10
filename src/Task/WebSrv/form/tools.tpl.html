@@ -7,7 +7,7 @@
 <script src="/js/TDbList.js"></script>
 <script>
     function Btn_GetUrlScheme(aEmpty) {
-        let Output = document.getElementById('Output')
+        let Output = document.getElementById('output')
         Output.value = '';
 
         let Url = aEmpty ? '/api/get_scheme_empty' : '/api/get_scheme_not_empty'
@@ -15,7 +15,7 @@
             Url,
             function(aData) {
                 console.log('aData', aData);
-                let Dbl = new TDbList(aData['Data']['Data']);
+                let Dbl = new TDbList(aData['data']['data']);
                 for (let Rec of Dbl) {
                     Output.value += Rec.GetField('url') + '\n';
                 }
@@ -26,14 +26,14 @@
     };
 
     function Btn_GetBackup() {
-        let Output = document.getElementById('Output')
+        let Output = document.getElementById('output')
         Output.value = '';
 
         HttpRequest(
             '/api/get_scheme_not_empty',
             function(aData) {
                 console.log('aData', aData);
-                Output.value = JSON.stringify(aData['Data']['Data'], null, ' ');
+                Output.value = JSON.stringify(aData['data']['data'], null, ' ');
             },
             {'cnt': 1000}
         );
@@ -41,7 +41,7 @@
 
     class TWebSockApp extends TWebSock {
         Init() {
-            this.Output = document.getElementById('Output');
+            this.Output = document.getElementById('output');
             this.Output.value = 'Start at ' + new Date().toLocaleTimeString('en-US') + '\n';
 
             this.ConnectId()
@@ -49,7 +49,7 @@
 
         OnMessage(aEvent, aData) {
             //console.log(aData);
-            this.Output.value += aData['Data'] + '\n';
+            this.Output.value += aData['data'] + '\n';
             this.Output.scrollTop = this.Output.scrollHeight;
         };
     }
@@ -69,7 +69,7 @@
                 '/api/get_scheme_test_all',
                 function(aData) {
                     Output.value += '\n';
-                    aData['Data'].forEach((aItem) => {
+                    aData['data'].forEach((aItem) => {
                         Output.value += JSON.stringify(aItem, null, ' ') + '\n';
                         Output.value += '\n';
                         Output.scrollTop = Output.scrollHeight;
@@ -82,7 +82,7 @@
 
     class TWS_get_scheme_find extends TWebSockApp {
         Run() {
-            if (document.getElementById('Url0').value == '') {
+            if (document.getElementById('url0').value == '') {
                 alert('Url is empty');
                 return;
             };
@@ -94,13 +94,13 @@
                 '/api/get_scheme_find',
                 function(aData) {
                     Output.value += '\n';
-                    aData['Data'].forEach((aItem) => {
+                    aData['data'].forEach((aItem) => {
                         Output.value += JSON.stringify(aItem, null, ' ') + '\n';
                         Output.value += '\n---\n\n';
                         Output.scrollTop = Output.scrollHeight;
                     })
                 },
-                {'url': document.getElementById('Url0').value, 'cnt': 1000, 'ws': this.Id}
+                {'url': document.getElementById('url0').value, 'cnt': 1000, 'ws': this.Id}
             );
         };
     };
@@ -114,7 +114,7 @@
                 '/api/get_sites_check_file',
                 function(aData) {
                     Output.value += '\n';
-                    aData['Data'].forEach((aItem) => {
+                    aData['data'].forEach((aItem) => {
                         //Output.value += JSON.stringify(aItem, null, ' ') + '\n';
                         //Output.value += '\n';
                         Output.scrollTop = Output.scrollHeight;
@@ -134,7 +134,7 @@
                 '/api/get_sites_check_file',
                 function(aData) {
                     Output.value += '\n';
-                    aData['Data'].forEach((aItem) => {
+                    aData['data'].forEach((aItem) => {
                         //Output.value += JSON.stringify(aItem, null, ' ') + '\n';
                         //Output.value += '\n';
                         Output.scrollTop = Output.scrollHeight;
@@ -154,7 +154,7 @@
                 '/api/get_sites_grep',
                 function(aData) {
                     Output.value += '\n';
-                    aData['Data'].forEach((aItem) => {
+                    aData['data'].forEach((aItem) => {
                         //Output.value += JSON.stringify(aItem, null, ' ') + '\n';
                         //Output.value += '\n';
                         Output.scrollTop = Output.scrollHeight;
@@ -174,7 +174,7 @@
                 '/api/get_sites_app_json',
                 function(aData) {
                     Output.value += '\n';
-                    aData['Data'].forEach((aItem) => {
+                    aData['data'].forEach((aItem) => {
                         Output.scrollTop = Output.scrollHeight;
                     })
                 },
@@ -191,8 +191,8 @@
 <table style="width: 100%">
     <tr>
         <td colspan="2">
-            <button onclick="Btn_GoUrl('Url0')">go</button>
-            <input type="text" name="Url0" id="Url0" style="width:96%">
+            <button onclick="Btn_GoUrl('url0')">go</button>
+            <input type="text" name="url0" id="url0" style="width:96%">
         </td>
     </tr>
     <tr>
@@ -255,7 +255,7 @@
             </table>
         </td>
         <td>
-            <textarea readonly id="Output" rows="40"></textarea>
+            <textarea readonly id="output" rows="40"></textarea>
         </td>
     </tr>
 </table>

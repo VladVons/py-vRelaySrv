@@ -6,7 +6,7 @@ import operator
 
 
 class TDbCond(list):
-    # aCond is [ (operator.lt, Db1.Fields.GetNo('Age'), 40, True), (...) ]
+    # aCond is [ (operator.lt, Db1.Fields.GetNo('age'), 40, True), (...) ]
     def Add(self, aOp: operator, aFieldNo: int, aVal, aRes: bool):
         self.append([aOp, aFieldNo, aVal, aRes])
 

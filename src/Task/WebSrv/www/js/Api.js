@@ -80,7 +80,7 @@ class TWebSock {
     }
 
     Call(aParam) {
-        let Data = JSON.stringify({'Param': aParam});
+        let Data = JSON.stringify({'param': aParam});
         //this.ws.send(Data);
         this.ws.onopen = () => this.ws.send(Data);
     };

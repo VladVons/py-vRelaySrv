@@ -17,14 +17,14 @@ class TDbPg(TADb):
         await self.Close()
 
         AuthDef = {
-            'host': self.Auth.get('Server', 'localhost'),
-            'port': self.Auth.get('Port', 5432),
-            'dbname': self.Auth.get('Database'),
-            'user': self.Auth.get('User', 'postgres')
+            'host': self.Auth.get('server', 'localhost'),
+            'port': self.Auth.get('port', 5432),
+            'dbname': self.Auth.get('database'),
+            'user': self.Auth.get('user', 'postgres')
         }
         Log.Print(1, 'i', 'Connect()', [AuthDef])
 
-        AuthDef['password'] = self.Auth.get('Password')
+        AuthDef['password'] = self.Auth.get('password')
         self.Pool = await aiopg.create_pool(**AuthDef)
         return (not self.Pool.closed)
 

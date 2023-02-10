@@ -25,7 +25,7 @@ class TMain():
 
     async def cmd_start(self, message: types.Message):
         DataA = await Api.DefHandler('get_sites')
-        Data = DeepGet(DataA, 'Data.Data')
+        Data = DeepGet(DataA, 'data.data')
         if (Data):
             Dbl = TDbListSafe().Import(Data)
             Cond = TDbCond().AddFields([ ['eq', (Dbl, 'has_scheme'), True, True]])
@@ -40,7 +40,7 @@ class TMain():
         asyncio.sleep(1)
         Log.Print(1, 'i', 'TelegramBot')
 
-        Token = self.Conf.get('Token')
+        Token = self.Conf.get('token')
         bot = Bot(token=Token)
         dp = Dispatcher(bot)
         dp.register_message_handler(self.cmd_start, commands=['start'])

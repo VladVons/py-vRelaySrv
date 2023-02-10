@@ -9,21 +9,21 @@
   function SplitScheme(aData) {
       console.log('aData', aData);
 
-      let Dbl = new TDbList(aData['Data']['Data']);
+      let Dbl = new TDbList(aData['data']['data']);
       Dbl.Shuffle();
       Dbl.RecNo = 0;
 
       let Scheme = Dbl.Rec.GetField('scheme');
-      document.getElementById('Script').value = Scheme;
+      document.getElementById('script').value = Scheme;
 
       let SchemeJ = JSON.parse(Scheme);
-      let UrlJ = SchemeJ['Product']['Info']['Url'];
+      let UrlJ = SchemeJ['product']['info']['url'];
       for (let i = 0; i < UrlJ.length; i++) {
-          document.getElementById('Url' + i).value = UrlJ[i];
+          document.getElementById('url' + i).value = UrlJ[i];
       };
 
       let Pipe = '';
-      let PipeJ = SchemeJ['Product']['Pipe'];
+      let PipeJ = SchemeJ['product']['pipe'];
       for (let i = 0; i < PipeJ.length; i++) {
         if (PipeJ[i][0] == 'as_dict') {
           Object.entries(PipeJ[i][1]).forEach(([Key, Val]) => {
@@ -37,18 +37,18 @@
           Pipe += JSON.stringify(PipeJ[i]) + ',\n';
         };
       };
-      document.getElementById('Pipe').value = Pipe;
+      document.getElementById('pipe').value = Pipe;
 
-      let Data = SchemeJ['Product']['Var'];
+      let Data = SchemeJ['product']['var'];
       if (Data) {
         Data = JSON.stringify(Data);
         Data = Data.substring(1, Data.length - 1);
-        document.getElementById('Var').value = Data;
+        document.getElementById('var').value = Data;
       }
 
-      Data = SchemeJ['Product']['Info']['Comment'];
+      Data = SchemeJ['product']['info']['comment'];
       if (Data) {
-        document.getElementById('Comment').value = Data;
+        document.getElementById('comment').value = Data;
       }
     }
 
@@ -58,14 +58,14 @@
       ClearObj('input');
       ClearObj('textarea');
 
-      document.getElementById('BtnModerateFlag').value = 'True';
+      document.getElementById('btn_moderate_flag').value = 'true';
 
       HttpRequest(
           '/api/get_scheme_mederate',
           function(aData) {
             SplitScheme(aData)
 
-            let Dbl = new TDbList(aData['Data']['Data']);
+            let Dbl = new TDbList(aData['data']['data']);
             for (let Rec of Dbl) {
               Output.value += Rec.GetField('url') + '\n';
             }
@@ -79,8 +79,8 @@
       ClearObj('input');
       ClearObj('textarea');
 
-      document.getElementById('BtnSave').disabled = true;
-      document.getElementById('BtnSaveFlag').value = 'disabled';
+      document.getElementById('btn_save').disabled = true;
+      document.getElementById('btn_save_flag').value = 'disabled';
 
       HttpRequest(
           '/api/get_scheme_not_empty',
@@ -95,29 +95,29 @@
         ClearObj('input');
           ClearObj('textarea');
 
-        document.getElementById('BtnSave').disabled = false;
-        document.getElementById('BtnSaveFlag').value = '';
+        document.getElementById('btn_save').disabled = false;
+        document.getElementById('btn_save_flag').value = '';
 
         Btn_GetSchemeEmpty();
     }
 
     function Btn_Test_Unused(aThis) {
       // ToDo. Dont remove line below. Some problem with <input 'required'> in HTML
-      document.getElementById('Url0').value = '';
+      document.getElementById('url0').value = '';
 
       let StartAt = Date.now();
-      document.getElementById('Output').value = '';
+      document.getElementById('output').value = '';
 
       HttpRequest(
           '/api/get_scheme_test',
           function(aData) {
             console.log('aData', aData);
-            document.getElementById('Output').value = JSON.stringify(aData, null, ' ');
+            document.getElementById('output').value = JSON.stringify(aData, null, ' ');
 
             let Duration = (Date.now() - StartAt) / 1000;
             //aThis.textContent = Duration.toFixed(2);
           },
-          {'scheme': document.getElementById('Script').value}
+          {'scheme': document.getElementById('script').value}
       );
     };
 
@@ -129,7 +129,7 @@
     function Btn_GoUrls() {
       let Items = document.getElementsByTagName('input');
       for (let i = 0; i < Items.length; i++) {
-        if (Items[i].name.startsWith('Url')) {
+        if (Items[i].name.startsWith('url')) {
           let Url = Items[i].value;
           if (Url) {
             window.open(Url, '_blank').focus();
@@ -139,19 +139,19 @@
     };
 
     function Btn_Info(aThis) {
-      document.getElementById('Script').value = '';
-      document.getElementById('Output').value = '';
-      document.forms["Form"].submit(aThis)
+      document.getElementById('script').value = '';
+      document.getElementById('output').value = '';
+      document.forms["form"].submit(aThis)
     }
 
     function Btn_Make(aThis) {
-      document.getElementById('Output').value = '';
-      document.forms["Form"].requestSubmit(aThis)
+      document.getElementById('output').value = '';
+      document.forms["form"].requestSubmit(aThis)
     }
 
     function Btn_Save(aThis) {
       if (window.confirm('Save scheme ?')) {
-        document.forms["Form"].requestSubmit(aThis)
+        document.forms["form"].requestSubmit(aThis)
       }
     }
 
@@ -163,28 +163,28 @@
 {% endblock %}
 
 {% block content %}
-<form name="Form" method="post" action="/form/soup_make" enctype="multipart/form-data">
+<form name="form" method="post" action="/form/soup_make" enctype="multipart/form-data">
   <table style="width:100%">
   <tbody>
     <tr>
       <td style="width:5%">url</td>
       <td style="width:40%">
-        <input type="text" name="Url0" id="Url0" placeholder="url 1" style="width:100%" value="{{ Data.Url0 }}" required>
-        <input type="text" name="Url1" id="Url1" placeholder="url 2" style="width:100%" value="{{ Data.Url1 }}">
+        <input type="text" name="url0" id="url0" placeholder="url 1" style="width:100%" value="{{ Data.url0 }}" required>
+        <input type="text" name="url1" id="url1" placeholder="url 2" style="width:100%" value="{{ Data.url1 }}">
       </td>
       <td>
         <button onclick="Btn_GoUrls()">go</button>
         <button onclick="Btn_GetSchemeEmptyWithFlag()">get task</button>
-        <button name="BtnInfo" id="BtnInfo" onclick="Btn_Info(this)">info</button>
+        <button name="btn_info" id="btn_info" onclick="Btn_Info(this)">info</button>
         <button onclick="Btn_GetSchemeDone()">example</button>
-        <button name="BtnMake" onclick="Btn_Make(this)">make</button>
-        <button name="BtnSave" id="BtnSave" onclick="Btn_Save(this)" {{ Data.BtnSaveDisabled }} >save</button>
-        <input type="hidden" name="BtnSaveFlag" id="BtnSaveFlag" value={{ Data.BtnSaveDisabled }}>
-        <input type="hidden" name="BtnModerateFlag" id="BtnModerateFlag" value={{ Data.BtnModerate }}>
-        {% if Data.Admin %}
-        <button name="BtnModerate" onclick="Btn_Moderate()">moderate</button>
+        <button name="btn_make" onclick="Btn_Make(this)">make</button>
+        <button name="btn_save" id="btn_save" onclick="Btn_Save(this)" {{ Data.btn_save_disabled }} >save</button>
+        <input type="hidden" name="btn_save_flag" id="btn_save_flag" value={{ Data.btn_save_disabled }}>
+        <input type="hidden" name="btn_moderate_flag" id="btn_moderate_flag" value={{ Data.btn_moderate }}>
+        {% if Data.admin %}
+        <button name="btn_moderate" onclick="Btn_Moderate()">moderate</button>
         {% endif %}
-        <select id="SelHelp" onchange="Sel_Help(this)">
+        <select id="sel_help" onchange="Sel_Help(this)">
         {% include "inc/soup_help.tpl.html" %}
         </select>
       </td>
@@ -192,17 +192,17 @@
     <tr>
       <td>var</td>
       <td>
-        <textarea name="Var" id="Var" rows="3" onblur="OnBlur(this)">{{ Data.Var }}</textarea>
+        <textarea name="var" id="var" rows="3" onblur="OnBlur(this)">{{ Data.var }}</textarea>
       </td>
       <td rowspan="9">
-        <textarea readonly name="Script" id="Script" rows="20">{{ Data.Script }}</textarea>
-        <textarea readonly name="Output" id="Output" rows="25">{{ Data.Output }}</textarea>
+        <textarea readonly name="script" id="script" rows="20">{{ Data.script }}</textarea>
+        <textarea readonly name="output" id="output" rows="25">{{ Data.output }}</textarea>
       </td>
     </tr>
     <tr>
       <td>pipe</td>
       <td>
-        <textarea name="Pipe" id="Pipe" rows="4" onblur="OnBlur(this)" required>{{ Data.Pipe }} </textarea>
+        <textarea name="pipe" id="pipe" rows="4" onblur="OnBlur(this)" required>{{ Data.pipe }} </textarea>
       </td>
     </tr>
     <tr>
@@ -250,7 +250,7 @@
     <tr>
       <td>comment</td>
       <td>
-        <textarea name="Comment" id="Comment" rows="4">{{ Data.Comment }}</textarea>
+        <textarea name="comment" id="comment" rows="4">{{ Data.comment }}</textarea>
       </td>
     </tr>
   </tbody>

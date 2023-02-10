@@ -23,7 +23,7 @@ from .WebScraper import TWebScraperFull, TWebScraperUpdate, TWebScraperSitemap
 class TMain():
     def __init__(self, aConf: dict):
         self.Conf = aConf
-        self.Scrapers = deque((), self.Conf.get('MaxTasks', 10))
+        self.Scrapers = deque((), self.Conf.get('max_tasks', 10))
 
         self.WebSock = TWebSockClient(aConf.SrvAuth)
         self.WebSock.OnMessage = self._OnWebSockMessage
@@ -45,7 +45,7 @@ class TMain():
             #continue
 
             DataApi = await Api.DefHandler('get_task')
-            Data = DeepGet(DataApi, 'Data.Data')
+            Data = DeepGet(DataApi, 'data.data')
             if (Data):
                 Scheme = TScheme(Data['scheme'])
                 Type = Data.get('type')
@@ -57,7 +57,7 @@ class TMain():
                 elif (Type == 'update'):
                     Scraper = TWebScraperUpdate(self, Scheme, Data['urls'], Data['sleep'])
                 elif (Type == 'update_selenium'):
-                    #await TStarter().ThreadCreate(Data['Urls'])
+                    #await TStarter().ThreadCreate(Data['urls'])
                     continue
                 else:
                     Log.Print(1, 'e', '_Worker(). Unknown type: `%d`' % (Type))

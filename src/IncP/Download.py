@@ -32,7 +32,7 @@ def GetSoup(aData: str) -> BeautifulSoup:
 
 async def GetSoupUrl(aUrl: str) -> BeautifulSoup:
     Download = TDownload()
-    Download.Opt.update({'Headers': TDHeaders(), 'decode': True})
+    Download.Opt.update({'headers': TDHeaders(), 'decode': True})
     Res = await Download.Get(aUrl)
     Err = FilterKeyErr(Res)
     if (not Err):
@@ -97,19 +97,19 @@ class TDConnector():
 class TDownload():
     def __init__(self):
         self.Opt = TDictDefCall({
-            'Connector': TDConnector(),
-            'Headers': None,
-            'Auth': None,
-            'Timeout': 10,
-            'OnGet': None,
-            'FakeRead': False,
-            'Decode': False
+            'connector': TDConnector(),
+            'headers': None,
+            'auth': None,
+            'timeout': 10,
+            'on_get': None,
+            'fake_read': False,
+            'decode': False
         })
 
     async def _GetWithSem(self, aUrl: str, aSem: asyncio.Semaphore) -> dict:
         async with aSem:
             Res = await self.Get(aUrl)
-            Res['Url'] = aUrl
+            Res['url'] = aUrl
             return Res
 
     async def _Get(self, aUrl: str) -> dict:

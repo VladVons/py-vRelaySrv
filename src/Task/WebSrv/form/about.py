@@ -11,4 +11,4 @@ class TForm(TFormBase):
 
     async def _Render(self):
         Arr = ['%s: %s' % (Key, Val) for Key, Val in self.Info.items()]
-        self.Data.Info = '<br>\n'.join(Arr)
+        self.Data.info = '<br>\n'.join(Arr)

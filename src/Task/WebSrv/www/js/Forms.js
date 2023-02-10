@@ -10,10 +10,10 @@ function Btn_GetSchemeEmpty() {
         '/api/get_scheme_empty',
         function(aData) {
             console.log('aData', aData);
-            let Dbl = new TDbList(aData['Data']['Data']);
+            let Dbl = new TDbList(aData['data']['data']);
             let Rec = Dbl.Shuffle();
-            document.getElementById('Url0').value = Rec.GetField('url');
-            document.getElementById('Script').value = '';
+            document.getElementById('url0').value = Rec.GetField('url');
+            document.getElementById('script').value = '';
           },
         {'cnt': 20}
     );

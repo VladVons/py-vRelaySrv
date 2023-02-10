@@ -19,8 +19,8 @@ class TMenu():
         return (Str) and (Str.lower() == 'y')
 
     def _ShowTree(self, aData: dict):
-        for Var in SortLD(GetTree(aData), 'Key'):
-            print('%15s = %s' % (Var['Key'], Var['Val']))
+        for Var in SortLD(GetTree(aData), 'key'):
+            print('%15s = %s' % (Var['key'], Var['val']))
 
     async def WaitMsg(self, aMsg: str = '') -> str:
         return await KbdTerm.Input('%s (Press ENTER) ' % aMsg)

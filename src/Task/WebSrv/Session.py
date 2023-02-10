@@ -33,17 +33,17 @@ class TSession():
 
     def CheckUserAccess(self, aUrl: str) -> bool: #//
         Grant = ['/$', '/form/login', '/form/about']
-        Allow = DeepGet(self.Data, 'UserConf.interface_allow', '').split() + Grant
-        Deny = DeepGet(self.Data, 'UserConf.interface_deny', '').split()
+        Allow = DeepGet(self.Data, 'user_conf.interface_allow', '').split() + Grant
+        Deny = DeepGet(self.Data, 'user_conf.interface_deny', '').split()
         return (self._CheckUserAccess(aUrl, Allow)) and (not self._CheckUserAccess(aUrl, Deny))
 
     async def UpdateUserConfig(self): #//
         UserId = self.Data.get('UserId')
         if (UserId):
             DataApi = await Api.DefHandler('get_user_config', {'id': UserId})
-            DblJ = DeepGet(DataApi, 'Data.Data')
+            DblJ = DeepGet(DataApi, 'data.data')
             if (DblJ):
                 Conf = TDbListSafe().Import(DblJ).ExportPair('name', 'data')
-                self.Data['UserConf'] = Conf
+                self.Data['user_conf'] = Conf
 
 Session = TSession()

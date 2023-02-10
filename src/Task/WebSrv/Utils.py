@@ -15,7 +15,7 @@ from Inc.Util.Mod import GetClassHelp
 
 def GetUrlInfo(aData: dict) -> list:
     TimeAt = time.time()
-    AppData = TSchemeApi.app_json(aData.get('Soup'), None)
+    AppData = TSchemeApi.app_json(aData.get('soup'), None)
     if (AppData):
         AppData = json.dumps(AppData, indent=2, sort_keys=True, ensure_ascii=False)
 

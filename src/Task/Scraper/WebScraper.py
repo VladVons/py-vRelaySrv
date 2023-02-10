@@ -49,7 +49,7 @@ class TSender():
         if (not self.Dbl.IsEmpty()):
             Data = self.Dbl.Export()
             DataApi = await Api.DefHandler('send_result', Data)
-            if (DeepGet(DataApi, 'Data.Data')):
+            if (DeepGet(DataApi, 'data.data')):
                 self.Dbl.Empty()
 
 
@@ -64,11 +64,11 @@ class TWebScraper():
         self.UrlScheme = 0
         self.IsRun = False
 
-        #self.Download = TDownload(self.Parent.Conf.get('Proxy', []))
+        #self.Download = TDownload(self.Parent.Conf.get('proxy', []))
         self.Download = TDownload()
-        self.Download.Opt.update({'Decode': True})
+        self.Download.Opt.update({'decode': True})
 
-        self.DblQueue = TDbListSafe( [('Url', str)] )
+        self.DblQueue = TDbListSafe( [('url', str)] )
 
         Dbl = TDbListSafe([
             # product
@@ -126,7 +126,7 @@ class TWebScraper():
             await asyncio.sleep(random.randint(int(self.Sleep / 2), self.Sleep))
 
             Rec = self.DblQueue.RecPop()
-            Url = Rec.GetField('Url')
+            Url = Rec.GetField('url')
             UrlDown = await self.Download.Get(Url)
             Err = FilterKeyErr(UrlDown)
             if (Err):
@@ -241,7 +241,7 @@ class TWebScraperSitemap(TWebScraper):
     async def _DoWorkerStart(self):
         SiteMap = await self.LoadSiteMap(self.UrlRoot + '/sitemap.xml')
         if (SiteMap):
-            self.DblQueue.ImportList('Url', SiteMap)
+            self.DblQueue.ImportList('url', SiteMap)
         else:
             Log.Print(1, 'i', 'No sitemap %s' % (self.UrlRoot))
 

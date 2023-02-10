@@ -22,12 +22,12 @@ class THeader(list):
     @staticmethod
     def GetHead(aCode: int) -> str:
         Arr = {
-            200: 'OK',
-            302: 'Redirect',
-            400: 'Bad request',
-            404: 'Not found'
+            200: 'ok',
+            302: 'redirect',
+            400: 'bad request',
+            404: 'not found'
         }
-        return Arr.get(aCode, 'Unknown')
+        return Arr.get(aCode, 'unknown')
 
     @staticmethod
     def GetMime(aExt: str) -> str:

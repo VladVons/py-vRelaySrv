@@ -200,11 +200,11 @@ class TSoupScheme():
                     Path = aPath + '/' + Key
                     if (Key.startswith('$')):
                         self.Var[Key] = self.ParsePipes(aSoup, Val, Path)
-                    elif Key.startswith('Pipe'):
+                    elif Key.startswith('pipe'):
                         Res[Key] = self.ParsePipes(aSoup, Val, Path)
                     else:
                         Res[Key] = self._ParseRecurs(aSoup, Val, Path)
-                        if (Key == 'Url'):
+                        if (Key == 'url'):
                             UrlData = urlparse(Val[0])
                             self.Var['$host'] = '%s://%s' % (UrlData.scheme, UrlData.hostname)
         elif (isinstance(aData, list)):
@@ -288,7 +288,7 @@ class TSchemeJson():
         return self
 
     def GetUrl(self) -> list:
-        return DeepGet(self.Scheme, 'Product.Info.Url')
+        return DeepGet(self.Scheme, 'product.info.url')
 
     def GetFields(self) -> list:
         raise NotImplementedError()

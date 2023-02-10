@@ -42,7 +42,7 @@ class TApiBase():
         if (not self.Url.get(Name)):
             Res = aCls(aArgs)
             self.Url[Name] = aCls.Param
-            self.Url[Name]['Class'] = Res
+            self.Url[Name]['class'] = Res
             return Res
 
     async def Call(self, aPath: str, aParam: dict) -> dict:
@@ -53,7 +53,7 @@ class TApiBase():
         MethodName = self.GetMethodName(aPath)
         Method = getattr(self, MethodName, None)
         if (not Method):
-            Class = UrlInf.get('Class')
+            Class = UrlInf.get('class')
             if (Class):
                 Method = getattr(Class, 'Exec', self.DefMethod)
             else:
@@ -102,8 +102,8 @@ class TWebClient():
         if (aPost is None):
             aPost = {}
 
-        Auth = aiohttp.BasicAuth(self.Auth.get('User'), self.Auth.get('Password'))
-        Url = 'http://%s:%s/%s' % (self.Auth.get('Server'), self.Auth.get('Port'), aPath)
+        Auth = aiohttp.BasicAuth(self.Auth.get('user'), self.Auth.get('password'))
+        Url = 'http://%s:%s/%s' % (self.Auth.get('server'), self.Auth.get('port'), aPath)
         TimeAt = time.time()
         try:
             async with aiohttp.ClientSession(auth=Auth) as Session:
@@ -129,8 +129,8 @@ class TWebSockClient():
         if (aParam is None):
             aParam = {}
 
-        Auth = aiohttp.BasicAuth(self.Auth.get('User'), self.Auth.get('Password'))
-        Url = 'http://%s:%s/%s' % (self.Auth.get('Server'), self.Auth.get('Port'), aPath)
+        Auth = aiohttp.BasicAuth(self.Auth.get('user'), self.Auth.get('password'))
+        Url = 'http://%s:%s/%s' % (self.Auth.get('server'), self.Auth.get('port'), aPath)
         async with aiohttp.ClientSession(auth=Auth) as Session:
             async with Session.ws_connect(Url, params=aParam) as self.WS:
                 async for Msg in self.WS:
@@ -154,7 +154,7 @@ class TWebSockClient():
 
 class TWebSockSrv():
     def __init__(self):
-        self.DblWS = TDbListSafe([('WS', web.WebSocketResponse), ('Id', str)])
+        self.DblWS = TDbListSafe([('ws', web.WebSocketResponse), ('id', str)])
         self.Api = None
 
     async def Handle(self, aRequest: web.Request) -> web.WebSocketResponse:

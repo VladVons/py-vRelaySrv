@@ -17,10 +17,10 @@ class TForm(TFormBase):
     Title = 'Soup test'
 
     async def Load(self):
-        Data = await GetSoupUrl(self.Data.Url0)
+        Data = await GetSoupUrl(self.Data.url0)
         Err = FilterKeyErr(Data)
         if (Err):
-            self.Data.Output = 'Error loading %s, %s' % (self.Data.Url0, Err)
+            self.Data.output = 'Error loading %s, %s' % (self.Data.url0, Err)
         else:
             return Data
 
@@ -30,41 +30,41 @@ class TForm(TFormBase):
             return
 
         try:
-            if (r'\n' in self.Data.Script):
-                self.Data.Script = self.Data.Script.encode().decode('unicode_escape').strip('"\n\r')
+            if (r'\n' in self.Data.script):
+                self.Data.script = self.Data.script.encode().decode('unicode_escape').strip('"\n\r')
 
-            Scheme = TScheme(self.Data.Script)
+            Scheme = TScheme(self.Data.script)
             Scheme.Debug = True
-            Output = Scheme.Parse(Data.get('Soup')).GetData(['err', 'pipe', 'warn'])
+            Output = Scheme.Parse(Data.get('soup')).GetData(['err', 'pipe', 'warn'])
             Unknown = [x for x in Output.get('err', []) if 'unknown' in x]
             if (Unknown):
-                Output['Help'] = GetApiHelp()
+                Output['help'] = GetApiHelp()
 
-            self.Data.Output = json.dumps(Output,  indent=2, sort_keys=True, ensure_ascii=False, cls=TJsonEncoder)
+            self.Data.output = json.dumps(Output,  indent=2, sort_keys=True, ensure_ascii=False, cls=TJsonEncoder)
             if (Scheme.IsJson()):
-                self.Data.Script = FormatJsonStr(self.Data.Script)
+                self.Data.script = FormatJsonStr(self.Data.script)
         except (json.decoder.JSONDecodeError, AttributeError) as E:
-            self.Data.Output = str(E.args)
-            Log.Print(1, 'x', self.Data.Output, aE=E)
+            self.Data.output = str(E.args)
+            Log.Print(1, 'x', self.Data.output, aE=E)
 
     async def BtnInfo(self):
         Data = await self.Load()
         if (Data):
             Arr = GetUrlInfo(Data)
-            self.Data.Output = '\n'.join(Arr) + '\n'
+            self.Data.output = '\n'.join(Arr) + '\n'
 
     async def BtnSource(self):
         Data = await self.Load()
         if (Data):
-            self.Data.Output = Data.get('data')
+            self.Data.output = Data.get('data')
 
     async def _Render(self):
         if (not await self.PostToForm()):
             return
 
-        if ('BtnMake' in self.Data):
+        if ('btn_make' in self.Data):
             await self.BtnMake()
-        elif ('BtnInfo' in self.Data):
+        elif ('btn_info' in self.Data):
             await self.BtnInfo()
-        elif ('BtnSource' in self.Data):
+        elif ('btn_source' in self.Data):
             await self.BtnSource()

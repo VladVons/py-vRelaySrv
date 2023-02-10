@@ -13,16 +13,16 @@ class TForm(TFormBase):
     Title = 'Soup help'
 
     async def _Render(self):
-        self.Data.Info = {}
+        self.Data.info = {}
 
         ClassHelp = GetClassHelp(SchemeApi, SchemeApi.TSchemeApi)
-        self.Data.Info['Api'] = {
+        self.Data.info['api'] = {
             x[4]: x[3].strip()
             for x in ClassHelp
         }
 
         ClassHelp = GetClassHelp(SchemeApi, SchemeApi.TSchemeExt)
-        self.Data.Info['Ext'] = {
+        self.Data.info['ext'] = {
             x[4]: x[3].strip()
             for x in ClassHelp
         }
@@ -32,12 +32,12 @@ class TForm(TFormBase):
         for x in ClassHelp:
             Data = getattr(SchemeApi.TSchemeApiExt, x[0])()
             ResApi[x[4]] = '\n'.join([str(d) for d in Data])
-        self.Data.Info['ApiExt'] = ResApi
+        self.Data.info['api_ext'] = ResApi
 
-        self.Data.Info['Internal'] = {
+        self.Data.info['internal'] = {
            '-': 'comment\n["-find", ["div"]]',
            'as_if': '',
            'as_list': '',
            'as_dict': '',
-           'Pipe': 'All chains should start with Pipe\n"PipeA": [...]'
+           'pipe': 'All chains should start with pipe\n"pipe_a_": [...]'
         }

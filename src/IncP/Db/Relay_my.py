@@ -17,11 +17,11 @@ class TDbApp(TADb):
         await self.Close()
 
         self.Pool = await aiomysql.create_pool(
-            host = self.Auth.get('Server', 'localhost'),
-            port = self.Auth.get('Port', 3306),
-            db = self.Auth.get('Database'),
-            user = self.Auth.get('User'),
-            password = self.Auth.get('Password')
+            host = self.Auth.get('server', 'localhost'),
+            port = self.Auth.get('port', 3306),
+            db = self.Auth.get('database'),
+            user = self.Auth.get('user'),
+            password = self.Auth.get('password')
         )
 
     async def AddLog(self, aType: int, aDescr: str):

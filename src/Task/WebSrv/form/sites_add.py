@@ -17,7 +17,7 @@ class TForm(TFormBase):
     Title = 'Sites add'
 
     async def _Render(self):
-        if (not await self.PostToForm()) and (not self.Data.Sites):
+        if (not await self.PostToForm()) and (not self.Data.sites):
             return
 
         DataApi = await Api.DefHandler('get_hand_shake')
@@ -27,7 +27,7 @@ class TForm(TFormBase):
 
         Sites = []
         # pylint: disable-next=no-member
-        Lines = self.Data.Sites.splitlines()
+        Lines = self.Data.sites.splitlines()
         for Line in Lines:
             Data = urlparse(Line)
             Sites.append(Data.scheme + '://' + Data.hostname)
@@ -35,10 +35,10 @@ class TForm(TFormBase):
         DataApi = await Api.DefHandler('get_sites')
         Err = FilterKeyErr(DataApi)
         if (Err):
-            self.Data.Output = Err
+            self.Data.output = Err
             return
 
-        DataDbl = DeepGet(DataApi, 'Data.Data')
+        DataDbl = DeepGet(DataApi, 'data.data')
         Dbl = TDbListSafe().Import(DataDbl)
         Diff = Dbl.GetDiff('url', Sites)
 
@@ -64,7 +64,7 @@ class TForm(TFormBase):
         Output += list(Diff[1] - set(UrlOk))
         Output.append('')
 
-        self.Data.Output = '\n'.join(Output)
+        self.Data.output = '\n'.join(Output)
 
         if (UrlOk):
             Dbl = TDbSql(None)

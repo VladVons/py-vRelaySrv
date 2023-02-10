@@ -1,14 +1,14 @@
 {
-  "Product": {
-    "Info": {
-      "Author": "vladvons",
-      "Date": "2022-07-01 09:00:00",
-      "Url": [
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-07-01 09:00:00",
+      "url": [
         "https://ktc.ua/goods/noutbuk_lenovo_thinkbook_15_g3_acl_21a4008yra_mineral_grey.html"
       ]
     },
-    "Pipe": [
-      ["app_json", [{"@type": "Product"}]],
+    "pipe": [
+      ["app_json", [{"@type": "product"}]],
       ["as_dict", {
         "name": [
           ["gets", ["name"]]

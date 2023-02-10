@@ -45,6 +45,6 @@ class TWebSock():
                 await asyncio.sleep(1)
 
     async def Run(self):
-        Port = self.Conf.get('Port', 8082)
+        Port = self.Conf.get('port', 8082)
         Log.Print(1, 'i', 'Run() listen websocket port %s' % (Port))
         await websockets.serve(self.Handler, 'localhost', Port)

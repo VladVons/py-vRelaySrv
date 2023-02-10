@@ -24,8 +24,8 @@ class TForm(TFormBase):
     Submit = SubmitField("ok")
 
     async def _Render(self):
-        self.Data.Message = '%s (%s)' % (Session.Data.get('UserName'), Session.Data.get('UserGroup', ''))
-        self.Data.Query = self.Request.query_string
+        self.Data.message = '%s (%s)' % (Session.Data.get('user_name'), Session.Data.get('user_group', ''))
+        self.Data.query = self.Request.query_string
         if (not self.validate()):
             return
 
@@ -41,14 +41,14 @@ class TForm(TFormBase):
             Log.Print(1, 'e', 'Err: %s' % Err)
             return
 
-        DblJ = DeepGet(DataApi, 'Data.Data')
+        DblJ = DeepGet(DataApi, 'data.data')
         Dbl = TDbListSafe().Import(DblJ)
         if (Dbl.IsEmpty()):
-            self.Data.Message = 'Authorization failed for %s' % (self.UserName.data)
+            self.Data.message = 'Authorization failed for %s' % (self.UserName.data)
             return
 
         UserId = Dbl.Rec.GetField('id')
-        Session.Data.update({'UserId': UserId, 'UserName': self.UserName.data, 'UserGroup': Dbl.Rec.GetField('auth_group_name')})
+        Session.Data.update({'user_id': UserId, 'user_name': self.UserName.data, 'user_group': Dbl.Rec.GetField('auth_group_name')})
         await Session.UpdateUserConfig()
 
         Redirect = self.Request.query.get('url', '/')

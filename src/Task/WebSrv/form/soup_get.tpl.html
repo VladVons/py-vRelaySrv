@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block content %}
-<form name="Form" method="post" action="/form/soup_get" enctype="multipart/form-data">
+<form name="form" method="post" action="/form/soup_get" enctype="multipart/form-data">
     <table style="width:100%">
         <tr>
             <th></th>
@@ -17,24 +17,24 @@
             <td>Url</td>
             <td>
                 <button onclick="Btn_GetSchemeEmpty()">get</button>
-                <button onclick="Btn_GoUrl('Url0')">go</button>
-                <input type="text" name="Url0" id="Url0" placeholder="url" style="width:90%" required value="{{ Data.Url0 }}">
+                <button onclick="Btn_GoUrl('url0')">go</button>
+                <input type="text" name="url0" id="url0" placeholder="url" style="width:90%" required value="{{ Data.url0 }}">
             </td>
         </tr>
         <tr>
             <td>Path</td>
-            <td><input type="text" name="Path" placeholder="path script" style="width:100%" value="{{ Data.Path }}"></td>
+            <td><input type="text" name="path" placeholder="path script" style="width:100%" value="{{ Data.path }}"></td>
         </tr>
         <tr>
             <td>Find regEx</td>
-            <td><input type="text" name="Find" id="Find" placeholder="text" style="width:100%" required value="{{ Data.Find }}"></td>
+            <td><input type="text" name="find" id="find" placeholder="text" style="width:100%" required value="{{ Data.find }}"></td>
         </tr>
         <tr>
             <td>Output</td>
-            <td><textarea readonly name="Output" rows="30">{{ Data.Output }}</textarea> </td>
+            <td><textarea readonly name="output" rows="30">{{ Data.output }}</textarea> </td>
         <tr>
         <tr>
-            <td colspan="2" style="text-align:center"><input type="submit" name="BtnOk" value="OK" class="btn"></td>
+            <td colspan="2" style="text-align:center"><input type="submit" name="btn_ok" value="ok" class="btn"></td>
         </tr>
     </table>
 </form>

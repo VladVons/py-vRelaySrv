@@ -137,15 +137,15 @@ class TDbList {
     }
 
     Import(aData) {
-        this.Tag = aData['Tag'];
-        this.Data = aData['Data'];
-        this.Fields = new TDbFields(aData['Head']);
+        this.Tag = aData['tag'];
+        this.Data = aData['data'];
+        this.Fields = new TDbFields(aData['head']);
         this.RecNo = 0;
         return this;
     }
 
     Export() {
-        return {'Data': this.Data, 'Head': this.Fields.Export(), 'Tag': this.Tag};
+        return {'data': this.Data, 'head': this.Fields.Export(), 'tag': this.Tag};
     }
 
     GetSize() {
@@ -190,19 +190,19 @@ class TDbList {
 
 
 /*
-Data1 = '{"Data": [["User2", 22, true], ["User1", 11, false], ["User3", 33, true], ["User4", 44, true]], "Head": [["User", "str", ""], ["Age", "int", 0], ["Male", "bool", true]], "Tag": 1}'
+Data1 = '{"data": [["user2", 22, true], ["user1", 11, false], ["user3", 33, true], ["user4", 44, true]], "head": [["user", "str", ""], ["age", "int", 0], ["male", "bool", true]], "tag": 1}'
 Data2 = JSON.parse(Data1)
 Dbl = new TDbList(Data2)
 console.log('AsDict', Dbl.Rec.GetAsDict())
 
-Dbl.Sort('User')
+Dbl.Sort('user')
 for (let Rec of Dbl) {
-    console.log(Rec.GetField('User'));
+    console.log(Rec.GetField('user'));
 }
 
-Dbl.RecAdd(['User5', 33, false])
-Dbl.RecAdd()
-Dbl.Rec.SetField('User', 'Pink')
+Dbl.RecAdd(['user5', 33, false])
+Dbl.RecAdd()'user'
+Dbl.Rec.SetField('user', 'pink')
 Dbl.Rec.Flush()
 console.log('size', Dbl.GetSize())
 

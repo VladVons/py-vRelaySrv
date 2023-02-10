@@ -20,7 +20,7 @@ class TForm(TFormBase):
     }
 
     async def _Render(self):
-        self.Data.Pages = {
+        self.Data.pages = {
             Key: Val
             for Key, Val in self.Pages.items()
             if (Session.CheckUserAccess(Key))

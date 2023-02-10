@@ -23,9 +23,9 @@ class TForm(TFormBase):
         Data = DeepGet(DataApi, 'data.data')
         if (Data):
             Dbl = TDbListSafe().Import(Data)
-            self.Data.Sites = Dbl
+            self.Data.sites = Dbl
 
             Cond = TDbCond().AddFields([ ['eq', (Dbl, 'has_scheme'), True, True]])
-            self.Data.CntScheme = Dbl.Clone(aCond=Cond).GetSize()
+            self.Data.cnt_scheme = Dbl.Clone(aCond=Cond).GetSize()
         else:
             return self.RenderInfo(DataApi.get('data'))

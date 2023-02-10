@@ -15,7 +15,7 @@
         });
 
         function Btn_GetSchemeDone() {
-            let OutputH = document.getElementById('Output');
+            let OutputH = document.getElementById('output');
             //if (ScriptH.value && !window.confirm('Load script ?')) {
             //    return;
             //}
@@ -26,7 +26,7 @@
             HttpRequest(
                 '/api/get_scheme_not_empty',
                 function(aData) {
-                    let Dbl = new TDbList(aData['Data']['Data']);
+                    let Dbl = new TDbList(aData['data']['data']);
                     Dbl.Shuffle();
                     Dbl.RecNo = 0;
 
@@ -34,44 +34,44 @@
                     OutputH.value = Scheme;
 
                     //let SchemeJ = JSON.parse(Scheme);
-                    //let Url = SchemeJ['Product']['Info']['Url'][0];
-                    //document.getElementById('Url0').value = Url;
+                    //let Url = SchemeJ['product']['info']['url'][0];
+                    //document.getElementById('url0').value = Url;
                 },
                 {'cnt': 10}
             );
         };
 
         function Btn_Url() {
-            Script = document.getElementById('Script').value;
+            Script = document.getElementById('script').value;
             if (Script) {
-                Url = JSON.parse(Script)['Product']['Info']['Url'][0];
-                document.getElementById('Url0').value = Url;
+                Url = JSON.parse(Script)['product']['nfo']['url'][0];
+                document.getElementById('url0').value = Url;
             }
         }
 
         function Btn_Make(aThis) {
-            let Script = document.getElementById('Script').value;
+            let Script = document.getElementById('script').value;
             if (Script.startsWith('"')) {
                 Script = decodeURIComponent(JSON.parse(Script))
-                document.getElementById('Script').value = Script;
+                document.getElementById('script').value = Script;
                 ScriptJ = JSON.parse(Script);
-                document.getElementById('Url0').value = ScriptJ['Product']['Info']['Url'][0];
+                document.getElementById('url0').value = ScriptJ['product']['info']['url'][0];
             }
 
-            document.getElementById('Output').value = '';
-            document.forms["Form"].requestSubmit(aThis)
+            document.getElementById('output').value = '';
+            document.forms["form"].requestSubmit(aThis)
         }
 
         function Btn_Info(aThis) {
-            document.getElementById('Output').value = '';
-            document.forms["Form"].requestSubmit(aThis)
+            document.getElementById('output').value = '';
+            document.forms["form"].requestSubmit(aThis)
         }
 
         function Sel_Sample(aThis) {
             let Val = aThis.options[aThis.selectedIndex].text;
             let Url = window.location.origin + '/sample/' + Val;
             fetch(Url).then(function(aResponse) {
-                let OutputH = document.getElementById('Output');
+                let OutputH = document.getElementById('output');
                 if (aResponse.ok) {
                     aResponse.text().then((aData) => {
                         OutputH.value = aData;
@@ -84,42 +84,42 @@
 
         function Sel_Help(aThis) {
             let Val = aThis.options[aThis.selectedIndex].text;
-            InsertAtCaret(document.getElementById('Script'), Val);
+            InsertAtCaret(document.getElementById('script'), Val);
         }
     </script>
 {% endblock %}
 
 {% block content %}
-<form name="Form" method="post" action="/form/soup_test" enctype="multipart/form-data">
+<form name="form" method="post" action="/form/soup_test" enctype="multipart/form-data">
     <table width="                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          100%">
         <tr>
             <td style="width:50%">
-                <button name="BtnGoUrl" onclick="Btn_GoUrl('Url0')">go</button>
-                <button name="BtnUrl" onclick="Btn_Url()">url</button>
-                <button name="BtnInfo" onclick="Btn_Info(this)">info</button>
-                <button name="BtnSource" onclick="Btn_Source(this)">source</button>
-                <button name="BtnMake" onclick="Btn_Make(this)">make</button>
-                <button name="BtnGetSchemeDone" onclick="Btn_GetSchemeDone()">example</button>
-                <select id="SelSample" onchange="Sel_Sample(this)">
+                <button name="btn_go_url" onclick="Btn_GoUrl('url0')">go</button>
+                <button name="btn_url" onclick="Btn_Url()">url</button>
+                <button name="btn_info" onclick="Btn_Info(this)">info</button>
+                <button name="btn_source" onclick="Btn_Source(this)">source</button>
+                <button name="btn_make" onclick="Btn_Make(this)">make</button>
+                <button name="btn_get_scheme_done" onclick="Btn_GetSchemeDone()">example</button>
+                <select id="sel_sample" onchange="Sel_Sample(this)">
                     <optgroup label="- Sample -"></optgroup>
                       <option>app_json_1.json</option>
                       <option>app_json_arr.json</option>
                       <option>schema.org.json</option>
                     </optgroup>
                 </select>
-                <select id="SelHelp" onchange="Sel_Help(this)">
+                <select id="sel_help" onchange="Sel_Help(this)">
                 {% include "inc/soup_help.tpl.html" %}
                 </select>
-                <input type="text" name="Url0" id="Url0" placeholder="Url" style="width:98%" required value="{{ Data.Url0 }}">
+                <input type="text" name="url0" id="url0" placeholder="url" style="width:98%" required value="{{ Data.url0 }}">
             </td>
             <td></td>
         </tr>
         <tr>
             <td>
-                <textarea name="Script" id="Script" class="lined" rows="45" required onkeydown="InsertTab(this, event)">{{ Data.Script }}</textarea>
+                <textarea name="script" id="script" class="lined" rows="45" required onkeydown="InsertTab(this, event)">{{ Data.script }}</textarea>
             </td>
             <td>
-                <textarea readonly name="Output" id="Output" rows="45">{{ Data.Output }}</textarea>
+                <textarea readonly name="output" id="output" rows="45">{{ Data.output }}</textarea>
             </td>
         </tr>
     </table>

@@ -71,7 +71,7 @@ class TDbf(TDb):
         assert (Sign == self.Sign), 'bad signature'
 
         self.Fields = TDbfFields()
-        self.Fields.Add('Del', 'C', 1, 0)
+        self.Fields.Add('del', 'C', 1, 0)
 
         self.S.seek(32)
         while True:

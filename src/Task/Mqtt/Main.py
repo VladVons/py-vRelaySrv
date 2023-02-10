@@ -36,11 +36,11 @@ class TMqtt():
     async def on_message(self, _client, _topic, payload, _qos, _properties):
         #Log.Print(1, 'i', 'on_message. topic %s, payload %s, qos %s' % (topic, payload, qos))
         Msg = json.loads(payload.decode('utf-8'))
-        Id = Msg.get('Id')
+        Id = Msg.get('id')
         Data = Msg.get('data')
         Ok = False
         if (Id) and (Data):
-            Ok = await self.Db.InsertDeviceByUniq(Id, Data.get('Owner'), Data.get('Val'))
+            Ok = await self.Db.InsertDeviceByUniq(Id, Data.get('owner'), Data.get('val'))
             Log.Print(1, 'i', 'on_message', (Ok, Id, Data))
 
         if (not Ok):
@@ -56,7 +56,7 @@ class TMqtt():
         Client.on_connect = self.on_connect
         Client.on_disconnect = self.on_disconnect
 
-        Port = self.Conf.get('Port', 1883)
+        Port = self.Conf.get('port', 1883)
         while True:
             if (not Client.is_connected) or (not await CheckHost(self.Conf.Host, Port, 3)):
                 try:

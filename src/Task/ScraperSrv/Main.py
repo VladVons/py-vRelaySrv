@@ -32,7 +32,7 @@ class TScraperSrv():
     async def _rWebApi(self, aRequest: web.Request) -> web.Response:
         #await self.WebSockServer.SendAll({'hello': 111}, '/ws/test')
         if (await Api.AuthRequest(aRequest, self.Conf.Auth)):
-            #Conf = aRequest.app.get('Conf')
+            #Conf = aRequest.app.get('conf')
             Name = aRequest.match_info.get('name')
             Post = await aRequest.json()
 
@@ -46,7 +46,7 @@ class TScraperSrv():
         return web.json_response(Res, status=403)
 
     async def _rWebSock(self, aRequest: web.Request) -> web.WebSocketResponse:
-        if (await Api.AuthRequest(aRequest, self.Conf.Get('Auth'))):
+        if (await Api.AuthRequest(aRequest, self.Conf.Get('auth'))):
             return await self.WebSockSrv.Handle(aRequest)
 
         WS = web.WebSocketResponse()
@@ -55,7 +55,7 @@ class TScraperSrv():
 
     async def Run(self, aSleep: int = 10):
         App = web.Application()
-        #App['SomeKey'] = 'Hello'
+        #App['some_key'] = 'Hello'
 
         #App.on_startup.append(self.cbOnStartup)
         App.cleanup_ctx.append(self.cbOnStartup)
@@ -66,7 +66,7 @@ class TScraperSrv():
             web.get('/ws/{Name:.*}', self._rWebSock)
         ])
 
-        Port = self.Conf.get('Port', 8081)
+        Port = self.Conf.get('port', 8081)
         while (True):
             try:
                 Log.Print(1, 'i', 'ScraperSrv on port %s' % (Port))

@@ -1,16 +1,16 @@
 {
-  "Product": {
-    "Info": {
-      "Author": "vladvons",
-      "Date": "2022-07-01 09:00:00",
-      "Url": [
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-07-01 09:00:00",
+      "url": [
         "https://expertonline.com.ua/apple-airpods-2-with-charging-case-mv7n2.html"
       ]
     },
-    "Var": {
+    "var": {
     },
-    "Pipe": [
-      ["app_json", [{"@type": "Product"}]],
+    "pipe": [
+      ["app_json", [{"@type": "product"}]],
       ["as_dict", {
         "name": [
           ["get", ["name"]]

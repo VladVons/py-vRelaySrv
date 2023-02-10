@@ -24,15 +24,15 @@ class TApi(TApiBase):
         return await self.WebClient.Send('web/' + aPath, aData)
 
     async def GetUserConfig(self):
-        User = self.WebClient.Auth.get('User')
-        Data = {'login': User, 'passw': self.WebClient.Auth.get('Password')}
+        User = self.WebClient.Auth.get('user')
+        Data = {'login': User, 'passw': self.WebClient.Auth.get('password')}
         DataApi = await self.DefHandler('get_user_id', Data)
         Err = FilterKeyErr(DataApi)
         if (Err):
             Log.Print(1, 'e', 'Err: %s' % Err)
             return
 
-        Dbl = TDbListSafe().Import(DeepGet(DataApi, 'Data.Data'))
+        Dbl = TDbListSafe().Import(DeepGet(DataApi, 'data.data'))
         if (Dbl.IsEmpty()):
             Log.Print(1, 'e', 'GetUserConfig() failed for %s' % (User))
         else:

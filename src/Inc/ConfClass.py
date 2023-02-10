@@ -37,16 +37,16 @@ class TConfClass(TConf):
             Data = self._Replace(hF.read())
             try:
                 Data = json.loads(Data)
-                for Item in Data.get('Classes', []):
-                    Alias = Item.get('Alias')
-                    Class = Item.get('Class')
-                    Param = Item.get('Param', {})
-                    Module = Item.get('Module')
+                for Item in Data.get('classes', []):
+                    Alias = Item.get('alias')
+                    Class = Item.get('class')
+                    Param = Item.get('param', {})
+                    Module = Item.get('module')
 
                     Mod = __import__(Module, None, None, [Class])
                     TClass = getattr(Mod, Class)
                     Obj = TClass(** Param)
-                    Obj.Descr = Item.get('Descr', '')
+                    Obj.Descr = Item.get('descr', '')
                     Obj.Alias = Alias
 
                     self[Alias] = Obj
