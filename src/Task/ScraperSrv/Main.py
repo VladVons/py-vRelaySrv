@@ -22,7 +22,7 @@ class TScraperSrv():
     async def cbOnStartup(self, aApp: web.Application):
         aApp['conf'] = self.Conf
 
-        await Api.DbInit(self.Conf.DbAuth)
+        await Api.DbInit(self.Conf.db_auth)
         yield
         # wait till working...
 
