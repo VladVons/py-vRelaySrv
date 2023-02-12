@@ -5,7 +5,7 @@
 
 from Inc.Util.Obj import DeepSetByList, DeepGet
 from Inc.Db.DbList import TDbSql
-from .ADb import TDbExecCurs, ListToComma
+from .ADb import TDbExecCurs
 from .DbPg import TDbPg
 
 
@@ -18,30 +18,6 @@ class TDbMeta():
     async def Init(self):
         await self.Foreign.Init()
         await self.Table.Init()
-
-    async def Insert(self, aTable: str, aData: dict|list = None, aReturning: list[str] = None, aCursor = None) -> TDbSql:
-        if (aData):
-            if (isinstance(aData, dict)):
-                Fields = '(%s)' % ', '.join(aData.keys())
-                Values = 'values (%s)' % ListToComma(aData.values())
-            elif (isinstance(aData, list)):
-                Fields = '(%s)' % ', '.join(aData[0].keys())
-                Values = [ListToComma(x.values()) for x in aData]
-                Values = 'values (' + '), ('.join(Values) + ')'
-            else:
-                return {'err': 'invalid data type'}
-        else:
-            Fields = ''
-            Values = 'default values'
-
-        Returning = 'returning ' + ','.join(aReturning) if aReturning else ''
-        Query = f'''
-            insert into {aTable}
-            {Fields}
-            {Values}
-            {Returning}
-        '''
-        return await TDbExecCurs(aCursor).Exec(Query)
 
     async def Delete(self, aTable: str, aWhere: str, aCursor = None) -> TDbSql:
         Where = f'where {aWhere}' if aWhere else ''

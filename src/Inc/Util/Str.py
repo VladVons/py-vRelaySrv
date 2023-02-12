@@ -51,3 +51,6 @@ def ToInt(aVal: str) -> int:
     else:
         aVal = int(aVal)
     return aVal
+
+def ToBool(aVal: str) -> bool:
+    return aVal.lower() in ('true', '1', 'yes', 'y', 't')

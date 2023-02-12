@@ -56,14 +56,20 @@ class TDbList(TDbBase):
     def Import(self, aData: dict) -> 'TDbList':
         if (aData):
             self.Tag = aData.get('tag')
-            Res = self.Init(aData.get('head', []), aData.get('data'))
+            Head = aData.get('head', [])
+
+            # compatibility TDbListSafe
+            if (Head) and (isinstance(Head[0], list)):
+                Head = [x[0] for x in Head]
+
+            self.Init(Head, aData.get('data'))
         else:
-            Res = self
-        return Res
+            self.Rec.Fields = []
+            self.Data = []
+        return self
 
     def ImportDbl(self, aDbl: 'TDbList', aFields: list = None, aCond: TDbCond = None, aRecNo: tuple = (0, -1)) -> 'TDbList':
         if (aFields is None):
-            # pylint: disable-next=protected-access
             aFields = aDbl.GetFields()
 
         self.Init(aFields, aDbl.ExportData(aFields, aCond, aRecNo))

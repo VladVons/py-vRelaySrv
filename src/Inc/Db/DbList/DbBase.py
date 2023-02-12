@@ -274,4 +274,3 @@ class TDbBase():
     def Shuffle(self):
         random.shuffle(self.Data)
         self.RecNo = 0
-
