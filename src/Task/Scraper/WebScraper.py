@@ -191,7 +191,7 @@ class TWebScraperFull(TWebScraper):
             if (Href.startswith(self.UrlRoot)) and \
                 (not Href.startswith('#')) and \
                 (self.RobotFile.can_fetch('*', Href)) and \
-                (not Href in self.Url) and \
+                (Href not in self.Url) and \
                 (not self.IsMimeApp(Href)):
                 self.Url.append(Href)
                 self.DblQueue.RecAdd([Href])

@@ -21,7 +21,7 @@ class TPgMeta():
         for Key, Val in aMeta.get('column', {}).items():
             Value = Val.get("value", "")
             if (DeepGet(aMeta, f'foreign_key.{Key}')):
-                if (not 'not null' in Value):
+                if ('not null' not in Value):
                     Value += ' not null'
             Body.append(f'{Key:16} {Val.get("type")} {Value}')
 

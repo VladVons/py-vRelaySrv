@@ -57,7 +57,7 @@ class TLog():
 
     def _Write(self, aData: dict, aSkipEcho: list):
         for Echo in self.Echoes:
-            if (not Echo.__class__.__name__ in aSkipEcho):
+            if (Echo.__class__.__name__ not in aSkipEcho):
                 Echo.Write(aData)
 
     def FindEcho(self, aClassName: str) -> list:

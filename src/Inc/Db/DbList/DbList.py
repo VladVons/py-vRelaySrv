@@ -72,8 +72,7 @@ class TDbList(TDbBase):
         if (aFields is None):
             aFields = aDbl.GetFields()
 
-        self.Init(aFields, aDbl.ExportData(aFields, aCond, aRecNo))
-        return self
+        return self.Init(aFields, aDbl.ExportData(aFields, aCond, aRecNo))
 
     def Init(self, aFields: list[str], aData: list) -> 'TDbList':
         self.Rec.Fields = {x: i for i, x in enumerate(aFields)}

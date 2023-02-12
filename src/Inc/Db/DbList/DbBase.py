@@ -33,7 +33,7 @@ class TDbBase():
         self._RecNo += 1
         return self._RecInit()
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self._Repr()
 
     def _DbExp(self, aData: list, aFields: list[str], aFieldsNew: list[list] = None) -> 'TDbBase':
@@ -42,8 +42,7 @@ class TDbBase():
     def _RecInit(self) -> object:
         raise NotImplementedError()
 
-
-    def _Repr(self):
+    def _Repr(self) -> str:
         def _GetMaxLen() -> list:
             nonlocal Fields
 
@@ -221,7 +220,7 @@ class TDbBase():
         return self._DbExp([], [])
 
     @property
-    def RecNo(self):
+    def RecNo(self) -> int:
         return self._RecNo
 
     @RecNo.setter
@@ -243,7 +242,7 @@ class TDbBase():
                 json.dump(self.Export(), F)
 
     def Search(self, aField: str, aVal) -> int:
-        if (not aField in self.BeeTree):
+        if (aField not in self.BeeTree):
             raise TDbListException('SearchAdd()')
         return self.BeeTree[aField].Search(aVal)
 
@@ -271,6 +270,7 @@ class TDbBase():
         self.RecNo = 0
         return self
 
-    def Shuffle(self):
+    def Shuffle(self) -> 'TDbBase':
         random.shuffle(self.Data)
         self.RecNo = 0
+        return self

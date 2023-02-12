@@ -49,7 +49,7 @@ class TPlugin(dict):
     def LoadList(self, aPath: str, aSkip: str = ''):
         Skip = aSkip.split()
         for Path in aPath.split():
-            if (not Path in Skip):
+            if (Path not in Skip):
                 self.LoadMod(Path)
 
     def LoadDir(self, aDir: str):
