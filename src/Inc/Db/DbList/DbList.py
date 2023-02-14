@@ -45,7 +45,8 @@ class TDbList(TDbBase):
         '''
         Returns all data in a simple dict for future import
         '''
-        return {'data': self.Data, 'head': self.Rec.Fields.keys(), 'tag': self.Tag}
+        Head = list(self.Rec.Fields.keys())
+        return {'data': self.Data, 'head': Head, 'tag': self.Tag}
 
     def GetFieldNo(self, aField: str) -> int:
         return self.Rec.Fields.get(aField)

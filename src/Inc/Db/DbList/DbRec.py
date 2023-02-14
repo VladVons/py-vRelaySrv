@@ -14,6 +14,9 @@ class TDbRec():
     def Find(self, aCond: TDbCond) -> bool:
         return aCond.Find(self)
 
+    def Flush(self):
+        pass
+
     def GetAsDict(self) -> dict:
         return dict(zip(self.Fields, self.Data))
 

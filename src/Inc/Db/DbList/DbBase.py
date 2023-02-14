@@ -236,10 +236,11 @@ class TDbBase():
 
     def Save(self, aFile: str, aFormat: bool = False):
         with open(aFile, 'w', encoding = 'utf-8') as F:
+            Data = self.Export()
             if (aFormat):
-                json.dump(self.Export(), F, indent=2, sort_keys=True, ensure_ascii=False)
+                json.dump(Data, F, indent=2, sort_keys=True, ensure_ascii=False)
             else:
-                json.dump(self.Export(), F)
+                json.dump(Data, F)
 
     def Search(self, aField: str, aVal) -> int:
         if (aField not in self.BeeTree):
