@@ -21,12 +21,20 @@ class TDbRec():
         Res = [f"'{x}'" if (isinstance(x, str)) else str(x) for x in self.Data]
         return ', '.join(Res)
 
-    def GetField(self, aName: str) -> object:
+    def GetField(self, aName: str, aDef = None) -> object:
         Idx = self.Fields.get(aName)
-        return self.Data[Idx]
+        Res = self.Data[Idx]
+        if (Res is None):
+            Res = aDef
+        return Res
 
     def GetAsTuple(self) -> list:
         return list(zip(self.Fields, self.Data))
+
+    def Init(self, aFields: list, aData: list) -> 'TDbRec':
+        self.Fields = {x: i for i, x in enumerate(aFields)}
+        self.Data = aData
+        return self
 
     def SetAsDict(self, aData: dict) -> 'TDbRec':
         for Key, Val in aData.items():

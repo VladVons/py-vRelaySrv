@@ -11,7 +11,6 @@
 # print(Code13, Ean.Init(Code13).Check())
 
 
-
 class TEan():
     def __init__(self, aCode: str = ''):
         self.Code = aCode

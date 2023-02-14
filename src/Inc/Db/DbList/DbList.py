@@ -56,9 +56,9 @@ class TDbList(TDbBase):
     def Import(self, aData: dict) -> 'TDbList':
         if (aData):
             self.Tag = aData.get('tag')
-            Head = aData.get('head', [])
 
-            # compatibility TDbListSafe
+            Head = aData.get('head', [])
+            # TDbListSafe fields compatibility
             if (Head) and (isinstance(Head[0], list)):
                 Head = [x[0] for x in Head]
 
@@ -75,7 +75,7 @@ class TDbList(TDbBase):
         return self.Init(aFields, aDbl.ExportData(aFields, aCond, aRecNo))
 
     def Init(self, aFields: list[str], aData: list) -> 'TDbList':
-        self.Rec.Fields = {x: i for i, x in enumerate(aFields)}
+        self.Rec.Init(aFields, aData)
 
         self._RecNo = 0
         if (aData):
