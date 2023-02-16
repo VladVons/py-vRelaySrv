@@ -11,14 +11,18 @@ from IncP.Log import Log
 from Inc.Db.DbList import TDbSql
 
 
-def ListToComma(aList: list) -> str:
+def ListToComma(aData: list) -> str:
     Res = []
-    for x in aList:
+    for x in aData:
         if (isinstance(x, str)):
             Res.append(f"'{x}'")
         else:
             Res.append(str(x))
     return ', '.join(Res)
+
+def ListIntToComma(aData: list[int]) -> str:
+    return ', '.join(map(str, aData))
+
 
 class TADb():
     def __init__(self, aAuth: dict):

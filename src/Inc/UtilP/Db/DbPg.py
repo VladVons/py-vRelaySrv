@@ -172,3 +172,28 @@ class TDbPg(TADb):
                 ) as tables
             '''
         return await TDbExecPool(self.Pool).Exec(Query)
+
+    async def GetRoutines(self, aSchema: str = 'public') -> TDbSql:
+        Query = f'''
+            select
+                routine_schema,
+                routine_name,
+                routine_type,
+                data_type,
+                is_deterministic
+            from
+                information_schema.routines
+            where
+                routine_schema = '{aSchema}'
+        '''
+        return await TDbExecPool(self.Pool).Exec(Query)
+
+    async def GetTriggers(self) -> TDbSql:
+        Query = '''
+            select
+                event_object_table as table_name,
+                trigger_name,
+            from
+                information_schema.triggers
+        '''
+        return await TDbExecPool(self.Pool).Exec(Query)

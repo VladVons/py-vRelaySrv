@@ -26,7 +26,7 @@ class TPlugin(dict):
         if (not aPath) or (aPath.startswith('-')) or (self.get(aPath)):
             return Res
 
-        Path = self.Dir.replace('/', '.') + '.' + aPath
+        Path = f'{self.Dir}/{aPath}'.replace('/', '.')
         __import__(Path)
         Mod = sys.modules.get(Path)
         Enable = getattr(Mod, 'enable', True)
