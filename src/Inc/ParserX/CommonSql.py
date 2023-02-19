@@ -21,6 +21,15 @@ def DSplit(aFunc: callable) -> list[str]:
         return Res
     return Decor
 
+def DASplit(aFunc: callable) -> list[str]:
+    async def Decor(aData: list, aMax: int) -> list[str]:
+        Res = []
+        for Part in Parts(aData, aMax):
+            Data = await aFunc(Part, aMax)
+            Res.append(Data)
+        return Res
+    return Decor
+
 
 class TLogEx(TLog):
     def Write(self, aData):

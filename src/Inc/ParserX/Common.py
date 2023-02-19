@@ -8,7 +8,7 @@ import os
 from Inc.DbList import TDbListSafe, TDbRecSafe
 from Inc.Util.Obj import DeepGet, DeepGetByList, GetClassPath
 from Inc.Misc.Time import TASleep
-from IncP.Download import TDownload
+from Inc.Misc.Download import TDownload
 from IncP.Log import Log
 
 

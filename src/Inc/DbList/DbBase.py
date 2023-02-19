@@ -96,6 +96,11 @@ class TDbBase():
             Res[FKey].append(FSum)
         return Res
 
+    def Append(self, aDbl: list['TDbBase']) -> 'TDbBase':
+        for x in aDbl:
+            self.Data += x.Data
+        return self
+
     def Clone(self, aFields: list[str] = None, aCond: TDbCond = None, aRecNo: tuple = None) -> 'TDbBase':
         if (aFields is None):
             aFields = []
