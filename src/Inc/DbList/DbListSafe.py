@@ -147,4 +147,3 @@ class TDbListSafe(TDbBase):
             self.RecNo = 0
         else:
             self.Empty()
-

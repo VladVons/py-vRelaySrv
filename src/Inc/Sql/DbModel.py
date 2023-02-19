@@ -9,7 +9,7 @@ from psycopg2.errorcodes import (
 from psycopg2 import errors
 #
 from IncP.Log import Log
-from Inc.Db.DbList import TDbSql
+from Inc.DbList import TDbSql
 from .DbMeta import TDbMeta
 from .ADb import TDbExecCurs, TDbExecPool
 

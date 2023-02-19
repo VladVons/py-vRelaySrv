@@ -4,7 +4,7 @@
 
 
 from Inc.Util.Obj import DeepSetByList, DeepGet
-from Inc.Db.DbList import TDbSql
+from Inc.DbList import TDbSql
 from .ADb import TDbExecCurs
 from .DbPg import TDbPg
 

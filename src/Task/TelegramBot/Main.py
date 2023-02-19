@@ -11,7 +11,7 @@ from aiogram.dispatcher.webhook import SendMessage
 from aiogram import Bot, Dispatcher, executor, types
 #
 from Task.WebSrv import Api
-from Inc.Db.DbList import TDbListSafe, TDbCond
+from Inc.DbList import TDbListSafe, TDbCond
 from Inc.Util.Obj import DeepGet
 from IncP.Log import Log
 

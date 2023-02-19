@@ -7,10 +7,10 @@ from collections import deque
 import asyncio
 import random
 #
-from Inc.Db.DbList import TDbListSafe
+from Inc.DbList import TDbListSafe
 from Inc.Util.Obj import DeepGet
-from Inc.UtilP.DownloadSpeed import TDownloadSpeed
-from Inc.UtilP.Misc import FilterKeyErr
+from Inc.Misc.DownloadSpeed import TDownloadSpeed
+from Inc.Misc.Misc import FilterKeyErr
 from IncP.ApiWeb import TWebSockClient
 from IncP.Log import Log
 from IncP.Scheme.Scheme import TScheme

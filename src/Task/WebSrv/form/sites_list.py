@@ -3,9 +3,9 @@
 # License: GNU, see LICENSE for more details
 
 
-from Inc.Db.DbList import TDbListSafe, TDbCond
+from Inc.DbList import TDbListSafe, TDbCond
 from Inc.Util.Obj import DeepGet
-from Inc.UtilP.Misc import FilterKeyErr
+from Inc.Misc.Misc import FilterKeyErr
 from ..Api import Api
 from .FormBase import TFormBase
 

@@ -5,9 +5,9 @@
 
 from urllib.parse import urlparse
 #
-from Inc.Db.DbList import TDbListSafe, TDbCond, TDbSql
+from Inc.DbList import TDbListSafe, TDbCond, TDbSql
 from Inc.Util.Obj import DeepGet
-from Inc.UtilP.Misc import FilterKeyErr
+from Inc.Misc.Misc import FilterKeyErr
 from IncP.Download import CheckHost
 from .FormBase import TFormBase
 from ..Api import Api

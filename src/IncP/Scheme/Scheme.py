@@ -13,8 +13,8 @@ import sys
 from urllib.parse import urlparse
 #
 from Inc.Util.Obj import DeepGet
-from Inc.UtilP.Python import TPython
-from Inc.UtilP.Misc import FilterKey, FilterKeyErr
+from Inc.Misc.Python import TPython
+from Inc.Misc.Misc import FilterKey, FilterKeyErr
 from .SchemeApi import TSchemeApi, TSchemeApiExt, TSchemeExt
 from .Utils import SoupGetParents
 

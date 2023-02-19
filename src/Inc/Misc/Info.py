@@ -8,7 +8,7 @@ import sys
 import time
 import platform
 #
-from Inc.UtilP.Time import SecondsToDHMS_Str
+from Inc.Misc.Time import SecondsToDHMS_Str
 
 TimeStart = time.time()
 

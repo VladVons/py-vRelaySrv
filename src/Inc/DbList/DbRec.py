@@ -15,6 +15,7 @@ class TDbRec():
         return aCond.Find(self)
 
     def Flush(self):
+        # TDbRecSafe compatibility
         pass
 
     def GetAsDict(self) -> dict:

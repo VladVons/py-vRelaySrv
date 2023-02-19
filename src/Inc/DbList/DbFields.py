@@ -57,7 +57,7 @@ class TDbFields(dict):
             Items = sorted(self.items(), key = lambda k: k[1][0])
             Res = [(Key, Type.__name__, Def) for Key, (No, Type, Def) in Items]
         else:
-            Res = [Key for Key in self]
+            Res = list(self)
         return Res
 
     def Import(self, aFields: list):

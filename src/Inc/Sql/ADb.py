@@ -8,7 +8,7 @@ import time
 import asyncio
 #
 from IncP.Log import Log
-from Inc.Db.DbList import TDbSql
+from Inc.DbList import TDbSql
 
 
 def ListToComma(aData: list) -> str:

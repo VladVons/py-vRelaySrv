@@ -7,7 +7,7 @@
 import aiopg
 #
 from IncP.Log import Log
-from Inc.Db.DbList import TDbSql
+from Inc.DbList import TDbSql
 from .ADb import TADb, TDbExecPool
 
 

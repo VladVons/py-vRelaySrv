@@ -1,5 +1,5 @@
 from Inc.Plugin import TPlugin
-from Inc.UtilP.Db.DbMeta import TDbMeta
+from Inc.Sql.DbMeta import TDbMeta
 
 
 class TDbModels(TPlugin):

@@ -3,9 +3,9 @@
 # License: GNU, see LICENSE for more details
 
 
-from Inc.Db.DbList import TDbListSafe
+from Inc.DbList import TDbListSafe
 from Inc.Util.Obj import DeepGet
-from Inc.UtilP.Misc import FilterKeyErr
+from Inc.Misc.Misc import FilterKeyErr
 from IncP.ApiWeb import TApiBase
 from IncP.ApiWeb import TWebClient
 from IncP.Log import Log

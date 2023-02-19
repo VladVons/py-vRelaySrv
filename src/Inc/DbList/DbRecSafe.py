@@ -26,7 +26,7 @@ class TDbRecSafe(list):
             Rec[Idx] = Fields.IdxOrd[Idx][2]
         super().__init__(Rec)
 
-    def GetField(self, aName: str) -> object:
+    def GetField(self, aName: str, _aDef: object = None) -> object:
         Idx = self.Parent.Fields.GetNo(aName)
         return self[Idx]
 

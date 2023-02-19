@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 #
 from Inc.Util.Obj import DeepGet
 from Inc.Util.Mod import GetClass
-from Inc.UtilP.Misc import FilterMatch
+from Inc.Misc.Misc import FilterMatch
 from .Utils import DigSplit, TInStock, SoupGetParentsObj, StrWhiteSpaces
 
 InStock = TInStock()

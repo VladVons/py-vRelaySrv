@@ -2,7 +2,7 @@ import os
 import json
 #
 from Inc.Util.Obj import DeepGet, DeepGetsRe
-from Inc.UtilP.FS import GetFiles
+from Inc.Misc.FS import GetFiles
 
 
 class TPgMeta():

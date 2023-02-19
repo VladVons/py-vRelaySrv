@@ -1,4 +1,4 @@
-from Inc.UtilP.Misc import GetEnvWithWarn
+from Inc.Misc.Misc import GetEnvWithWarn
 from IncP.Log import Log
 
 

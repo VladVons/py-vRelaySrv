@@ -2,9 +2,10 @@
 # Author: Vladimir Vons <VladVons@gmail.com>
 # License: GNU, see LICENSE for more details
 
-from Inc.Db.DbList import TDbSql
-from Inc.UtilP.Db.ADb import TDbExecPool, ListToComma
-from Inc.UtilP.Db.DbPg import TDbPg
+
+from Inc.DbList import TDbSql
+from Inc.Sql.ADb import TDbExecPool, ListToComma
+from Inc.Sql.DbPg import TDbPg
 
 
 class TDbApp(TDbPg):

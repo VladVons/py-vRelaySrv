@@ -11,9 +11,9 @@ from bs4 import BeautifulSoup
 #
 sys.path.append('../src')
 import src.IncP.Scheme.Scheme
-from IncP.DB.Scraper_pg import TDbApp
+from IncP.Db.Scraper_pg import TDbApp
 from IncP.Scheme.Scheme import TSoupScheme, TScheme
-from Inc.UtilP.Misc import FormatJsonStr
+from Inc.Misc.Misc import FormatJsonStr
 
 
 DbAuth = {
