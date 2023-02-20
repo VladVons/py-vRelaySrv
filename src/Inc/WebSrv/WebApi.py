@@ -20,6 +20,9 @@ class TApiBase():
         self.DefMethod = None
         self.Plugin = {}
 
+    async def _DoAuthRequest(self, aUser: str, aPassw: str) -> bool:
+        raise NotImplementedError()
+
     @staticmethod
     def GetMethodName(aPath: str) -> str:
         return 'path_' + aPath.replace('/', '_')
@@ -84,12 +87,10 @@ class TApiBase():
             Auth = aRequest.headers.get('Authorization')
             if (Auth):
                 User, Passw = base64.b64decode(Auth.split()[1]).decode().split(':')
-                return await self.DoAuthRequest(User, Passw)
+                return await self._DoAuthRequest(User, Passw)
         else:
             return True
 
-    async def DoAuthRequest(self, aUser: str, aPassw: str) -> bool:
-        raise NotImplementedError()
 
 
 class TWebClient():

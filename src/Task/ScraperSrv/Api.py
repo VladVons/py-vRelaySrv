@@ -12,8 +12,8 @@ from Inc.DbList import TDbListSafe, TDbCond, TDbSql
 from Inc.Util.Obj import DeepGet
 from Inc.Misc.Time import SecondsToDHMS_Str
 from Inc.Sql.ADb import TDbExecPool
+from Inc.WebSrv.WebApi import TApiBase
 from IncP.Db.Scraper_pg import TDbApp
-from IncP.ApiWeb import TApiBase
 from IncP.Log import Log, TEchoDb
 
 
@@ -76,7 +76,7 @@ class TApi(TApiBase):
         self.Db: TDbApp = None
         self.ApiTask = TApiTask(self)
 
-    async def DoAuthRequest(self, aUser: str, aPassw: str) -> bool:
+    async def _DoAuthRequest(self, aUser: str, aPassw: str) -> bool:
         Dbl = await self.Db.UserAuth(aUser, aPassw)
         return (not Dbl.IsEmpty())
 

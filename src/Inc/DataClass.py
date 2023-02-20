@@ -22,6 +22,19 @@ import sys
 
 __all__ = ['DataClass']
 
+def _Get(aCls, aName: str, aDef = None) -> object:
+    if (hasattr(aCls, aName)):
+        return getattr(aCls, aName)
+    return aDef
+
+def _Set(aCls, aDict: dict):
+    for Key, Val in aDict.items():
+        if (hasattr(aCls, Key)):
+            setattr(aCls, Key, Val)
+
+def _Items(aCls) -> dict:
+    return aCls.__dict__
+
 def _Repr(aCls) -> str:
     Human = [f'{Key}={Val}' for Key, Val in aCls.__dict__.items()]
     return aCls.__class__.__name__ + '(' + ', '.join(Human) + ')'
@@ -71,4 +84,7 @@ def DataClass(aCls):
     setattr(aCls, Name, Data)
 
     aCls.__repr__ = _Repr
+    setattr(aCls, 'get', _Get)
+    setattr(aCls, 'set', _Set)
+    setattr(aCls, 'items', _Items)
     return aCls

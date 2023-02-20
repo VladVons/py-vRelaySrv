@@ -12,7 +12,7 @@ from aiohttp import web
 from Inc.Conf import TConf
 from Inc.Misc.Misc import FilterKeyErr
 from Inc.WebSrv.WebSrv import TWebSrvBase, TWebSrvConf
-from IncP.ApiWeb import TWebSockSrv
+from Inc.WebSrv.WebApi import TWebSockSrv
 from IncP.Log import Log
 from .Api import Api
 from .Session import Session

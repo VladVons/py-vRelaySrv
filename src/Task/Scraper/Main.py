@@ -11,7 +11,7 @@ from Inc.DbList import TDbListSafe
 from Inc.Util.Obj import DeepGet
 from Inc.Misc.DownloadSpeed import TDownloadSpeed
 from Inc.Misc.Misc import FilterKeyErr
-from IncP.ApiWeb import TWebSockClient
+from Inc.WebSrv.WebApi import TWebSockClient
 from IncP.Log import Log
 from IncP.Scheme.Scheme import TScheme
 #

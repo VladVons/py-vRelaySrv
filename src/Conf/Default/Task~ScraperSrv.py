@@ -1,6 +1,8 @@
-port = 8081
+srv_conf = {
+    'port': 8081
+}
 
-db_auth = {
+db_conf = {
     'server': '192.168.2.115',
     'database': 'scraper1',
     'user': 'postgres',

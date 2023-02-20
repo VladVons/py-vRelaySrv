@@ -4,11 +4,13 @@
 
 # Based on aioodbc, aiomysql, aiopg
 
+
 import time
 import asyncio
 #
-from IncP.Log import Log
+from Inc.DataClass import DataClass
 from Inc.DbList import TDbSql
+from IncP.Log import Log
 
 
 def ListToComma(aData: list) -> str:
@@ -24,9 +26,18 @@ def ListIntToComma(aData: list[int]) -> str:
     return ', '.join(map(str, aData))
 
 
+@DataClass
+class TDbAuth():
+    database: str
+    user: str
+    password: str
+    port: str
+    host: str = 'localhost'
+
+
 class TADb():
-    def __init__(self, aAuth: dict):
-        self.Auth = aAuth # host, port, db, user, password
+    def __init__(self, aAuth: TDbAuth):
+        self.Auth = aAuth
         self.Pool = None
 
     async def Connect(self):

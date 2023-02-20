@@ -9,7 +9,7 @@ import json
 from Inc.DbList import TDbListSafe
 from Inc.Util.Obj import DeepGet
 from Inc.Misc.Misc import FilterKey, FilterKeyErr
-from IncP.ApiWeb import TApiBase, TWebClient
+from Inc.WebSrv.WebApi import TApiBase, TWebClient
 from IncP.Download import TDownload, TDHeaders, GetSoup, GetSoupUrl
 from IncP.Scheme.Scheme import TScheme
 from IncP.Scheme.SchemeApi import TSchemeApi
@@ -347,7 +347,7 @@ class TApi(TApiBase):
         self.PluginAdd(get_sites_app_json, {'web_client': self.WebClient})
         self.PluginAdd(set_scheme, {'web_client': self.WebClient})
 
-    async def DoAuthRequest(self, aUser: str, aPassw: str):
+    async def _DoAuthRequest(self, aUser: str, aPassw: str):
         return True
 
     async def DefHandler(self, aPath: str, aData: dict = None) -> dict: #//
