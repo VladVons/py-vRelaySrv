@@ -20,7 +20,7 @@ print(User)
 
 import sys
 
-__all__ = ['DataClass']
+__all__ = ['DataClass', 'asdict', 'astuple']
 
 def _Get(aCls, aName: str, aDef = None) -> object:
     if (hasattr(aCls, aName)):
@@ -32,8 +32,11 @@ def _Set(aCls, aDict: dict):
         if (hasattr(aCls, Key)):
             setattr(aCls, Key, Val)
 
-def _Items(aCls) -> dict:
+def asdict(aCls) -> dict:
     return aCls.__dict__
+
+def astuple(aCls) -> dict:
+    return list(aCls.__dict__)
 
 def _Repr(aCls) -> str:
     Human = [f'{Key}={Val}' for Key, Val in aCls.__dict__.items()]
@@ -86,5 +89,6 @@ def DataClass(aCls):
     aCls.__repr__ = _Repr
     setattr(aCls, 'get', _Get)
     setattr(aCls, 'set', _Set)
-    setattr(aCls, 'items', _Items)
+    setattr(aCls, 'asdict', asdict)
+    setattr(aCls, 'astuple', astuple)
     return aCls

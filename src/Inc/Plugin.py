@@ -18,6 +18,12 @@ class TPlugin(dict):
     def _Create(self, aModule: object, aPath: str) -> object:
         raise NotImplementedError()
 
+    def IsModule(self, aPath: str) -> bool:
+        for x in ['.py', '/__init__.py']:
+            Path = f'{self.Dir}/{aPath}{x}'
+            if (os.path.exists(Path)):
+                return True
+
     def Find(self, aKey: str) -> list:
         return [Val[0] for Key, Val in self.items() if aKey in Key]
 

@@ -34,7 +34,7 @@ def DynImport(aPath: str, aClass: str) -> object: #//
     else:
         return TClass
 
-#---
+#--- class methods help
 
 def ParseFile(aFile: str) -> list: #//
     Res = []
@@ -53,22 +53,26 @@ def GetMethod(aObj) -> list:
     return [Name, Args, Repr, DocString]
 
 def GetClass(aClass: object) -> list:
-    return [
-        GetMethod(getattr(aClass, x))
-        for x in dir(aClass)
-        if (not x.startswith('_'))
-    ]
+    Res = []
+    for x in dir(aClass):
+        Obj = getattr(aClass, x)
+        if (not x.startswith('_') and hasattr(Obj, '__code__')):
+            Res.append(GetMethod(Obj))
+    return Res
 
 def GetClassHelp(aModule: object, aClass: object) -> list[str]: #//
     FileInf = ParseFile(aModule.__file__)
     ClassInf = GetClass(aClass)
-    for x in ClassInf:
-        Inf = [y[0] for y in FileInf if y[0].startswith(x[0])]
+    for xClassInf in ClassInf:
+        Inf = [y[0] for y in FileInf if y[0].startswith(xClassInf[0])]
         if (Inf):
-            x.append(Inf[0])
+            xClassInf.append(Inf[0])
         else:
-            x.append('')
+            xClassInf.append('')
     return ClassInf
+
+def GetModuleHelp(aModule: object) -> list[str]:
+    return GetClassHelp(aModule, aModule)
 
 #---
 #http://www.qtrac.eu/pyclassmulti.html
@@ -91,7 +95,7 @@ def DAddModules(aModules: list, aSeparate: bool = False):
                     if (not Method.endswith('__')):
                         Obj = getattr(Module, Method)
                         setattr(aClass, Method, Obj)
-            return aClass
+        return aClass
     return Decor
 
 #---
