@@ -61,19 +61,21 @@ class TDbExec():
         if ('data' in Data):
             return TDbSql(Data['fields'], Data['data'])
 
-    async def ExecCurTry(self, aCursor, aSql: str) -> dict:
+    async def ExecCursTry(self, aCursor, aSql: str) -> dict:
         TimeAt = time.time()
 
         try:
             Res = await self.ExecCurs(aCursor, aSql)
         except Exception as E:
             Res = {'err': str(E).split('\n', maxsplit = 1)[0]}
-            Log.Print(1, 'x', 'ExecCurTry() %s' % (aSql), aE=E, aSkipEcho=['TEchoDb'])
+            Log.Print(1, 'x', 'ExecCursTry() %s' % (aSql), aE=E, aSkipEcho=['TEchoDb'])
 
         Res['time'] = round(time.time() - TimeAt, 5)
         return Res
 
     async def ExecCurs(self, aCursor, aSql: str) -> dict:
+        TimeAt = time.time()
+
         if (self.Debug):
             print(aSql)
 
@@ -82,7 +84,7 @@ class TDbExec():
         if (aCursor.description):
             Data = await aCursor.fetchall()
             Fields = [x.name for x in aCursor.description]
-            Res = {'data': Data, 'fields': Fields}
+            Res = {'data': Data, 'fields': Fields, 'time': round(time.time() - TimeAt, 5)}
         return Res
 
     async def ExecFile(self, aFile: str) -> dict:
@@ -109,7 +111,7 @@ class TDbExecPool(TDbExec):
     async def _Exec(self, aSql: str) -> dict:
         async with self.Pool.acquire() as Connect:
             async with Connect.cursor() as Cursor:
-                return await self.ExecCurTry(Cursor, aSql)
+                return await self.ExecCurs(Cursor, aSql)
 
 class TDbExecCurs(TDbExec):
     def __init__(self, aCursor):
