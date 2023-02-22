@@ -105,7 +105,7 @@ class TDbModel():
                 if (ForeignVal):
                     DblIn.AddFields(ForeignVal.keys(), ForeignVal.values())
                 Query = DblIn.GetSqlInsert(TableK)
-                await self.DbMeta.Insert(TableK, Query, aCursor = aCursor)
+                await TDbExecCurs(aCursor).Exec(Query)
         return {'id': ResId}
 
     async def _Del(self, aId: int, aCursor = None) -> dict:
