@@ -1,4 +1,7 @@
+
+import os
 import json
+#
 from psycopg2.errorcodes import (
     UNIQUE_VIOLATION,
     NOT_NULL_VIOLATION,
@@ -11,7 +14,7 @@ from psycopg2 import errors
 from IncP.Log import Log
 from Inc.DbList import TDbSql
 from .DbMeta import TDbMeta
-from .ADb import TDbExecCurs, TDbExecPool
+from .ADb import TDbExecCurs
 
 
 def DTransaction(aFunc):
@@ -48,8 +51,10 @@ class TDbModel():
         self.Master = self.Conf.get('master', '')
 
     def _LoadJson(self, aPath: str) -> dict:
-        with open(aPath, 'r', encoding = 'utf8') as F:
-            Res = json.load(F)
+        Res = {}
+        if (os.path.exists(aPath)):
+            with open(aPath, 'r', encoding = 'utf8') as F:
+                Res = json.load(F)
         return Res
 
     def _CheckData(self, aData: dict) -> list[str]:

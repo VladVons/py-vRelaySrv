@@ -47,6 +47,7 @@ class TADb():
         if (self.Pool):
             self.Pool.close()
             await self.Pool.wait_closed()
+            await asyncio.sleep(0.25)
             self.Pool = None
 
 

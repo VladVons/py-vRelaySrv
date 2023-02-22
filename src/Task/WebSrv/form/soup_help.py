@@ -5,7 +5,7 @@
 # pylint: disable-next=consider-using-from-import
 import IncP.Scheme.SchemeApi as SchemeApi
 
-from Inc.Util.Mod import GetClassHelp
+from Inc.Util.ModHelp import GetClassHelp
 from .FormBase import TFormBase
 
 

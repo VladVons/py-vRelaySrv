@@ -9,7 +9,7 @@ import re
 from bs4 import BeautifulSoup
 #
 from Inc.Util.Obj import DeepGet
-from Inc.Util.Mod import GetClass
+from Inc.Util.ModHelp import GetClass
 from Inc.Misc.Misc import FilterMatch
 from .Utils import DigSplit, TInStock, SoupGetParentsObj, StrWhiteSpaces
 

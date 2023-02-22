@@ -10,7 +10,7 @@ from IncP.Scheme.SchemeApi import TSchemeApi
 
 # pylint: disable-next=consider-using-from-import
 import IncP.Scheme.SchemeApi as SchemeApi
-from Inc.Util.Mod import GetClassHelp
+from Inc.Util.ModHelp import GetClassHelp
 
 
 def GetUrlInfo(aData: dict) -> list:
