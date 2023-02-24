@@ -20,7 +20,10 @@ print(User)
 
 import sys
 
+
 __all__ = ['DataClass', 'asdict', 'astuple']
+
+_T = '_Type'
 
 def _Get(aCls, aName: str, aDef = None) -> object:
     if (hasattr(aCls, aName)):
@@ -48,9 +51,10 @@ def _GetArgs(aCls, aData: dict) -> str:
         if (Type.__module__ == 'builtins'):
             Param = f'{Name}: {Type.__name__}'
         else:
-            Param = f'{Name}: {Type.__module__}.{Type.__name__}'
+            #Param = f'{Name}: {Type.__module__}.{Type.__name__}'
+            Param = f'{Name}: {_T}{Name}'
 
-        Uniq = 'q1S4t6G7'
+        Uniq = 'q1S4t6G7x'
         Default = getattr(aCls, Name, Uniq)
         if (Default != Uniq):
             if (Type == str):
@@ -65,16 +69,23 @@ def _Compile(aCls, aName: str, aData: dict):
     Wrapper = 'Wrapper'
     Body.append(f'def {Wrapper}():')
 
+    if (aCls.__module__ in sys.modules):
+        Globals = sys.modules[aCls.__module__].__dict__
+    else:
+        Globals = {}
+
     Args = _GetArgs(aCls, aData)
     Body.append(f' def {aName}({Args}):')
-    for Name, _Type in aData.items():
+    for Name, Type in aData.items():
+        NameT = f'{_T}{Name}'
+        Globals[NameT] = Type
         Body.append(f'  self.{Name} = {Name}')
     Body.append(f' return {aName}')
+    Body = '\n'.join(Body)
 
-    Globals = sys.modules[aCls.__module__].__dict__
     Out = {}
     # pylint: disable-next=exec-used
-    exec('\n'.join(Body), Globals, Out)
+    exec(Body, Globals, Out)
     Res = Out[Wrapper]()
     return Res
 

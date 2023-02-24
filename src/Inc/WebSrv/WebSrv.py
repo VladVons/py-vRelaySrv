@@ -136,13 +136,13 @@ class TWebSrvBase(TSrvBase):
     def _GetDefRoutes(self) -> list:
         return [
             web.get('/', self._rIndex),
-            web.get('/form/{Name}', self._rForm),
-            web.post('/form/{Name}', self._rForm),
-            web.get('/download/{Name:.*}', self._rDownload)
+            web.get('/form/{name}', self._rForm),
+            web.post('/form/{name}', self._rForm),
+            web.get('/download/{name:.*}', self._rDownload)
         ]
 
     def CreateApp(self, aRoutes: list = None, aErroMiddleware: dict = None) -> web.Application:
-        App = super(aRoutes, aErroMiddleware)
+        App = super().CreateApp(aRoutes, aErroMiddleware)
 
         App.router.add_static('/', f'{self._SrvConf.dir_root}/{self._SrvConf.dir_3w}', show_index=True, follow_symlinks=True)
         aiohttp_jinja2.setup(App, loader=jinja2.FileSystemLoader(self._SrvConf.dir_root + '/' + self._SrvConf.dir_form))
