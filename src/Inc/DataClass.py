@@ -4,24 +4,29 @@
 
 
 '''
-from DataClass import DataClass
+from Inc.DataClass import DDataClass, is_dataclass
 
-@DataClass
+@DDataClass
 class TUser():
     Login: str
     Passw: str
     Allow: bool = True
 
-User = TUser(Login = 'MyLogin', Passw = 'MyPassw')
-print(User.__dict__)
-print(User)
-'''
+@DDataClass
+class TUserInherit(TUser):
+    Age: int
 
+User = TUser(Login = 'MyLogin', Passw = 'MyPassw')
+print('asdict', User.asdict())
+print('astuple', User.astuple())
+print('str', str(User))
+print('is_dataclass', is_dataclass(User))
+'''
 
 import sys
 
 
-__all__ = ['DataClass', 'asdict', 'astuple']
+__all__ = ['DDataClass', 'asdict', 'astuple', 'is_dataclass']
 
 _T = '_Type'
 
@@ -35,11 +40,14 @@ def _Set(aCls, aDict: dict):
         if (hasattr(aCls, Key)):
             setattr(aCls, Key, Val)
 
+def is_dataclass(aCls) -> bool:
+    return hasattr(aCls, 'astuple')
+
 def asdict(aCls) -> dict:
     return aCls.__dict__
 
 def astuple(aCls) -> dict:
-    return list(aCls.__dict__)
+    return [(Key, Val) for Key, Val in aCls.__dict__.items()]
 
 def _Repr(aCls) -> str:
     Human = [f'{Key}={Val}' for Key, Val in aCls.__dict__.items()]
@@ -54,9 +62,8 @@ def _GetArgs(aCls, aData: dict) -> str:
             #Param = f'{Name}: {Type.__module__}.{Type.__name__}'
             Param = f'{Name}: {_T}{Name}'
 
-        Uniq = 'q1S4t6G7x'
-        Default = getattr(aCls, Name, Uniq)
-        if (Default != Uniq):
+        if (hasattr(aCls, Name)):
+            Default = getattr(aCls, Name)
             if (Type == str):
                 Default = '"' + Default + '"'
             Param += f' = {Default}'
@@ -66,7 +73,7 @@ def _GetArgs(aCls, aData: dict) -> str:
 def _Compile(aCls, aName: str, aData: dict):
     Body = []
 
-    Wrapper = 'Wrapper'
+    Wrapper = 'DecorWrapper'
     Body.append(f'def {Wrapper}():')
 
     if (aCls.__module__ in sys.modules):
@@ -89,10 +96,17 @@ def _Compile(aCls, aName: str, aData: dict):
     Res = Out[Wrapper]()
     return Res
 
-# decorator
-def DataClass(aCls):
+def _GetAnnotations(aCls):
+    Res = {}
+    for x in aCls.__mro__:
+        Data = x.__dict__.get('__annotations__', {})
+        Res.update(Data)
+    return Res
+
+# Decorator
+def DDataClass(aCls):
     Name = '__init__'
-    Annotations = aCls.__dict__.get('__annotations__', {})
+    Annotations = _GetAnnotations(aCls)
     Data = _Compile(aCls, Name, Annotations)
     Data.__qualname__ = f'{aCls.__class__.__name__}.{Data.__name__}'
     setattr(aCls, Name, Data)

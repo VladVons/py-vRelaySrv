@@ -8,7 +8,7 @@
 import time
 import asyncio
 #
-from Inc.DataClass import DataClass
+from Inc.DataClass import DDataClass
 from Inc.DbList import TDbSql
 from IncP.Log import Log
 
@@ -26,7 +26,7 @@ def ListIntToComma(aData: list[int]) -> str:
     return ', '.join(map(str, aData))
 
 
-@DataClass
+@DDataClass
 class TDbAuth():
     database: str
     user: str

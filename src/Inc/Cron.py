@@ -35,15 +35,15 @@ def _Parse(aValue: str, aTarget: int) -> bool:
     return False
 
 def IsNow(aPattern: str) -> bool:
-    lt = time.localtime(time.time())
+    _YearT, MonthT, DOMT, HourT, MinT, SecT, DOWT, *X = time.localtime(time.time()) 
     Sec, Min, Hour, DOM, Month, DOW = aPattern.split(' ')
 
-    Res = _Parse(Sec,  lt[5]) and \
-          _Parse(Min,  lt[4]) and \
-          _Parse(Hour, lt[3]) and \
-          _Parse(DOM,  lt[2]) and \
-          _Parse(Month,lt[1]) and \
-          _Parse(DOW,  lt[6])
+    Res = _Parse(Sec, SecT) and \
+          _Parse(Min, MinT) and \
+          _Parse(Hour, HourT) and \
+          _Parse(DOM, DOMT) and \
+          _Parse(Month, MonthT) and \
+          _Parse(DOW, DOWT)
     return Res
 
 

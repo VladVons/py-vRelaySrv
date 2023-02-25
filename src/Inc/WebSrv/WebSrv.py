@@ -12,24 +12,27 @@ import aiohttp_session
 import jinja2
 #
 from Inc.Conf import TConf
-from Inc.DataClass import DataClass
+from Inc.DataClass import DDataClass
 from .Common import FileReader
 
 
-@DataClass
+@DDataClass
 class TSrvConf():
     client_max_file_size: int = 1024**2
     host: str = '0.0.0.0'
     port: int = 8080
 
-
+@DDataClass
 class TWebSrvConf(TSrvConf):
-    dir_3w: str = 'www'
+    dir_3w: str = 'view'
     dir_download: str = 'download'
-    dir_form: str = 'form'
+    dir_control: str = 'control'
+    dir_tpl: str = 'view'
+    dir_tpl_cache: str = 'view/tpl/cache'
     dir_root: str = 'Task/WebSrv'
-    tpl_ext: str = '.tpl.html'
-
+    tpl_ext: str = '.tpl'
+    def_page: str = 'info'
+    theme: str = 'theme1'
 
 def CreateErroMiddleware(aOverrides):
     @web.middleware
@@ -85,30 +88,56 @@ class TSrvBase():
         finally:
             await Runner.cleanup()
 
+
 class TWebSrvBase(TSrvBase):
     def __init__(self, aSrvConf: TWebSrvConf, aConf: TConf):
         super().__init__(aSrvConf)
-        self.Conf = aConf
-        self.DefPage = 'info'
+        self._SrvConf = aSrvConf
+        self._Conf = aConf
 
-    async def _FormCreate(self, aRequest: web.Request, aName: str) -> web.Response:
-        FormDir = f'{self._SrvConf.dir_root}/{self._SrvConf.dir_form}'
+        self._DirTpl = f'{self._SrvConf.dir_root}/{self._SrvConf.dir_tpl}'
+        self._DirPy = f'{self._SrvConf.dir_root}/{self._SrvConf.dir_control}'
 
-        File = f'{FormDir}/{aName}{self._SrvConf.tpl_ext}'
-        NameTpl = aName if os.path.isfile(File) else self.DefPage
 
-        File = f'{FormDir}/{aName}.py'
-        NameMod = aName if os.path.isfile(File) else self.DefPage
+    async def _StaticRouterHandler(self):
+        print(123)
 
-        for Module, Class in [(NameMod, 'TForm'), ('FormBase', 'TFormBase')]:
+    @staticmethod
+    def _LocateFile(aList: list[str], aDir: str = '') -> str:
+        for x in aList:
+            Path = aDir + x
+            if (os.path.exists(Path)):
+                return x
+
+    async def _FormCreate(self, aRequest: web.Request, aName: str, aData: dict = None) -> web.Response:
+        FileTpl = self._LocateFile(
+            [
+                f'{self._SrvConf.theme}/tpl/{aName}{self._SrvConf.tpl_ext}',
+                f'default/tpl/{aName}{self._SrvConf.tpl_ext}',
+            ],
+            self._DirTpl + '/')
+
+        if (FileTpl):
+            FilePy = f'{self._DirPy}/{aName}'
+        else:
+            FilePy = f'{self._DirPy}/{self._SrvConf.def_page}'
+            FileTpl = f'default/tpl/{self._SrvConf.def_page}'
+
+        Locate = [
+            (FilePy, 'TForm'),
+            (f'{self._DirPy}/FormBase', 'TFormBase')
+        ]
+
+        TClass = None
+        for Module, Class in Locate:
             try:
-                Path = FormDir + '/' + Module
-                Mod = __import__(Path.replace('/', '.'), None, None, [Class])
-                TClass = getattr(Mod, Class)
-                break
-            except ModuleNotFoundError:
+                if (os.path.isfile(Module + '.py')):
+                    Mod = __import__(Module.replace('/', '.'), None, None, [Class])
+                    TClass = getattr(Mod, Class)
+                    break
+            except ModuleNotFoundError as _E:
                 pass
-        Res = TClass(aRequest, NameTpl + self._SrvConf.tpl_ext)
+        Res = TClass(aRequest, FileTpl, aData)
         Res.Parent = self
         return Res
 
@@ -136,14 +165,23 @@ class TWebSrvBase(TSrvBase):
     def _GetDefRoutes(self) -> list:
         return [
             web.get('/', self._rIndex),
-            web.get('/form/{name}', self._rForm),
-            web.post('/form/{name}', self._rForm),
+            web.get('/form/{name:.*}', self._rForm),
+            web.post('/form/{name:.*}', self._rForm),
             web.get('/download/{name:.*}', self._rDownload)
         ]
 
     def CreateApp(self, aRoutes: list = None, aErroMiddleware: dict = None) -> web.Application:
         App = super().CreateApp(aRoutes, aErroMiddleware)
 
-        App.router.add_static('/', f'{self._SrvConf.dir_root}/{self._SrvConf.dir_3w}', show_index=True, follow_symlinks=True)
-        aiohttp_jinja2.setup(App, loader=jinja2.FileSystemLoader(self._SrvConf.dir_root + '/' + self._SrvConf.dir_form))
+        Path = f'{self._SrvConf.dir_root}/{self._SrvConf.dir_3w}'
+        App.router.add_static('/', Path, show_index=True, follow_symlinks=True, expect_handler=self._StaticRouterHandler)
+
+        # Loader = jinja2.ChoiceLoader([
+        #     jinja2.ModuleLoader(f'{self._SrvConf.dir_root}/{self._SrvConf.dir_tpl_cache}'),
+        #     jinja2.FileSystemLoader(f'{self._SrvConf.dir_root}/{self._SrvConf.dir_tpl}')
+        # ])
+
+        Loader = jinja2.FileSystemLoader(f'{self._SrvConf.dir_root}/{self._SrvConf.dir_tpl}')
+
+        aiohttp_jinja2.setup(App, loader=Loader)
         return App

@@ -10,10 +10,10 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import aiosmtplib
 #
-from Inc.DataClass import DataClass
+from Inc.DataClass import DDataClass
 
 
-@DataClass
+@DDataClass
 class TMailSmtp():
     username: str
     password: str
@@ -22,7 +22,7 @@ class TMailSmtp():
     use_tls: bool = True
 
 
-@DataClass
+@DDataClass
 class TMailSend():
     mail_to: str
     mail_subject: str
