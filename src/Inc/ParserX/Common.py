@@ -8,7 +8,7 @@ import os
 from Inc.DbList import TDbListSafe, TDbRecSafe
 from Inc.Util.Obj import DeepGet, DeepGetByList, GetClassPath
 from Inc.Misc.Time import TASleep
-from Inc.Misc.Download import TDownload
+from Inc.Misc.Request import TRequestGet
 from IncP.Log import Log
 
 
@@ -22,7 +22,7 @@ class TTranslate():
 
 class TApiBase():
     def __init__(self):
-        self.Download = TDownload()
+        self.Request = TRequestGet()
 
     @staticmethod
     def GetModName(aPath: str) -> str:

@@ -28,7 +28,9 @@ import sys
 
 __all__ = ['DDataClass', 'asdict', 'astuple', 'is_dataclass']
 
-_T = '_Type'
+_T = '_type_'
+_D = '_dflt_'
+
 
 def _Get(aCls, aName: str, aDef = None) -> object:
     if (hasattr(aCls, aName)):
@@ -59,14 +61,11 @@ def _GetArgs(aCls, aData: dict) -> str:
         if (Type.__module__ == 'builtins'):
             Param = f'{Name}: {Type.__name__}'
         else:
-            #Param = f'{Name}: {Type.__module__}.{Type.__name__}'
             Param = f'{Name}: {_T}{Name}'
 
-        if (hasattr(aCls, Name)):
-            Default = getattr(aCls, Name)
-            if (Type == str):
-                Default = '"' + Default + '"'
-            Param += f' = {Default}'
+        HasDefVal = hasattr(aCls, Name)
+        if (HasDefVal):
+            Param += f' = {_D}{Name}'
         Args.append(Param)
     return 'self, ' + ', '.join(Args)
 
@@ -84,8 +83,15 @@ def _Compile(aCls, aName: str, aData: dict):
     Args = _GetArgs(aCls, aData)
     Body.append(f' def {aName}({Args}):')
     for Name, Type in aData.items():
-        NameT = f'{_T}{Name}'
-        Globals[NameT] = Type
+        NameK = f'{_T}{Name}'
+        Globals[NameK] = Type
+
+        HasDefVal = hasattr(aCls, Name)
+        if (HasDefVal):
+            Default = getattr(aCls, Name)
+            NameK =f'{_D}{Name}'
+            Globals[NameK] = Default
+
         Body.append(f'  self.{Name} = {Name}')
     Body.append(f' return {aName}')
     Body = '\n'.join(Body)
@@ -99,13 +105,15 @@ def _Compile(aCls, aName: str, aData: dict):
 def _GetAnnotations(aCls):
     Res = {}
     for x in aCls.__mro__:
-        Data = x.__dict__.get('__annotations__', {})
-        Res.update(Data)
+        Data = x.__dict__.get('__annotations__')
+        if (Data):
+            Res.update(Data)
     return Res
 
 # Decorator
 def DDataClass(aCls):
     Name = '__init__'
+    #Annotations = aCls.__dict__.get('__annotations__')
     Annotations = _GetAnnotations(aCls)
     Data = _Compile(aCls, Name, Annotations)
     Data.__qualname__ = f'{aCls.__class__.__name__}.{Data.__name__}'

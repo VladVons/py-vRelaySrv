@@ -6,6 +6,7 @@
 import asyncio
 from aiohttp import streamer
 
+
 @streamer
 async def FileReader(writer, aFile: str) -> int:
     Res = 0

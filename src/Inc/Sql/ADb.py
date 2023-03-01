@@ -29,10 +29,10 @@ def ListIntToComma(aData: list[int]) -> str:
 @DDataClass
 class TDbAuth():
     database: str
-    user: str
     password: str
-    port: str
+    user: str = 'postgres'
     host: str = 'localhost'
+    port: str = 5432
 
 
 class TADb():
