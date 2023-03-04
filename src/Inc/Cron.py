@@ -35,7 +35,7 @@ def _Parse(aValue: str, aTarget: int) -> bool:
     return False
 
 def IsNow(aPattern: str) -> bool:
-    _YearT, MonthT, DOMT, HourT, MinT, SecT, DOWT, *X = time.localtime(time.time()) 
+    _YearT, MonthT, DOMT, HourT, MinT, SecT, DOWT, *_X = time.localtime(time.time())
     Sec, Min, Hour, DOM, Month, DOW = aPattern.split(' ')
 
     Res = _Parse(Sec, SecT) and \

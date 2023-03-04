@@ -11,17 +11,18 @@ from aiohttp import web
 #
 from Inc.Conf import TConf
 from Inc.Misc.Misc import FilterKeyErr
-from Inc.WebSrv.WebSrv import TWebSrvBase, TWebSrvConf
-from Inc.WebSrv.WebApi import TWebSockSrv
+from Inc.SrvWeb.SrvBase import TSrvBase, TSrvConf
+from Inc.SrvWeb.SrvApi import TWebSockSrv
 from IncP.Log import Log
 from .Api import Api
 from .Session import Session
 from .form.info import TForm
 
 
-class TWebSrv(TWebSrvBase):
-    def __init__(self, aSrvConf: TWebSrvConf, aConf: TConf):
-        super().__init__(aSrvConf, aConf)
+class TWebSrv(TSrvBase):
+    def __init__(self, aSrvConf: TSrvConf, aConf: TConf):
+        super().__init__(aSrvConf)
+        self.Conf = aConf
 
         self.WebSockSrv = TWebSockSrv()
         self.WebSockSrv.Api = Api

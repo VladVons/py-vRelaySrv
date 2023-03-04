@@ -6,7 +6,7 @@
 from Inc.DbList import TDbListSafe
 from Inc.Util.Obj import DeepGet
 from Inc.Misc.Misc import FilterKeyErr
-from Inc.WebSrv.WebApi import TApiBase, TWebClient
+from Inc.SrvWeb.SrvApi import TApiBase, TWebClient
 from IncP.Log import Log
 
 
@@ -17,7 +17,7 @@ class TApi(TApiBase):
         self.DefMethod = self.DefHandler
         self.WebClient = TWebClient()
 
-    async def _DoAuthRequest(self, aUser: str, aPassw: str) -> bool:
+    async def _DoAuthRequest(self, _aUser: str, _aPassw: str) -> bool:
         return True
 
     async def DefHandler(self, aPath: str, aData: dict = None) -> dict:

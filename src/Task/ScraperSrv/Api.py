@@ -12,7 +12,7 @@ from Inc.DbList import TDbListSafe, TDbCond, TDbSql
 from Inc.Util.Obj import DeepGet
 from Inc.Misc.Time import SecondsToDHMS_Str
 from Inc.Sql.ADb import TDbExecPool
-from Inc.WebSrv.WebApi import TApiBase
+from Inc.SrvWeb.SrvApi import TApiBase
 from IncP.Db.Scraper_pg import TDbApp
 from IncP.Log import Log, TEchoDb
 
