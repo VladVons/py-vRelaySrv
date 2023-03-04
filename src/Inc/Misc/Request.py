@@ -53,7 +53,7 @@ class TRequest():
             Res = await self._Send(aSession, aRecSes)
             Res['time'] = round(time.time() - TimeAt, 2)
         except (aiohttp.ClientConnectorError, aiohttp.ClientError, aiohttp.InvalidURL, asyncio.TimeoutError) as E:
-            Res = {'err': E, 'time': round(time.time() - TimeAt, 2)}
+            Res = {'err': str(E), 'time': round(time.time() - TimeAt, 2)}
         else:
             if (self.CallBack):
                 Res = await self.CallBack(aRecSes, Res)

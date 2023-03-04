@@ -4,6 +4,8 @@
 # pip3 install aiopg
 
 
+import sys
+import asyncio
 import aiopg
 #
 from IncP.Log import Log
@@ -12,7 +14,7 @@ from .ADb import TADb, TDbExecPool
 
 
 class TDbPg(TADb):
-    async def Connect(self):
+    async def Connect(self) -> bool:
         await self.Close()
 
         AuthDef = {
@@ -23,9 +25,16 @@ class TDbPg(TADb):
         }
         Log.Print(1, 'i', 'Connect()', [AuthDef])
 
-        AuthDef['password'] = self.Auth.password
-        self.Pool = await aiopg.create_pool(**AuthDef)
-        return (not self.Pool.closed)
+        for x in reversed(range(3)):
+            try:
+                self.Pool = await aiopg.create_pool(**AuthDef, password = self.Auth.password, timeout = 10)
+                break
+            except asyncio.TimeoutError as _E:
+                Log.Print(1, 'x', f'TDbPg.Connect() to {self.Auth.host} timeout. Try {x} ...')
+            except Exception as E:
+                Log.Print(1, 'x', 'TDbPg.Connect()', aE=E)
+                sys.exit()
+        return bool(self.Pool)
 
     async def GetTablesColumns(self, aTable: list = None) -> dict:
         if (not aTable):

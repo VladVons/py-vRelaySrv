@@ -1,6 +1,8 @@
 # Created: 2022.10.19
 # Author:  Vladimir Vons <VladVons@gmail.com>
 # License: GNU, see LICENSE for more details
+#
+# https://github.com/aio-libs/aiohttp
 
 
 import json
@@ -41,20 +43,20 @@ class TSrvBase():
     def __init__(self, aSrvConf: TSrvConf):
         self._SrvConf = aSrvConf
 
-    def _CheckAuthRequest(self, aRequest: web.Request) -> str:
+    def _CheckRequestAuth(self, aRequest: web.Request) -> str:
         if (not self._SrvConf.user):
             return True
 
-        Auth = self._GetAuthRequest(aRequest)
+        Auth = self._GetRequestAuth(aRequest)
         return (Auth) and (Auth['user'] == self._SrvConf.user) and (Auth['password'] == self._SrvConf.password)
 
-    def _GetAuthRequest(self, aRequest: web.Request) -> dict:
+    def _GetRequestAuth(self, aRequest: web.Request) -> dict:
         Auth = aRequest.headers.get('Authorization')
         if (Auth):
             User, Passw = base64.b64decode(Auth.split()[1]).decode().split(':')
             return {'user': User, 'password': Passw}
 
-    async def _GetPostData(self, aRequest: web.Request) -> dict:
+    async def _GetRequestJson(self, aRequest: web.Request) -> dict:
         #Data = await aRequest.json()
         Data = await aRequest.text()
         if (Data):
@@ -88,8 +90,8 @@ class TSrvBase():
         return App
 
     async def Run(self, aApp: web.Application):
-        ## pylint: disable-next=protected-access
-        ## await web._run_app(App, host = '0.0.0.0', port = 8080, shutdown_timeout = 60.0,  keepalive_timeout = 75.0)
+        # await web._run_app(App, host = '0.0.0.0', port = 8080, shutdown_timeout = 60.0, keepalive_timeout = 75.0)
+        # https://docs.aiohttp.org/en/stable/web_advanced.html#aiohttp-web-app-runners
 
         Runner = web.AppRunner(aApp)
         try:
