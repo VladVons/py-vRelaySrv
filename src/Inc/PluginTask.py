@@ -29,6 +29,9 @@ class TPluginTask(TPlugin):
         gc.collect()
         Log.Print(1, 'i', 'Add task %s' % (aPath))
 
+        if (getattr(aModule, 'skip_main', False) is True):
+            return
+
         Conf, ConfClass = self.GetConf(aPath)
         Arr = aModule.Main(Conf)
         if (Arr):

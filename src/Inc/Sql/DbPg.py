@@ -16,18 +16,18 @@ from .ADb import TADb, TDbExecPool
 class TDbPg(TADb):
     async def Connect(self) -> bool:
         await self.Close()
-
-        AuthDef = {
-            'host': self.Auth.host,
-            'port': self.Auth.port,
-            'dbname': self.Auth.database,
-            'user': self.Auth.user
-        }
-        Log.Print(1, 'i', 'Connect()', [AuthDef])
+        Log.Print(1, 'i', 'Connect()', [self.Auth.host, self.Auth.port, self.Auth.database, self.Auth.user])
 
         for x in reversed(range(3)):
             try:
-                self.Pool = await aiopg.create_pool(**AuthDef, password = self.Auth.password, timeout = 10)
+                self.Pool = await aiopg.create_pool(
+                    host = self.Auth.host,
+                    port = self.Auth.port,
+                    dbname = self.Auth.database,
+                    user = self.Auth.user,
+                    password = self.Auth.password,
+                    timeout = 10
+                )
                 break
             except asyncio.TimeoutError as _E:
                 Log.Print(1, 'x', f'TDbPg.Connect() to {self.Auth.host} timeout. Try {x} ...')

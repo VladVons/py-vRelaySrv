@@ -34,7 +34,7 @@ class TPlugin(dict):
 
         Path = f'{self.Dir}/{aPath}'.replace('/', '.')
         __import__(Path)
-        Mod = sys.modules.get(Path)
+        Mod = sys.modules[Path]
         Enable = getattr(Mod, 'enable', True)
         if (Enable):
             Depends = getattr(Mod, 'depends', '')
