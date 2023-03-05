@@ -15,7 +15,7 @@ from IncP.Log import Log
 from Inc.DbList import TDbSql
 from Inc.Misc.Template import FormatFile
 from .DbMeta import TDbMeta
-from .ADb import TDbExecCurs
+from .ADb import TDbExecCurs, TDbExecPool
 
 
 def DTransaction(aFunc):
@@ -166,3 +166,9 @@ class TDbModel():
 
     def GetQuery(self, aFile: str, aValues: dict) -> str:
         return FormatFile(f'{self.Dir}/{aFile}', aValues)
+
+    async def ExecQuery(self, aFile: str, aValues: dict) -> TDbSql:
+        Query = self.GetQuery(aFile, aValues)
+        Dbl = await TDbExecPool(self.DbMeta.Db.Pool).Exec(Query)
+        if (Dbl):
+            return Dbl.Export()
