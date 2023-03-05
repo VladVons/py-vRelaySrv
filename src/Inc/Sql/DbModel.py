@@ -13,6 +13,7 @@ from psycopg2 import errors
 #
 from IncP.Log import Log
 from Inc.DbList import TDbSql
+from Inc.Misc.Template import FormatFile
 from .DbMeta import TDbMeta
 from .ADb import TDbExecCurs
 
@@ -49,6 +50,9 @@ class TDbModel():
         self.DbMeta = aDbMeta
         self.Conf = self._LoadJson(aPath + '/FConf.json')
         self.Master = self.Conf.get('master', '')
+
+        Dir = self.__module__.replace('.', '/')
+        self.Dir = Dir.rsplit('/', maxsplit = 1)[0]
 
     def _LoadJson(self, aPath: str) -> dict:
         Res = {}
@@ -159,3 +163,6 @@ class TDbModel():
         Dbl = await TDbExecCurs(aCursor).Exec(Query)
         #Dbl = await TDbExecPool(self.DbMeta.Db.Pool).Exec(Query)
         return Dbl.Rec.GetField('count') > 0
+
+    def GetQuery(self, aFile: str, aValues: dict) -> str:
+        return FormatFile(f'{self.Dir}/{aFile}', aValues)

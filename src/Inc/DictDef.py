@@ -10,7 +10,7 @@ class TDictDef(dict):
 
         if (aData is None):
             aData = {}
-        self.SetData(aData)
+        super().__init__(aData)
 
     def __getattr__(self, aName: str) -> object:
         return self.get(aName, self.Def)

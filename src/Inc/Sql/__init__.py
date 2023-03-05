@@ -7,3 +7,4 @@
 from .ADb import TDbExecPool
 from .DbPg import TDbPg
 from .DbMeta import TDbMeta
+from .DbModel import TDbModel

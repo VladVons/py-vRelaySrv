@@ -22,6 +22,7 @@ class TSrvConf():
     port: int = 8080
     user: str = None
     password: str = None
+    allow_ip: list[str] = []
 
 
 def CreateErroMiddleware(aOverrides):
@@ -44,6 +45,9 @@ class TSrvBase():
         self._SrvConf = aSrvConf
 
     def _CheckRequestAuth(self, aRequest: web.Request) -> str:
+        if  (self._SrvConf.allow_ip) and (aRequest.remote != '127.0.0.1') and (aRequest.remote not in self._SrvConf.allow_ip):
+            return False
+
         if (not self._SrvConf.user):
             return True
 

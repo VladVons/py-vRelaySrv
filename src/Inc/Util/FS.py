@@ -6,12 +6,13 @@
 import os
 
 
-def FileLoad(aName: str, aMode: str = 'r') -> str:
+def FileLoad(aName: str, aMode: str = 'r') -> object:
     try:
         with open(aName, aMode, encoding='utf-8') as F:
-            return F.read()
+            Res = F.read()
     except:
-        pass
+        Res = None
+    return Res
 
 def FileStat(aName: str) -> tuple:
     try:
