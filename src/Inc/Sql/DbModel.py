@@ -52,7 +52,9 @@ class TDbModel():
         self.Master = self.Conf.get('master', '')
 
         Dir = self.__module__.replace('.', '/')
-        self.Dir = Dir.rsplit('/', maxsplit = 1)[0]
+        if (not os.path.isdir(Dir)):
+            Dir = Dir.rsplit('/', maxsplit = 1)[0]
+        self.Dir = Dir
 
     def _LoadJson(self, aPath: str) -> dict:
         Res = {}
