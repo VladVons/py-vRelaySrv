@@ -1,4 +1,3 @@
-
 import os
 import json
 #
@@ -13,7 +12,7 @@ from psycopg2 import errors
 #
 from IncP.Log import Log
 from Inc.DbList import TDbSql
-from Inc.Misc.Template import FormatFile
+from Inc.Loader.Query import TLoaderQueryFs
 from .DbMeta import TDbMeta
 from .ADb import TDbExecCurs, TDbExecPool
 
@@ -51,10 +50,8 @@ class TDbModel():
         self.Conf = self._LoadJson(aPath + '/FConf.json')
         self.Master = self.Conf.get('master', '')
 
-        Dir = self.__module__.replace('.', '/')
-        if (not os.path.isdir(Dir)):
-            Dir = Dir.rsplit('/', maxsplit = 1)[0]
-        self.Dir = Dir
+        #self.Query = TQueryDb(self, aDbMeta.Db)
+        self.Query = TLoaderQueryFs(self)
 
     def _LoadJson(self, aPath: str) -> dict:
         Res = {}
@@ -161,16 +158,20 @@ class TDbModel():
         return await self._DelListTD(aId)
 
     async def MasterHasId(self, aId: int, aCursor) -> bool:
-        Query = f'select count(*) as count from {self.Master} where id = {aId}'
+        Query = f'''
+        select
+            count(*) as count
+            from
+                {self.Master}
+            where
+                id = {aId}
+        '''
         Dbl = await TDbExecCurs(aCursor).Exec(Query)
         #Dbl = await TDbExecPool(self.DbMeta.Db.Pool).Exec(Query)
         return Dbl.Rec.GetField('count') > 0
 
-    def GetQuery(self, aFile: str, aValues: dict) -> str:
-        return FormatFile(f'{self.Dir}/{aFile}', aValues)
-
-    async def ExecQuery(self, aFile: str, aValues: dict) -> TDbSql:
-        Query = self.GetQuery(aFile, aValues)
+    async def ExecQuery(self, aPath: str, aValues: dict) -> TDbSql:
+        Query = await self.Query.Get(aPath, aValues)
         Dbl = await TDbExecPool(self.DbMeta.Db.Pool).Exec(Query)
         if (Dbl):
             return Dbl.Export()
