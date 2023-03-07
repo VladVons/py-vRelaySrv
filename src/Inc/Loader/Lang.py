@@ -28,7 +28,7 @@ class TLoaderLangFs(TLoaderLang):
         self.update(Data)
 
 
-class TLoaderQueryDb(TLoaderLang):
+class TLoaderLangDb(TLoaderLang):
     def __init__(self, aLang: int, aDb: TDbPg):
         self.Lang = aLang
         self.Db = aDb
