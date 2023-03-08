@@ -6,7 +6,9 @@
 import asyncio
 from aiohttp import streamer
 
+
 MaxLen = 2 ** 16
+
 
 @streamer
 async def FileReader(writer, aFile: str) -> int:

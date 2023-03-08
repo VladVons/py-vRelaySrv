@@ -14,6 +14,7 @@ import aiohttp_session
 #
 from Inc.DataClass import DDataClass
 from Inc.Misc.Misc import GetRandStr
+from .ErroMiddleware import CreateErroMiddleware
 
 
 @DDataClass
@@ -24,21 +25,6 @@ class TSrvConf():
     user: str = None
     password: str = None
     allow_ip: list[str] = []
-
-
-def CreateErroMiddleware(aOverrides):
-    @web.middleware
-    async def ErroMiddleware(request: web.Request, handler):
-        try:
-            return await handler(request)
-        except web.HTTPException as E:
-            Override = aOverrides.get(E.status)
-            if (Override):
-                return await Override(request)
-            raise E
-        #except Exception as E:
-        #    pass
-    return ErroMiddleware
 
 
 class TSrvBase():

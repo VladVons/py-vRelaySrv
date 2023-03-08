@@ -1,3 +1,8 @@
+# Created: 2022.02.02
+# Author: Vladimir Vons <VladVons@gmail.com>
+# License: GNU, see LICENSE for more details
+
+
 import os
 import json
 #
