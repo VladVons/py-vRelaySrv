@@ -13,6 +13,7 @@ from aiohttp_session.cookie_storage import EncryptedCookieStorage
 import aiohttp_session
 #
 from Inc.DataClass import DDataClass
+from Inc.Misc.Misc import GetRandStr
 
 
 @DDataClass
@@ -90,7 +91,8 @@ class TSrvBase():
             Middleware = CreateErroMiddleware(aErroMiddleware)
             App.middlewares.append(Middleware)
 
-        aiohttp_session.setup(App, EncryptedCookieStorage(b'my 32 bytes key. qwertyuiopasdfg'))
+        Key32 = GetRandStr(32).encode()
+        aiohttp_session.setup(App, EncryptedCookieStorage(Key32))
         return App
 
     async def Run(self, aApp: web.Application):

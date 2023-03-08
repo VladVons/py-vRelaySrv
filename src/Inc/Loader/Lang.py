@@ -16,6 +16,12 @@ class TLoaderLang(dict):
     def Get(self, aKey: str) -> str:
         return self.get(aKey, f'-{aKey}-')
 
+    def Join(self) -> dict:
+        # ToDo # Res.update(*list(self.values()))
+        Res = {}
+        for x in self.values():
+            Res.update(x)
+        return Res
 
 class TLoaderLangFs(TLoaderLang):
     def __init__(self, aLang: str, aDirRoot: str):
@@ -23,9 +29,12 @@ class TLoaderLangFs(TLoaderLang):
 
     async def Add(self, aPath: str):
         File = f'{self.Dir}/{aPath}.json'
-        with open(File, 'r', encoding = 'utf8') as F:
-            Data = json.load(F)
-        self.update(Data)
+        if (os.path.exists(File)):
+            with open(File, 'r', encoding = 'utf8') as F:
+                Data = json.load(F)
+        else:
+            Data = {}
+        self[aPath] = Data
 
 
 class TLoaderLangDb(TLoaderLang):
