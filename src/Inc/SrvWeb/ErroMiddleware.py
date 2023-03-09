@@ -7,9 +7,11 @@ import os
 import sys
 import traceback
 from aiohttp import web
+#
+from IncP.Log import Log
 
 
-def CreateErroMiddleware(aOverrides):
+def CreateErroMiddleware(aOverrides: dict):
     @web.middleware
     async def ErroMiddleware(request: web.Request, handler):
         try:
@@ -20,10 +22,13 @@ def CreateErroMiddleware(aOverrides):
                 return await Override(request)
             raise E
         except Exception as E:
-            cwd = os.getcwd() + '/'
-            Arr = traceback.format_exception(*sys.exc_info())
-            Arr.insert(0, f'<b>{E}</b><br>')
-            Arr = [x.replace(cwd, '') for x in Arr]
-            Text = '\n<br>'.join(Arr)
-            return web.Response(text = Text, content_type = 'text/html', status = 403)
+            Log.Print(1, 'x', 'ErroMiddleware()', aE = E)
+
+            Override = aOverrides.get('err_all')
+            if (Override):
+                cwd = os.getcwd() + '/'
+                Data = traceback.format_exception(*sys.exc_info())
+                Data = [x.replace(cwd, '') for x in Data]
+                return await Override(request, Data)
+            raise E
     return ErroMiddleware
