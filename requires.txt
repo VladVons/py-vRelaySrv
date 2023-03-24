@@ -62,3 +62,17 @@ aiogram
 #--- JavaScript emulator
 #js2py
 #apt-get install nodejs
+
+
+#--- Profileng
+apt install python-profiler
+pip install snakeviz
+
+import cProfile
+import pstats
+with cProfile.Profile() as F:
+    MySlow()
+Stats = pstats.Stats(F)
+Stats.sort_stats(pstats.SortKey.TIME)
+#Stats.print_stats()
+Stats.dump_stats('ExecCtrlDef.prof')

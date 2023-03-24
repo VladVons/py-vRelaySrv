@@ -9,7 +9,7 @@ import random
 #
 from Inc.DbList import TDbListSafe
 from Inc.Util.Obj import DeepGet
-from Inc.Misc.DownloadSpeed import TDownloadSpeed
+from Inc.Misc.ClientSession import TDownloadSpeed
 from Inc.Misc.Misc import FilterKeyErr
 from Inc.SrvWeb.SrvApi import TWebSockClient
 from IncP.Log import Log
@@ -78,7 +78,7 @@ class TMain():
         if (not Res):
             Url = self.Conf.get('speed_test_url')
             if (Url):
-                Speed = await TDownloadSpeed(2).Test(Url)
+                Speed = await TDownloadSpeed(Url, 2).Test()
                 Res = round(Speed / 5)
             else:
                 Res = 5
