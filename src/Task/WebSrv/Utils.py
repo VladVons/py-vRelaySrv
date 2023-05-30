@@ -6,10 +6,10 @@
 import time
 import json
 #
-from IncP.Scheme.SchemeApi import TSchemeApi
+from Inc.Scheme.SchemeApi import TSchemeApi
 
 # pylint: disable-next=consider-using-from-import
-import IncP.Scheme.SchemeApi as SchemeApi
+import Inc.Scheme.SchemeApi as SchemeApi
 from Inc.Util.ModHelp import GetClassHelp
 
 

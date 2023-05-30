@@ -10,9 +10,9 @@ import bs4
 from bs4 import BeautifulSoup
 #
 sys.path.append('../src')
-import src.IncP.Scheme.Scheme
+import src.Inc.Scheme.Scheme
 from IncP.Db.Scraper_pg import TDbApp
-from IncP.Scheme.Scheme import TSoupScheme, TScheme
+from Inc.Scheme.Scheme import TSoupScheme, TScheme
 from Inc.Misc.Misc import FormatJsonStr
 
 
@@ -137,15 +137,25 @@ def TestApi():
     print(Res)
 
 
-
-print(os.getcwd())
+def TestList(aListm, aIdx, aEnd = 0):
+    print('-x', aIdx, aEnd)
+    if (aEnd):
+        print('-x2', aListm[aIdx:aEnd])
+    else:
+        print('-x1', aListm[aIdx])
+    
 os.system('clear')
+print(os.getcwd())
 print(sys.version)
-print(bs4.__file__)
+#print(bs4.__file__)
 #
 #asyncio.run(SaveScheme('Schemes_2.txt'))
 #
 #TestPy('megabit.od.ua')
-TestJson('fozzyshop.ua')
+#TestJson('fozzyshop.ua')
+#TestJson('himopt.com.ua-q1')
+TestJson('himopt.com.ua-p')
+#TestJson('gepir4_gs1ua_org')
+#TestJson('rozetka.com.ua')
 #TestBoth('oster.com.ua')
 #TestApi()

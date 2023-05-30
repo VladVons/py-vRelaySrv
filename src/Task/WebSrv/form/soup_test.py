@@ -6,9 +6,9 @@
 import json
 #
 from Inc.Misc.Misc import TJsonEncoder, FormatJsonStr, FilterKeyErr
+from Inc.Scheme.Scheme import TScheme
 from IncP.Download import GetSoupUrl
 from IncP.Log import Log
-from IncP.Scheme.Scheme import TScheme
 from .FormBase import TFormBase
 from ..Utils import GetUrlInfo, GetApiHelp
 
