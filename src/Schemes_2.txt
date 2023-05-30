@@ -1,0 +1,7196 @@
+--- 2, http://oster.com.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-06-17 12:12:57",
+      "url": [
+        "http://oster.com.ua/c600240/p615843.html"
+      ],
+      "comment": ""
+    },
+    "pipe": [
+      ["find",["div",{"id":"content"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1"]],
+          ["text"]
+        ],
+        "price": [
+          ["find",["h2"]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["ul",{"class":"list-unstyled"}]],
+          ["find_all",["li"]],
+          ["list",[1]],
+          ["text"],
+          ["split",[":",1]],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find",["ul",{"class":"breadcrumb"}]],
+          ["breadcrumb", [["li"], -2]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 3, https://largo.com.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-07",
+      "url": [
+        "https://largo.com.ua/mobilniy-telefon-tecno-kf6n-spark-7-4-128gb-blue-4895180766442"
+      ]
+    },
+    "pipe": [
+      ["find", ["div", {"class":"product-details-top"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1", {"class":"product-title"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find",["span",{"class":"new-price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find", ["span",{"class":"old-price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["var_get", ["$root"]],
+          ["find", ["a", {"class": "btn-cart"}]],
+          ["get", ["title"]],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["ol", {"class": "breadcrumb"}]],
+          ["breadcrumb", [["li"], -2]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 4, https://avic.ua/ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-05-16",
+      "url": [
+        "https://avic.ua/ua/naushniki-apple-airpods-3rd-gen-mme73-item",
+        "https://avic.ua/ua/noutbuk-asus-rog-zephyrus-g15-ga503qr-ga503qr-211zg15-item"
+      ]
+    },
+    "pipe": [
+      ["find",["section",{"class":"product-info"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1",{"class":"page-title"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find",["div",{"class":"new-prise"}]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find",["div",{"class":"old-prise"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["div",{"class":"prod-status"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"class": "breadcrumb"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 5, https://empire-tech.prom.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022.04.30",
+      "url": [
+        "https://empire-tech.prom.ua/ua/p1595810507-portativnaya-ratsiya-motorola.html"
+      ]
+    },
+    "pipe": [
+      ["find", ["div", {"class": "b-product__info-holder"}]],
+      ["as_dict", {
+        "name": [
+          ["find", ["h1", {"class": "b-title b-product__name"}]],
+          ["text"]
+        ],
+        "stock": [
+          ["find", ["span", {"class": "b-product__state"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "price": [
+          ["find", ["p", {"class": "b-product__price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "mpn": [
+          ["find", ["span", {"class": "b-product__sku"}]],
+          ["text"],
+          ["split", [":", 1]]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["ext_category_prom"]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 6, https://bigmo.com.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022.04.30",
+      "url": [
+        "https://bigmo.com.ua/nakopitel-ssd-kingston-240-gb-a400-sa400s37-240g-sata-box"
+      ]
+    },
+    "pipe": [
+      ["find", ["div", {"class": "ty-product-block"}]],
+      ["as_dict", {
+        "name": [
+          ["find", ["h1"]],
+          ["find", ["bdi"]],
+          ["text"]
+        ],
+        "stock": [
+          ["find", ["span", {"class": "ty-qty-in-stock"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "price": [
+          ["find", ["span", {"class": "ty-price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find", ["span", {"class": "ty-list-price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"id": "breadcrumbs_12"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 7, https://artline.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022.04.30",
+      "url": [
+        "https://artline.ua/product/monitor-34-qube-overlord-c34uq144"
+      ]
+    },
+    "pipe": [
+      ["app_json", [{"@type": "product"}]],
+      ["as_dict", {
+        "name": [
+          ["get", ["name"]]
+        ],
+        "stock": [
+          ["gets", ["offers.availability"]],
+          ["stock"]
+        ],
+        "image": [
+          ["get", ["image"]]
+        ],
+        "price": [
+          ["ext_price_app", [true]]
+        ],
+        "mpn": [
+          ["get", ["mpn"]]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["section", {"class": "breadcrumbs"}]],
+          ["breadcrumb", [["li"], -2]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 8, https://1server.com.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-07-12 11:53:41",
+      "url": [
+        "https://1server.com.ua/index.php?route=product/product&path=8_17_19&product_id=225529"
+      ],
+      "comment": ""
+    },
+    "pipe": [
+      ["find",["div",{"id":"content"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1"]],
+          ["text"]
+        ],
+        "price": [
+          ["find_all",["ul",{"class":"list-unstyled"}]],
+          ["list",[1]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find_all",["ul",{"class":"list-unstyled"}]],
+          ["list",[0]],
+          ["text"],
+          ["split",["\n",3]],
+          ["split",[":",1]],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["find_all",["ul",{"class":"list-unstyled"}]],
+          ["list",[0]],
+          ["text"],
+          ["split",["\n",2]],
+          ["split",[":",1]]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["ul", {"class": "breadcrumb"}]],
+          ["breadcrumb", [["a"], -2]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 9, https://can.ua
+'''
+Author: vladvons,
+Date: 2022.05.06
+Url: https://can.ua/adata-xpg-spectrix-s20g-1tb-aspectrixs20g-1t-c/p253348
+'''
+
+class TRes(aRes):
+    def key_(self, aData):
+        Soup = aData.find("div", {"class": "product-page"})
+        Soup = Soup.find("script", {"type": "application/ld+json"})
+        Soup = Soup.text
+        Soup = aApi.txt2json(Soup)
+        return Soup
+
+    def key_name(self, aData):
+        return aApi.gets(aData, 'name')
+
+    def key_price(self, aData):
+        Price = aApi.gets(aData, 'offers.price')
+        Cur = aApi.gets(aData, 'offers.priceCurrency')
+        return [Price, Cur]
+
+    def key_image(self, aData):
+        Image = aApi.gets(aData, 'image')
+        if (Image):
+            return Image[0]
+
+    def key_stock(self, aData):
+        Val = aApi.gets(aData, 'offers.availability')
+        return aApi.stock(Val)
+
+    def key_mpn(self, aData):
+        return aApi.gets(aData, 'mpn')
+
+Parser = TRes(aVal)
+Parser.Exec('key_', aPy)
+
+# return value
+Res = {'Data': {'Product': {'Pipe': Parser.Data}}, 'Err': Parser.Err}
+
+
+--- 10, https://click.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-05-08",
+      "url": [
+        "https://click.ua/shop/noutbuk-lenovo-ideapad-3-15igl05-81wq000mra-p57663",
+        "https://click.ua/shop/pidstavka-dlya-noutbuka-monitora-becover-b6-transparent-704672-p22420"
+      ]
+    },
+    "pipe": [
+      ["find", ["body", {"class": "body-product"}]],
+      ["as_dict", {
+        "name": [
+          ["find", ["div", {"class": "content__head --product"}]],
+          ["h1"],
+          ["text"]
+        ],
+        "stock": [
+          ["find", ["div", {"class": "fs12 color --green mt5"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "price": [
+          ["find", ["div", {"class": "one-product__prices"}]],
+          ["find", ["b"]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find", ["div", {"class": "one-product__prices"}]],
+          ["find", ["del"]],
+          ["text"],
+          ["price"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["ul", {"class": "breadcrumbs"}]],
+          ["breadcrumb", [["li"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 11, https://compx.com.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-05-08",
+      "url": [
+        "https://compx.com.ua/protsessor-amd-ryzen-7-5800x-100-100000063wof",
+        "https://compx.com.ua/protsesor-intel-core-i5-11400f-bx8070811400f"
+      ]
+    },
+    "pipe": [
+      ["find", ["main", {"class": "main"}]],
+      ["as_dict", {
+        "name": [
+          ["find", ["div", {"class": "product-header__block product-header__block--wide"}]],
+          ["h1"],
+          ["text"]
+        ],
+        "stock": [
+          ["find", ["div", {"class": "product-header__availability"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "price": [
+          ["find", ["div", {"class": "product-price__item"}]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find", ["div", {"class": "product-price__old-price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["serial_find"],
+          ["list_sort_len"],
+          ["list", [-1]]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["nav", {"class": "breadcrumbs"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 12, https://itmag.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-07",
+      "url": [
+        "https://itmag.ua/catalog/noutbuki_asus/asus_rog_strix_g15_g513qr_g513qr_es96"
+      ]
+    },
+    "pipe": [
+      ["find",["div",{"class":"detail-content"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1", {"itemprop":"name"}]],
+          ["text"],
+          ["strip"]
+        ],
+        "price": [
+          ["find",["div", {"class":"detail-price__current"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["div",{"class":"presence-info"}]],
+          ["text"],
+          ["split", [":"]],
+          ["list", [1]],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["ul", {"class": "breadcrumbs"}]],
+          ["breadcrumb", [["li"], -2]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 14, https://iphonesale.com.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-08",
+      "url": [
+        "https://iphonesale.com.ua/apple-iphone-11-pro-256gb-midnight-green-mwcq2"
+      ]
+    },
+    "pipe": [
+      ["find",["div",{"class":"sku"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["div",{"class":"sku__heading"}]],
+          ["find",["h1"]],
+          ["text"]
+        ],
+        "price": [
+          ["find",["p",{"class":"sku__price"}]],
+          ["text"],
+          ["strip"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["p",{"class":"sku__status-success"}]],
+          ["text"],
+          ["strip"],
+          ["lower"],
+          ["search", [["доступен"]]]
+        ],
+        "image": [
+          ["find",["a",{"class":"sku__slides-item"}]],
+          ["get",["href"]]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "-category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"class": "breadcrumbs"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 15, https://flick.zone
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-06-07",
+      "url": [
+        "https://flick.zone/product/marvo-g961-rgb-led-usb-black"
+      ]
+    },
+    "pipe": [
+      ["find", ["div", {"class": "product_content_wrapper"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1"]],
+          ["text"],
+          ["strip"]
+        ],
+        "price": [
+          ["find",["p",{"class":"price"}]],
+          ["find_all",["bdi"]],
+          ["list",[1]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find",["p",{"class":"price"}]],
+          ["find_all",["bdi"]],
+          ["list",[0]],
+          ["text"],
+          ["price"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "category": [
+          ["find",["nav", {"class":"woocommerce-breadcrumb"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 16, https://comtrade.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-08",
+      "url": [
+        "https://comtrade.ua/hytera-hp705-vhf/"
+      ]
+    },
+    "pipe": [
+      ["find",["section",{"class":"product"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1", {"class": "product-title"}]],
+          ["text"],
+          ["strip"]
+        ],
+        "price": [
+          ["find", ["div", {"class": "product-price__item"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["div", {"class": "product-header__availability"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["nav", {"class": "breadcrumbs"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 17, https://frogs.com.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-08",
+      "url": [
+        "https://frogs.com.ua/288132-sennheiser-hd-206.html"
+      ]
+    },
+    "pipe": [
+      ["find",["div",{"id":"product"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1",{"class":"productcard__name"}]],
+          ["text"],
+          ["strip"]
+        ],
+        "price": [
+          ["find",["span",{"class":"price__fixed"}]],
+          ["text"],
+          ["price"]
+        ],
+        "image": [
+          ["find",["img",{"class":"img-responsive"}]],
+          ["get",["data-lazy"]]
+        ],
+        "stock": [
+          ["find",["span",{"class":"productcard__deliverytime"}]],
+          ["text"],
+          ["strip"],
+          ["lower"],
+          ["is_equal", [["відправимо сьогодні", "відправимо завтра"]]]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["ol", {"class": "breadcrumb"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 18, https://foroom.com.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-08",
+      "url": [
+        "https://foroom.com.ua/products/multitul-leatherman-wave-plus-832524/"
+      ]
+    },
+    "pipe": [
+      ["find",["div",{"class":"product-main-info-wrapper"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1",{"class":"productName"}]],
+          ["text"],
+          ["strip"]
+        ],
+        "price": [
+          ["find",["div",{"class":"main-price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["span",{"class":"presence-custom"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["nav", {"id": "breadcrumb"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 20, https://enko.com.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-05-06",
+      "url": [
+        "https://enko.com.ua/shop/noutbuki-i-portativnye-pk/noutbuki/noutbuk-hp-envy-13-ba1000ua-423u5ea",
+        "https://enko.com.ua/shop/ustroystva-pitaniya/vneshnie-akkumulyatory/batareya-universalnaya-remax-rpp-59-kooker-20000mah-cherna"
+      ]
+    },
+    "pipe": [
+      ["find", ["div", {"class": "shopm_catalog"}]],
+      ["as_dict", {
+        "name": [
+          ["find", ["h1", {"itemprop": "name"}]],
+          ["find", ["span", {"data-lang": "ukr"}]],
+          ["text"]
+        ],
+        "stock": [
+          ["find", ["div", {"itemprop": "offers"}]],
+          ["find", ["font"]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["find", ["img", {"itemprop": "image"}]],
+          ["get", ["src"]]
+        ],
+        "price": [
+          ["find", ["span", {"itemprop": "price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find", ["div", {"itemprop": "offers"}]],
+          ["find_all", ["span"]],
+          ["list", [1]],
+          ["text"],
+          ["price"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"class": "group_path"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 21, https://cthp.net.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022.04.30",
+      "url": [
+        "https://cthp.net.ua/p/1341210651-ninebot-by-segway-e22e-aa-00-0000-62"
+      ]
+    },
+    "pipe": [
+      ["find", ["div", {"class": "section_goods-card"}]],
+      ["as_dict", {
+        "name": [
+          ["find", ["h1", {"class": "title"}]],
+          ["text"]
+        ],
+        "stock": [
+          ["find", ["div", {"class": "goods-card__presence"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "price": [
+          ["find", ["div", {"class": "goods-card__price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"itemtype": "https://schema.org/BreadcrumbList"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 23, https://88.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-05-01",
+      "url": [
+        "https://88.ua/index.php?route=product/product&path=9_322_326&product_id=135080"
+      ]
+    },
+    "pipe": [
+      ["find", ["div", {"id": "content"}]],
+      ["as_dict", {
+        "name": [
+          ["find", ["h1"]],
+          ["text"]
+        ],
+        "stock": [
+          ["find_all", ["ul", {"class": "list-unstyled"}]],
+          ["list", [0]],
+          ["find_all", ["li"]],
+          ["list", [1]],
+          ["text"],
+          ["split", [":", 1]],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "price": [
+          ["find_all", ["ul", {"class": "list-unstyled"}]],
+          ["list", [1]],
+          ["text"],
+          ["price"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["ul", {"class": "breadcrumb"}]],
+          ["breadcrumb", [["a"], -2]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 24, https://bitmouse.com.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-06-29 15:48:59",
+      "url": [
+        "https://bitmouse.com.ua/lenovo-legion-tower-5-gaming-desktop-pc-90rc002tge-k.html"
+      ]
+    },
+    "pipe": [
+      ["app_json", [{"@type": "product"}]],
+      ["as_dict", {
+        "name": [
+          ["get", ["name"]]
+        ],
+        "price": [
+          ["ext_price_app", [true]]
+        ],
+        "stock": [
+          ["gets", ["offers.availability"]],
+          ["stock"]
+        ],
+        "image": [
+          ["get", ["image"]]
+        ],
+        "mpn": [
+          ["get", ["model"]]
+        ],
+        "category": [
+          ["get", ["category"]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 25, https://ktc.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-07-01 09:00:00",
+      "url": [
+        "https://ktc.ua/goods/noutbuk_lenovo_thinkbook_15_g3_acl_21a4008yra_mineral_grey.html"
+      ]
+    },
+    "pipe": [
+      ["app_json", [{"@type": "product"}]],
+      ["as_dict", {
+        "name": [
+          ["gets", ["name"]]
+        ],
+        "price": [
+          ["get", ["offers"]],
+          ["list", [0]],
+          ["as_list", [
+            [["get", ["price"]]],
+            [["get", ["priceCurrency"]]]
+          ]]
+        ],
+        "price_old": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"class": "product__price-promo"}]],
+          ["find", ["del"]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["get", ["offers"]],
+          ["list", [0]],
+          ["get", ["availability"]],
+          ["stock"]
+        ],
+        "image": [
+          ["gets", ["image.contentUrl"]]
+        ],
+        "mpn": [
+          ["get", ["mpn"]]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["section", {"class": "breadcrumbs"}]],
+          ["breadcrumb", [["a"], -2]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 26, https://aligator.com.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-05-03",
+      "url": [
+        "https://aligator.com.ua/index.php?route=product/product&product_id=33924"
+      ]
+    },
+    "pipe": [
+      ["find", ["section", {"class": "main-section-product"}]],
+      ["as_dict", {
+        "name": [
+          ["find", ["h2", {"class": "category-title"}]],
+          ["text"]
+        ],
+        "stock": [
+          ["find", ["div", {"class": "buttons-wrapper"}]],
+          ["find", ["a", {"class": "button button-buy"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "price": [
+          ["find", ["div", {"class": "price"}]],
+          ["text"],
+          ["price"]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 27, https://1stname.com.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-07-01 09:00:00",
+      "url": [
+        "https://1stname.com.ua/ua/p1596707011-stabilizator-napryazheniya-eleks.html"
+      ]
+    },
+    "pipe": [
+      ["app_json", [{"@type": "product"}]],
+      ["as_dict", {
+        "name": [
+          ["get", ["name"]]
+        ],
+        "price": [
+          ["ext_price_app", [false]]
+        ],
+        "stock": [
+          ["gets", ["offers.availability"]],
+          ["stock"]
+        ],
+        "image": [
+          ["get", ["image"]]
+        ],
+        "sku": [
+          ["get", ["sku"]]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["ext_category_prom"]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 28, https://logitech-shop.com.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-08",
+      "url": [
+        "https://logitech-shop.com.ua/index.php?route=product/product&product_id=339"
+      ]
+    },
+    "pipe": [
+      ["find",["div",{"id":"product-product"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h3",{"class":"product-title"}]],
+          ["text"],
+          ["strip"]
+        ],
+        "price": [
+          ["find",["h3",{"class":"product-price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["ul",{"class":"attr"}]],
+          ["find_all",["li"]],
+          ["list",[1]],
+          ["text"],
+          ["split",[":",1]],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "-category": [
+        ]
+      }]
+    ]
+  }
+}
+
+--- 30, https://brain.com.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-05-05",
+      "url": [
+        "https://brain.com.ua/ukr/Planshet_Samsung_SM-T225_32_Tab_A7_Lite_87_3_32Gb_LTE_Grey_SM-T225NZAASEK-p774612.html"
+      ]
+    },
+    "pipe": [
+      ["find", ["div", {"class": "br-body-product"}]],
+      ["as_dict", {
+        "name": [
+          ["find", ["div", {"class": "title"}]],
+          ["find", ["h1"]],
+          ["text"],
+          ["strip"]
+        ],
+        "stock": [
+          ["find", ["a", {"class": "btn-add-green"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "price": [
+          ["find", ["span", {"itemprop": "price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find", ["div", {"class": "main-price-block"}]],
+          ["text"],
+          ["price_find"],
+          ["list", [0]],
+          ["price"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["ul", {"class": "br-breadcrumbs-list"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 31, https://megabit.od.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-06-08",
+      "url": [
+        "https://megabit.od.ua/ua/product/50614/videokarta-asus-gtx-1060-3072mb-ph-gtx-1060-3g-gddr-5-192-bit-8008-mhz-2-x-displayport-2-x-hdmi-dvi-kuler-radiator-6-pin"
+      ]
+    },
+    "pipe": [
+      ["app_json", [{"@type": "product"}]],
+      ["as_dict", {
+        "name": [
+          ["gets", ["name"]]
+        ],
+        "stock": [
+          ["gets", ["offers.availability"]],
+          ["stock"]
+        ],
+        "image": [
+          ["get", ["image"]],
+          ["list", [0]]
+        ],
+        "mpn": [
+          ["get", ["mpn"]]
+        ],
+        "price": [
+          ["ext_price_app", [true]]
+        ],
+        "category": [
+          ["gets", ["category.name"]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 32, https://nimpha.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-06-07",
+      "url": [
+        "https://nimpha.ua/221090-noutbuk-lenovo-ideapad-3-15itl6-82h800ukra-arctic-grey-156-tn-1920x1080-full-hd-matovyy---intel-core-i3-1115g4-30---41-ggts---ram-8-gb---ssd"
+      ]
+    },
+    "pipe": [
+      ["find",["div",{"id":"content"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1"]],
+          ["text"],
+          ["strip"]
+        ],
+        "price": [
+          ["find", ["span", {"itemprop": "priceCurrency"}]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find",["li",{"class":"product-price-old"}]],
+          ["find_all", ["div"]],
+          ["list", [0]],
+          ["text"],
+          ["price"]
+        ],
+        "image": [
+          ["find", ["div", {"class": "main_images"}]],
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["ul", {"class": "breadcrumb"}]],
+          ["breadcrumb", [["li"], -2]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 33, https://sven.dp.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-07",
+      "url": [
+        "https://sven.dp.ua/MARVO_M421_RGB-LED"
+      ]
+    },
+    "pipe": [
+      ["find",["div",{"class":"product"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1", {"itemprop":"name"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find",["div", {"class":"po_price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["div",{"class":"po_avail"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"class":"bcrumbs"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 34, https://www.aks.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-07",
+      "url": [
+        "https://www.aks.ua/item/view/547868/zashitnoe-steklo-cutana-2-5d-full-cover-apple-iphone-6-iphone-6s-black.html"
+      ]
+    },
+    "pipe": [
+      ["find",["section",{"class":"main"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1", {"class":"product-card-product-name-header"}]],
+          ["text"],
+          ["strip"]
+        ],
+        "price": [
+          ["find",["div", {"class":"prod-content-price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find",["span",{"class":"old-price__value"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["span",{"class":"availability"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["find", ["div", {"class": "prod-img"}]],
+          ["ext_image"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["ol", {"class": "breadcrumbs"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 35, https://q-techno.com.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-07",
+      "url": [
+        "https://q-techno.com.ua/blok-pitanija-chieftec-850w-proton-bdf-850c.html"
+      ]
+    },
+    "pipe": [
+      ["find", ["div", {"class":"product-essential"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1", {"class":"dynamic-data-name"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find", ["span", {"class":"price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find", ["span", {"class":"dynamic-data-inventory"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"class": "breadcrumbs"}]],
+          ["breadcrumb", [["li"], -2]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 36, https://noteboochek.com.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-07-01 09:00:00",
+      "url": [
+        "https://noteboochek.com.ua/msi-summit-e15-a11scst-a11scst-044nl"
+      ]
+    },
+    "pipe": [
+      ["app_json", [{"@type": "product"}]],
+      ["as_dict", {
+        "name": [
+          ["get", ["name"]]
+        ],
+        "price": [
+          ["ext_price_app", [false]]
+        ],
+        "price_old": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"class": "product-add-form-wrap"}]],
+          ["find", ["span", {"data-price-type": "oldPrice"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["gets", ["offers.availability"]],
+          ["stock"]
+        ],
+        "image": [
+          ["get", ["image"]]
+        ],
+        "mpn": [
+          ["get", ["name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "sku": [
+          ["get", ["sku"]]
+        ],
+        "-category": [
+          ["var_get", ["$root"]],
+          ["find", ["ul", {"class": "breadcrumb"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 37, https://pulsepad.com.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-07",
+      "url": [
+        "https://pulsepad.com.ua/products/protsessor-amd-ryzen-7-5800x-100-100000063wof"
+      ]
+    },
+    "pipe": [
+      ["find",["div",{"class":"content_dimensions"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1", {"itemprop": "name"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find",["span", {"class":"price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["li",{"class":"product_availability"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"id": "path"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 38, https://notebooker.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-08",
+      "url": [
+        "https://notebooker.ua/catalog/noutbuki_planshety/monobloki/3708719_hp_.html"
+      ]
+    },
+    "pipe": [
+      ["find",["div",{"id": "catalogElement"}]],
+      ["as_dict", {
+        "name": [
+          ["get", ["data-product-name"]]
+        ],
+        "price": [
+          ["find",["span",{"class":"priceVal"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["span",{"class":"inStock"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["find",["div",{"class":"pictureSlider"}]],
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"id": "breadcrumbs"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 39, https://proton-it.kyiv.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-07",
+      "url": [
+        "https://proton-it.kyiv.ua/bfp-a4-ch-b-hp-lj-pro-m227sdn-g3q74a",
+        "https://proton-it.kyiv.ua/lga1151-protsesor-intel-core-i5-8600-3.1ghz-8gt-s-9mbturbo-lga1151-bx80684i58600/4564/"
+      ]
+    },
+    "pipe": [
+      ["find", ["section", {"class": "product"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1", {"class": "product-title"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find", ["div", {"class": "product-price__item"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["div",{"class":"product-header__availability"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["split", [" ", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["nav", {"class": "breadcrumbs"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 40, https://telemart.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-08",
+      "url": [
+        "https://telemart.ua/products/msi-27-pro-mp271p-black/",
+        "https://telemart.ua/products/evolve-optipart-gold-h-evop-gh104fn306-16s500h1twh-white"
+      ]
+    },
+    "pipe": [
+      ["find",["div",{"itemtype":"http://schema.org/Product"}]],
+      ["as_dict", {
+        "name": [
+          ["var_get", ["$root"]],
+          ["find", ["h1", {"class": "b-page-title"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find",["div",{"class":"b-product-mpr-info"}]],
+          ["find",["div",{"class":"b-price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find",["div",{"class":"b-product-mpr-info"}]],
+          ["find",["div",{"class":"b-i-product-old-price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["div",{"class":"b-i-product-available"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["find",["div",{"class":"b-product-db-photos"}]],
+          ["find", ["img"]],
+          ["get",["data-src"]]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["ul", {"itemtype": "http://schema.org/BreadcrumbList"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 41, https://skymarket.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-08",
+      "url": [
+        "https://skymarket.ua/smartfon-samsung-galaxy-xcover-pro-4-64-black-sm-g715fzkd-ua"
+      ]
+    },
+    "pipe": [
+      ["find", ["div", {"itemtype": "http://schema.org/Product"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1",{"class":"product-title"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find",["div",{"class":"price-current"}]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find",["div",{"class":"price-old"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["p",{"class":"in-stock"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["find", ["a", {"class": "thumbnail"}]],
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["ul", {"class": "breadcrumb"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 42, https://videozvuk.net
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-08",
+      "url": [
+        "https://videozvuk.net/orgtehnika/sbpch-214/sbpch-wwm-epson-s22-sx125-sx130-sx230-235w-is-0260-uk.html"
+      ]
+    },
+    "pipe": [
+      ["find",["div",{"id":"content"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["div",{"class":"heading-h1"}]],
+          ["find",["h1"]],
+          ["text"],
+          ["strip"]
+        ],
+        "price": [
+          ["find",["div",{"class":"price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "stock": [
+          ["find",["div",{"class":"qty-indicator__bar"}]],
+          ["get", ["title"]],
+          ["stock"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["ul", {"class": "breadcrumb"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 43, https://www.eplus.kiev.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-08",
+      "url": [
+        "https://www.eplus.kiev.ua/monitori/monitory-potrebitelskie/monitor-samsung-curved-c27f390f-lc27f390fhixci.html",
+        "https://www.eplus.kiev.ua/complektyushie/ozu/modul-pamyati-patriot-viper-elite-ii-red-32gb-2x16-ddr4-4000-mhz-pve2432g400c0k.html"
+      ]
+    },
+    "pipe": [
+      ["find",["div",{"class":"product-info"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1",{"id":"pname"}]],
+          ["text"],
+          ["strip"]
+        ],
+        "price": [
+          ["find",["div",{"class":"price"}]],
+          ["text"],
+          ["split",[":", 1]],
+          ["split",[" ", 0]],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["div",{"class":"cart-top"}]],
+          ["find_all",["div"]],
+          ["list",[1]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"class": "breadcrumb"}]],
+          ["breadcrumb", [["a"], -2]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 44, https://up.kiev.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-08",
+      "url": [
+        "https://up.kiev.ua/Protsessor-AMD-Athlon-X4-970-(38GHz-65W-AM4)-Tray-(AD970XAUM44AB).html"
+      ]
+    },
+    "pipe": [
+      ["find",["div",{"class":"product-view-area"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1"]],
+          ["text"],
+          ["strip"]
+        ],
+        "price": [
+          ["find",["p",{"class":"special-price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find", ["p", {"class": "RetailPrice-price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find", ["p",{"class":"in-stock"}]],
+          ["text"],
+          ["split", [":", 1]],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"class": "breadcrumbs"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 45, https://pcshop.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-08",
+      "url": [
+        "https://pcshop.ua/bitovaya-tehnika/tehnika-dlya-personalnogo-uhoda/feni/fen-schetka-rowenta-brush-activ-premium-care-cf9540f0"
+      ]
+    },
+    "pipe": [
+      ["find", ["div",{"class":"wrapper"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1",{"class":"title"}]],
+          ["text"],
+          ["strip"]
+        ],
+        "price": [
+          ["find",["span",{"class":"product-info__price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["span",{"class":"product-info__availability"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["find", ["a", {"class": "product-main-carousel__link"}]],
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["ul", {"class": "breadcrumbs"}]],
+          ["breadcrumb", [["li"], -2]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 46, https://www.itbox.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-08",
+      "url": [
+        "https://www.itbox.ua/ua/product/Monitor_ASUS_VP228DE-p271076",
+        "https://www.itbox.ua/ua/product/Monitor_Dell_S2421HN_210-AXKS-p622151"
+      ]
+    },
+    "pipe": [
+      ["find",["main",{"class":"content"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1",{"class":"h1"}]],
+          ["text"],
+          ["strip"]
+        ],
+        "price": [
+          ["find",["span",{"class":"stuff-price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find",["span",{"class":"stuff-price__old"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["span", {"class":"stuff-stock"}]],
+          ["text"],
+          ["strip"],
+          ["is_equal", [["сьогодні", "сегодня"]]]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"class": "breadcrumbs"}]],
+          ["breadcrumb", [["a"], -2]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 47, https://mta.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-05-02",
+      "url": [
+        "https://mta.ua/mediapleery/326422-mediaplejer-apple-tv-4k-32gb-mxgy2rs-a-2021",
+        "https://mta.ua/mediapleery/90074-mediaplejer-apple-tv-4k-32gb-mqd22-black"
+      ]
+    },
+    "pipe": [
+      ["find", ["div", {"class": "productPage"}]],
+      ["as_dict", {
+        "name": [
+          ["find", ["h1", {"class": "productHeadingName"}]],
+          ["text"]
+        ],
+        "stock": [
+          ["find", ["div", {"class": "product-availability__text"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "price": [
+          ["as_list", [
+            [
+              ["find", ["span", {"class": "allPriceForProduct"}]],
+              ["text"],
+              ["price"]
+            ],
+            [
+              ["find", ["span", {"class": "specialPriceFroProduct"}]],
+              ["text"],
+              ["price"]
+            ]
+          ]],
+          ["not_none"]
+        ],
+        "price_old": [
+          ["find", ["p", {"class": "oldPriceInProduct"}]],
+          ["text"],
+          ["price"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"class": "product_page_breadcrumbs"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 48, https://touch.com.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-08",
+      "url": [
+        "https://touch.com.ua/item/smartfon-xiaomi-redmi-note-10-pro-6-128-onyx-gray-global-eu/"
+      ]
+    },
+    "pipe": [
+      ["find",["body"]],
+      ["find",["div",{"id":"tableContainer"}]],
+      ["as_dict", {
+        "name": [
+          ["var_get", ["$root"]],
+          ["find",["div",{"id":"foundation"}]],
+          ["find",["h1",{"class":"changeName"}]],
+          ["text"],
+          ["strip"]
+        ],
+        "price": [
+          ["find",["a", {"class":"price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find",["span",{"class":"old_new_price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["span",{"class":"inStock"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["find",["div",{"id":"pictureContainer"}]],
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"id": "breadcrumbs"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 49, https://stylus.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-08",
+      "url": [
+        "https://stylus.ua/samsung-ue55au8002-p787947c526.html"
+      ]
+    },
+    "pipe": [
+      ["find",["div",{"class":"product-page-block"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1",{"class":"page-name"}]],
+          ["text"],
+          ["strip"]
+        ],
+        "price": [
+          ["find",["div",{"class":"regular-price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find",["div",{"class":"old-price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["div",{"class":"availability"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"class": "breadcrumbs"}]],
+          ["breadcrumb", [["a"], -2]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 50, https://www.dp-shop.com.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-15 21:54:40",
+      "url": [
+        "https://www.dp-shop.com.ua/materinskaya-plata-asus-prime-b450-plus-socket-am4"
+      ]
+    },
+    "pipe": [
+      ["find",["div",{"class":"fn_product"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1",{"class":"block__heading"}]],
+          ["text"],
+          ["strip"]
+        ],
+        "price": [
+          ["find",["div",{"class":"details_boxed__price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find",["div",{"class":"details_boxed__old_price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["div",{"class":"available__in_stock"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["ol",{"class":"breadcrumbs"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 51, https://mobion.com.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-08",
+      "url": [
+        "https://mobion.com.ua/p1588425581-chehol-uag-pathfinder.html"
+      ]
+    },
+    "pipe": [
+      ["find",["div",{"class":"cs-product"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["span",{"class":"cs-title__text"}]],
+          ["text"],
+          ["strip"]
+        ],
+        "price": [
+          ["find",["p",{"class":"b-product-cost__price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["li",{"class":"b-product-data__item"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["ext_category_prom"]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 52, https://www.3ona51.com
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-06-29 12:48:59",
+      "url": [
+        "https://www.3ona51.com/ru/gaming-mouses/logitech-g102-lightsync-white-910-005824/index.html"
+      ]
+    },
+    "pipe": [
+      ["app_json", [{"@type": "product"}]],
+      ["as_dict", {
+        "name": [
+          ["get", ["name"]]
+        ],
+        "price": [
+          ["ext_price_app", [true]]
+        ],
+        "price_old": [
+          ["var_get", ["$root"]],
+          ["find",["div",{"class":"price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["gets", ["offers.availability"]],
+          ["stock"]
+        ],
+        "image": [
+          ["get", ["image"]]
+        ],
+        "mpn": [
+          ["get", ["mpn"]]
+        ],
+        "category": [
+          ["get", ["category"]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 53, https://orbita.te.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-15 20:16:52",
+      "url": [
+        "https://orbita.te.ua/product/holodylnyk-samsung-rt53k6340ut-ua/"
+      ]
+    },
+    "pipe": [
+      ["find",["div",{"class":"details-product"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1",{"class":"product_title entry-title"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find", ["p", {"class":"price"}]],
+          ["find", ["ins"]],
+          ["find", ["span", {"class":"woocommerce-Price-amount"}]],
+          ["find", ["bdi"]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find", ["p", {"class":"price"}]],
+          ["find", ["del", {"aria-hidden":"true"}]],
+          ["find", ["span", {"class":"woocommerce-Price-amount"}]],
+          ["find", ["bdi"]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find", ["button", {"class": "single_add_to_cart_button", "type": "submit"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find",["section",{"class":"apus-breadscrumb"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 54, https://openshop.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-15 17:22:18",
+      "url": [
+        "https://openshop.ua/noutbuk-acer-porsche-design-book-rs-ap714-51gt-716c-nxa2raa001-64820-uk-ua/"
+      ]
+    },
+    "pipe": [
+      ["find",["div",{"id":"content"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1",{"class":"h1-prod-name"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find",["span",{"class":"autocalc-product-price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["span",{"class":"stock_status_success"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "-category": [
+          ["comment", "dynamic"],
+          ["var_get", ["$root"]],
+          ["find", ["ul", {"class": "breadcrumb"}]],
+          ["breadcrumb", [["li"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 55, https://y.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-15 18:20:06",
+      "url": [
+        "https://y.ua/samsung-galaxy-s20-fe-2021-8128gb-green-g780g/p809693/"
+      ]
+    },
+    "pipe": [
+      ["find",["div",{"class":"product-wrap"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1",{"class":"title-block"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find",["div",{"class":"info-item left"}]],
+          ["find",["div",{"class":"price"}]],
+          ["find",["div",{"class":"regular"}]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find",["div",{"class":"info-item left"}]],
+          ["find",["div",{"class":"price"}]],
+          ["find",["div",{"class":"old"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["div",{"class":"info-item left"}]],
+          ["find",["div",{"class":"status-block available"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["find",["div",{"class":"big-image-block"}]],
+          ["ext_image"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"class": "breadcrumbs"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 56, https://allo.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-05-01",
+      "url": [
+        "https://allo.ua/ua/fitnes-braslety/kmitx-m-band-3-oled-black_1.html"
+      ],
+    },
+    "pipe": [
+      ["find", ["div", {"class": "product-view"}]],
+      ["as_dict", {
+        "name": [
+          ["find", ["h1", {"itemprop": "name"}]],
+          ["text"]
+        ],
+        "stock": [
+          ["find", ["p", {"class": "p-trade__stock-label"}]],
+          ["text"],
+          ["strip"],
+          ["stock"]
+        ],
+        "image": [
+          ["find", ["picture", {"class": "main-gallery__link"}]],
+          ["ext_image"]
+        ],
+        "price": [
+          ["find", ["div", {"class": "p-trade-price__current"}]],
+          ["find", ["span", {"class": "sum"}]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find", ["div", {"class": "p-trade-price"}]],
+          ["find", ["span", {"class": "sum"}]],
+          ["text"],
+          ["price"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"class": "b-crumbs"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 57, https://beegreen.com.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-15 20:59:25",
+      "url": [
+        "https://beegreen.com.ua/modul-rele-2-h-kanalnij-12vdc-10a-dlya-arduino-18572"
+      ]
+    },
+    "pipe": [
+      ["find",["section",{"class":"main-content"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1",{"class":"inbreadcrumb"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find",["div",{"id":"content"}]],
+          ["find",["span",{"class":"update_price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["div",{"id":"content"}]],
+          ["find",["div",{"class":"nalich"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find",["ul",{"class":"breadcrumb"}]],
+          ["breadcrumb", [["li"], -2]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 58, https://masteram.com.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-07-11 09:00:00",
+      "url": [
+        "https://masteram.com.ua/uk/binocular-microscope-st60-24b2-with-lighting/"
+      ]
+    },
+    "pipe": [
+      ["app_json", [{"@type": "product"}]],
+      ["as_dict", {
+        "name": [
+          ["get", ["name"]]
+        ],
+        "price": [
+          ["ext_price_app", [false]]
+        ],
+        "price_old": [
+          ["var_get", ["$root"]],
+          ["find",["div",{"class": "product-price--large"}]],
+          ["find",["div",{"class":"-old"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["gets", ["offers.availability"]],
+          ["stock"]
+        ],
+        "image": [
+          ["get", ["image"]],
+          ["list", [0]]
+        ],
+        "mpn": [
+          ["get", ["name"]],
+          ["split", [" ", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"class": "breadcrumbs"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 59, https://a-techno.com.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-05-15",
+      "url": [
+        "https://a-techno.com.ua/prod-19694"
+      ]
+    },
+    "pipe": [
+      ["find", ["section", {"class": "product-container"}]],
+      ["as_dict", {
+        "name": [
+          ["find", ["div", {"class": "product-name"}]],
+          ["h1"],
+          ["text"]
+        ],
+        "price": [
+          ["find", ["span", {"id": "product_price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find", ["span", {"class": "old-elem"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find", ["div", {"class": "product-available"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["ul", {"class": "breadcrumb"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 60, https://ww2.protovar.com.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-16 09:56:20",
+      "url": [
+        "https://ww2.protovar.com.ua/hoffson-a24hd500t2"
+      ]
+    },
+    "pipe": [
+      ["find",["div",{"class":"r_block_mid"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["div",{"class":"block_top"}]],
+          ["find",["h1"]],
+          ["text"]
+        ],
+        "price": [
+          ["find",["div",{"id":"kartochka9"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["div",{"id":"kartochka5"}]],
+          ["text"],
+          ["lower"],
+          ["search", [["под заказ", "в наличии"]]]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"id": "navig"}]],
+          ["breadcrumb", [["li"], -2]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 62, https://toptv.com.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-15 21:32:54",
+      "url": [
+        "https://toptv.com.ua/led-televizor-lg-43up77006lb"
+      ]
+    },
+    "pipe": [
+      ["find",["div",{"class":"main"}]],
+      ["as_dict", {
+        "name": [
+          ["find", ["div", {"class": "tb_system_page_title"}]],
+          ["find", ["h1"]],
+          ["text"],
+          ["replace",["Купить ", ""]]
+        ],
+        "price": [
+          ["find",["span",{"id":"price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["span",{"class":"tb_stock_status_in_stock"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "-category": [
+          ["comment", ["all in root"]],
+          ["none"]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 63, https://www.foxtrot.com.ua
+{
+  "product": {
+    "info": {
+      "author": "davyd",
+      "date": "2022-06-16 17:21:19",
+      "url": [
+        "https://www.foxtrot.com.ua/ru/shop/smartfoniy_i_mobilniye_telefoniy_blackview_a70_332gb_twilight_blue.html"
+      ]
+    },
+    "pipe": [
+      ["find", ["main", {"id": "product-data-container"}]],
+      ["as_dict", {
+        "name": [
+          ["find", ["h1", {"id": "product-page-title"}]],
+          ["text"],
+          ["strip"]
+        ],
+        "price": [
+          ["find", ["div", {"class": "product-box__main_price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find", ["div", {"class": "button product-box__main-buy__button buy-button product-buy-button"}]],
+          ["text"],
+          ["strip"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"class": "breadcrumbs"}]],
+          ["breadcrumb", [["li"], -2]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 64, https://tehnopostavka.com.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-16 15:47:13",
+      "url": [
+        "https://tehnopostavka.com.ua/gladilnaya_sistema_tefal_ixeo_power_qt2020"
+      ]
+    },
+    "pipe": [
+      ["find",["div",{"id":"product"}]],
+      ["as_dict", {
+        "name": [
+          ["var_get", ["$root"]],
+          ["find", ["ul", {"class": "breadcrumb"}]],
+          ["var_set", ["$Bread"]],
+          ["breadcrumb", [["li"], -1, false]]
+        ],
+        "price": [
+          ["find",["span",{"class":"update_price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["div",{"class":"nalich"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["find",["span",{"itemprop": "model"}]],
+          ["text"]
+        ],
+        "category": [
+          ["var_get", ["$Bread"]],
+          ["breadcrumb", [["li"], -2]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 65, https://denika.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-17 15:05:47",
+      "url": [
+        "https://denika.ua/p/stiralnaya-mashina-whirlpool-awe-6080"
+      ],
+      "comment": ""
+    },
+    "pipe": [
+      ["find",["div",{"itemtype":"http://schema.org/Product"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1",{"itemprop":"name"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find",["div",{"class":"pay-box"}]],
+          ["find",["strong",{"class":"price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find",["div",{"class":"pay-box"}]],
+          ["find",["span",{"class":"old-price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["div",{"class":"pay-btns"}]],
+          ["find",["span",{"class":"btn-text"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find",["div",{"class":"block-breadcrumb"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 66, https://tehnomaster.com
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-15 15:25:41",
+      "url": [
+        "https://tehnomaster.com/product/washing/washing-indesit/indesit-iwsb-51051-ua"
+      ]
+    },
+    "pipe": [
+      ["find",["div",{"class":"productDescription"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1",{"id":"goods"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find", ["div", {"class": "box_buy"}]],
+          ["find",["span",{"class":"price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find",["span",{"class":"old_price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find", ["button", {"class": "buy"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"id": "navi_inner"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 67, https://mikcep.store
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-16 09:24:25",
+      "url": [
+        "https://mikcep.store/uk/vafelnici/98391-vafelnica-mpm-mgo-25.html"
+      ]
+    },
+    "pipe": [
+      ["find",["div",{"itemtype": "http://schema.org/Product"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1",{"id":"ajax_product_name"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find",["span",{"id":"our_price_display"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["span",{"id":"availability_value"}]],
+          ["text"],
+          ["strip"],
+          ["split", ["-", 0]],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "-category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"class": "breadcrumb"}]],
+          ["breadcrumb", [["a", {"itemprop":"url"}], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 68, https://zhuk.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-15 17:33:20",
+      "url": [
+        "https://zhuk.ua/krislo-special4you-admit-black-e5678"
+      ]
+    },
+    "pipe": [
+      ["find",["section",{"class":"product"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1",{"class":"product-title"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find",["div",{"class":"product-price__item--new"}]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find",["div",{"class":"product-price__old-price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["div",{"class":"product-header__availability"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["nav", {"class": "breadcrumbs"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 69, http://znatok.zp.ua
+{
+  "product": {
+    "info": {
+      "author": "davyd",
+      "date": "2022-06-16 16:39:36",
+      "url": [
+        "http://znatok.zp.ua/ru/rowenta/6648-pylesos-rowenta-ro4886ea-.html"
+      ]
+    },
+    "pipe": [
+      ["find", ["div", {"id": "center_column"}]],
+      ["as_dict", {
+        "name": [
+          ["find", ["div", {"id": "primary_block"}]],
+          ["find",["h2"]],
+          ["text"],
+          ["strip"]
+        ],
+        "price": [
+          ["find", ["span", {"class": "our_price_display"}]],
+          ["text"],
+          ["price"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"class": "breadcrumb"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 70, http://stels.kharkov.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-15 17:01:32",
+      "url": [
+        "http://stels.kharkov.ua/990000_Portativnaya_tehnika/37_Noutbuki/412830_Noutbuk_Acer_Aspire_3_A315-57G_NX-HZREU-01K_%3B_15-6_FullHD_1920x1080_IPS_LED.html"
+      ]
+    },
+    "pipe": [
+      ["find",["div",{"id":"content"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1"]],
+          ["find",["span",{"itemprop":"name"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find",["div",{"class":"product-info"}]],
+          ["find",["span",{"itemprop":"price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["div",{"class":"product-info"}]],
+          ["find",["div",{"itemprop":"offers"}]],
+          ["text"],
+          ["split",["Наличие: ", 1]],
+          ["split",["\n",0]],
+          ["stock"]
+        ],
+        "image": [
+          ["find",["div",{"class":"product-info"}]],
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["find",["div",{"class":"product-info"}]],
+          ["find",["span",{"itemprop":"model"}]],
+          ["text"]
+        ],
+        "category" : [
+          ["var_get", ["$root"]],
+          ["find", ["div",{"class": "breadcrumb"}]],
+          ["breadcrumb", [["a"]]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 71, https://smart3d.com.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-15 23:42:00",
+      "url": [
+        "https://smart3d.com.ua/tv/led/televizor-lg-50up75006lf.html"
+      ]
+    },
+    "pipe": [
+      ["find",["div",{"itemtype": "https://schema.org/Product"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1",{"class":"product-header"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find",["div",{"id":"main-product-price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["div",{"class":"after-header-item blue"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["ul", {"class": "breadcrumb"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 72, https://www.tviy-dim.com
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-15 23:56:59",
+      "url": [
+        "https://www.tviy-dim.com/klaviatura-gembird-kb-103-ua-standartna-roskladka-ps-2-ukra-nska.html"
+      ]
+    },
+    "pipe": [
+      ["find",["div",{"class":"page-product__prod"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1",{"class":"page-product__title"}]],
+          ["text"],
+          ["strip"]
+        ],
+        "price": [
+          ["find",["span",{"class":"page-product__price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find",["span",{"class":"page-product__price-old"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find", ["p", {"class": "page-product__stock_in"}]],
+          ["val2bool"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "-category": [
+          ["comment", ["dynamic"]],
+          ["none"],
+          ["var_get", ["$root"]],
+          ["find", ["ul", {"class": "breadcrumbs__list"}]],
+          ["breadcrumb", [["span"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 73, https://esm.net.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-15 19:32:53",
+      "url": [
+        "https://esm.net.ua/prasuvalna-sistema-tefal-qt2020-ixeo-power-qt2020e0/"
+      ]
+    },
+    "pipe": [
+      ["find",["div",{"class":"def-product-view"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1",{"itemprop":"name"}]],
+          ["text"],
+          ["strip"]
+        ],
+        "price": [
+          ["find",["div",{"class":"def-price-available"}]],
+          ["text"],
+          ["price"]
+        ],
+        "-price_old": [
+          ["find",["div",{"class":"def-price-old"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["div",{"class":"avail-text"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["div",{"class":"def-block-crumbs"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 74, https://qwertyshop.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-16 11:14:15",
+      "url": [
+        "https://qwertyshop.ua/monoblok-apple-imac-m1-24-4-5k-512gb-8gpu-blue-2021"
+      ]
+    },
+    "pipe": [
+      ["find",["div",{"class":"product-page"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1", {"itemprop": "name"}]],
+          ["text"],
+          ["strip"]
+        ],
+        "price": [
+          ["find",["div",{"class":"product-price-leftpart"}]],
+          ["find",["span",{"class":"product-price-uah"}]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find",["div",{"class":"product-price-leftpart"}]],
+          ["find",["span",{"class":"product-strike-price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["div",{"class":"product-avalible"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"class": "content-breadcrumbs"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 75, https://sititop.prom.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-06-16 16:20:53",
+      "url": [
+        "https://sititop.prom.ua/p1592125157-stiralnaya-mashina-indesit.html"
+      ]
+    },
+    "pipe": [
+      ["app_json", [{"@type": "product"}]],
+      ["as_dict", {
+        "name": [
+          ["get", ["name"]]
+        ],
+        "price": [
+          ["ext_price_app", [true]]
+        ],
+        "stock": [
+          ["gets", ["offers.availability"]],
+          ["stock"]
+        ],
+        "image": [
+          ["get", ["image"]]
+        ],
+        "mpn": [
+          ["get", ["sku"]]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["ext_category_prom"]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 76, https://btmax.com.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-15 22:52:44",
+      "url": [
+        "https://btmax.com.ua/televizoryi/xiaomi-mi-tv-4a-55-internation/"
+      ]
+    },
+    "pipe": [
+      ["find",["div",{"class":"product-wrapper"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["div",{"class":"details listing"}]],
+          ["find",["h1",{"itemprop":"name"}]],
+          ["text"],
+          ["strip"]
+        ],
+        "price": [
+          ["find",["div",{"class":"details listing"}]],
+          ["find",["div",{"class":"price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["div",{"class":"instock"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["find_all", ["meta", {"itemprop":"mpn"}]],
+          ["list",[0]],
+          ["get",["content"]]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find",["ul", {"class":"breadcrumb"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 77, https://mirta.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-16 16:07:09",
+      "url": [
+        "https://mirta.ua/kettle-kt-1000b.html"
+      ]
+    },
+    "pipe": [
+      ["find", ["div", {"class": "page-product"}]],
+      ["as_dict", {
+        "name": [
+          ["var_get", ["$root"]],
+          ["find", ["ul", {"class": "breadcrumb"}]],
+          ["var_set", ["$Bread"]],
+          ["breadcrumb", [["li"], -1, false]]
+        ],
+        "price": [
+          ["find", ["p", {"class": "price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["button",{"class":"add-to-cart"}]],
+          ["find",["span"]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["find",["div", {"class": "model"}]],
+          ["text"],
+          ["split", [": ", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$Bread"]],
+          ["breadcrumb", [["li"], -2]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 78, https://elektrodom.com.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-15 23:33:10",
+      "url": [
+        "https://elektrodom.com.ua/ru/konditsioner-neoclima-ns-nu-07ahx/"
+      ]
+    },
+    "pipe": [
+      ["find",["section",{"class":"product"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1",{"class":"product-title"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find",["div",{"class":"product-price__item"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["div",{"class":"product-header__availability"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["nav", {"class": "breadcrumbs"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 79, https://tehnoskarb.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-15 21:37:53",
+      "url": [
+        "https://tehnoskarb.ua/mobilnyi-telefon-apple-iphone-6s-16gb/a1799469",
+        "https://tehnoskarb.ua/mobilnyi-telefon-apple-iphone-7-32gb/a1868618"
+      ]
+    },
+    "pipe": [
+      ["find",["div",{"class":"checked-item"}]],
+      ["as_dict", {
+        "name": [
+          ["find", ["h1", {"class": "checked-item-header fw-b"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find", ["span", {"class": "c-item-price--current"}]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find",["span",{"class":"c-item-price--previous"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find", ["button", {"class": "btn-order"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["ul", {"class": "breadcrumbs"}]],
+          ["breadcrumb", [["a"], -2]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 80, https://assol.in.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-07-10 09:00:00",
+      "url": [
+        "https://assol.in.ua/4551-televizor-skyworth-32-e6-ai"
+      ]
+    },
+    "pipe": [
+      ["app_json", [{"@type": "product"}]],
+      ["as_dict", {
+        "name": [
+          ["get", ["name"]]
+        ],
+        "price": [
+          ["ext_price_app", [false]]
+        ],
+        "price_old": [
+          ["var_get", ["$root"]],
+          ["find", ["span", {"class": "product-card__price-old"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["gets", ["offers.availability"]],
+          ["stock"]
+        ],
+        "image": [
+          ["var_get", ["$root"]],
+          ["ext_image_og"]
+        ],
+        "mpn": [
+          ["get", ["sku"]]
+        ],
+        "category": [
+          ["get", ["category"]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 81, https://tehno-mart.com.ua
+{
+  "product": {
+    "info": {
+      "author": "davyd",
+      "date": "2022-06-16 16:47:28",
+      "url": [
+        "https://tehno-mart.com.ua/ventolux-garda-50-wh-1100-smd-led/"
+      ]
+    },
+    "pipe": [
+      ["find", ["section", {"class": "product"}]],
+      ["as_dict", {
+        "name": [
+          ["find", ["h1", {"class": "product-title"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find", ["div", {"class": "product-price__item product-price__item--new"}]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find", ["div", {"class": "product-price__old-price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find", ["div", {"class": "product-header__availability"}]],
+          ["text"],
+          ["strip"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["nav", {"class": "breadcrumbs"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 83, http://eteka.com.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-05-12",
+      "url": [
+        "http://eteka.com.ua/ctiralnaya-mashina-indesit-btw-a61053g-pl/p771602"
+      ]
+    },
+    "pipe": [
+      ["find", ["div", {"class": "productpage"}]],
+      ["as_dict", {
+        "name": [
+          ["find", ["div", {"class": "productName"}]],
+          ["text"]
+        ],
+        "stock": [
+          ["find", ["div", {"class": "presence"}]],
+          ["find", ["span", {"class": "presence-yes"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["find", ["link", {"itemprop": "image"}]],
+          ["get", ["href"]]
+        ],
+        "price": [
+          ["find", ["div", {"class": "main-price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["ul", {"class": "breadcrumbs"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 84, https://bs-partner.com.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-05-18",
+      "url": [
+        "https://bs-partner.com.ua/ua/catalog/siemens-kg49nai31u.html",
+        "https://bs-partner.com.ua/catalog/bosch-msm26500.html"
+      ]
+    },
+    "pipe": [
+      ["find", ["div", {"id": "wrapper"}]],
+      ["as_dict", {
+        "name": [
+          ["find", ["h1", {"id": "pagetitle"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find", ["span", {"class": "fullprice"}]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find", ["div", {"class": "discprice-card"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find", ["div", {"class": "availability"}]],
+          ["find", ["span", {"class": "check"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["split", [" ", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"class": "bx-breadcrumb"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 85, https://luxmedia.com.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-06-29 15:48:59",
+      "url": [
+        "https://luxmedia.com.ua/p1430523287-kofemashina-avtomaticheskaya-melitta.html"
+      ]
+    },
+    "pipe": [
+      ["app_json", [{"@type": "product"}]],
+      ["as_dict", {
+        "name": [
+          ["get", ["name"]]
+        ],
+        "price": [
+          ["ext_price_app", [true]]
+        ],
+        "price_old": [
+          ["var_get", ["$root"]],
+          ["find", ["p", {"class": "b-product-cost__old-price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["gets", ["offers.availability"]],
+          ["stock"]
+        ],
+        "image": [
+          ["get", ["image"]]
+        ],
+        "mpn": [
+          ["get", ["sku"]]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["ext_category_prom"]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 87, https://tehnoezh.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-06-15 22:22:47",
+      "url": [
+        "https://tehnoezh.ua/ua/noutbuk-apple-macbook-air-13-m1-chip-256gb-space-gray-2020.html"
+      ],
+      "comment": "ToDo price_old"
+    },
+    "pipe": [
+      ["app_json", [{"@type": "product"}]],
+      ["as_dict", {
+        "name": [
+          ["get", ["name"]]
+        ],
+        "price": [
+          ["ext_price_app", [true]]
+        ],
+        "-price_old": [
+        ],
+        "stock": [
+          ["gets", ["offers.availability"]],
+          ["stock"]
+        ],
+        "image": [
+          ["get", ["image"]],
+          ["list", [0]],
+          ["get", ["contentUrl"]]
+        ],
+        "mpn": [
+          ["get",["sku"]]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find",["div",{"class":"breadcrumbs"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 88, https://domus.co.ua
+{
+  "product": {
+    "info": {
+      "author": "davyd",
+      "date": "2022-06-16 17:59:33",
+      "url": [
+        "https://domus.co.ua/noutbuk-microsoft-surface-pro-x-matte-black-mjx-00003-mjx-00001/"
+      ]
+    },
+    "pipe": [
+      ["find", ["div", {"class": "product__grid"}]],
+      ["as_dict", {
+        "name": [
+          ["find", ["h1", {"class": "product-title"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find", ["div", {"class": "product-price__item product-price__item--new"}]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find", ["div", {"class": "product-price__old-price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find", ["div", {"class": "product-header__availability"}]],
+          ["text"],
+          ["strip"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["get", ["name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["nav", {"class": "breadcrumbs"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 89, https://click24.in.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-16 10:53:32",
+      "url": [
+        "https://click24.in.ua/p/1394320124-70mai-wideoa800s-dash-cam-4k-gps-kamera-wsteczna-rc06/"
+      ]
+    },
+    "pipe": [
+      ["find",["div",{"class":"section_goods-card"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1",{"class":"title section__title"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find",["span",{"class":"new_price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find",["span",{"class":"old_price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["span",{"class":"presence presence_3"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"class": "crumbs"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 90, https://www.technolike.com.ua
+{
+  "product": {
+    "info": {
+      "author": "davyd",
+      "date": "2022-06-16 17:52:38",
+      "url": [
+        "https://www.technolike.com.ua/stiralnaya-mashina-polnogabaritnaya-whirlpool-awg-912-s-pro"
+      ]
+    },
+    "pipe": [
+      ["find", ["div", {"class": "product-info"}]],
+      ["as_dict", {
+        "name": [
+          ["find", ["h1", {"class": "heading-title"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find", ["span", {"class": "price-new"}]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find", ["span", {"class": "price-old"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find", ["span", {"class": "journal-stock instock"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"class": "breadcrumb"}]],
+          ["breadcrumb", [["a"], -2]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 91, https://dyson-styler.com.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-17 13:38:05",
+      "url": [
+        "https://dyson-styler.com.ua/shop/dyson_airwrap/stajler-dyson-airwrap-completefuchsia-vystavochnyj-obrazecz/",
+        "https://dyson-styler.com.ua/shop/phillips/zvukovaya-zubnaya-shhetka-philips-sonicare-hx9352-04-diamond-clean-black"
+      ],
+      "comment": "В ціні значок валюти на початку, макрос його не визначає."
+    },
+    "pipe": [
+      ["find",["div", {"class":"product"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1",{"class":"product_title entry-title"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find", ["p", {"class": "price"}]],
+          ["find_all",["span",{"class":"woocommerce-Price-amount"}]],
+          ["list",[-1]],
+          ["text"],
+          ["replace",[",", ""]],
+          ["price"]
+        ],
+        "price_old": [
+          ["find", ["p", {"class": "price"}]],
+          ["find",["del"]],
+          ["find",["span",{"class":"woocommerce-Price-amount"}]],
+          ["text"],
+          ["replace",[",",""]],
+          ["price"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "stock": [
+          ["find", ["button", {"name": "add-to-cart"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["nav", {"class": "woocommerce-breadcrumb"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 92, https://tendo.com.ua
+{
+  "product": {
+    "info": {
+      "author": "davyd",
+      "date": "2022-06-16 18:24:44",
+      "url": [
+        "https://tendo.com.ua/index.php?route=product/product&product_id=17335"
+      ]
+    },
+    "pipe": [
+      ["find", ["div", {"id": "content"}]],
+      ["as_dict", {
+        "name": [
+          ["find", ["div", {"class": "right"}]],
+          ["find", ["h1"]],
+          ["text"]
+        ],
+        "price": [
+          ["find", ["span", {"class": "price-style"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find", ["input", {"class": "button product"}]],
+          ["get", ["value"]],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["split", [" ", -1]],
+          ["serial_check"]
+        ],
+        "-category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"class": "breadcrumb"}]],
+          ["breadcrumb", [["a"], -2]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 93, https://www.ctrs.com.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-06-16 00:05:30",
+      "url": [
+        "https://www.ctrs.com.ua/mikrovolnovki/mikrovolnovaya-pech-samsung-mg23k3614asbw-680605.html"
+      ]
+    },
+    "pipe": [
+      ["app_json", [{"@type": "product"}]],
+      ["as_dict", {
+        "name": [
+          ["get", ["name"]]
+        ],
+        "price": [
+          ["ext_price_app", [false]]
+        ],
+        "price_old": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"class": "old-price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["gets", ["offers.availability"]],
+          ["stock"]
+        ],
+        "image": [
+          ["get", ["image"]],
+          ["list", [0]]
+        ],
+        "-mpn": [
+          ["get", ["mpn"]]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"class": "container-0-2-102"}]],
+          ["breadcrumb", [["li"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 94, https://torgoborud.com.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-16 19:57:21",
+      "url": [
+        "https://torgoborud.com.ua/holodilnye-shkafy/shkaf-holodilnyy-srednetemperaturnyy-mhm-kapri-05-m"
+      ]
+    },
+    "pipe": [
+      ["find",["div", {"itemtype": "https://schema.org/Product"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1",{"itemprop":"name"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find",["div",{"itemprop":"price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find",["div",{"class":"product_price_old"}]],
+          ["text"],
+          ["price"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"class": "breadcrumbs"}]],
+          ["breadcrumb", [["li"], -2]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 95, https://master-plus.com.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-16 20:46:59",
+      "url": [
+        "https://master-plus.com.ua/refrigerator-repair-tool/truborezyi/noj-k-truborezu-value-vtc-42-vtc-70.html"
+      ]
+    },
+    "pipe": [
+      ["find", ["div", {"itemtype": "http://schema.org/Product"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["div",{"itemprop":"name"}]],
+          ["find",["h1"]],
+          ["text"]
+        ],
+        "price": [
+          ["find",["div",{"class":"price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["div",{"itemprop":"availability"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"class": "breadcrumbs"}]],
+          ["breadcrumb", [["li"], -2]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 96, https://tehnik.od.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-06-16 16:48:59",
+      "url": [
+        "https://tehnik.od.ua/bosch-hbn211e4/"
+      ]
+    },
+    "pipe": [
+      ["app_json", [{"@type": "product"}]],
+      ["as_dict", {
+        "name": [
+          ["get", ["name"]]
+        ],
+        "price": [
+          ["ext_price_app", [true]]
+        ],
+        "price_old": [
+          ["var_get", ["$root"]],
+          ["find",["div",{"class":"priceBig"}]],
+          ["find",["span",{"class":"price-old"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["gets", ["offers.availability"]],
+          ["stock"]
+        ],
+        "image": [
+          ["get", ["image"]],
+          ["list", [0]]
+        ],
+        "mpn": [
+          ["get", ["mpn"]]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["ul", {"class": "breadcrumb"}]],
+          ["breadcrumb", [["li"], -2]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 97, https://electrolux-partner.com.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-16 10:41:46",
+      "url": [
+        "https://electrolux-partner.com.ua/product/pi92-4anm-2715"
+      ]
+    },
+    "pipe": [
+      ["find",["div",{"class":"product-page"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["div",{"class":"section-product-hero-top"}]],
+          ["find",["h1"]],
+          ["text"]
+        ],
+        "price": [
+          ["find",["div",{"class":"section-product-hero-main"}]],
+          ["find",["p",{"class":"new-price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find",["div",{"class":"section-product-hero-main"}]],
+          ["find",["p",{"class":"old-price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["div",{"class":"section-product-hero-main"}]],
+          ["find",["p",{"class":"status"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["find",["div",{"class":"section-product-hero-main"}]],
+          ["find",["div",{"class":"gallery-main"}]],
+          ["find_all",["img"]],
+          ["list",[0]],
+          ["get",["data-src"]]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["split",[" ", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["ul", {"class": "breadcrumb"}]],
+          ["breadcrumb", [["li"], -2]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 98, https://cecotec.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-16 17:26:04",
+      "url": [
+        "https://cecotec.ua/elektrosamokat-cecotec-bongo-a-advance-connected-max.html",
+        "https://cecotec.ua/robot-pylesos-cecotec-conga-1790-ultra.html"
+      ]
+    },
+    "pipe": [
+      ["find",["div",{"class":"product-card__top"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["span",{"class":"product-card__info-header"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find",["p",{"class":"product-card__price-current"}]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find",["p",{"class":"product-card__price-discount"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["div",{"class":"product-card__avaible"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["find_all",["div",{"class":"product-card__slide"}]],
+          ["list",[0]],
+          ["ext_image"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"class": "breadcrumbs"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 99, https://f.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-06-16 16:48:59",
+      "url": [
+        "https://f.ua/ua/mijia/electric-screwdriver-mjddlsd003qw.html",
+        "https://f.ua/ua/esdy/krossovki-takticheskie-r-39-olive.html"
+      ]
+    },
+    "pipe": [
+      ["app_json", [{"@type": "product"}]],
+      ["as_dict", {
+        "name": [
+          ["get", ["name"]]
+        ],
+        "price": [
+          ["ext_price_app", [false]]
+        ],
+        "price_old": [
+          ["var_get", ["$root"]],
+          ["find", ["div",{"class":"box_price_left"}]],
+          ["find", ["div",{"class":"price"}]],
+          ["find", ["div",{"class":"old"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["gets", ["offers.availability"]],
+          ["stock"]
+        ],
+        "image": [
+          ["get", ["image"]]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["ul", {"class": "breadcrumbs"}]],
+          ["breadcrumb", [["li"], -2]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 100, https://makitra.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-16 11:57:03",
+      "url": [
+        "https://makitra.ua/ua/marmit-kinghoff-kh-1414-3-l"
+      ]
+    },
+    "pipe": [
+      ["find",["div",{"itemtype": "https://schema.org/Product"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1",{"class":"product-title"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find",["h2",{"class":"price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["span",{"class":"green pgreen"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["ul", {"class": "breadcrumb"}]],
+          ["breadcrumb", [["li"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 101, https://590.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-05-14",
+      "url": [
+        "https://590.ua/ua/ot/freezer/electrolux-lcb-1-af-10-w-0"
+      ]
+    },
+    "pipe": [
+      ["app_json", [{"@type": "product"}]],
+      ["as_dict", {
+        "name": [
+          ["gets", ["name"]]
+        ],
+        "price": [
+          ["get", ["offers"]],
+          ["list", [0]],
+          ["as_list", [
+            [["get", ["price"]], ["txt2float"]],
+            [["get", ["priceCurrency"]]]
+          ]]
+        ],
+        "price_old": [
+          ["get", ["offers"]],
+          ["list", [0]],
+          ["as_list", [
+            [["gets", ["lowPrice"]], ["txt2float"]],
+            [["gets", ["priceCurrency"]]]
+          ]]
+        ],
+        "stock": [
+          ["get", ["offers"]],
+          ["list", [0]],
+          ["get", ["availability"]],
+          ["stock"]
+        ],
+        "image": [
+          ["get", ["image"]]
+        ],
+        "mpn": [
+          ["gets", ["sku"]]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"class": "breadcrumbs"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 102, https://www.delimano.com.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-06-28 09:41:59",
+      "url": [
+        "https://www.delimano.com.ua/delimano-green-planet-grill-pan-28x28cm",
+        "https://www.delimano.com.ua/delimano-stone-legend-black-wok"
+      ]
+    },
+    "pipe": [
+      ["app_json", [{"@type": "product"}]],
+      ["as_dict", {
+        "name": [
+          ["get", ["name"]]
+        ],
+        "price": [
+          ["ext_price_app", [true]]
+        ],
+        "price_old": [
+          ["var_get", ["$root"]],
+          ["find",["p", {"class":"old-price"}]],
+          ["find",["span",{"class":"price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["gets", ["offers.availability"]],
+          ["stock"]
+        ],
+        "image": [
+          ["get", ["image"]]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"class": "breadcrumbs"}]],
+          ["breadcrumb", [["li"], -2]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 103, https://smg-shop.com.ua
+{
+  "product": {
+    "info": {
+      "author": "davyd",
+      "date": "2022-06-16 22:11:02",
+      "url": [
+        "https://smg-shop.com.ua/chaynik/chaynik-smeg-klf03rgeu.html"
+      ]
+    },
+    "pipe": [
+      ["find", ["div", {"itemtype": "http://schema.org/Product"}]],
+      ["as_dict", {
+        "name": [
+          ["find", ["div", {"class": "row-product"}]],
+          ["find", ["h1"]],
+          ["text"],
+          ["strip"]
+        ],
+        "price": [
+          ["find", ["div", {"itemtype": "http://schema.org/Offer"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find", ["div", {"class": "stock"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["split", [" ", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["ul", {"class": "breadcrumb"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 105, https://www.nl.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-06-16 17:51:59",
+      "url": [
+        "https://www.nl.ua/ua/mikser-tekhmann-tem-1652-8468502.html"
+      ]
+    },
+    "pipe": [
+      ["app_json", [{"@type": "product"}]],
+      ["as_dict", {
+        "name": [
+          ["get", ["name"]]
+        ],
+        "price": [
+          ["ext_price_app", [false]]
+        ],
+        "price_old": [
+          ["var_get", ["$root"]],
+          ["find",["div",{"class":"head__price"}]],
+          ["find",["div",{"class":"head__price--item --old"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["gets", ["offers.availability"]],
+          ["stock"]
+        ],
+        "image": [
+          ["get", ["image"]],
+          ["list", [0]]
+        ],
+        "mpn": [
+          ["get", ["mpn"]]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"id": "breadcrumbs"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 106, https://stroyteh.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-16 18:13:26",
+      "url": [
+        "https://stroyteh.ua/product/makita-4326-lobzik-elektricheskiy/"
+      ]
+    },
+    "pipe": [
+      ["find", ["div", {"itemtype":"http://schema.org/Product"}]],
+      ["as_dict", {
+        "name": [
+          ["find", ["h1", {"itemprop":"name"}]],
+          ["text"],
+          ["strip"]
+        ],
+        "price": [
+          ["find", ["span", {"itemprop":"price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find", ["div", {"class":"old-price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["span", {"id":"zz"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["ol", {"class": "breadcrumb"}]],
+          ["breadcrumb", [["li"], -2]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 107, https://bigl.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-07-11 09:00:00",
+      "url": [
+        "https://bigl.ua/ua/p1438359032-shurupovert-makita-df330dwe"
+      ]
+    },
+    "pipe": [
+      ["app_json", [{"@type": "product"}]],
+      ["as_dict", {
+        "name": [
+          ["get", ["name"]]
+        ],
+        "price": [
+          ["ext_price_app", [false]]
+        ],
+        "price_old": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"data-qaid": "unit-old-price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["gets", ["offers.availability"]],
+          ["stock"]
+        ],
+        "image": [
+          ["get", ["image"]]
+        ],
+        "mpn": [
+          ["get", ["mpn"]]
+        ],
+        "category": [
+          ["get", ["category"]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 108, https://sea-tools.com.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-16 22:10:06",
+      "url": [
+        "https://sea-tools.com.ua/item/lentochnaya_pila_metabo_bas_318_precision_wnb"
+      ]
+    },
+    "pipe": [
+      ["find",["section",{"itemtype":"https://schema.org/Product"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1",{"class":"product-title"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find",["div",{"class":"product-price__item"}]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find",["div",{"class":"product-price__old-price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["div",{"class":"product-header__availability"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["nav", {"class": "breadcrumbs"}]],
+          ["breadcrumb", [["a"], -2]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 109, https://www.videlka.com.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-18 15:01:28",
+      "url": [
+        "https://www.videlka.com.ua/servizy/28739-serviz-stolovyj-19pr-luminarc-harena-l3271.html"
+      ],
+      "comment": ""
+    },
+    "pipe": [
+      ["find",["div",{"class":"primary_block"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["div",{"class":"pb-center-column col-xs-12 col-sm-6 col-md-4"}]],
+          ["find",["h1"]],
+          ["text"]
+        ],
+        "price": [
+          ["find",["p",{"class":"our_price_display"}]],
+          ["find",["span",{"id":"our_price_display"}]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find",["p",{"id":"old_price"}]],
+          ["find",["span",{"id":"old_price_display"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["p",{"id":"add_to_cart"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["find",["img",{"id":"bigpic"}]],
+          ["get",["src"]]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find",["div",{"id":"breadcrumb"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 110, https://hozsklad.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-17 18:24:51",
+      "url": [
+        "https://hozsklad.ua/krasota-chistota-i-zdorove-bytovaya-khimiya-sredstva-dlya-stirki-geli-dlya-stirki/gel-dlya-stirki-purox-universal-4300-ml-germaniyamcl-50560"
+      ],
+      "comment": "Не знайшов товар не в наявності"
+    },
+    "pipe": [
+      ["find",["div",{"class":"row single_product_row"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1",{"itemprop":"name"}]],
+          ["text"],
+          ["strip"]
+        ],
+        "price": [
+          ["find",["span",{"class":"price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["var_get", ["$root"]],
+          ["find",["span",{"class":"price_crossed"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find_all",["button",{"class":"product_card__add_to_cart_text"}]],
+          ["list",[0]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find",["ul",{"itemtype":"http://schema.org/BreadcrumbList"}]],
+          ["breadcrumb", [["li"], -2]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 111, https://system4.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-18 15:36:01",
+      "url": [
+        "https://system4.ua/ru/product/mikser-planetarnyiy-sirman-plutone-7-new"
+      ],
+      "comment": ""
+    },
+    "pipe": [
+      ["find",["div",{"itemtype":"//schema.org/Product"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1",{"itemprop":"name"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find",["span",{"itemprop":"price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["span",{"class":"button filled buy-button"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["find",["div",{"class":"current-image"}]],
+          ["ext_image"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find",["div",{"class":"breadcrumbs"}]],
+          ["find_all", ["a"]],
+          ["list",[-2]],
+          ["text"],
+          ["strip"]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 112, https://6kilometr.com.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-07-12 09:00:00",
+      "url": [
+        "https://6kilometr.com.ua/ua/p1228771112-nabor-skovorodok-litye.html"
+      ]
+    },
+    "pipe": [
+      ["app_json", [{"@type": "product"}]],
+      ["as_dict", {
+        "name": [
+          ["get", ["name"]]
+        ],
+        "price": [
+          ["ext_price_app", [false]]
+        ],
+        "price_old": [
+          ["var_get", ["$root"]],
+          ["find", ["p", {"data-qaid": "old_product_price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["gets", ["offers.availability"]],
+          ["stock"]
+        ],
+        "image": [
+          ["get", ["image"]]
+        ],
+        "sku": [
+          ["get", ["sku"]]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["ext_category_prom"]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 113, https://i-posud.com.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-16 22:00:26",
+      "url": [
+        "https://i-posud.com.ua/catalog/nabor-posudy-s-mramornym-pokrytiem---10-pr-edenberg-eb-9185"
+      ]
+    },
+    "pipe": [
+      ["find",["div",{"itemtype":"https://schema.org/Product"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1",{"itemprop":"name"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find",["div",{"itemtype":"https://schema.org/Offer"}]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find",["div",{"class":"old_price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["link",{"itemprop":"availability"}]],
+          ["get", ["href"]],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["find",["table",{"class":"pro_inf_tbl"}]],
+          ["find_all",["td"]],
+          ["list",[3]],
+          ["text"],
+          ["strip"]
+        ],
+        "-category": [
+          ["comment", ["absent"]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 116, https://kvshop.com.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-16 23:09:59",
+      "url": [
+        "https://kvshop.com.ua/monopody/xiaomi/xiaomi-selfie-stick-2-black/"
+      ],
+      "comment": ""
+    },
+    "pipe": [
+      ["find",["div",{"id":"js-layout-content"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1", {"class": "h3"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find",["div",{"class":"ProductPrice_lg"}]],
+          ["find_all",["span"]],
+          ["list",[-1]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find",["div",{"class":"ProductPrice_lg"}]],
+          ["find",["span",{"class":"price_old"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["span",{"class":"Status mr-2"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["find",["div",{"id":"js-product-slider"}]],
+          ["find",["div",{"class":"swiper-wrapper"}]],
+          ["ext_image"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["ul", {"class": "Breadcrumbs"}]],
+          ["breadcrumb", [["li"], -2]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 117, https://magazun.com
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-06-16 20:32:59",
+      "url": [
+        "https://magazun.com/p221575/",
+        "https://magazun.com/zestkiy-disk-western-digital-caviar-blue-1tb-5400rpm-64mb-buffer-3.5-sata-iii-wd10ezrz/"
+      ]
+    },
+    "pipe": [
+      ["app_json", [{"@type": "product"}]],
+      ["as_dict", {
+        "name": [
+          ["get", ["name"]]
+        ],
+        "price": [
+          ["get", ["offers"]],
+          ["list", [0]],
+          ["as_list", [
+            [["get", ["price"]], ["txt2float"]],
+            [["get", ["priceCurrency"]]]
+          ]]
+        ],
+        "price_old": [
+          ["find",["div", {"class":"ty-product-prices"}]],
+          ["find",["span", {"class":"ty-strike"}]],
+          ["find",["bdi"]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["get", ["offers"]],
+          ["list", [0]],
+          ["get", ["availability"]],
+          ["stock"]
+        ],
+        "image": [
+          ["get", ["image"]]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"class": "ty-breadcrumbs"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 118, https://katran.vn.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-17 17:42:47",
+      "url": [
+        "https://katran.vn.ua/pobutova-tehnika/mala-pobutova-tehnika/tehnika-dlya-domu/pilososi/philips/1284790"
+      ],
+      "comment": ""
+    },
+    "pipe": [
+      ["find",["div",{"itemtype":"http://schema.org/Product"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1",{"itemprop":"name"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find",["span",{"class":"b-price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["ul",{"class":"b-tech-offer__text"}]],
+          ["find",["span", {"class":"label-success"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["find", ["ul", {"class": "b-tech-offer__text"}]],
+          ["text"],
+          ["split",["Модель: ", 1]],
+          ["split",[" ", 0]]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find",["div", {"typeof":"BreadcrumbList"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 119, https://tehnoprostir.com.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-16 20:15:50",
+      "url": [
+        "https://tehnoprostir.com.ua/smartfony-1-3613/samsung-galaxy-s22-8-128gb-phantom-black-sm-s906bzkdsek-696053",
+        "https://tehnoprostir.com.ua/smartfony-1-3613/samsung-galaxy-s21-fe-6-128gb-lavender-sm-g990blvdsek-689732"
+      ]
+    },
+    "pipe": [
+      ["find",["div",{"itemtype":"http://schema.org/Product"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1"]],
+          ["find",["span", {"itemprop": "name"}]],
+          ["text"],
+          ["strip"]
+        ],
+        "price": [
+          ["find",["div",{"class":"price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["div",{"class":"availability"}]],
+          ["find",["span", {"class":"important"}]],
+          ["text"],
+          ["lower"],
+          ["search", [["сьогодні", "завтра"]]]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"class": "breadcrumbs"}]],
+          ["breadcrumb", [["a"], -2]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 121, https://shop.lenovo.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-18 15:27:55",
+      "url": [
+        "https://shop.lenovo.ua/ru/notebooks/noutbuk-lenovo-thinkbook-14-g2-itl-mineral-grey-20vd0097ra.html",
+        "https://shop.lenovo.ua/notebooks/noutbuk-lenovo-yoga-slim-7i-14itl05-slate-grey-82a300knra.html"
+      ],
+      "comment": ""
+    },
+    "pipe": [
+      ["find",["div",{"class":"product-main row"}]],
+      ["as_dict", {
+        "name": [
+          ["var_get", ["$root"]],
+          ["find",["h1", {"class":"page-title"}]],
+          ["text"],
+          ["strip"]
+        ],
+        "price": [
+          ["find",["div",{"class":"product-buy-price-current"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["a",{"class":"button product-card-button __buy"}]],
+          ["find",["span"]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find",["nav",{"class":"breadcrumbs"}]],
+          ["breadcrumb", [["li"], -2]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 122, https://kvado.com.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-06-28 16:48:59",
+      "url": [
+        "https://kvado.com.ua/stiyka-dlya-velosipeda-k-077-regulovana-skladna"
+      ]
+    },
+    "pipe": [
+      ["app_json", [{"@type": "product"}]],
+      ["as_dict", {
+        "name": [
+          ["get", ["name"]]
+        ],
+        "price": [
+          ["ext_price_app", [true]]
+        ],
+        "price_old": [
+          ["var_get", ["$root"]],
+          ["find",["div",{"class": "rm-product"}]],
+          ["find",["span",{"class":"rm-product-center-price-old"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["gets", ["offers.availability"]],
+          ["stock"]
+        ],
+        "image": [
+          ["get", ["image"]]
+        ],
+        "mpn": [
+          ["get", ["model"]]
+        ],
+        "category": [
+          ["get", ["category"]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 123, https://all-ok.com.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-07-01 09:00:00",
+      "url": [
+        "https://all-ok.com.ua/samsung-galaxy-note-10-plus-sm-n975f-12-256gb-white"
+      ]
+    },
+    "pipe": [
+      ["app_json", [{"@type": "product"}]],
+      ["as_dict", {
+        "name": [
+          ["get", ["name"]]
+        ],
+        "price": [
+          ["ext_price_app", [false]]
+        ],
+        "stock": [
+          ["gets", ["offers.availability"]],
+          ["stock"]
+        ],
+        "image": [
+          ["get", ["image"]],
+          ["list", [0]]
+        ],
+        "mpn": [
+          ["get", ["mpn"]]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["ul", {"class": "breadcrumb"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 125, https://www.china-gadgets.com.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-17 23:34:43",
+      "url": [
+        "https://www.china-gadgets.com.ua/products/xiaomi-redmi-note-77pro-originalnij-silikonovij-bamper"
+      ],
+      "comment": ""
+    },
+    "pipe": [
+      ["find",["div",{"class":"product-content-single"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["div",{"class":"product-name"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find_all", ["label", {"class":"variant_name inline"}]],
+          ["list", [0]],
+          ["find", ["span",{"class":"price"}]],
+          ["var_set", ["$Price"]],
+          ["find_all", ["ins"]],
+          ["list",[0]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["var_get", ["$Price"]],
+          ["find_all", ["del"]],
+          ["list", [0]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find_all", ["div",{"class":"stock available"}]],
+          ["list", [1]],
+          ["text"],
+          ["strip"],
+          ["split", [": ", -1]],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find",["ol", {"class":"breadcrumb-page"}]],
+          ["breadcrumb", [["li"], -3]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 126, https://mm.kh.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-06-29 23:12:59",
+      "url": [
+        "https://mm.kh.ua/250--/657-xiaomi/xiaomi-redmi-10c-4128gb-ocean-blue-ua-45199-ru.html"
+      ]
+    },
+    "pipe": [
+      ["app_json", [{"@type": "product"}]],
+      ["as_dict", {
+        "name": [
+          ["get", ["name"]]
+        ],
+        "price": [
+          ["ext_price_app", [false]]
+        ],
+        "price_old": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"class": "us-price-old"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["gets", ["offers.availability"]],
+          ["stock"]
+        ],
+        "image": [
+          ["get", ["image"]]
+        ],
+        "mpn": [
+          ["get", ["sku"]]
+        ],
+        "category": [
+          ["get", ["category"]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 127, https://dm.kh.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-18 16:18:19",
+      "url": [
+        "https://dm.kh.ua/uk/smartfony-samsung/20742-samsung-galaxy-a52-a525f-ds-8256gb-awesome-blue-eu.html"
+      ],
+      "comment": ""
+    },
+    "pipe": [
+      ["find",["div", {"itemtype": "https://schema.org/Product", "id": "single-product"}]],
+      ["as_dict", {
+        "name": [
+          ["find", ["h1", {"id":"prod-name"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find",["span",{"id":"our_price_display"}]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find",["span",{"id":"old_price_display"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["div",{"id":"availability_statut"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["var_get", ["$root"]],
+          ["ext_image_og"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["ul", {"itemtype":"http://schema.org/BreadcrumbList"}]],
+          ["breadcrumb", [["li"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 129, https://it-blok.com.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-06-30 20:40:00",
+      "url": [
+        "https://it-blok.com.ua/optymalnyj-ygrovoj-athlon-x4-970-rx-550-8gb"
+      ]
+    },
+    "pipe": [
+      ["app_json", [{"@type": "product"}]],
+      ["as_dict", {
+        "name": [
+          ["get", ["name"]]
+        ],
+        "price": [
+          ["ext_price_app", [false]]
+        ],
+        "price_old": [
+          ["var_get", ["$root"]],
+          ["find", ["span", {"class": "autocalc-product-price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["gets", ["offers.availability"]],
+          ["stock"]
+        ],
+        "image": [
+          ["get", ["image"]]
+        ],
+        "category": [
+          ["get", ["category"]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 130, https://kokos.com.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-17 00:45:12",
+      "url": [
+        "https://kokos.com.ua/samsung-phones/11470/"
+      ],
+      "comment": ""
+    },
+    "pipe": [
+      ["find",["section",{"itemtype":"https://schema.org/Product"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1",{"class":"product-title"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find",["div",{"class":"product-price__item"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["div",{"class":"product-header__availability"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["nav", {"class": "breadcrumbs"}]],
+          ["breadcrumb", [["span", {"itemprop": "name"}], -2]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 131, https://mob.com.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-06-27 18:57:12",
+      "url": [
+        "https://mob.com.ua/lampa-unichtozhitel-nasekomyh-baseus-purple-square-courtyard-mosquito-killer-lamp-acmwd-tb01.html"
+      ],
+      "comment": ""
+    },
+    "pipe": [
+      ["find",["div",{"class": "product info detailed"}]],
+      ["as_dict", {
+        "name": [
+          ["var_get", ["$root"]],
+          ["find",["span",{"itemprop":"name"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find", ["div", {"class": "product-info-main"}]],
+          ["find", ["div", {"class": "price-final_price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find", ["div", {"class": "product-info-addtocart-wrapper"}]],
+          ["find", ["button", {"id":"product-addtocart-button"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["var_get", ["$root"]],
+          ["ext_image_og"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find",["div",{"class":"breadcrumbs"}]],
+          ["breadcrumb", [["li"], -2]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 132, https://tv-mir.com.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-17 22:45:31",
+      "url": [
+        "https://tv-mir.com.ua/xiaomi-redmibook-13-i5-10th-8512gbmx250-silver-jyu4214cn",
+        "https://tv-mir.com.ua/noutbuk-hp-victus-16-e0502nw-597b1ea"
+      ],
+      "comment": ""
+    },
+    "pipe": [
+      ["find",["div",{"class":"main_block_product"}]],
+      ["as_dict", {
+        "name": [
+          ["var_get", ["$root"]],
+          ["find", ["h1", {"class":"h1-prod-name"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find",["span",{"class":"autocalc-product-price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["div",{"class":"stock_rating_line"}]],
+          ["find_all",["div",{"class": "info-product"}]],
+          ["list",[0]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find",["ul",{"class":"breadcrumb"}]],
+          ["breadcrumb", [["li"], -3]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 133, https://icoola.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-18 17:29:21",
+      "url": [
+        "https://icoola.ua/apple-iphone/iphone-7-32gb-black-seller"
+      ],
+      "comment": ""
+    },
+    "pipe": [
+      ["find",["div",{"class":"box-shadow-container card-product-block"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1",{"class":"title-product"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find",["span",{"class":"price-product-card"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["div",{"class":"product-info-buy"}]],
+          ["find",["span",{"class":"product__status"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["span", {"class": "breadcrumb"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 134, https://fozi.com.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-18 18:00:58",
+      "url": [
+        "https://fozi.com.ua/mobil-nyj-telefon-nokia-230-dual-dark-silver-a00026971.html",
+        "https://fozi.com.ua/garnitura-sven-ap-930m-black-silver.html"
+      ],
+      "comment": ""
+    },
+    "pipe": [
+      ["find",["div",{"class":"clearfix m_b50"}]],
+      ["as_dict", {
+        "name": [
+          ["var_get", ["$root"]],
+          ["find",["h1",{"class":"dynamic-data-name"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find",["div",{"class":"price-box"}]],
+          ["find_all",["span",{"class":"price"}]],
+          ["list",[-1]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find",["p",{"class":"old-price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find", ["p", {"class":"availability"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find",["div",{"class":"breadcrumbs"}]],
+          ["breadcrumb", [["li"], -2]],
+          ["left", [-2]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 135, https://itochka.com.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-17 22:25:31",
+      "url": [
+        "https://itochka.com.ua/p1050555247-apple-iphone-64gb.html"
+      ],
+      "comment": "Хлібні крихти динамічні"
+    },
+    "pipe": [
+      ["find",["div",{"class":"b-product__container"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1",{"class":"b-title_type_product_name"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find",["p",{"class":"b-product-cost__price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["li",{"data-qaid":"presence_data"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["ext_category_prom"]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 136, https://expertonline.com.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-06-29 15:48:59",
+      "url": [
+        "https://expertonline.com.ua/apple-airpods-2-with-charging-case-mv7n2.html"
+      ]
+    },
+    "pipe": [
+      ["app_json", [{"@type": "product"}]],
+      ["as_dict", {
+        "name": [
+          ["get", ["name"]]
+        ],
+        "price": [
+          ["ext_price_app", [false]]
+        ],
+        "price_old": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"class": "product-add-form-wrap"}]],
+          ["find", ["span", {"data-price-type": "oldPrice"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["gets", ["offers.availability"]],
+          ["stock"]
+        ],
+        "image": [
+          ["get", ["image"]]
+        ],
+        "mpn": [
+          ["get", ["name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"class": "breadcrumbs"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 137, https://yaknoviy.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-07-02 07:21:00",
+      "url": [
+        "https://yaknoviy.ua/smartfon-apple-iphone-11-128gb-black-mwle2-vitrinnyj-variant-item"
+      ]
+    },
+    "pipe": [
+      ["app_json", [{"@type": "product"}]],
+      ["as_dict", {
+        "name": [
+          ["get", ["name"]]
+        ],
+        "price": [
+          ["ext_price_app", [false]]
+        ],
+        "stock": [
+          ["gets", ["offers.availability"]],
+          ["stock"]
+        ],
+        "image": [
+          ["get", ["image"]]
+        ],
+        "mpn": [
+          ["get", ["name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "price_old": [
+          ["var_get", ["$root"]],
+          ["find",["div",{"class":"row no-wrap-product"}]],
+          ["find",["div",{"class":"old-prise"}]],
+          ["text"],
+          ["price"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find",["ul",{"class":"breadcrumb-list"}]],
+          ["breadcrumb", [["li"], -2]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 138, https://gnext.com.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-18 16:56:51",
+      "url": [
+        "https://gnext.com.ua/product/1124"
+      ],
+      "comment": ""
+    },
+    "pipe": [
+      ["find",["div",{"id":"product-info"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["div",{"id":"page-title"}]],
+          ["text"],
+          ["strip"]
+        ],
+        "price": [
+          ["find",["div",{"class":"current-price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find",["div",{"class":"old-price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["div",{"class":"in_stock"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "-category": [
+          ["comment", ["no"]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 139, https://mycube.com.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-18 16:43:01",
+      "url": [
+        "https://mycube.com.ua/ru/iphone-x-orig/"
+      ],
+      "comment": "Товар не в наявності без ціни https://mycube.com.ua/ru/sony-playstation-5-blue-ray-edition/"
+    },
+    "pipe": [
+      ["find",["div",{"class":"product-info product-view"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1",{"class":"title-product-single"}]],
+          ["text"],
+          ["strip"]
+        ],
+        "price": [
+          ["find",["span",{"class":"price actual-price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find", ["a", {"class": "add-to-cart"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find",["ul",{"class":"breadcrumb"}]],
+          ["breadcrumb", [["li"], -2]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 140, https://newsmag.com.ua
+{
+  "product": {
+    "info": {
+      "author": "davyd",
+      "date": "2022-07-11 12:54:52",
+      "url": [
+        "https://newsmag.com.ua/ua/p1627192675-cmartfon-agm-glory.html"
+      ],
+      "comment": ""
+    },
+    "pipe": [
+      ["app_json", [{"@type": "product"}]],
+      ["as_dict", {
+        "name": [
+          ["get", ["name"]]
+        ],
+        "price": [
+          ["ext_price_app"]
+        ],
+        "price_old": [
+          ["var_get", ["$root"]],
+          ["find", ["p", {"class": "b-product-cost__old-price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["gets", ["offers.availability"]],
+          ["stock"]
+        ],
+        "image": [
+          ["get", ["image"]]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["ext_category_prom"]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 141, https://techno-kym.in.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-18 16:29:42",
+      "url": [
+        "https://techno-kym.in.ua/p1413357816-smartfon-samsung-galaxy.html"
+      ],
+      "comment": ""
+    },
+    "pipe": [
+      ["find",["div",{"class":"b-product__container"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["span",{"data-qaid":"product_name"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find",["p",{"class":"b-product-cost__price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["li",{"data-qaid":"presence_data"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["ext_category_prom"]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 142, http://allproserver.com.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-05-13",
+      "url": [
+        "http://allproserver.com.ua/index.php?route=product/product&path=77_425&product_id=71620"
+      ]
+    },
+    "pipe": [
+      ["find", ["div", {"id": "content"}]],
+      ["as_dict", {
+        "name": [
+          ["find", ["h1", {"itemprop": "name"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find", ["div", {"class": "price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find", ["span", {"class": "stock_status_success"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["find", ["a", {"class": "main-image"}]],
+          ["get", ["href"]]
+        ],
+        "mpn": [
+          ["find", ["span", {"itemprop": "model"}]],
+          ["text"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["ul", {"class": "breadcrumb"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 143, https://motostuff.com.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-18 17:12:28",
+      "url": [
+        "https://motostuff.com.ua/products/zaryadnaya-stantsiya-ecoflow-river-efriver600-eu/"
+      ],
+      "comment": ""
+    },
+    "pipe": [
+      ["find_all", ["div", {"class": "item-pg__main-wrapper"}]],
+      ["list",[0]],
+      ["as_dict", {
+        "name": [
+          ["var_get", ["$root"]],
+          ["find",["span",{"itemprop":"name"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find",["span",{"class":"price-number s-product-price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find",["span",{"class":"price-number s-product-oldprice"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["span",{"class":"stock-text"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["var_get", ["$root"]],
+          ["ext_image_og"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find",["ul",{"class":"breadcrumbs__list"}]],
+          ["breadcrumb", [["li"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 145, https://smartmag.biz.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-18 17:37:51",
+      "url": [
+        "https://smartmag.biz.ua/planshet-lenovo-tab-p11-4-128-wifi-slate-grey-za7r0041ua/"
+      ],
+      "comment": ""
+    },
+    "pipe": [
+      ["find", ["section",{"itemtype":"https://schema.org/Product"}]],
+      ["as_dict", {
+        "name": [
+          ["find", ["h1", {"class": "product-title"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find", ["div", {"class": "product-price__item"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["div",{"class":"product-header__availability"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["find", ["nav", {"class":"breadcrumbs"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 146, https://luckylink.kiev.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-18 15:44:05",
+      "url": [
+        "https://luckylink.kiev.ua/lenovo-yoga-6-13are05-82fn000tge"
+      ],
+      "comment": ""
+    },
+    "pipe": [
+      ["find",["div",{"class":"product__grid"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1",{"class":"product-title"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find",["div",{"class":"product-price__item"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["link",{"itemprop":"availability"}]],
+          ["get",["href"]],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["find",["nav",{"class":"breadcrumbs"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 148, https://artway.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-05-15",
+      "url": [
+        "https://artway.ua/product/nt1-kit"
+      ]
+    },
+    "pipe": [
+      ["find", ["div", {"class": "content-area"}]],
+      ["as_dict", {
+        "name": [
+          ["find", ["h1", {"class": "product-single-title"}]],
+          ["text"],
+          ["strip"]
+        ],
+        "price": [
+          ["find_all", ["span", {"class": "woocommerce-Price-amount amount"}]],
+          ["list", [1]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find", ["span", {"class": "woocommerce-Price-amount amount"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find", ["span", {"class": "electro-stock-availability"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["nav", {"class": "woocommerce-breadcrumb"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 149, https://mobaza.com.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-07-01 21:00:00",
+      "url": [
+        "https://mobaza.com.ua/p1452210378-televizor-xiaomi-black.html"
+      ]
+    },
+    "pipe": [
+      ["app_json", [{"@type": "product"}]],
+      ["as_dict", {
+        "name": [
+          ["get", ["name"]]
+        ],
+        "price": [
+          ["ext_price_app", [false]]
+        ],
+        "stock": [
+          ["gets", ["offers.availability"]],
+          ["stock"]
+        ],
+        "image": [
+          ["get", ["image"]]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["ext_category_prom"]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 150, https://tehnostok.in.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-07-01 21:07:00",
+      "url": [
+        "https://tehnostok.in.ua/p1458354153-smartfon-samsung-galaxy.html"
+      ]
+    },
+    "pipe": [
+      ["app_json", [{"@type": "product"}]],
+      ["as_dict", {
+        "name": [
+          ["get", ["name"]]
+        ],
+        "price": [
+          ["ext_price_app", [false]]
+        ],
+        "stock": [
+          ["gets", ["offers.availability"]],
+          ["stock"]
+        ],
+        "image": [
+          ["get", ["image"]]
+        ],
+        "mpn": [
+          ["get", ["name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["ext_category_prom"]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 153, https://climatopt.in.ua
+{
+  "product": {
+    "info": {
+      "author": "davyd",
+      "date": "2022-07-11 13:21:38",
+      "url": [
+        "https://climatopt.in.ua/ua/p598742690-kompressor-konditsionera-toshiba.html"
+      ],
+      "comment": ""
+    },
+    "pipe": [
+      ["app_json", [{"@type": "product"}]],
+      ["as_dict", {
+        "name": [
+          ["get", ["name"]]
+        ],
+        "price": [
+          ["ext_price_app"]
+        ],
+        "stock": [
+          ["gets", ["offers.availability"]],
+          ["stock"]
+        ],
+        "image": [
+          ["get", ["image"]]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["ext_category_prom"]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 155, https://airshop.com.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-05-15",
+      "url": [
+        "https://airshop.com.ua/ua/kondicioner-mitsubishi-electric-premium-red-wine-zubadan-msz-5"
+      ]
+    },
+    "pipe": [
+      ["find", ["div", {"itemtype": "http://schema.org/Product"}]],
+      ["as_dict", {
+        "name": [
+          ["find", ["h1", {"itemprop": "name"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find", ["div", {"class": "price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find", ["span", {"class": "stock_status_success"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["find", ["span", {"itemprop": "model"}]],
+          ["text"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["ul", {"class": "breadcrumb"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 156, https://air-style.com.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-05-15",
+      "url": [
+        "https://air-style.com.ua/store/%D0%9A%D0%BE%D0%BD%D0%B4%D0%B8%D1%86%D0%B8%D0%BE%D0%BD%D0%B5%D1%80-Cooper&Hunter-CH-S07FTXF-NG-Vital-Inverter-"
+      ]
+    },
+    "pipe": [
+      ["find", ["div", {"class": "product-page-details"}]],
+      ["as_dict", {
+        "name": [
+          ["find", ["h1", {"class": "product-name"}]],
+          ["text"],
+          ["strip"]
+        ],
+        "price": [
+          ["find", ["span", {"class": "price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find", ["span", {"class": "icon"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["ul", {"class": "breadcrumbs"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 159, https://klimaton.in.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-07-02 12:35:00",
+      "url": [
+        "https://klimaton.in.ua/p799538785-toshiba-ras-10n3kvr.html"
+      ]
+    },
+    "pipe": [
+      ["app_json", [{"@type": "product"}]],
+      ["as_dict", {
+        "name": [
+          ["get", ["name"]]
+        ],
+        "price": [
+          ["ext_price_app", [false]]
+        ],
+        "stock": [
+          ["gets", ["offers.availability"]],
+          ["stock"]
+        ],
+        "image": [
+          ["get", ["image"]]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["ext_category_prom"]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 160, http://40ka.com.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-05-13",
+      "url": [
+        "http://40ka.com.ua/noutbuki-plansety-komp-ytery/noutbuk-lenovo-ideapad-3-15ada05-business-black-81w10112ra",
+        "http://40ka.com.ua/susil-nay-masina-samsung-dv90t5240at"
+      ]
+    },
+    "pipe": [
+      ["app_json", [{"@type": "product"}]],
+      ["as_dict", {
+        "name": [
+          ["gets", ["name"]]
+        ],
+        "stock": [
+          ["gets", ["offers.availability"]],
+          ["stock"]
+        ],
+        "image": [
+          ["get", ["image"]]
+        ],
+        "mpn": [
+          ["gets", ["model"]]
+        ],
+        "price": [
+          ["ext_price_app", [true]]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["ul", {"class": "breadcrumb"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 161, http://sanford.com.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-05-15",
+      "url": [
+        "http://sanford.com.ua/index.php?route=product/product&path=67_77&product_id=12175",
+        "http://sanford.com.ua/index.php?route=product/product&path=263_68&product_id=10581"
+      ]
+    },
+    "pipe": [
+      ["find", ["div", {"itemtype": "http://schema.org/Product"}]],
+      ["as_dict", {
+        "name": [
+          ["find", ["h1", {"itemprop": "name"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find", ["div", {"class": "priceBig"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find", ["div", {"class": "alert-success-alt"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["split", [" ", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["ul", {"class": "breadcrumb"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 164, https://neo24.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-18 18:20:04",
+      "url": [
+        "https://neo24.ua/televizor-samsung-ue50au8002kxxh/"
+      ],
+      "comment": ""
+    },
+    "pipe": [
+      ["find",["section",{"itemtype":"https://schema.org/Product"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1",{"class":"product-title"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find",["div",{"class":"product-price__item"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["div",{"class":"product-header__availability"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["split",[" ", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["find",["nav", {"class":"breadcrumbs"}]],
+          ["breadcrumb", [["a"], -1]]]
+        }]
+      ]
+    }
+  }
+
+--- 166, https://fulldom.com.ua
+{
+  "product": {
+    "info": {
+      "author": "davyd",
+      "date": "2022-07-11 12:41:12",
+      "url": [
+        "https://fulldom.com.ua/products/brother-dcp-l2500dr"
+      ]
+    },
+    "pipe": [
+      ["find", ["div", {"class": "product"}]],
+      ["as_dict", {
+        "name": [
+          ["var_get", ["$root"]],
+          ["find", ["h1", {"class": "h_style1"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find", ["span", {"class": "price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find", ["span", {"data-result-text": "Добавлено"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["split", [" ", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"id": "path"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 167, https://algtm.com.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-05-15",
+      "url": [
+        "https://algtm.com.ua/electrolux-ew6s4r06w",
+        "https://algtm.com.ua/samsung-qe32ls03tcuxua"
+      ]
+    },
+    "pipe": [
+      ["find", ["div", {"id": "content"}]],
+      ["as_dict", {
+        "name": [
+          ["find", ["div", {"id": "pro-order"}]],
+          ["find", ["h1"]],
+          ["text"],
+          ["strip"]
+        ],
+        "price": [
+          ["find", ["div", {"id": "pro-order"}]],
+          ["find", ["li", {"class": "btn-pro"}]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find", ["div", {"id": "pro-order"}]],
+          ["find", ["li", {"class": "price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find", ["div", {"class": "fa-border"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["split", [" ", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["ul", {"class": "breadcrumb"}]],
+          ["breadcrumb", [["a"], -1]]
+        ],
+        "image": [
+          ["ext_image"]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 172, https://trapik.ua
+{
+  "product": {
+    "info": {
+      "author": "davyd",
+      "date": "2022-07-12 10:27:59",
+      "url": [
+        "https://trapik.ua/smesitel-montiruemyy-v-stenu-damixa-777500000-origin-bit.html"
+      ],
+      "comment": ""
+    },
+    "pipe": [
+      ["app_json", [{"@type": "product"}]],
+      ["as_dict", {
+        "name": [
+          ["get", ["name"]]
+        ],
+        "price": [
+          ["ext_price_app"]
+        ],
+        "price_old": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"class": "mt-2"}]],
+          ["text"],
+          ["price_find"],
+          ["list", [0]],
+          ["price"]
+        ],
+        "stock": [
+          ["gets", ["offers.availability"]],
+          ["stock"]
+        ],
+        "image": [
+          ["get", ["image"]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 176, http://pointq.com.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-05-13",
+      "url": [
+        "http://pointq.com.ua/electrolux_ew6f448buu.html",
+        "http://pointq.com.ua/whirlpool_w11cm145.html"
+      ]
+    },
+    "pipe": [
+      ["find", ["div", {"itemtype": "http://schema.org/Product"}]],
+      ["as_dict", {
+        "name": [
+          ["find", ["h1", {"class": "title"}]],
+          ["text"]
+        ],
+        "price": [
+          ["as_list", [
+            [
+              ["find", ["span", {"class": "price"}]],
+              ["find", ["span", {"class": "productOldPrice"}]],
+              ["text"],
+              ["price"]
+            ],
+            [
+              ["find", ["div", {"itemprop": "offers"}]],
+              ["find", ["span", {"class": "price"}]],
+              ["text"],
+              ["price"]
+            ]
+          ]],
+          ["not_none"]
+        ],
+        "price_old": [
+          ["find", ["span", {"class": "price"}]],
+          ["text"],
+          ["-split", ["грн. ", 1]],
+          ["price"]
+        ],
+        "stock": [
+          ["find", ["span", {"style": "color: green;font-weight: bold"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["split", [" ", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"class": "breadcrumbs"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 177, https://komplekt.com.ua
+{
+  "product": {
+    "info": {
+      "author": "davyd",
+      "date": "2022-07-11 14:20:02",
+      "url": [
+        "https://komplekt.com.ua/product/freggia-lbf25285x/"
+      ],
+      "comment": ""
+    },
+    "pipe": [
+      ["find", ["div", {"itemtype": "https://schema.org/Product"}]],
+      ["as_dict", {
+        "name": [
+          ["find", ["span", {"itemprop": "name"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find", ["div", {"class": "totalPrice1"}]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find", ["div", {"class": "regularPrice"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find", ["input", {"class": "add2cart_handler"}]],
+          ["get", ["value"]],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["span", {"itemtype": "http://schema.org/ListItem"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 180, http://savecash.com.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-05-15",
+      "url": [
+        "http://savecash.com.ua/pralna_ardesto_swmg-6120w.html",
+        "http://savecash.com.ua/stiralnaya_mashina_indesit_iwsb_51051_ua.html"
+      ]
+    },
+    "pipe": [
+      ["find", ["div", {"itemtype": "http://schema.org/Product"}]],
+      ["as_dict", {
+        "name": [
+          ["find", ["h1", {"itemprop": "name"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find", ["div", {"itemprop": "offers"}]],
+          ["find", ["meta", {"itemprop": "price"}]],
+          ["get", ["content"]],
+          ["price"]
+        ],
+        "price_old": [
+          ["find", ["span", {"class": "price"}]],
+          ["find", ["span", {"class": "productOldPrice"}]],
+          ["text"],
+          ["price"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["split", [" ", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"class": "breadcrumbs"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 194, https://3t.com.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-05-14",
+      "url": [
+        "https://3t.com.ua/bfp-xerox-wc-3345dni-wi-fi-3345v_dni",
+        "https://3t.com.ua/sushilna-mashina-candy-ey-h8a2l-s"
+      ]
+    },
+    "pipe": [
+      ["find", ["section", {"itemtype": "https://schema.org/Product"}]],
+      ["as_dict", {
+        "name": [
+          ["find", ["h1", {"class": "product-title"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find", ["div", {"class": "product-price__item"}]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find", ["div", {"class": "product-price__old-price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find", ["div", {"class": "product-header__availability"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["nav", {"class": "breadcrumbs"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 201, https://33m2.com.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-05-14",
+      "url": [
+        "https://33m2.com.ua/ruletka-prorezinennaya-3m16mm-sturm-s-magnitom-3100401-201013064/201013064"
+      ]
+    },
+    "pipe": [
+      ["find", ["div", {"class": "card"}]],
+      ["as_dict", {
+        "name": [
+          ["find", ["h1", {"class": "title"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find", ["div", {"class": "details__price-actual"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find", ["div", {"class": "availability"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["ul", {"class": "breadcrumbs"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 202, https://aqua-mart.com.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-05-15",
+      "url": [
+        "https://aqua-mart.com.ua/smennye-kartridzhi/komplekt-kartridzhey-aquafilter-3_1"
+      ]
+    },
+    "pipe": [
+      ["find", ["div", {"id": "content"}]],
+      ["as_dict", {
+        "name": [
+          ["find", ["h1"]],
+          ["text"]
+        ],
+        "price": [
+          ["find", ["span", {"id": "totalPrice"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find", ["ul", {"class": "list-unstyled"}]],
+          ["find_all", ["li"]],
+          ["list", [2]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["ul", {"class": "breadcrumb"}]],
+          ["breadcrumb", [["li"], -2]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 209, https://abcphoto.com.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-05-14",
+      "url": [
+        "https://abcphoto.com.ua/item/15501-Canon-EOS-6D-Mark-II-body-info.html"
+      ]
+    },
+    "pipe": [
+      ["app_json", [{"@type": "product"}]],
+      ["as_dict", {
+        "name": [
+          ["gets", ["name"]]
+        ],
+        "price": [
+          ["ext_price_app", [true]]
+        ],
+        "price_old": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"class": "main_info"}]],
+          ["find", ["span", {"class": "old"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["gets", ["offers.availability"]],
+          ["stock"]
+        ],
+        "image": [
+          ["get", ["image"]]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["ul", {"class": "breadcrumb"}]],
+          ["breadcrumb", [["a"], -1]]
+        ],
+        "sku": [
+          ["get", ["sku"]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 225, https://ars.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-05-15",
+      "url": [
+        "https://ars.ua/dril-bezudarnij-yato-yt-82050.html"
+      ]
+    },
+    "pipe": [
+      ["find", ["div", {"class": "main"}]],
+      ["as_dict", {
+        "name": [
+          ["find", ["h1", {"class": "page-title"}]],
+          ["text"],
+          ["strip"]
+        ],
+        "price": [
+          ["find_all", ["span", {"class": "price-container"}]],
+          ["list", [1]],
+          ["text"],
+          ["price"]
+        ],
+        "price_old": [
+          ["find_all", ["span", {"class": "price-container"}]],
+          ["list", [0]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find", ["button", {"class": "tocart"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["split", [" ", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"class": "breadcrumbs"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 229, http://nbplaza.com.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-05-13",
+      "url": [
+        "http://nbplaza.com.ua/index.php?route=product/product&path=2432_2433_2436&product_id=98642",
+        "http://nbplaza.com.ua/index.php?route=product/product&path=2436&product_id=34316"
+      ]
+    },
+    "pipe": [
+      ["find", ["div", {"itemtype": "http://schema.org/Product"}]],
+      ["as_dict", {
+        "name": [
+          ["find", ["h1", {"itemprop": "name"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find", ["div", {"class": "price"}]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find", ["span", {"class": "stock_status_success"}]],
+          ["text"],
+          ["stock"]
+        ],
+        "mpn": [
+          ["var_get", ["$name"]],
+          ["unbracket", ["()", -1]],
+          ["serial_check"]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["ul", {"class": "breadcrumb"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 236, http://galaksi.com.ua
+{
+  "product": {
+    "info": {
+      "author": "vladvons",
+      "date": "2022-05-13",
+      "url": [
+        "http://galaksi.com.ua/kingston_ddr3_4gb_laptop.php"
+      ]
+    },
+    "pipe": [
+      ["find", ["div", {"id": "content"}]],
+      ["as_dict", {
+        "name": [
+          ["find", ["h1"]],
+          ["text"]
+        ],
+        "price": [
+          ["find_all", ["ul", {"class": "list-unstyled"}]],
+          ["list", [1]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find_all", ["ul", {"class": "list-unstyled"}]],
+          ["list", [0]],
+          ["find_all", ["li"]],
+          ["var_set", ["$Stock"]],
+          ["list", [3]],
+          ["text"],
+          ["split", [":", 1]],
+          ["stock"]
+        ],
+        "image": [
+          ["ext_image"]
+        ],
+        "mpn": [
+          ["var_get", ["$Stock"]],
+          ["list", [2]],
+          ["text"],
+          ["split", [":", 1]]
+        ],
+        "-category": [
+          ["var_get", ["$root"]],
+          ["find", ["ul", {"class": "breadcrumb"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
+
+--- 240, https://norim.ua
+{
+  "product": {
+    "info": {
+      "author": "user02",
+      "date": "2022-06-16 21:11:11",
+      "url": [
+        "https://norim.ua/tovary-dlya-doma/dekor-dlya-doma/nastolnye-chasy/nastolnye_chasy_led_mirror_clock_3618l_zelenaya_podsvetka_/",
+        "https://norim.ua/bytovaya-tehnika/krupnaya-bytovaya-tehnika/professionalnaya-tehnika-dlya/elektromekhanicheskoe_oborudovanie_dlya_kukhni_/testomesy/testomes-domotec-planetarnyj-17901"
+      ]
+    },
+    "pipe": [
+      ["find",["div",{"id":"content"}]],
+      ["as_dict", {
+        "name": [
+          ["find",["h1", {"id":"pagetitle"}]],
+          ["text"]
+        ],
+        "price": [
+          ["find",["div",{"class":"prices_block"}]],
+          ["find_all",["div",{"class":"price"}]],
+          ["list",[0]],
+          ["text"],
+          ["price"]
+        ],
+        "stock": [
+          ["find",["div",{"class":"prices_block"}]],
+          ["find",["div",{"class":"quantity_block_wrapper"}]],
+          ["text"],
+          ["stock", [false]]
+        ],
+        "image": [
+          ["find",["div",{"id":"photo-0","class":"product-detail-gallery__item product-detail-gallery__item--middle text-center"}]],
+          ["find",["img"]],
+          ["get",["data-src"]]
+        ],
+        "category": [
+          ["var_get", ["$root"]],
+          ["find", ["div", {"class": "breadcrumbs"}]],
+          ["breadcrumb", [["a"], -1]]
+        ]
+      }]
+    ]
+  }
+}
