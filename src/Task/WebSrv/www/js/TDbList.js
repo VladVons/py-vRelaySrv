@@ -1,21 +1,41 @@
 /*
-opyright:    Vladimir Vons, UA
-Author:      Vladimir Vons <VladVons@gmail.com>
-Created:     2022.05.03
-Fork: Inc/DbList/DbList.py
+Copyright:  Vladimir Vons, UA
+Author:     Vladimir Vons <VladVons@gmail.com>
+Created:    2022.05.03
+Fork:       Inc/DbList/DbList.py
 */
 
 
 class TDbRec {
-    constructor() {
-        this.Data = []
-        this.Fields = {}
+    constructor(aData = [], aFields = {}) {
+        this.Data = aData
+        this.Fields = aFields
     }
 
     GetAsDict() {
         let Res = {}
         for (const [Key, Val] of Object.entries(this.Fields)) {
             Res[Key] = this.Data[Val]
+        }
+        return Res
+    }
+
+    GetAsDictFields(aFields) {
+        let Res = {}
+        for (const xField of aFields) {
+            Res[xField] = this.GetField(xField)
+        }
+        return Res
+    }
+
+    GetAsList() {
+        return this.Data
+    }
+
+    GetAsListFields(aFields) {
+        let Res = []
+        for (const xField of aFields) {
+            Res.push(this.GetField(xField))
         }
         return Res
     }
@@ -77,6 +97,13 @@ class TDbList {
         }
     }
 
+    _RecInRange(aNo) {
+        if (aNo < 0) {
+            aNo = this.GetSize() + aNo
+        }
+        return Math.min(aNo, this.GetSize() - 1)
+    }
+
     get RecNo() {
         return this._RecNo
     }
@@ -85,18 +112,40 @@ class TDbList {
         if (this.GetSize() == 0) {
             this._RecNo = 0
         }else{
-            if (aNo < 0) {
-                aNo = this.GetSize() + aNo
-                this._RecNo = Math.min(aNo, this.GetSize() - 1)
-            }
+            this._RecNo = this._RecInRange(aNo)
         }
-        this._RecNo = aNo
         this._RecInit()
+    }
+
+    Clone(aFields = []) {
+        if (aFields.length == 0) {
+            var Exp = this.Export()
+        }else{
+            let Data = []
+            for (const Rec of this) {
+                Data.push(Rec.GetAsListFields(aFields))
+            }
+            var Exp = {'head': aFields, 'data': Data}
+        }
+        return new TDbList(Exp)
     }
 
     Empty() {
         this.Data = []
         this._RecNo = 0
+        return this
+    }
+
+    Export() {
+        return {'head': this.Rec.GetFields(), 'data': this.Data}
+    }
+
+    ExportStr() {
+        return JSON.stringify(this.Export())
+    }
+
+    GetSize() {
+        return this.Data.length
     }
 
     Import(aData) {
@@ -108,14 +157,6 @@ class TDbList {
 
     ImportStr(aData) {
         return this.Import(JSON.parse(aData))
-    }
-
-    Export() {
-        return {'head': this.Rec.GetFields(), 'data': this.Data}
-    }
-
-    GetSize() {
-        return this.Data.length
     }
 
     RecAdd(aData = []) {
@@ -132,6 +173,42 @@ class TDbList {
         return this.Rec
     }
 
+    RecPop(aNo = -1) {
+        aNo = this._RecInRange(aNo)
+        return new TDbRec(this.Data.splice(aNo, 1), this.Rec.Fields)
+    }
+}
+
+
+class TDbListEx extends TDbList {
+    ExportDict(aFields = []) {
+        if (aFields.length == 0) {
+            aFields = this.Rec.GetFields()
+        }
+
+        let Res = []
+        for (const Rec of this) {
+            Res.push(Rec.GetAsDictFields(aFields))
+        }
+        return Res
+    }
+
+    ImportDict(aData, aFields = []) {
+        if (aFields.length == 0) {
+            aFields = Object.keys(aData[0])
+        }
+
+        let Data = []
+        for (const xData of aData) {
+            let Row = []
+            for (const xField of aFields) {
+                Row.push(xData[xField])
+            }
+            Data.push(Row)
+        }
+        return this.Import({'head': aFields, 'data': Data})
+    }
+
     Sort(aField) {
         const Idx = this.Rec.Fields[aField]
         this.Data = this.Data.sort(
@@ -145,7 +222,8 @@ class TDbList {
                 }
         })
         this.RecNo = 0
+        return this
     }
 }
 
-module.exports = { TDbList, TDbRec }
+module.exports = { TDbList, TDbListEx, TDbRec }

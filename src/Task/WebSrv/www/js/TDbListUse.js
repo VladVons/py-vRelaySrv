@@ -1,5 +1,7 @@
-const {TDbList, TDbRec}  = require('./TDbList')
+const {TDbList, TDbListEx}  = require('./TDbList')
 
+
+//--- TDbList
 Data1 = '{ \
     "head": ["user", "age", "male"],\
     "data": [\
@@ -12,7 +14,7 @@ Data1 = '{ \
 
 //const Data2 = JSON.parse(Data1)
 //const Dbl = new TDbList(Data2)
-const Dbl = new TDbList().ImportStr(Data1)
+let Dbl = new TDbList().ImportStr(Data1)
 console.log('GetSize', Dbl.GetSize())
 console.log('Rec.AsDict', Dbl.Rec.GetAsDict())
 
@@ -29,13 +31,28 @@ Rec.SetField('user', 'pink')
 Rec.SetField('age', 41)
 
 console.log('')
-console.log('GetSize', Dbl.GetSize())
-Dbl.Sort('user')
-for (let Rec of Dbl) {
-    console.log(Rec.Data)
-}
+console.log('Export')
+//Data = Dbl.Export()
+Data = Dbl.ExportStr()
+console.log(Data)
 
 console.log('')
-console.log('Export')
-Data = Dbl.Export()
+console.log('Clone')
+Data = Dbl.Clone(['user', 'age']).Export()
 console.log(Data)
+
+
+//--- TDbListEx
+Data1 = [
+    {'user': 'user3', 'age': 37, 'male': true},
+    {'user': 'user4', 'age': 47, 'male': false},
+    {'user': 'user2', 'age': 27, 'male': true}
+]
+console.log('')
+Dbl = new TDbListEx().ImportDict(Data1).Sort('age')
+console.log('ExportStr', Dbl.ExportStr())
+let q1 = Dbl.RecPop(1)
+console.log(q1)
+console.log('ExportStr', Dbl.ExportStr())
+console.log('ExportDict', Dbl.ExportDict(['user', 'age']))
+console.log('Done')
