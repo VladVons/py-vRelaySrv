@@ -6,11 +6,9 @@ import sys
 #import time
 import json
 #import asyncio
-import bs4
 from bs4 import BeautifulSoup
 #
 sys.path.append('../src')
-import src.Inc.Scheme.Scheme
 from IncP.Db.Scraper_pg import TDbApp
 from Inc.Scheme.Scheme import TSoupScheme, TScheme
 from Inc.Misc.Misc import FormatJsonStr
@@ -25,14 +23,14 @@ DbAuth = {
 
 
 def DictHoriz(aData: object, aKeys: list, aRes: dict):
-    if (type(aData) == dict):
+    if (isinstance(aData, dict)):
         for Key, Val in aData.items():
             DictHoriz(Val, aKeys, aRes)
             if (Key in aKeys):
                 aRes[Key] = Val
 
 def WriteFile(aFile: str, aData: str):
-    with open(aFile, 'w') as F:
+    with open(aFile, 'w', encoding='utf8') as F:
         Data = F.write(aData)
 
 def ReadFile(aFile: str):
@@ -61,11 +59,11 @@ async def SaveScheme(aFile: str):
 def TestJson(aMod: str, aExt: str = '.html'):
     print(aMod, aExt)
 
-    with open(aMod + '.json') as hFile:
+    with open(aMod + '.json', 'r', encoding='utf8') as hFile:
         Data = hFile.read()
     Scheme = json.loads(Data)
 
-    with open(aMod + aExt) as hFile:
+    with open(aMod + aExt, 'r', encoding='utf8') as hFile:
         Data = hFile.read()
 
     Soup = BeautifulSoup(Data, 'lxml')
@@ -74,9 +72,13 @@ def TestJson(aMod: str, aExt: str = '.html'):
     print(Res)
     print()
     print(SoupScheme.Err)
-    Arr = {}
-    DictHoriz(Res, ['Image', 'Price', 'Name', 'Stock', 'MPN'], Arr)
-    print(Arr)
+
+    # Arr = {}
+    # DictHoriz(Res['product']['pipe'], ['image', 'price', 'name', 'stock', 'mpn'], Arr)
+    # print(Arr)
+
+    HumanJson = json.dumps(Res, indent=2, ensure_ascii=False)
+    print(HumanJson)
 
 def TestPy(aMod: str, aExt: str = '.html'):
     Data = ReadFile(aMod + aExt)
@@ -143,7 +145,7 @@ def TestList(aListm, aIdx, aEnd = 0):
         print('-x2', aListm[aIdx:aEnd])
     else:
         print('-x1', aListm[aIdx])
-    
+
 os.system('clear')
 print(os.getcwd())
 print(sys.version)
@@ -151,8 +153,9 @@ print(sys.version)
 #
 #asyncio.run(SaveScheme('Schemes_2.txt'))
 #
+TestJson('ktc.ua')
 #TestPy('megabit.od.ua')
-TestJson('artdrink.com.ua')
+#TestJson('artdrink.com.ua')
 #TestJson('bscanner.com.ua')
 #TestJson('fozzyshop.ua')
 #TestJson('himopt.com.ua-q1')
@@ -162,3 +165,4 @@ TestJson('artdrink.com.ua')
 #TestJson('rozetka.com.ua')
 #TestBoth('oster.com.ua')
 #TestApi()
+
